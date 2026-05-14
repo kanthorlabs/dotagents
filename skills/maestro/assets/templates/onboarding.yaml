@@ -1,0 +1,38 @@
+# subflows/onboarding.yaml
+# Walks through the typical first-launch onboarding screens. Tolerant of skips.
+appId: ${APP_ID}
+env:
+  APP_ID: com.example.app
+---
+- launchApp:
+    clearState: true
+    permissions: { all: allow }
+
+# Dismiss a "What's new" banner if it appears.
+- tapOn:
+    text: "Got it"
+    optional: true
+
+# Skip the onboarding carousel if shown.
+- runFlow:
+    when: { visible: "Welcome to our App" }
+    commands:
+      - tapOn: "Next"
+      - tapOn: "Next"
+      - tapOn: "Get started"
+
+# Notification permission, platform-specific.
+- runFlow:
+    when:
+      platform: iOS
+      visible: "Enable Notifications"
+    commands:
+      - tapOn: "Allow"
+- runFlow:
+    when:
+      platform: Android
+      visible: "Allow Notifications"
+    commands:
+      - tapOn: "Allow"
+
+- assertVisible: "Home"

@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+name: Example mobile flow
+env:
+  APP_ID: com.example.app
+tags:
+  - smoke
+---
+- launchApp:
+    clearState: true
+    permissions: { all: allow }
+- assertVisible: { id: "welcome_screen" }
+- tapOn: { id: "get_started_btn" }
+- tapOn: { id: "username_input" }
+- inputText: ${USERNAME || "demo"}
+- takeScreenshot: example-end-state

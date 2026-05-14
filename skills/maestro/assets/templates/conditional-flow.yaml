@@ -1,0 +1,26 @@
+# Conditional branching: feature flag + platform + dynamic UI.
+appId: ${APP_ID}
+env:
+  APP_ID: com.example.app
+  IS_FEATURE_ENABLED: "true"
+---
+- launchApp
+
+# JS-condition gate
+- runFlow:
+    when: { true: ${IS_FEATURE_ENABLED == "true"} }
+    file: subflows/new-feature-test.yaml
+
+# Inverse branch
+- runFlow:
+    when: { notVisible: "Biometric Login" }
+    commands:
+      - tapOn: "Standard Login"
+
+# Multi-condition: AND
+- runFlow:
+    when:
+      platform: Android
+      visible: "Allow Notifications"
+    commands:
+      - tapOn: "Allow"

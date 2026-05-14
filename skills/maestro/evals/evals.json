@@ -1,0 +1,119 @@
+{
+  "name": "maestro-flows-evals",
+  "description": "Eval suite for the maestro Agent Skill. Each case has a prompt, the assertion criteria the response must satisfy, and a category. Run with-skill vs without-skill to measure lift per agentskills.io evaluation guidance.",
+  "version": "0.1.0",
+  "cases": [
+    {
+      "id": "A1-mobile-author",
+      "category": "authoring",
+      "prompt": "Write a Maestro flow that logs into the Twitter Android app (com.twitter.android) using USERNAME and PASSWORD from env. End by asserting the home timeline is visible.",
+      "expected_output": "yaml",
+      "assertions": [
+        { "type": "contains", "value": "appId:" },
+        { "type": "contains_any", "value": ["${APP_ID}", "com.twitter.android"] },
+        { "type": "contains", "value": "---" },
+        { "type": "contains", "value": "launchApp" },
+        { "type": "contains", "value": "tapOn" },
+        { "type": "contains", "value": "inputText" },
+        { "type": "contains", "value": "${USERNAME}" },
+        { "type": "contains", "value": "${PASSWORD}" },
+        { "type": "contains", "value": "assertVisible" },
+        { "type": "contains", "value": "env:" },
+        { "type": "not_contains", "value": "url:" },
+        { "type": "not_contains", "value": "sleep" },
+        { "type": "not_contains", "value": "wait(" }
+      ]
+    },
+    {
+      "id": "A2-web-author",
+      "category": "authoring",
+      "prompt": "Write a Maestro flow that signs into example.com (web). Use email demo@example.com and any non-empty password.",
+      "expected_output": "yaml",
+      "assertions": [
+        { "type": "contains", "value": "url:" },
+        { "type": "contains", "value": "example.com" },
+        { "type": "contains", "value": "---" },
+        { "type": "contains", "value": "launchApp" },
+        { "type": "contains", "value": "tapOn" },
+        { "type": "contains", "value": "inputText" },
+        { "type": "not_contains", "value": "appId:" },
+        { "type": "not_contains", "value": "setOrientation" },
+        { "type": "not_contains", "value": "setAirplaneMode" }
+      ]
+    },
+    {
+      "id": "B-selector-fix",
+      "category": "debugging",
+      "prompt": "This Maestro step is flaky because three buttons on screen all show the text 'Login'. Fix the selector so it deterministically targets the third one (the one inside the bottom sheet with id 'biometric_sheet').\n\n```yaml\n- tapOn: \"Login\"\n```",
+      "expected_output": "yaml",
+      "assertions": [
+        { "type": "contains_any", "value": ["index:", "childOf", "below:", "rightOf:", "leftOf:", "containsDescendants", "id:"] },
+        { "type": "not_contains", "value": "point:" }
+      ],
+      "rationale": "Agent should disambiguate using index/relational selector or a stable id, not coordinate point taps."
+    },
+    {
+      "id": "C-runFlow-compose",
+      "category": "composition",
+      "prompt": "Compose two existing flows: subflows/login.yaml and subflows/checkout.yaml. Pass USERNAME=alice and PASSWORD=secret to login. Assume appId com.example.shop.",
+      "expected_output": "yaml",
+      "assertions": [
+        { "type": "contains", "value": "appId:" },
+        { "type": "contains_any", "value": ["${APP_ID}", "com.example.shop"] },
+        { "type": "regex", "value": "runFlow:\\s*\\n?\\s*(file:\\s*)?[\"']?subflows/login.yaml" },
+        { "type": "contains", "value": "subflows/checkout.yaml" },
+        { "type": "contains", "value": "env:" },
+        { "type": "contains", "value": "USERNAME" },
+        { "type": "contains", "value": "PASSWORD" }
+      ]
+    },
+    {
+      "id": "D-ci-github-actions",
+      "category": "integration",
+      "prompt": "Give me a GitHub Actions step that runs `maestro test` on an Android emulator against ./.maestro and uploads the JUnit report as an artifact even on failure. Java 17 must be set up. Drive timeout should accommodate slow CI.",
+      "expected_output": "yaml",
+      "assertions": [
+        { "type": "contains", "value": "actions/setup-java" },
+        { "type": "contains_any", "value": ["temurin", "zulu", "adopt"] },
+        { "type": "contains", "value": "17" },
+        { "type": "contains", "value": "maestro test" },
+        { "type": "contains", "value": "--format junit" },
+        { "type": "contains", "value": "MAESTRO_DRIVER_STARTUP_TIMEOUT" },
+        { "type": "contains", "value": "actions/upload-artifact" },
+        { "type": "contains", "value": "if: always()" }
+      ]
+    },
+    {
+      "id": "E-explain-scrollUntilVisible",
+      "category": "explain",
+      "prompt": "What does scrollUntilVisible do, and how is it different from scroll?",
+      "expected_output": "prose",
+      "assertions": [
+        { "type": "contains_all", "value": ["scrollUntilVisible", "scroll", "selector", "visible"] },
+        { "type": "contains_any", "value": ["timeout", "20000", "20 seconds"] },
+        { "type": "contains_any", "value": ["DOWN", "direction"] },
+        { "type": "contains_any", "value": ["bounded", "stops", "until"] },
+        { "type": "contains_any", "value": ["one swipe", "single", "no arguments"] }
+      ],
+      "rationale": "Must convey: scrollUntilVisible auto-loops with timeout (default 20s), targets a selector, and direction defaults DOWN; scroll = single vertical swipe with no args."
+    },
+    {
+      "id": "F-mcp-prefer",
+      "category": "tooling",
+      "prompt": "I have the Maestro MCP server connected. Walk me through writing a flow that taps the 'Sign In' button on the screen. Be specific about which MCP tools you would call and in what order before crafting any YAML.",
+      "expected_output": "prose",
+      "assertions": [
+        { "type": "contains_all", "value": ["list_devices", "inspect_screen"] },
+        { "type": "ordered_before", "before": "inspect_screen", "after": "tapOn" },
+        { "type": "contains_any", "value": ["run", "cheat_sheet"] },
+        { "type": "not_contains_first_action", "value": "tapOn" }
+      ],
+      "rationale": "Agent must call list_devices, then inspect_screen BEFORE proposing a selector. Should not start by guessing YAML."
+    }
+  ],
+  "scoring": {
+    "with_skill_pass_threshold": 7,
+    "without_skill_baseline_expected": "≤3 cases pass without the skill loaded; this gap demonstrates skill lift",
+    "notes": "Run each case with the skill loaded and again without, then diff. Cases A1, A2, B should be the most differentiating since they require Maestro-specific knowledge."
+  }
+}

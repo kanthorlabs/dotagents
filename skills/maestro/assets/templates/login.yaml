@@ -1,0 +1,18 @@
+# subflows/login.yaml
+# Reusable login. Pass USERNAME and PASSWORD via runFlow env or CLI -e.
+# - runFlow:
+#     file: subflows/login.yaml
+#     env: { USERNAME: alice, PASSWORD: secret }
+appId: ${APP_ID}
+env:
+  APP_ID: com.example.app
+---
+- tapOn:
+    id: "username_input"
+- inputText: ${USERNAME || "test_user"}
+- tapOn:
+    id: "password_input"
+- inputText: ${PASSWORD || "test_pass"}
+- tapOn:
+    id: "login_button"
+- assertVisible: "Welcome"

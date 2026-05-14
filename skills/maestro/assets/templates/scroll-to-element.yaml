@@ -1,0 +1,21 @@
+# Reach an element that may be off-screen. Tries the cheap path first.
+appId: ${APP_ID}
+env:
+  APP_ID: com.example.app
+---
+- launchApp
+
+# Cheap: if it's already on screen, this is a no-op (auto-retry).
+- assertVisible:
+    text: "Logout"
+    optional: true
+
+# Otherwise: full-screen list scroll.
+- scrollUntilVisible:
+    element:
+      text: "Logout"
+    direction: DOWN
+    timeout: 30000
+    centerElement: true
+
+- tapOn: "Logout"
