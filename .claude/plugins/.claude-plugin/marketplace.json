@@ -1,0 +1,13 @@
+{
+  "name": "claude.kanthorlabs.com",
+  "owner": {
+    "name": "kanthorlabs"
+  },
+  "plugins": [
+    {
+      "name": "kanthorjournald",
+      "source": "./kanthorjournald",
+      "description": "Force coding assistant to journal off-spec decisions and self-check at end of turn."
+    }
+  ]
+}

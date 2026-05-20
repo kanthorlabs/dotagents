@@ -1,0 +1,9 @@
+{
+  "name": "kanthorjournald",
+  "version": "0.1.0",
+  "description": "Force Coding Assistant to journal every off-spec decision, tradeoff, and change. Self-check journal vs requirements at end of turn.",
+  "author": {
+    "name": "kanthorlabs"
+  },
+  "keywords": ["journal", "review", "decisions", "spec-tracking"]
+}
