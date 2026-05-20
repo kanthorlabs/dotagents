@@ -6,8 +6,7 @@ set -euo pipefail
 DATA_DIR="${HOME}/.kanthorlabs/kanthorjournald"
 STATE_FILE="${DATA_DIR}/state.json"
 JOURNAL_DIR="${DATA_DIR}/journals"
-INTERNAL_DIR="${DATA_DIR}/.runtime"
-mkdir -p "${JOURNAL_DIR}" "${INTERNAL_DIR}"
+mkdir -p "${JOURNAL_DIR}"
 
 INPUT="$(cat)"
 
@@ -29,7 +28,6 @@ except Exception:
 
 case "${PROMPT_TRIMMED}" in
   /kanthorjournald*)
-    touch "${INTERNAL_DIR}/skip-stop-${SESSION_ID}"
     exit 0
     ;;
 esac
@@ -66,8 +64,6 @@ if [[ ! -f "${JOURNAL_FILE}" ]]; then
     echo
   } > "${JOURNAL_FILE}"
 fi
-
-touch "${INTERNAL_DIR}/pending-brief-${SESSION_ID}"
 
 ADDITIONAL=$(cat <<EOF
 [kanthorjournald active] Append a Decision Journal entry to \`${JOURNAL_FILE}\` for this turn.

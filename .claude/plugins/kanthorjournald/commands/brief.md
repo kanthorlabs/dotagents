@@ -1,15 +1,15 @@
 ---
-description: 80/20 brief of the current session's decision journal
+description: 80/20 brief of the current session's decision journal (entire session, all turns)
 allowed-tools: Read, Glob
 ---
 
-Resolve the current session's journal file, then produce an 80/20 brief.
+Resolve the current session's journal file, then produce an 80/20 brief covering the **entire session** (all `## Turn` sections, not just the latest).
 
 1. Try to Read `~/.kanthorlabs/kanthorjournald/current-session.txt`. If present, the journal is at `~/.kanthorlabs/kanthorjournald/journals/<contents>.md`.
 2. If the file doesn't exist OR the resolved journal is missing, fall back to the newest match from Glob `~/.kanthorlabs/kanthorjournald/journals/*.md` (sort by mtime, pick latest).
-3. Read that journal file.
+3. Read that journal file in full — every `## Turn` section.
 
-Then produce an **80/20 brief**: surface the ~20% of journal items that carry ~80% of human-review risk. Drop trivia (boilerplate "- none", obvious choices, well-scoped renames). Keep anything that:
+Then produce an **80/20 brief over the whole session**: surface the ~20% of journal items that carry ~80% of human-review risk. Drop trivia (boilerplate "- none", obvious choices, well-scoped renames). Keep anything that:
 
 - silently changed behavior the user didn't ask for
 - picked one design over another without user input
@@ -17,19 +17,21 @@ Then produce an **80/20 brief**: surface the ~20% of journal items that carry ~8
 - deferred work the user might assume was done
 - chose a library/version/config without user steering
 
-Output format (markdown, ≤200 words total):
+When the same concern recurs across turns, collapse to one line and note the turn count. Prefer items that compound across the session over single-turn nits.
+
+Output format (markdown, ≤250 words total):
 
 ```
-## Journal brief — <session-id> (80/20)
+## Journal brief — <session-id> (80/20, whole session, <N> turns)
 
 **🔴 Needs review (highest risk)**
-- <one-line item> — _<why it matters in <10 words>_
+- <one-line item> — _<why it matters in <10 words>_ (turn <n> or "turns 2,4")
 
 **🟡 Worth confirming**
-- <one-line item> — _<why>_
+- <one-line item> — _<why>_ (turn <n>)
 
 **🟢 Skipped from brief**
-- <count> low-risk items (boilerplate, none-entries, obvious tradeoffs)
+- <count> low-risk items across <N> turns (boilerplate, none-entries, obvious tradeoffs)
 ```
 
 If the journal is empty or only has the header (no turns yet), say so plainly — don't fabricate.

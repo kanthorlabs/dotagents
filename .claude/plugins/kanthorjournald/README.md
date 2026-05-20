@@ -2,22 +2,21 @@
 
 Claude Code plugin that forces the coding assistant to journal every off-spec
 decision, tradeoff, assumption, and deferred TODO into a per-session markdown
-file. At the end of every turn, the assistant is forced to surface a brief of
-what it did so the human can review. Correctness validation is a separate,
-user-invoked command.
+file. Both the human-review brief and the correctness validation are
+**user-invoked** commands that operate over the **entire session**, not just
+the latest turn.
 
 ## What it does
 
 1. **`UserPromptSubmit` hook** — injects an instruction telling Claude to
    append a journal section to `~/.kanthorlabs/kanthorjournald/journals/<session-id>.md`
    before finishing the turn.
-2. **`Stop` hook** — blocks once per turn, telling Claude to read the latest
-   turn section in the journal and print a concise brief of what it did
-   (decisions, changes, tradeoffs, assumptions, deferred work). No
-   self-validation. Self-loop is prevented via `stop_hook_active`.
+2. **`/kanthorjournald:brief`** — user-invoked 80/20 summary of the
+   **whole session's** journal (all turns), surfacing the items most worth
+   a human's attention.
 3. **`/kanthorjournald:validate`** — user-invoked command that checks the
-   latest turn's work against the user's request, cross-referencing the
-   actual code (not just the journal text).
+   **whole session's** work against the user's requests turn-by-turn,
+   cross-referencing the actual code (not just the journal text).
 4. **Toggle controls** — slash commands flip state files under
    `~/.kanthorlabs/kanthorjournald/state.json`.
 
@@ -31,10 +30,10 @@ Plugin commands are namespaced. Use the `/kanthorjournald:` prefix:
 
 | Command | Effect |
 |---|---|
-| `/kanthorjournald:install` | One-time setup: merge required permissions into `~/.claude/settings.json` |
+| `/kanthorjournald:install` | One-time setup: provision `~/.kanthorlabs/kanthorjournald/` (data dir + default `state.json`) and merge required permissions into `~/.claude/settings.json` |
 | `/kanthorjournald:status` | Show global + per-session state and list journals |
-| `/kanthorjournald:brief` | 80/20 summary of the current session's journal |
-| `/kanthorjournald:validate` | Validate whether the latest turn's work matches the user's request |
+| `/kanthorjournald:brief` | 80/20 summary of the whole session's journal (all turns) |
+| `/kanthorjournald:validate` | Validate whether the whole session's work matches the user's requests |
 | `/kanthorjournald:off-global` | Disable journaling for all sessions |
 | `/kanthorjournald:on-global` | Re-enable journaling globally (default) |
 | `/kanthorjournald:off-session` | Disable journaling for the current session only |
@@ -84,9 +83,10 @@ After editing hook scripts or command files, reload without restarting:
 /reload-plugins
 ```
 
-### Pre-approve permissions (skip per-session prompts)
+### Provision assets + pre-approve permissions (one command)
 
-Plugins can't ship auto-applied permissions (security boundary). Two ways:
+Plugins can't ship auto-applied permissions or pre-create files outside the
+plugin tree (security boundary). The install command handles both.
 
 **Recommended — run the install command** (after `/plugin install`):
 
@@ -94,20 +94,31 @@ Plugins can't ship auto-applied permissions (security boundary). Two ways:
 /kanthorjournald:install
 ```
 
-This reads `~/.claude/settings.json`, shows you the diff it will add, then
-merges these entries into `permissions.allow`:
+This does two things, in order:
 
+1. **Prepares the data tree** — creates `~/.kanthorlabs/kanthorjournald/journals/`
+   and, if missing, writes a default `state.json`:
+   ```json
+   { "global_enabled": true, "disabled_sessions": [] }
+   ```
+   An existing `state.json` is left untouched (the command is idempotent).
+2. **Merges permissions** — reads `~/.claude/settings.json`, shows you the
+   diff it will add, then merges these entries into `permissions.allow`:
+   ```
+   Read(~/.kanthorlabs/kanthorjournald/**)
+   Edit(~/.kanthorlabs/kanthorjournald/**)
+   Write(~/.kanthorlabs/kanthorjournald/**)
+   ```
+   Claude Code's sensitive-file guard will fire on `~/.claude/settings.json` —
+   review the proposed edit and approve. Pick "allow always" if you want to
+   re-run the command later without re-prompting.
+
+**Manual alternative** — create the dir yourself and paste the permissions
+into `~/.claude/settings.json`:
+
+```bash
+mkdir -p ~/.kanthorlabs/kanthorjournald/journals
 ```
-Read(~/.kanthorlabs/kanthorjournald/**)
-Edit(~/.kanthorlabs/kanthorjournald/**)
-Write(~/.kanthorlabs/kanthorjournald/**)
-```
-
-Claude Code's sensitive-file guard will fire on `~/.claude/settings.json` —
-review the proposed edit and approve. Pick "allow always" if you want to
-re-run the command later without re-prompting.
-
-**Manual alternative** — paste this once into `~/.claude/settings.json`:
 
 ```json
 {
@@ -135,10 +146,6 @@ Smoke-test hooks directly on dummy input:
 echo '{"session_id":"test-123","hook_event_name":"UserPromptSubmit","prompt":"x"}' \
   | .claude/plugins/kanthorjournald/hooks/on-user-prompt.sh
 # → JSON with hookSpecificOutput.additionalContext
-
-echo '{"session_id":"test-123","hook_event_name":"Stop","stop_hook_active":false}' \
-  | .claude/plugins/kanthorjournald/hooks/on-stop.sh
-# → JSON {"decision":"block", ...}
 ```
 
 Journal file should appear at
@@ -149,8 +156,8 @@ Then in a real Claude Code session:
 ```
 > implement a function that adds two numbers
 # Claude appends a journal section before finishing.
-# On Stop, Claude is forced to print a brief of what it did this turn.
-# Run /kanthorjournald:validate to verify the turn's work matches the request.
+# Run /kanthorjournald:brief to see an 80/20 summary across the whole session.
+# Run /kanthorjournald:validate to cross-check the whole session's work against requests.
 
 > /kanthorjournald:status
 > /kanthorjournald:off-session
@@ -177,9 +184,6 @@ Then in a real Claude Code session:
 ~/.kanthorlabs/kanthorjournald/
 ├── state.json                                # { global_enabled, disabled_sessions[] }
 ├── current-session.txt                       # latest session_id (for /off-session)
-├── .runtime/                                 # hook-internal markers
-│   ├── pending-brief-<id>                   # tracks "Stop must block once"
-│   └── skip-stop-<id>                        # set when prompt was /kanthorjournald:*
 └── journals/
     └── <session-id>.md                       # the journal itself
 ```
@@ -194,8 +198,7 @@ Then in a real Claude Code session:
     ├── .claude-plugin/plugin.json            # plugin manifest
     ├── hooks/
     │   ├── hooks.json
-    │   ├── on-user-prompt.sh
-    │   └── on-stop.sh
+    │   └── on-user-prompt.sh
     ├── commands/
     │   ├── install.md        → /kanthorjournald:install
     │   ├── status.md         → /kanthorjournald:status
