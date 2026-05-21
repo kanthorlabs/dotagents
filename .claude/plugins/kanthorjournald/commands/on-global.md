@@ -1,6 +1,7 @@
 ---
 description: Re-enable kanthorjournald globally (default state)
 allowed-tools: Read, Write, Edit
+model: claude-sonnet-4-6
 ---
 
 Set global enablement in the kanthorjournald state file.

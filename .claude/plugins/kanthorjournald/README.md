@@ -9,8 +9,10 @@ the latest turn.
 ## What it does
 
 1. **`UserPromptSubmit` hook** — injects an instruction telling Claude to
-   append a journal section to `~/.kanthorlabs/kanthorjournald/journals/<session-id>.md`
-   before finishing the turn.
+   append a journal section to
+   `~/.kanthorlabs/kanthorjournald/journals/<project-key>/<session-id>.md`
+   before finishing the turn. `<project-key>` is `<basename(cwd)>-<md5(cwd)>`,
+   so journals are scoped per working directory.
 2. **`/kanthorjournald:brief`** — user-invoked 80/20 summary of the
    **whole session's** journal (all turns), surfacing the items most worth
    a human's attention.
@@ -31,7 +33,7 @@ Plugin commands are namespaced. Use the `/kanthorjournald:` prefix:
 | Command | Effect |
 |---|---|
 | `/kanthorjournald:install` | One-time setup: provision `~/.kanthorlabs/kanthorjournald/` (data dir + default `state.json`) and merge required permissions into `~/.claude/settings.json` |
-| `/kanthorjournald:status` | Show global + per-session state and list journals |
+| `/kanthorjournald:status` | Show global + per-session state and list journals for the **current project**. Pass `--all` to list every project. |
 | `/kanthorjournald:brief` | 80/20 summary of the whole session's journal (all turns) |
 | `/kanthorjournald:validate` | Validate whether the whole session's work matches the user's requests |
 | `/kanthorjournald:off-global` | Disable journaling for all sessions |
@@ -149,7 +151,8 @@ echo '{"session_id":"test-123","hook_event_name":"UserPromptSubmit","prompt":"x"
 ```
 
 Journal file should appear at
-`~/.kanthorlabs/kanthorjournald/journals/test-123.md`.
+`~/.kanthorlabs/kanthorjournald/journals/<project-key>/test-123.md`
+where `<project-key>` = `<basename(cwd)>-<md5(cwd)>`.
 
 Then in a real Claude Code session:
 
@@ -183,10 +186,16 @@ Then in a real Claude Code session:
 ```
 ~/.kanthorlabs/kanthorjournald/
 ├── state.json                                # { global_enabled, disabled_sessions[] }
-├── current-session.txt                       # latest session_id (for /off-session)
 └── journals/
-    └── <session-id>.md                       # the journal itself
+    └── <project-key>/                        # <basename(cwd)>-<md5(absolute cwd)>
+        ├── current-session.txt               # latest session_id for THIS project
+        └── <session-id>.md                   # the journal itself
 ```
+
+`<project-key>` scopes journals per working directory so concurrent Claude
+Code sessions in different projects don't stomp on each other. The md5 of
+the absolute path disambiguates two projects that share a basename
+(e.g. `~/work/api` vs `~/personal/api`).
 
 ## Repo layout
 

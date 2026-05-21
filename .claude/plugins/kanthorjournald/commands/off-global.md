@@ -1,6 +1,7 @@
 ---
 description: Disable kanthorjournald for ALL future sessions (global off)
 allowed-tools: Read, Write, Edit
+model: claude-sonnet-4-6
 ---
 
 Set global disablement in the kanthorjournald state file.

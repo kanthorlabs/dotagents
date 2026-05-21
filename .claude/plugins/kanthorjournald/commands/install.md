@@ -1,6 +1,7 @@
 ---
 description: Prepare kanthorjournald data dir and merge permissions into ~/.claude/settings.json (review + approve once)
 allowed-tools: Read, Write, Edit, Bash
+model: claude-sonnet-4-6
 ---
 
 One-time setup for kanthorjournald. Two things to do, in order:

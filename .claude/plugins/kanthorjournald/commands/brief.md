@@ -1,13 +1,19 @@
 ---
 description: 80/20 brief of the current session's decision journal (entire session, all turns)
-allowed-tools: Read, Glob
+allowed-tools: Read, Glob, Bash
+model: claude-sonnet-4-6
 ---
 
 Resolve the current session's journal file, then produce an 80/20 brief covering the **entire session** (all `## Turn` sections, not just the latest).
 
-1. Try to Read `~/.kanthorlabs/kanthorjournald/current-session.txt`. If present, the journal is at `~/.kanthorlabs/kanthorjournald/journals/<contents>.md`.
-2. If the file doesn't exist OR the resolved journal is missing, fall back to the newest match from Glob `~/.kanthorlabs/kanthorjournald/journals/*.md` (sort by mtime, pick latest).
-3. Read that journal file in full — every `## Turn` section.
+1. Run this Bash one-liner to compute the current project key:
+   ```
+   python3 -c 'import os,hashlib; c=os.getcwd(); print(os.path.basename(c.rstrip("/"))+"-"+hashlib.md5(c.encode()).hexdigest())'
+   ```
+   Call the output `<project-key>`.
+2. Try to Read `~/.kanthorlabs/kanthorjournald/journals/<project-key>/current-session.txt`. If present, the journal is at `~/.kanthorlabs/kanthorjournald/journals/<project-key>/<contents>.md`.
+3. If the file doesn't exist OR the resolved journal is missing, fall back to the newest match from Glob `~/.kanthorlabs/kanthorjournald/journals/<project-key>/*.md` (sort by mtime, pick latest).
+4. Read that journal file in full — every `## Turn` section.
 
 Then produce an **80/20 brief over the whole session**: surface the ~20% of journal items that carry ~80% of human-review risk. Drop trivia (boilerplate "- none", obvious choices, well-scoped renames). Keep anything that:
 
