@@ -52,7 +52,7 @@ This repo doubles as a **local plugin marketplace** rooted at
 Launch a session with the plugin auto-loaded:
 
 ```bash
-claude --plugin-dir /Users/tuanatelsa/Projects/kanthorlabs/dotagents/.claude/plugins/kanthorjournald
+claude --plugin-dir /path/to/dotagents/.claude/plugins/kanthorjournald
 ```
 
 Hooks + commands are active only for that session. Good for iteration.
@@ -62,7 +62,7 @@ Hooks + commands are active only for that session. Good for iteration.
 Inside any Claude Code session:
 
 ```
-/plugin marketplace add /Users/tuanatelsa/Projects/kanthorlabs/dotagents/.claude/plugins
+/plugin marketplace add /path/to/dotagents/.claude/plugins
 /plugin install kanthorjournald@claude.kanthorlabs.com
 ```
 
