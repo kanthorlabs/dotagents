@@ -6,6 +6,10 @@ model: claude-sonnet-4-6
 
 Replace the project's accumulated session journals with a single brief file, while preserving the originals in a trash dir so the operation is reversible.
 
+## Parameters
+
+- `--max-files <N>` — maximum number of past-session journals to include in this compaction run (default: `10`). Selects the **N most-recent** eligible files (by mtime, excluding the current session and `.trash/`). If fewer than N eligible files exist, compact all of them.
+
 ## Procedure
 
 1. Run this Bash one-liner to compute the current project key:
@@ -24,9 +28,12 @@ Replace the project's accumulated session journals with a single brief file, whi
    ```
    ls -tr "$JDIR"/*.md 2>/dev/null
    ```
-   From that list, drop the entry whose basename is `<current-id>.md`. Call the remainder `<to-compact>`.
+   From that list, drop the entry whose basename is `<current-id>.md`. Call the remainder `<candidates>`.
+
+   Apply the `--max-files` limit: take only the **last N entries** of `<candidates>` (most recent by mtime). Call the result `<to-compact>`.
 
    - If `<to-compact>` is empty, say so plainly and stop (nothing to compact).
+   - If `--max-files` was not supplied by the user, use `N=10`.
 
 4. Read every file in `<to-compact>` in full.
 
@@ -89,9 +96,10 @@ Replace the project's accumulated session journals with a single brief file, whi
 
 8. Print a final summary to the user:
    - Path of the new `compacted-<STAMP>.md`
-   - Count of files moved
+   - Count of files compacted / moved (and total eligible if `--max-files` limited the run, e.g. `"3 of 7 eligible files (--max-files 3)"`)
    - Path of the trash dir (e.g. `~/.kanthorlabs/kanthorjournald/journals/<project-key>/.trash/<STAMP>/`)
    - Reminder that the trash dir can be purged manually with `rm -rf` when confirmed safe
+   - If not all eligible files were included, note how many remain and suggest re-running to compact them
 
 ## Guardrails
 

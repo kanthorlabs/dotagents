@@ -4,19 +4,28 @@ allowed-tools: Read, Glob, Bash
 model: claude-sonnet-4-6
 ---
 
-Resolve every journal file for the current project, then produce an 80/20 brief covering **all sessions** (every `## Turn` section in every journal).
+Resolve journal files for the current project, then produce an 80/20 brief covering those sessions (every `## Turn` section in each selected journal).
+
+## Parameters
+
+- `--max-files <N>` — maximum number of journal files to include in this brief (default: `10`). Selects the **N most-recent** files (by mtime). If fewer than N files exist, read all of them. **Only these N files are briefed** — older files beyond the limit are not read and not reflected in the output. Always state clearly in the output header how many files were included vs. how many exist total.
 
 1. Run this Bash one-liner to compute the current project key:
    ```
    python3 -c 'import os,hashlib; c=os.getcwd(); print(os.path.basename(c.rstrip("/"))+"-"+hashlib.md5(c.encode()).hexdigest())'
    ```
    Call the output `<project-key>`.
-2. List every journal file for this project, sorted by mtime ascending (oldest → newest) so the brief reads chronologically. Use this portable Bash command (works on macOS + Linux; do NOT use `tac`, which is GNU-only):
+2. List every journal file for this project and apply the `--max-files` limit:
    ```
    ls -tr ~/.kanthorlabs/kanthorjournald/journals/<project-key>/*.md
    ```
    (`ls -tr` = sort by mtime, reversed → oldest first. If you prefer Glob, sort the results yourself afterwards.)
-3. Read each journal file in full — every `## Turn` section across every session.
+
+   From this full list, take only the **last N entries** (most recent by mtime), where N is the `--max-files` value (default `10`). Call the count of all files `<total>` and the count of selected files `<selected>`.
+
+   If `<selected>` < `<total>`, you are **only briefing a subset** — make that explicit in the output header (see step 4).
+
+3. Read each selected journal file in full — every `## Turn` section across those sessions.
 4. Tag each item with its session id (the journal filename's stem, e.g. `6567a487`) and turn number so cross-session items can be collapsed.
 
 Then produce an **80/20 brief over the whole project**: surface the ~20% of journal items that carry ~80% of human-review risk. Drop trivia (boilerplate "- none", obvious choices, well-scoped renames). Keep anything that:
@@ -37,7 +46,7 @@ When the same concern recurs — within a session or across sessions — collaps
 Output format (markdown):
 
 ```
-## Journal brief — <project-key> (80/20, all sessions, <M> sessions / <N> turns)
+## Journal brief — <project-key> (80/20, <selected> of <total> files, <M> sessions / <N> turns)
 
 **🔴 Needs review (highest risk)**
 - <one-line item> — _<why it matters in <10 words>_ (<session>:t<n> or "<sess-a>:t2, <sess-b>:t1,4")
@@ -53,6 +62,8 @@ Output format (markdown):
 
 **🟢 Skipped from brief**
 - <count> low-risk items across <M> sessions / <N> turns (boilerplate, none-entries, obvious renames, micro-tradeoffs, trivial assumptions)
+
+> ⚠️ **Scope notice** _(include only when `<selected>` < `<total>`)_: This brief covers **<selected> of <total>** available journal files (most recent <selected>). Re-run with `--max-files <total>` to include all sessions.
 ```
 
 If no journals exist for the project, or every journal has only its header (no turns yet), say so plainly — don't fabricate.
