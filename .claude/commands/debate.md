@@ -71,7 +71,7 @@ content.
   guarantee and MUST be treated as a hard-fail condition.
 
 - `opencode`: use the built-in read-only `plan` agent:
-  `opencode run --agent plan "$(cat "$TMP")"`.
+  `opencode run --format json --agent plan "$(cat "$TMP")"`.
   Plan mode disables file edits. A plain `opencode run` (no `--agent`) is NOT
   read-only — permissions default to "allow" — and MUST NOT be used.
 
