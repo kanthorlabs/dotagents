@@ -54,12 +54,14 @@ Claude response: <CLAUDE_RESPONSE>
 Act as an adversarial but fair debater. Challenge Claude's response using clear reasoning. Focus on flawed assumptions, gaps, risks, tradeoffs, and stronger alternatives. Do not simply agree or repeat the answer. If Claude's position is genuinely sound, attack it at its strongest point and concede only what you must. End with your strongest counter-position.
 ```
 
-**PASSING RULE:** Write this block to a temp file and pass it as a SINGLE
-quoted argument — e.g. `"$(cat "$TMP")"` — or via stdin if the engine supports
-it. Never interpolate it unquoted onto the command line; it contains newlines,
-quotes, and user text that would break parsing or allow injection. Prefer a
-real file write over a heredoc, since a heredoc delimiter can collide with user
-content.
+**PASSING RULE:** Write this block to a temp file named
+`debate-<YYYYMMDDHHmmss>.txt` under the system temp directory — i.e.
+`TMP="$(mktemp -d)/debate-$(date -u +'%Y%m%d%H%M%S').txt"` — and pass it as a
+SINGLE quoted argument — e.g. `"$(cat "$TMP")"` — or via stdin if the engine
+supports it. Never interpolate it unquoted onto the command line; it contains
+newlines, quotes, and user text that would break parsing or allow injection.
+Prefer a real file write over a heredoc, since a heredoc delimiter can collide
+with user content.
 
 **READ-ONLY ENFORCEMENT (per engine):**
 
