@@ -73,22 +73,38 @@ with user content.
   guarantee and MUST be treated as a hard-fail condition.
 
 - `opencode`: use the built-in read-only `plan` agent:
-  `opencode run --format json --agent plan "$(cat "$TMP")"`.
+  `opencode run --agent plan "$(cat "$TMP")"`.
   Plan mode disables file edits. A plain `opencode run` (no `--agent`) is NOT
   read-only — permissions default to "allow" — and MUST NOT be used.
 
 If the chosen engine does not support a verifiable read-only mode, or the
 read-only flag/agent is rejected: **return an error to the user and STOP.**
 
-Call the engine's output `<DEBATE_RESPONSE>`.
+**REPLY FILE:** Redirect the engine's stdout into a reply temp file in the same
+temp directory as the input file:
+`REPLY="${TMP%.*}-reply.txt"` (produces
+`debate-<YYYYMMDDHHmmss>-reply.txt`). After the engine exits, append the
+end-of-debate marker to the file:
 
-If the engine exits non-zero, times out, or returns empty output: **return an
-error to the user (include the engine's stderr if available) and STOP.** Do not
-return an un-debated answer.
+```bash
+<engine command> > "$REPLY" 2>&1
+echo '=== END ===' >> "$REPLY"
+```
+
+Call the contents of `$REPLY` `<DEBATE_RESPONSE>`.
+
+**Completion check:** Before reading `$REPLY`, verify the file exists AND its
+last line is exactly `=== END ===`. If the marker is missing the engine did not
+finish — treat as a failed run. When consuming `<DEBATE_RESPONSE>`, strip the
+`=== END ===` marker line so it does not leak into the merged output.
+
+If the engine exits non-zero, times out, or returns empty output (marker line
+only / no file): **return an error to the user (include the engine's stderr if
+available) and STOP.** Do not return an un-debated answer.
 
 ## 3. Claude's FINAL turn — merge (read-only)
 
-Review `<DEBATE_RESPONSE>` and decide, comment by comment, what to incorporate.
+Review `<DEBATE_RESPONSE>` in `debate-<YYYYMMDDHHmmss>-reply.txt` and decide, comment by comment, what to incorporate.
 This turn is also READ-ONLY: produce text only, edit nothing. There is no hard
 accept/reject rule — validity depends on the user's actual intent and context.
 Use this strategy:
@@ -148,3 +164,5 @@ silent degradation.
   `--agent plan`): error, STOP.
 - Engine exits non-zero, times out, or returns empty output: error
   (include engine stderr if available), STOP.
+- Reply file missing or `=== END ===` marker absent: error
+  ("debate engine did not complete"), STOP.
