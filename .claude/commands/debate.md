@@ -23,7 +23,7 @@ ALWAYS assert that `KANTHOR_DEBATE_ENGINE` exists and is one of the valid
 values below. Its value decides which engine runs the debate, and each MUST be
 invoked in read-only mode:
 
-- `opencode` → `opencode run --agent plan <DEBATE_ARGUMENTS>` (hardened, see below)
+- `opencode` → `opencode run --agent plan < <DEBATE_ARGUMENTS_FILE>` (stdin REQUIRED, see below)
 - `codex`    → `codex exec --sandbox read-only --ask-for-approval never <DEBATE_ARGUMENTS>`
 
 **MUST** also validate the selected engine binary exists and is executable
@@ -56,12 +56,24 @@ Act as an adversarial but fair debater. Challenge Claude's response using clear 
 
 **PASSING RULE:** Write this block to a temp file named
 `debate-<YYYYMMDDHHmmss>.txt` under the system temp directory — i.e.
-`TMP="$(mktemp -d)/debate-$(date -u +'%Y%m%d%H%M%S').txt"` — and pass it as a
-SINGLE quoted argument — e.g. `"$(cat "$TMP")"` — or via stdin if the engine
-supports it. Never interpolate it unquoted onto the command line; it contains
+`TMP="$(mktemp -d)/debate-$(date -u +'%Y%m%d%H%M%S').txt"`. How it reaches the
+engine is per-engine:
+
+- `opencode`: stdin is REQUIRED — `opencode run --agent plan < "$TMP"`.
+  Passing the block as a long argv reproducibly hangs `opencode run` right
+  after bootstrap (no session, no model request, empty reply forever).
+- `codex`: pass as a SINGLE quoted argument — `"$(cat "$TMP")"`.
+
+Never interpolate the block unquoted onto the command line; it contains
 newlines, quotes, and user text that would break parsing or allow injection.
 Prefer a real file write over a heredoc, since a heredoc delimiter can collide
 with user content.
+
+**INLINE FILE CONTENT:** If `<CLAUDE_RESPONSE>` discusses specific files, append
+their verbatim content to the block (delimited, with a note that no file reads
+are needed). Engines run with permissions auto-rejected in non-interactive
+mode; a debater that tries to Read a file outside the project dir gets
+`rejected permission` and exits 0 with an error instead of a debate.
 
 **READ-ONLY ENFORCEMENT (per engine):**
 
@@ -72,35 +84,64 @@ with user content.
   `--dangerously-bypass-approvals-and-sandbox` — any of these breaks the
   guarantee and MUST be treated as a hard-fail condition.
 
-- `opencode`: use the built-in read-only `plan` agent:
-  `opencode run --agent plan "$(cat "$TMP")"`.
+- `opencode`: use the built-in read-only `plan` agent, fed via stdin:
+  `opencode run --agent plan < "$TMP"`.
   Plan mode disables file edits. A plain `opencode run` (no `--agent`) is NOT
   read-only — permissions default to "allow" — and MUST NOT be used.
 
 If the chosen engine does not support a verifiable read-only mode, or the
 read-only flag/agent is rejected: **return an error to the user and STOP.**
 
-**REPLY FILE:** Redirect the engine's stdout into a reply temp file in the same
-temp directory as the input file:
+**REPLY FILE + STALL WATCHDOG:** Redirect the engine's stdout into a reply temp
+file in the same temp directory as the input file:
 `REPLY="${TMP%.*}-reply.txt"` (produces
-`debate-<YYYYMMDDHHmmss>-reply.txt`). After the engine exits, append the
-end-of-debate marker to the file:
+`debate-<YYYYMMDDHHmmss>-reply.txt`). Run the engine in the background with a
+watchdog: a healthy engine streams its first bytes within seconds, so a reply
+still empty after 120s is the known post-bootstrap hang — kill it so the run
+fails loudly instead of sitting silent:
 
 ```bash
-<engine command> > "$REPLY" 2>&1
+<engine command> > "$REPLY" 2>&1 &
+PID=$!
+( sleep 120; [ -s "$REPLY" ] || kill "$PID" 2>/dev/null ) & WD=$!
+wait "$PID"; RC=$?
+kill "$WD" 2>/dev/null
 echo '=== END ===' >> "$REPLY"
 ```
 
-Call the contents of `$REPLY` `<DEBATE_RESPONSE>`.
+A watchdog kill surfaces as non-zero `$RC` (typically 143) and feeds the
+existing hard-fail path. Call the contents of `$REPLY` `<DEBATE_RESPONSE>`.
 
 **Completion check:** Before reading `$REPLY`, verify the file exists AND its
 last line is exactly `=== END ===`. If the marker is missing the engine did not
 finish — treat as a failed run. When consuming `<DEBATE_RESPONSE>`, strip the
 `=== END ===` marker line so it does not leak into the merged output.
 
-If the engine exits non-zero, times out, or returns empty output (marker line
-only / no file): **return an error to the user (include the engine's stderr if
-available) and STOP.** Do not return an un-debated answer.
+**VALIDATION GATE (mandatory):** exit 0 + marker + non-empty is NOT success —
+an engine can fail *inside* a clean exit (e.g. a rejected file-read permission
+produces exit 0 and a short error message as the entire "debate"). Before
+consuming `<DEBATE_RESPONSE>`, assert ALL of:
+
+1. `RC` is 0.
+2. `$REPLY` is at least 1000 bytes excluding the marker line — a real
+   adversarial debate is never a few hundred bytes.
+3. `$REPLY` does not match engine-failure signatures:
+   `grep -niE 'rejected permission|permission denied|rate limit|not logged in|unauthorized|invalid api key' "$REPLY"`.
+   If a signature matches, read the surrounding lines and judge: a debate that
+   *mentions* permissions is fine; a reply that *is* an error message is a
+   failed run.
+
+If any assertion fails: **STOP and raise the error to the user** in this
+format — do not merge, do not return an un-debated answer:
+
+```
+DEBATE ENGINE FAILED — <engine>, exit <RC>
+Reason: <stall killed by watchdog | reply too short (<N> bytes) | error content | non-zero exit>
+Reply excerpt:
+<first ~10 lines of $REPLY>
+Engine log tail (if available):
+<last ~10 lines of the engine's newest log, e.g. ~/.local/share/opencode/log/*.log>
+```
 
 ## 3. Claude's FINAL turn — merge (read-only)
 
@@ -164,5 +205,9 @@ silent degradation.
   `--agent plan`): error, STOP.
 - Engine exits non-zero, times out, or returns empty output: error
   (include engine stderr if available), STOP.
+- Watchdog killed a stalled engine (empty reply after 120s): error
+  ("debate engine stalled — killed by watchdog"), STOP.
+- Validation gate failed (reply too short, or reply content is an engine
+  error despite exit 0): error using the DEBATE ENGINE FAILED format, STOP.
 - Reply file missing or `=== END ===` marker absent: error
   ("debate engine did not complete"), STOP.
