@@ -27,6 +27,23 @@ dotagents/
 
 More skills coming.
 
+## Installation
+
+Install everything into `~/.claude` (requires `jq`):
+
+```bash
+make install
+```
+
+Idempotent — safe to run repeatedly. It:
+
+- symlinks `skills/*` into `~/.claude/skills/`
+- symlinks `.claude/commands/*.md` into `~/.claude/commands/`
+- symlinks `.claude/statusline-command.sh` into `~/.claude/`
+- deep-merges `config/settings.json` into `~/.claude/settings.json` (statusline, sound hooks, default mode, plugin marketplace, notifications, permission skips, cleanup period, ...). Repo values win on conflict, `permissions.allow` entries are unioned, and the previous file is backed up to `settings.json.bak`.
+
+Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`.
+
 ## Usage
 
 Symlink or copy into your project's `.claude/skills/` directory:

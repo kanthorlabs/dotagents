@@ -1,0 +1,69 @@
+{
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Read(~/.kanthorlabs/kanthorjournald/**)",
+      "Edit(~/.kanthorlabs/kanthorjournald/**)",
+      "Write(~/.kanthorlabs/kanthorjournald/**)",
+      "mcp__codegraph__codegraph_search",
+      "mcp__codegraph__codegraph_context",
+      "mcp__codegraph__codegraph_callers",
+      "mcp__codegraph__codegraph_callees",
+      "mcp__codegraph__codegraph_impact",
+      "mcp__codegraph__codegraph_node",
+      "mcp__codegraph__codegraph_status"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "claude-fable-5[1m]",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay {{DOTAGENTS}}/assets/audio/success.mp3"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay {{DOTAGENTS}}/assets/audio/failure.mp3"
+          }
+        ]
+      }
+    ]
+  },
+  "enableWorkflows": false,
+  "workflowKeywordTriggerEnabled": false,
+  "statusLine": {
+    "type": "command",
+    "command": "bash {{HOME}}/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "kanthorjournald@claude.kanthorlabs.com": true
+  },
+  "extraKnownMarketplaces": {
+    "claude.kanthorlabs.com": {
+      "source": {
+        "source": "directory",
+        "path": "{{DOTAGENTS}}/.claude/plugins"
+      }
+    }
+  },
+  "outputStyle": "concise",
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
+  "editorMode": "vim",
+  "verbose": false,
+  "preferredNotifChannel": "auto",
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "cleanupPeriodDays": 30
+}
