@@ -1,9 +1,9 @@
 CLAUDE_DIR ?= $(HOME)/.claude
 ROOT       := $(CURDIR)
 
-.PHONY: install install-skills install-commands install-statusline install-settings
+.PHONY: install install-skills install-commands install-statusline install-settings install-plugins
 
-install: install-skills install-commands install-statusline install-settings
+install: install-skills install-commands install-statusline install-settings install-plugins
 	@echo "done — restart Claude Code to pick up settings changes"
 
 install-skills:
@@ -50,3 +50,17 @@ install-settings:
 		echo "settings   created $(CLAUDE_DIR)/settings.json"; \
 	fi; \
 	rm -f "$$rendered" "$$merged"
+
+# Registers the repo marketplace and installs every plugin it declares, via the
+# claude CLI (both commands are no-ops when already done). Without the CLI this
+# is skipped — the settings merge already declares extraKnownMarketplaces +
+# enabledPlugins, so Claude Code auto-installs them on the next launch.
+install-plugins:
+	@command -v claude >/dev/null 2>&1 \
+		|| { echo "plugins    skipped: claude CLI not found (auto-installs from settings on next launch)"; exit 0; }
+	@command -v jq >/dev/null 2>&1 || { echo "error: jq is required (brew install jq)"; exit 1; }
+	@marketplace=$$(jq -r '.name' "$(ROOT)/.claude/plugins/.claude-plugin/marketplace.json") && \
+	claude plugin marketplace add "$(ROOT)/.claude/plugins" && \
+	for plugin in $$(jq -r '.plugins[].name' "$(ROOT)/.claude/plugins/.claude-plugin/marketplace.json"); do \
+		claude plugin install --scope user "$$plugin@$$marketplace" || exit 1; \
+	done
