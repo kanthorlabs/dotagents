@@ -78,7 +78,7 @@ mode; a debater that tries to Read a file outside the project dir gets
 **READ-ONLY ENFORCEMENT (per engine):**
 
 - `codex`: invoke as
-  `codex exec --sandbox read-only --ask-for-approval never "$(cat "$TMP")"`.
+  `codex exec --sandbox read-only "$(cat "$TMP")"`.
   In `read-only` mode the engine can read files but cannot write anywhere
   (including /tmp). Do NOT use `--full-auto`, `--yolo`, or
   `--dangerously-bypass-approvals-and-sandbox` — any of these breaks the
