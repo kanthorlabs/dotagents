@@ -9,6 +9,7 @@ Replace the project's accumulated session journals with a single brief file, whi
 ## Parameters
 
 - `--max-files <N>` — maximum number of past-session journals to include in this compaction run (default: `10`). Selects the **N most-recent** eligible files (by mtime, excluding the current session and `.trash/`). If fewer than N eligible files exist, compact all of them.
+- `--compacted-only` — instead of raw session journals, select only existing `compacted-*.md` files as candidates. Use this to merge previous compaction briefs into a single cumulative brief. Mutually exclusive with the default raw-session mode.
 
 ## Procedure
 
@@ -24,11 +25,16 @@ Replace the project's accumulated session journals with a single brief file, whi
    ```
    Call the output `<current-id>`. If the file is missing or empty, **abort** with a clear message — do not guess.
 
-3. Build the list of journals to compact (exclude current session and any prior compaction artifacts? No — include prior `compacted-*.md` files so the brief stays cumulative):
+3. Build the list of journals to compact from the full `*.md` listing:
    ```
    ls -tr "$JDIR"/*.md 2>/dev/null
    ```
-   From that list, drop the entry whose basename is `<current-id>.md`. Call the remainder `<candidates>`.
+   Then filter based on the active mode:
+
+   - **Default (raw-session mode):** drop the entry whose basename is `<current-id>.md` AND any entry whose basename starts with `compacted-`. Only raw session journals remain.
+   - **`--compacted-only` mode:** keep ONLY entries whose basename starts with `compacted-`. Drop everything else (including `<current-id>.md`).
+
+   Call the remainder `<candidates>`.
 
    Apply the `--max-files` limit: take only the **last N entries** of `<candidates>` (most recent by mtime). Call the result `<to-compact>`.
 
