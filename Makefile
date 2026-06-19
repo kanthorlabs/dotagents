@@ -1,11 +1,11 @@
 CLAUDE_DIR ?= $(HOME)/.claude
 ROOT       := $(CURDIR)
 
-.PHONY: install install-skills install-commands install-statusline install-settings install-plugins
-
+.PHONY: install
 install: install-skills install-commands install-statusline install-settings install-plugins
 	@echo "done — restart Claude Code to pick up settings changes"
 
+.PHONY: install-skills
 install-skills:
 	@mkdir -p "$(CLAUDE_DIR)/skills"
 	@for dir in "$(ROOT)"/skills/*/; do \
@@ -14,6 +14,7 @@ install-skills:
 		echo "skill      $$name -> $(CLAUDE_DIR)/skills/$$name"; \
 	done
 
+.PHONY: install-commands
 install-commands:
 	@mkdir -p "$(CLAUDE_DIR)/commands"
 	@for file in "$(ROOT)"/.claude/commands/*.md; do \
@@ -22,45 +23,27 @@ install-commands:
 		echo "command    $$name -> $(CLAUDE_DIR)/commands/$$name"; \
 	done
 
+.PHONY: install-statusline
 install-statusline:
 	@mkdir -p "$(CLAUDE_DIR)"
 	@ln -sf "$(ROOT)/.claude/statusline-command.sh" "$(CLAUDE_DIR)/statusline-command.sh"
 	@echo "statusline -> $(CLAUDE_DIR)/statusline-command.sh"
 
 # Renders config/settings.json (placeholders -> absolute paths), then deep-merges
-# it into ~/.claude/settings.json. Repo values win on conflict; permissions.allow
-# is a union so locally added entries survive. A .bak is written before merging.
+# it into ~/.claude/settings.json. See scripts/install-settings.sh.
+.PHONY: install-settings
 install-settings:
-	@command -v jq >/dev/null 2>&1 || { echo "error: jq is required (brew install jq)"; exit 1; }
-	@mkdir -p "$(CLAUDE_DIR)"
-	@rendered=$$(mktemp) && merged=$$(mktemp); \
-	sed -e 's|{{DOTAGENTS}}|$(ROOT)|g' -e 's|{{HOME}}|$(HOME)|g' "$(ROOT)/config/settings.json" > "$$rendered"; \
-	if [ -f "$(CLAUDE_DIR)/settings.json" ]; then \
-		jq -e 'type == "object"' "$(CLAUDE_DIR)/settings.json" >/dev/null 2>&1 \
-			|| { echo "error: $(CLAUDE_DIR)/settings.json is not a valid JSON object — fix or remove it first"; rm -f "$$rendered" "$$merged"; exit 1; }; \
-		cp "$(CLAUDE_DIR)/settings.json" "$(CLAUDE_DIR)/settings.json.bak"; \
-		jq -s '((.[0].permissions.allow // []) + (.[1].permissions.allow // []) | unique) as $$allow \
-			| .[0] * .[1] | .permissions.allow = $$allow' \
-			"$(CLAUDE_DIR)/settings.json" "$$rendered" > "$$merged" \
-			|| { echo "error: merge failed — $(CLAUDE_DIR)/settings.json left untouched"; rm -f "$$rendered" "$$merged"; exit 1; }; \
-		mv "$$merged" "$(CLAUDE_DIR)/settings.json"; \
-		echo "settings   merged into $(CLAUDE_DIR)/settings.json (backup: settings.json.bak)"; \
-	else \
-		mv "$$rendered" "$(CLAUDE_DIR)/settings.json"; \
-		echo "settings   created $(CLAUDE_DIR)/settings.json"; \
-	fi; \
-	rm -f "$$rendered" "$$merged"
+	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-settings.sh"
 
-# Registers the repo marketplace and installs every plugin it declares, via the
-# claude CLI (both commands are no-ops when already done). Without the CLI this
-# is skipped — the settings merge already declares extraKnownMarketplaces +
-# enabledPlugins, so Claude Code auto-installs them on the next launch.
+# Registers the repo marketplace and installs every plugin it declares.
+# See scripts/install-plugins.sh.
+.PHONY: install-plugins
 install-plugins:
-	@command -v claude >/dev/null 2>&1 \
-		|| { echo "plugins    skipped: claude CLI not found (auto-installs from settings on next launch)"; exit 0; }
-	@command -v jq >/dev/null 2>&1 || { echo "error: jq is required (brew install jq)"; exit 1; }
-	@marketplace=$$(jq -r '.name' "$(ROOT)/.claude/plugins/.claude-plugin/marketplace.json") && \
-	claude plugin marketplace add "$(ROOT)/.claude/plugins" && \
-	for plugin in $$(jq -r '.plugins[].name' "$(ROOT)/.claude/plugins/.claude-plugin/marketplace.json"); do \
-		claude plugin install --scope user "$$plugin@$$marketplace" || exit 1; \
-	done
+	@ROOT="$(ROOT)" "$(ROOT)/scripts/install-plugins.sh"
+
+# Injects AGENTS.md at the top of ~/.claude/CLAUDE.md, wrapped in managed markers
+# (idempotent). Deliberately excluded from `install` — run it explicitly.
+# See scripts/install-persona.sh.
+.PHONY: install-persona
+install-persona:
+	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-persona.sh"
