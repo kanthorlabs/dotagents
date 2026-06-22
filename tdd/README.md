@@ -11,6 +11,28 @@ pipeline. Nothing language-specific survives in the skeleton itself; a target
 project supplies its specifics in a filled `PROFILE.md` and **bakes** a runnable
 pipeline from it (see `baking/`).
 
+## ⭐ START HERE — collect the project's answers first (`intake/`)
+
+You cannot fill `PROFILE.md` from thin air. Before baking, run the **intake
+questionnaire** to gather the project's specifics. The intake is split so a
+session loads **only the questions one project needs**:
+
+- **`intake/INTAKE.md`** — generic, **always load**. Pass 0 (lifecycle / risk /
+  architecture) + Section A (the slot-mapped questions every project answers) +
+  the intake mechanics (5-field question template, answer classification,
+  completeness gate).
+- **one** language pack, matching the project's primary stack — load exactly one,
+  not all:
+  - `intake/INTAKE-python.md`
+  - `intake/INTAKE-go.md`  *(no `baking/` guide yet — first bake is review-gated)*
+  - `intake/INTAKE-flutter-dart.md`
+
+Flow: **`INTAKE.md` → the matching `INTAKE-<lang>.md` → fill `PROFILE.md` →
+`baking/`**. A language pack *refines* the Section-A answers; it never replaces
+them. Stop at intake A3 if the project doesn't fit the planning grammar — that is
+a fork, not a bake. The completeness gate in `INTAKE.md` defines when you have
+"enough information" to generate.
+
 ## What this skeleton actually is (read this before adopting)
 
 Calling it "language-agnostic TDD" is true but undersells what it commits you
@@ -139,6 +161,11 @@ tdd/
   README.md                    ← you are here: what the skeleton is + how to bake
   PROFILE.template.md          ← the contract: every token + slot to fill
   render.py                    ← renderer: skeleton + PROFILE.md → runnable .claude/ files
+  intake/                      ← START HERE: questions to collect a project's PROFILE answers
+    INTAKE.md                  ← generic (always load): Pass 0 + Section A + intake mechanics
+    INTAKE-python.md           ← Python question pack
+    INTAKE-go.md               ← Go question pack
+    INTAKE-flutter-dart.md     ← Flutter/Dart question pack
   commands/
     work.md                    ← orchestrator skeleton
   agents/
