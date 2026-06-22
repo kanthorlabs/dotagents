@@ -25,11 +25,12 @@ invoked in read-only mode:
 
 - `opencode` → `opencode run --agent plan < <DEBATE_ARGUMENTS_FILE>` (stdin REQUIRED, see below)
 - `codex`    → `codex exec --sandbox read-only --ask-for-approval never <DEBATE_ARGUMENTS>`
+- `pi`       → `pi --print --no-session --tools read,grep,find,ls < <DEBATE_ARGUMENTS_FILE>` (stdin REQUIRED, see below)
 
 **MUST** also validate the selected engine binary exists and is executable
 (`command -v <engine>`).
 
-If `KANTHOR_DEBATE_ENGINE` is unset/empty, is not in `{opencode, codex}`, or
+If `KANTHOR_DEBATE_ENGINE` is unset/empty, is not in `{opencode, codex, pi}`, or
 the engine binary is missing or not executable: **return an error to the user
 and STOP.** Do not fall back, do not proceed.
 
@@ -59,10 +60,13 @@ Act as an adversarial but fair debater. Challenge Claude's response using clear 
 `TMP="$(mktemp -d)/debate-$(date -u +'%Y%m%d%H%M%S').txt"`. How it reaches the
 engine is per-engine:
 
-- `opencode`: stdin is REQUIRED — `opencode run --agent plan < "$TMP"`.
+- `opencode`: stdin is REQUIRED — `opencode run --agent plan < "$TMP"`.  
   Passing the block as a long argv reproducibly hangs `opencode run` right
   after bootstrap (no session, no model request, empty reply forever).
-- `codex`: pass as a SINGLE quoted argument — `"$(cat "$TMP")"`.
+- `codex`: pass as a SINGLE quoted argument — `"$(cat "$TMP")"`.  
+- `pi`: stdin is REQUIRED — `pi --print --no-session --tools read,grep,find,ls < "$TMP"`.  
+  `--tools read,grep,find,ls` restricts pi to read-only built-ins (`bash`, `edit`, `write`
+  are excluded). `--no-session` makes the run ephemeral (no saved state).
 
 Never interpolate the block unquoted onto the command line; it contains
 newlines, quotes, and user text that would break parsing or allow injection.
@@ -78,16 +82,24 @@ mode; a debater that tries to Read a file outside the project dir gets
 **READ-ONLY ENFORCEMENT (per engine):**
 
 - `codex`: invoke as
-  `codex exec --sandbox read-only "$(cat "$TMP")"`.
+  `codex exec --sandbox read-only "$(cat "$TMP")"`.  
   In `read-only` mode the engine can read files but cannot write anywhere
   (including /tmp). Do NOT use `--full-auto`, `--yolo`, or
   `--dangerously-bypass-approvals-and-sandbox` — any of these breaks the
   guarantee and MUST be treated as a hard-fail condition.
 
 - `opencode`: use the built-in read-only `plan` agent, fed via stdin:
-  `opencode run --agent plan < "$TMP"`.
+  `opencode run --agent plan < "$TMP"`.  
   Plan mode disables file edits. A plain `opencode run` (no `--agent`) is NOT
   read-only — permissions default to "allow" — and MUST NOT be used.
+
+- `pi`: invoke as
+  `pi --print --no-session --tools read,grep,find,ls < "$TMP"`.  
+  `--tools read,grep,find,ls` is a strict allowlist — only the four read-only
+  built-ins are available; `bash`, `edit`, and `write` are not loaded.
+  `--no-session` keeps the run ephemeral with no saved state. Do NOT omit
+  `--tools` or substitute `--no-tools` — a pi run without the allowlist has
+  `bash`, `edit`, and `write` available and is NOT read-only.
 
 If the chosen engine does not support a verifiable read-only mode, or the
 read-only flag/agent is rejected: **return an error to the user and STOP.**
@@ -197,7 +209,7 @@ output before the default block:
 All failures stop execution and return an error to the user. No fallbacks, no
 silent degradation.
 
-- `KANTHOR_DEBATE_ENGINE` unset, empty, or not in `{opencode, codex}`:
+- `KANTHOR_DEBATE_ENGINE` unset, empty, or not in `{opencode, codex, pi}`:
   error with the valid values, STOP.
 - Engine binary not found or not executable: error, STOP.
 - Read-only mode unavailable, rejected, or bypassed (e.g. a `--yolo` /
