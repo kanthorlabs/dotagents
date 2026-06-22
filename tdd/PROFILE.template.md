@@ -26,6 +26,8 @@ Single values, substituted literally wherever `{{TOKEN}}` appears.
 | `{{AGENT_DIR}}` | where the three agent persona files live | `.claude/agents/` |
 | `{{DEFAULT_TURN_CAP}}` | default max turns per cycle before the loop yields | `128` |
 | `{{ATTEMPT_LIMIT}}` | failed attempts on one Task before escalating to human | `3` |
+| `{{LOCATOR_DEFN_LABEL}}` | the test-engineer turn-format section label for newly declared UI locators — keep it consistent with whatever `{{> UI_LOCATOR_CONTRACT}}` calls them | `TestID identifiers defined` |
+| `{{ENV_HANDOFF_LABEL}}` | the dispatch-prompt label for the env value the pre-flight captured (so the hand-off is concrete, not opaque) | `Pre-booted simulator UDID` |
 
 > Workflow **marker strings are NOT tokens** — they are protocol constants and
 > stay literal in every rendering: `END:`, `IMPLEMENTATION_READY_FOR_REVIEW:`,
@@ -38,6 +40,38 @@ Single values, substituted literally wherever `{{TOKEN}}` appears.
 
 Each slot is a full section the skeleton drops in by name (`{{> SLOT}}`). The
 heading says what the slot is *for*; write the body for your project.
+
+### `{{> GATE_LABEL_EXAMPLES}}`
+The concrete per-target gate-line labels the test-engineer uses when reporting
+the Verification Gate (e.g. the build/test target or scheme names), so the
+turn format names real targets instead of a generic "per-target gate lines".
+Supplied as a slot because the labels carry backticks/asterisks.
+
+### `{{> JOIN_GATE_TARGETS}}`
+The exact set of targets/schemes the join gate must run the full Verification
+Gate over — the cross-variant attestation. Name each build target/scheme
+explicitly (don't leave "every target" ambiguous). Slot, not token, for the
+backtick-bearing command fragments.
+
+### `{{> VARIANT_VALUES}}`
+The pipe-separated enum of this project's variant names exactly as a user types
+them after `--variant` (e.g. `shared|ios|macos`, or `app` for a single-variant
+project). The skeleton substitutes it into the `/work` argument-hint and the
+flag documentation so the command self-documents its accepted values instead of
+a generic `<name>`. Supplied as a slot (not a token) because the `|` separators
+would be read as column delimiters in a Markdown token table. Must agree with the
+variants defined in `{{> VARIANTS_AND_SCOPES}}`.
+
+### `{{> SE_FRONTMATTER}}` / `{{> TE_FRONTMATTER}}` / `{{> RV_FRONTMATTER}}`
+The per-agent YAML frontmatter lines the harness reads to register each
+sub-agent — supplied as a slot (not a token) because the `description` is a long
+line that may contain `|`, `:` and backticks that a Markdown token table cannot
+hold. Each body is the literal frontmatter block for that role: a project-facing
+`description:` line, the pinned `model:` (and `effort:` where the harness honors
+it), and any other harness-specific keys. The skeleton wraps each with the
+literal `name:` and `tools:` lines, so do **not** repeat those here. Omitting the
+model pin means the agent runs on the harness default — usually not what you
+want, so set it explicitly.
 
 ### `{{> PROJECT_CONTEXT}}`
 One short paragraph: what the project is, and the **hard tech constraints**
@@ -138,14 +172,20 @@ sketch phase.
 ### `{{> SKETCH_MODE}}`  *(optional — projects with a pre-test review phase)*
 A **Phase A** lets the software-engineer build output against stub data gated by
 human review instead of tests. Because it is a sanctioned **test-bypass**, it is
-only safe if you define all four of: (1) which stories it covers; (2) the
+only safe if you define all five of: (1) which stories it covers; (2) the
 concrete **proof artifact** the SE produces (screenshots, a rendered report, a
 recorded API response — not "looks right"); (3) the **comparator / acceptance
 method** the reviewer + human apply to that artifact; (4) the constraints that
-hold during Phase A and which review dimensions stay in-scope. Without a concrete
-artifact and acceptance method this is just permission to skip tests — write
-`Not applicable — all work is test-gated.` instead, and the orchestrator's
-`--sketch` flag then errors.
+hold during Phase A and which review dimensions stay in-scope; (5) a
+**shipped-file regression guard** — because the gate is artifact-only, it does
+not cover the blast radius of a change to a file the shipped product already
+exercises. Require sketch changes to live in new standalone surfaces, OR, when a
+sketch must edit a shipped non-preview file, mandate that the locked test suite
+run and pass for the affected area (reported in the proof artifact, checked by
+the reviewer and the human) — otherwise a sketch can silently regress the
+shipped path. Without a concrete artifact and acceptance method this is just
+permission to skip tests — write `Not applicable — all work is test-gated.`
+instead, and the orchestrator's `--sketch` flag then errors.
 
 ---
 

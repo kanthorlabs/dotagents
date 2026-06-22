@@ -7,8 +7,9 @@ append-only discussion protocol — and leaves every language / platform / tool
 detail as a **named extension point** a project fills in.
 
 This skeleton was extracted from a Swift/SwiftUI project's working TDD
-pipeline. Nothing language-specific survives in the skeleton itself; the Swift
-specifics live in `examples/swift/PROFILE.md` as a worked instantiation.
+pipeline. Nothing language-specific survives in the skeleton itself; a target
+project supplies its specifics in a filled `PROFILE.md` and **bakes** a runnable
+pipeline from it (see `baking/`).
 
 ## What this skeleton actually is (read this before adopting)
 
@@ -103,16 +104,18 @@ description of what to put there. To adopt the skeleton:
 1. Copy `PROFILE.template.md` to your project as `PROFILE.md` and fill in every
    token and slot. Leaving one blank is a setup error — the skeleton names what
    it needs and refuses to guess.
-2. Render the skeleton files with your profile (mentally, by hand, or by a
-   substitution script) into your agent/command files
-   (e.g. `.claude/commands/work.md`, `.claude/agents/*.md`).
-3. The rendered files are what your harness actually runs. The skeleton +
-   profile are the *source*; keep them so the next project — or the next
-   language port — re-derives cleanly.
+2. Render the skeleton files with your profile into your agent/command files
+   (`.claude/commands/work.md`, `.claude/agents/*.md`) — run the bundled
+   `render.py` (`python3 render.py <skeleton-dir> <PROFILE.md> <out-dir>`), which
+   substitutes every token/slot and aborts on any unresolved `{{...}}` — or
+   substitute by hand.
+3. The rendered files are what your harness actually runs. The profile is the
+   *source of the project's specifics*; the existing rendered `.claude/` is the
+   fidelity reference for the next re-bake (diff against it).
 
-`examples/swift/PROFILE.md` is a complete worked profile: rendering the
-skeleton with it reproduces the behavior of the project this skeleton was
-extracted from.
+The per-language guides under `baking/` (`BAKING-python.md`,
+`BAKING-flutter-dart.md`) walk a stack through filling the profile and the
+exact bake steps.
 
 ## What is deliberately NOT in the skeleton
 
@@ -133,20 +136,17 @@ profile:
 
 ```
 tdd/
-  README.md                    ← you are here
+  README.md                    ← you are here: what the skeleton is + how to bake
   PROFILE.template.md          ← the contract: every token + slot to fill
+  render.py                    ← renderer: skeleton + PROFILE.md → runnable .claude/ files
   commands/
     work.md                    ← orchestrator skeleton
   agents/
     test-engineer.md           ← test-engineer skeleton
     software-engineer.md       ← software-engineer skeleton
     reviewer-engineer.md       ← reviewer-engineer skeleton
-  examples/
-    swift/
-      PROFILE.md               ← worked profile (reproduces the source project)
-      README.md                ← how the Swift project composes skeleton + profile
   baking/
-    BAKING.md                  ← common: how to bake a runnable pipeline (any language) + lessons L1–L8
+    BAKING.md                  ← common: how to bake a runnable pipeline (any language) + lessons L1–L9
     BAKING-flutter-dart.md     ← Flutter/Dart profile + bake steps
     BAKING-python.md           ← Python profile + bake steps
 ```
@@ -154,7 +154,21 @@ tdd/
 ## To bake a runnable, language-specific pipeline
 
 `README.md` (this file) explains *what the skeleton is*. To turn it into a
-runnable `.claude/` for a target project, follow **`baking/BAKING.md`** (the
-common procedure + the hard-won lessons L1–L8), then the per-language guide
-(`baking/BAKING-flutter-dart.md`, `baking/BAKING-python.md`). They fill the
-profile slots for the stack and list the exact steps + a verification checklist.
+runnable `.claude/` for a target project, point your AI agent at
+**`baking/BAKING.md`** — the step-by-step procedure plus the hard-won lessons
+(L1–L9) — and the matching per-language guide (`baking/BAKING-python.md`,
+`baking/BAKING-flutter-dart.md`). The agent:
+
+1. reads the target project's own conventions — its `CLAUDE.md`, gotcha/memory
+   files, build setup, directory layout;
+2. fills a `PROFILE.md` from `PROFILE.template.md` with those specifics;
+3. renders with `render.py` into the project's `.claude/`;
+4. **gates on fidelity** — diffs the freshly baked `.claude/` against the
+   project's existing committed `.claude/` and reconciles every delta (the
+   existing pipeline is the cache of correct decisions). For a first-ever bake
+   with no baseline to diff, an adversarial review (e.g. `/debate`-compare)
+   is the gate instead.
+
+The filled `PROFILE.md` is bake scratch — the runnable `.claude/` is the
+durable artifact. You do not need to keep the profile around; a re-bake
+re-derives it from the project's conventions and diff-gates against `.claude/`.

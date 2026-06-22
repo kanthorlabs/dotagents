@@ -1,6 +1,6 @@
 ---
 description: Drive an implementation cycle for one EPIC — TDD (lock) by default, dispatching test-engineer / software-engineer in alternation until IMPLEMENTATION_READY_FOR_REVIEW; or --sketch (Phase A) dispatching only software-engineer turns gated by human visual review. Runs serial (all variants) by default, or variant-scoped in an isolated git worktree (--variant) so variants can be built in parallel, with a --join step to merge and gate all. Escalates to the human when one Task fails its attempt limit. Lifecycle state lives in the discussion file; the orchestrator writes no frontmatter or status board.
-argument-hint: <epic-file-path> [--variant <name>] [--base <ref>] [--sketch] [--join] [--max-turns N]
+argument-hint: <epic-file-path> [--variant {{> VARIANT_VALUES}}] [--base <ref>] [--sketch] [--join] [--max-turns N]
 allowed-tools: Bash, Read, Agent
 ---
 
@@ -33,7 +33,7 @@ Separately, while the TDD loop runs, the orchestrator counts `ATTEMPT-FAILED: <t
 
 ## Variants & scopes
 
-This project's build variants and their dependency order are defined in the profile:
+This project's build variants and their dependency order:
 
 {{> VARIANTS_AND_SCOPES}}
 
@@ -44,8 +44,8 @@ Throughout, **scope** is either one variant name (variant mode) or `all` (serial
 `/work` runs in one of four modes, chosen by flags:
 
 - **serial** (default — no `--variant`, no `--join`): one cycle over the whole EPIC in the main working tree, Tasks in dependency order. This is the original behavior, and the "Step N" spine below describes it.
-- **variant** (`--variant <name>`): one cycle scoped to a single variant's Stories, running inside a dedicated **git worktree** so two variant cycles can run at once without sharing a working tree, a build cache, or the lane-check snapshot. Independent variants touch disjoint dirs and disjoint build targets, so they parallelize cleanly **once their shared dependency variant is done**.
-- **sketch** (`--sketch`, Phase A): no TDD loop and no test-engineer. The software-engineer is dispatched turn after turn until it appends `IMPLEMENTATION_READY_FOR_REVIEW:` with Phase A proof. The reviewer-engineer then reviews with the narrowed Phase A scope and the loop pauses for the human's **visual review**. Requires the sketch capability (profile); mutually exclusive with `--join`. See `{{> SKETCH_MODE}}` for what it produces. If the profile disables sketch mode, abort.
+- **variant** (`--variant {{> VARIANT_VALUES}}`): one cycle scoped to a single variant's Stories, running inside a dedicated **git worktree** so two variant cycles can run at once without sharing a working tree, a build cache, or the lane-check snapshot. Independent variants touch disjoint dirs and disjoint build targets, so they parallelize cleanly **once their shared dependency variant is done**.
+- **sketch** (`--sketch`, Phase A): no TDD loop and no test-engineer. The software-engineer is dispatched turn after turn until it appends `IMPLEMENTATION_READY_FOR_REVIEW:` with Phase A proof. The reviewer-engineer then reviews with the narrowed Phase A scope and the loop pauses for the human's **visual review**. Requires sketch mode to be enabled for this project; mutually exclusive with `--join`. See `{{> SKETCH_MODE}}` for what it produces. If sketch mode is not enabled, abort.
 - **join** (`--join`): not a TDD cycle — merges the finished variant branches into one tree and runs the EPIC's full Verification Gate on **every** target, the cross-variant attestation a single-variant cycle cannot give. See "Join mode" near the end. Never run `--join` on a sketch-only branch — there is nothing to gate until the flow's lock epic (Phase B) is done.
 
 **The dependency-first rule (binding for variant mode).** Dependent variants rely on a shared base variant (per `VARIANTS_AND_SCOPES`). Run the base variant first, get it to `HUMAN_REVIEW: PASS`, and commit/merge it to a base ref. Only then launch the dependent variants in parallel, each with `--base <that-ref>`. Running a dependent variant against a base whose shared layer is incomplete surfaces as `OPEN:`/`ATTEMPT-FAILED:` blockers (missing seams) — the system working, not a bug, but a wasted cycle.
@@ -56,9 +56,9 @@ In variant and join modes every path in the steps below is rooted at the worktre
 
 From `$ARGUMENTS`:
 - **First positional** = EPIC file path (required). If missing or empty, print usage and stop.
-- **`--variant <name>`** = scope this cycle to one variant and run it in a worktree (variant mode). Omit for serial mode. Capture as `VARIANT` (empty in serial mode); the "scope" label is `VARIANT` in variant mode, `all` in serial mode. If the value is not one of the profile's variants, abort with usage **before** any worktree is created.
+- **`--variant {{> VARIANT_VALUES}}`** = scope this cycle to one variant and run it in a worktree (variant mode). Omit for serial mode. Capture as `VARIANT` (empty in serial mode); the "scope" label is `VARIANT` in variant mode, `all` in serial mode. If the value is not one of `{{> VARIANT_VALUES}}`, abort with usage **before** any worktree is created.
 - **`--base <ref>`** = git ref the worktree branches off (variant/join modes). Default `HEAD`. For parallel dependent-variant runs, point this at the committed base variant.
-- **`--sketch`** = Phase A sketch mode. Capture as `SKETCH=true`. Mutually exclusive with `--join` (abort with usage if both). Requires the sketch capability + whatever variant the profile says sketch runs on — abort otherwise.
+- **`--sketch`** = Phase A sketch mode. Capture as `SKETCH=true`. Mutually exclusive with `--join` (abort with usage if both). Requires sketch mode enabled + the variant sketch runs on — abort otherwise.
 - **`--join`** = run join mode instead of a TDD cycle. Mutually exclusive with `--variant`; if both are given, abort with usage.
 - **`--max-turns N`** = override turn cap. Default `{{DEFAULT_TURN_CAP}}`. `0` means unlimited (use with care).
 
@@ -98,7 +98,7 @@ All path checks below resolve under `<root>`.
 5. `{{AGENT_DIR}}reviewer-engineer.md` exists.
 6. `{{DISCUSSION_DIR}}` exists (create it with `mkdir -p` if not).
 7. **No double review on resume.** If the discussion file (Step 3) already exists and its latest `HUMAN_REVIEW:` line is `PASS`, this cycle is already done — report `already closed` and stop without dispatching.
-8. **Variant mode only.** `VARIANT` is a profile variant, and the base ref resolves (`git -C "$REPO_ROOT" rev-parse --verify <base-ref>`). If a dependent variant is run with `--base HEAD`, warn (do not abort): the base variant may not be frozen — prefer running it first and pointing `--base` at that committed ref.
+8. **Variant mode only.** `VARIANT` is one of `{{> VARIANT_VALUES}}`, and the base ref resolves (`git -C "$REPO_ROOT" rev-parse --verify <base-ref>`). If a dependent variant is run with `--base HEAD`, warn (do not abort): the base variant may not be frozen — prefer running it first and pointing `--base` at that committed ref.
 
 ## Step 3 — Derive the discussion file path
 
@@ -209,8 +209,8 @@ Continue the TDD implementation cycle for EPIC <EPIC_FILE>.
 Working root: <root>            # ALL paths below resolve under this root. In variant mode this is an isolated git worktree, NOT the main repo.
 Discussion file: <DISCUSSION_FILE>
 Scope: <SCOPE>                  # if not "all", work ONLY this variant's Stories and run ONLY its target.
-Environment: <ENV>             # whatever the pre-flight captured, or "n/a"
-Build cache: keep each worktree's build cache isolated outside the repo (see the profile's build-cache rule) so it never pollutes the git-status lane check.
+{{ENV_HANDOFF_LABEL}}: <ENV>             # whatever the pre-flight captured, or "n/a"
+Build cache: keep each worktree's build cache isolated outside the repo (see the build-cache rule above) so it never pollutes the git-status lane check.
 
 SINGLE-TURN CONTRACT (OVERRIDES everything below):
 - ONE turn = ONE role = ONE append (ONE "END: <ROLE>") = ONE `cat >>`, then STOP and return your one-sentence summary.
@@ -221,7 +221,7 @@ SINGLE-TURN CONTRACT (OVERRIDES everything below):
 Follow your discussion-channel protocol exactly:
 1. Read the EPIC file and the discussion file for full context. The EPIC's `## Verification Gate` is binding. The discussion file's last turn (if any) tells you what was just done.
 2. Do the work your persona owns this turn:
-   - If you are test-engineer: identify the next unimplemented in-scope Task, write its failing test under the exact verify path the Task names, then run the test using the project's test command and capture the failing assertion line. Honor the scope (Tasks in dependency order for "all"; only the named variant's Stories otherwise). When a Task has no `Action — RED:` block (GREEN-only), write a GREEN-ONLY pass-through turn listing the Task(s) for the software-engineer; do not write tests for them; after the SE's turn, run a build-only check. When every in-scope Task is green, run the in-scope Verification Gate and prepare an IMPLEMENTATION_READY_FOR_REVIEW turn if green.
+   - If you are test-engineer: identify the next unimplemented in-scope Task, write its failing test under the exact verify path the Task names, then run the test using the project's test command for this scope (the per-scope scheme/target and the pre-booted environment named in your build/test commands) and capture the failing assertion line. Honor the scope (Tasks in dependency order for "all"; only the named variant's Stories otherwise). When a Task has no `Action — RED:` block (GREEN-only), write a GREEN-ONLY pass-through turn listing the Task(s) for the software-engineer; do not write tests for them; after the SE's turn, run a build-only check. When every in-scope Task is green, run the in-scope Verification Gate and prepare an IMPLEMENTATION_READY_FOR_REVIEW turn if green.
    - If you are software-engineer: read the most recent TEST-ENGINEER turn, identify the failing test and the seam it imports, and edit production sources to make that test green with the smallest correct change. If the last TEST-ENGINEER turn is a GREEN-ONLY pass-through, read the Story file path and Task IDs from the turn and implement all listed Tasks' GREEN+REFACTOR specs from the Story file. Stay in the scope's source dir. Never edit the test targets. If an in-scope test needs a base-variant seam that does not exist yet, do NOT create it outside your scope — flag OPEN:. Do not run tests.
 3. Draft your turn into exactly this file: <DRAFT_FILE>
 4. Append your turn to the discussion file via shell:  cat '<DRAFT_FILE>' >> '<DISCUSSION_FILE>'
@@ -259,7 +259,7 @@ git -C '<root>' status --porcelain -uall | cut -c4- | sort > '/tmp/work-<epic-sl
 TURN_FILES=$(comm -13 '/tmp/work-<epic-slug>-<scope>-before-<turn>' '/tmp/work-<epic-slug>-<scope>-after-<turn>')
 ```
 
-The lane predicate — which paths each role may touch **per scope** — comes from the profile. A simple **prefix table** works only when source and tests live in disjoint top-level dirs; ecosystems that **co-locate** tests with source (`foo.go`+`foo_test.go`, `__tests__/` siblings, golden/snapshot/fixture files, generated contracts) need a **predicate script** instead. The profile supplies whichever fits:
+The lane predicate — which paths each role may touch **per scope**. A simple **prefix table** works only when source and tests live in disjoint top-level dirs; ecosystems that **co-locate** tests with source (`foo.go`+`foo_test.go`, `__tests__/` siblings, golden/snapshot/fixture files, generated contracts) need a **predicate script** instead. This project uses whichever fits:
 
 {{> LANE_OWNERSHIP}}
 
@@ -339,7 +339,7 @@ Working root: <root>
 EPIC file: <EPIC_FILE>
 Discussion file: <DISCUSSION_FILE>
 Scope: <SCOPE>
-Phase: <"A (sketch) — apply the Phase A review scope from the profile" when SKETCH=true, else "B (lock) — all dimensions">
+Phase: <"A (sketch) — apply the narrowed Phase A review scope from the review dimensions" when SKETCH=true, else "B (lock) — all dimensions">
 Base ref: <BASE_REF>
 Changed files (review ONLY these — do not review unchanged files):
 <CHANGED_FILES>
@@ -422,7 +422,7 @@ If the merge reports conflicts → stop and hand to the human. Conflicts should 
 ### J3. Gate every target
 Set `<root>` = `JOIN_PATH`. Run the env pre-flight (Step 4). Seed a join discussion file (`scope: join`, `opener: test-engineer`). Dispatch **one** test-engineer turn (the Step 5f prompt with scope `all`) plus:
 
-> Do not write new tests. Run the EPIC's full `## Verification Gate` on EVERY target. Append a turn reporting each target's exit code; if all are green append `IMPLEMENTATION_READY_FOR_REVIEW:`, otherwise name the failing target/test and end the turn.
+> Do not write new tests. Run the EPIC's full `## Verification Gate` on EVERY target ({{> JOIN_GATE_TARGETS}}). Append a turn reporting each target's exit code; if all are green append `IMPLEMENTATION_READY_FOR_REVIEW:`, otherwise name the failing target/test and end the turn.
 
 ### J4. Hand to human
 - Both/all gates green → pause for human review like Step 6c (verdict in the join discussion file). On `HUMAN_REVIEW: PASS` the EPIC is done — the human merges the join branch and removes the worktrees. `reason=join-ready`.
@@ -452,4 +452,4 @@ git -C "$REPO_ROOT" branch -d work/<epic-slug>-<scope>    # only after it is mer
 - If the user interrupts, stop cleanly. Each subagent's append is atomic, and the orchestrator holds no other mutable state.
 - **Parallel discipline (variant mode).** base variant first → commit → dependent variant cycles with `--base <base-ref>` in their own worktrees → `--join`. Each cycle is fully isolated. Never run two cycles of the *same* variant concurrently.
 - **GREEN-only Task flow.** Some Tasks have no `Action — RED:` block. The cycle is compressed: TE writes a GREEN-ONLY pass-through → SE implements GREEN+REFACTOR → TE runs a build-only check (no test) and advances.
-- **Sketch mode summary.** SE-only turns through the sketch stories (5d never alternates), SE is the discussion-file opener, env pre-flight may be skipped (per profile), the lane check additionally allows the proof-artifact dir, and the exit is the same `IMPLEMENTATION_READY_FOR_REVIEW:` marker → reviewer with Phase A scope → human visual review.
+- **Sketch mode summary.** SE-only turns through the sketch stories (5d never alternates), SE is the discussion-file opener, env pre-flight may be skipped (see the env pre-flight rule), the lane check additionally allows the proof-artifact dir, and the exit is the same `IMPLEMENTATION_READY_FOR_REVIEW:` marker → reviewer with Phase A scope → human visual review.

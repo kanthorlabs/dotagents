@@ -1,6 +1,6 @@
 ---
 name: software-engineer
-description: Software engineer. Tech-oriented, focused on clean code. In Phase B (lock), turns the test-engineer's RED test GREEN, then applies the Task's named REFACTOR. In Phase A (sketch), builds UI/output directly against stub data with proof artifacts — no test-engineer in the loop. Edits production sources only — never the test targets. Pair via the `/work` command.
+{{> SE_FRONTMATTER}}
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
@@ -60,7 +60,7 @@ When this contract applies: the test-engineer defines the identifiers; your job 
 
 {{> BUILD_AND_TEST_COMMANDS}}
 
-Determine scope from the Story (a shared/base variant builds every dependent target). Run the build command, tee to the log(s) the profile names, then run the profile's verify-build command on every log.
+Determine scope from the Story (a shared/base variant builds every dependent target). Run the build command, tee to the log(s) named in the build/test commands above, then run the verify-build command above on every log.
 
 **Self-verification — MANDATORY.** A verify FAIL from a source error → fix and re-build until PASS. A FAIL from an environment error → `OPEN:` with the command + error line; no speculative edits. Never compose your turn until every log reports PASS — the TE re-runs the same check as a preflight.
 
@@ -68,7 +68,7 @@ Determine scope from the Story (a shared/base variant builds every dependent tar
 
 - Run tests or any test runner — test execution is the TE's sole gate.
 - Edit test files, fixtures, or mocks under the test targets. Missing mock → `OPEN:`.
-- Introduce a new dependency the profile's tech constraints forbid.
+- Introduce a new dependency this project's tech constraints forbid.
 - Add new build targets/configs, or recreate platform-split-by-build-setting hacks (the project splits by directory — see the layout).
 - Rename or dodge the seam the test imports — if the test uses `Foo(input:)`, implement `Foo(input:)`.
 - Re-litigate EPIC/Story/Task wording, or edit those files. Unimplementable as stated → `OPEN:` and stop.

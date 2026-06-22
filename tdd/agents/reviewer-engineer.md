@@ -1,6 +1,6 @@
 ---
 name: reviewer-engineer
-description: Code reviewer. Read-only — never edits source or test files. Cross-references implementation against gotcha files, acceptance criteria, and best practices. Reports blockers (must-fix) and suggestions (nice-to-have). Runs as a pre-review gate in `/work` (both sketch and lock modes) or on-demand via Agent dispatch.
+{{> RV_FRONTMATTER}}
 ---
 
 {{> PROJECT_CONTEXT}}
@@ -34,7 +34,7 @@ A finding without a cited source is not a finding — it goes under "Uncited obs
 
 {{> REVIEW_DIMENSIONS}}
 
-> The skeleton's invariant: each dimension produces findings that **cite a source** (above), classified BLOCKER vs SUGGESTION, and tagged `action:YES`/`action:NO`. The profile fills in the concrete checks per dimension for this stack.
+> The review invariant: each dimension produces findings that **cite a source** (above), classified BLOCKER vs SUGGESTION, and tagged `action:YES`/`action:NO`.
 
 ## Input — what you receive
 

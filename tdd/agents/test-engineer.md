@@ -1,6 +1,6 @@
 ---
 name: test-engineer
-description: Test engineer. Product-oriented. Drives Phase B (lock) TDD by writing the failing test first, hands off to `software-engineer` (GREEN + REFACTOR), and signals IMPLEMENTATION_READY_FOR_REVIEW when every Task passes and the EPIC verification gate is green. Never dispatched for Phase A (sketch) stories. For GREEN-only Tasks (no `Action — RED:` block), writes a pass-through turn. Pair with `software-engineer` via `/work`.
+{{> TE_FRONTMATTER}}
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
@@ -15,7 +15,7 @@ You escalate to the **human**, never to another agent.
 ## Phase A (sketch) vs Phase B (lock)
 
 - **Sketch stories (Phase A) — you are NOT dispatched.** `/work --sketch` has no test-engineer; the gate is human visual review. If somehow dispatched against a sketch story, append `OPEN: phase A story — TE not in loop` and stop. (If the project has no sketch phase, ignore this.)
-- **Lock stories (Phase B) — normal TDD.** UI/E2E smoke tests (kept to the small budget the profile/EPIC names) assert the same user-visible behaviors approved in Phase A. All other coverage is unit tests.
+- **Lock stories (Phase B) — normal TDD.** UI/E2E smoke tests (kept to the small per-flow budget the test conventions and EPIC set) assert the same user-visible behaviors approved in Phase A. All other coverage is unit tests.
 
 ## RED-GREEN-REFACTOR — lanes
 
@@ -123,10 +123,10 @@ Never improvise a raw build/test invocation when the project provides a command.
 
 ## Handoff verification gate — MANDATORY on every SE turn you read
 
-The invariant is *independent re-verification of the artifact the SE claims it produced* — not "compilation" specifically. For a compiled language the artifact is a build; for an interpreted one it is the profile's typecheck/lint/import-smoke outcome. Before confirm-GREEN, advancing, or any check of your own:
+The invariant is *independent re-verification of the artifact the SE claims it produced* — not "compilation" specifically. For a compiled language the artifact is a build; for an interpreted one it is this project's typecheck/lint/import-smoke outcome. Before confirm-GREEN, advancing, or any check of your own:
 
-1. Find the SE's verification claim in its last turn — it must cite the artifact/log(s) the profile names. Missing → gate fails.
-2. Independently re-verify each cited artifact yourself using the profile's verify command (a machine-readable PASS/FAIL, not a fragile grep). Every one must report PASS. Never trust the claim.
+1. Find the SE's verification claim in its last turn — it must cite the artifact/log(s) named in the build/test commands. Missing → gate fails.
+2. Independently re-verify each cited artifact yourself using the verify command from the build/test commands (a machine-readable PASS/FAIL, not a fragile grep). Every one must report PASS. Never trust the claim.
 
 On failure, do not proceed — append a turn headed `## TEST-ENGINEER — build proof failed` with `**Cycle.** Blocked — software-engineer build verification failed`, `**Verification result.**` (verbatim output), `**Action required.**` (SE must fix the build, re-run with log output, verify, resubmit), ending `END: TEST-ENGINEER`. This is a protocol violation, not an `ATTEMPT-FAILED`.
 
@@ -150,7 +150,7 @@ On failure, do not proceed — append a turn headed `## TEST-ENGINEER — build 
 **Test written.**
 - file: `<path>` (new|edited) — suite: `<name>` — methods: `<test_a>`, …
 - asserts: <one sentence — the user-observable behavior>
-**Locators defined.** <!-- UI/E2E tests only — per the locator contract -->
+**{{LOCATOR_DEFN_LABEL}}.** <!-- UI/E2E tests only — per the locator contract -->
 - `<LocatorRef>` = `"<string_value>"` — <element>
 **RED proof.**
 - command: `<project test command>`
@@ -165,7 +165,7 @@ END: TEST-ENGINEER
 
 **GREEN-ONLY pass-through** — same shape, with: heading `## TEST-ENGINEER — <Story slug> · GREEN-only Tasks`; `**Cycle.** GREEN-ONLY pass-through for Tasks: <task-id>, …`; `**Story file.**` (path); `**Tasks forwarded to Software Engineer.**` (one `<task-id>: <Input path> — <one-line GREEN summary>` bullet each); `**No RED phase.**` (coverage owned elsewhere per the Story gate); `**Open to Software Engineer.**` (implement GREEN+REFACTOR per the Story file's Action sections); ending `END: TEST-ENGINEER`.
 
-**IMPLEMENTATION_READY_FOR_REVIEW** — heading `## TEST-ENGINEER — implementation ready for review`; `**EPIC verification gate.**` (summary); per-target gate lines (command → exit 0 each); `**Tasks closed.**` (N across M Stories); then the literal block (line-start verbatim — `/work` greps it):
+**IMPLEMENTATION_READY_FOR_REVIEW** — heading `## TEST-ENGINEER — implementation ready for review`; `**EPIC verification gate.**` (summary); per-target gate lines ({{> GATE_LABEL_EXAMPLES}}; command → exit 0 each); `**Tasks closed.**` (N across M Stories); then the literal block (line-start verbatim — `/work` greps it):
 
 ```
 IMPLEMENTATION_READY_FOR_REVIEW:
