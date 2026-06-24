@@ -1,17 +1,9 @@
 {
-  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Read(~/.kanthorlabs/kanthorjournald/**)",
       "Edit(~/.kanthorlabs/kanthorjournald/**)",
-      "Write(~/.kanthorlabs/kanthorjournald/**)",
-      "mcp__codegraph__codegraph_search",
-      "mcp__codegraph__codegraph_context",
-      "mcp__codegraph__codegraph_callers",
-      "mcp__codegraph__codegraph_callees",
-      "mcp__codegraph__codegraph_impact",
-      "mcp__codegraph__codegraph_node",
-      "mcp__codegraph__codegraph_status"
+      "Write(~/.kanthorlabs/kanthorjournald/**)"
     ],
     "defaultMode": "auto"
   },
@@ -64,5 +56,11 @@
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "cleanupPeriodDays": 30
+  "cleanupPeriodDays": 30,
+  // hide the "Co-authored-by" line in commit messages and PR 
+  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
 }

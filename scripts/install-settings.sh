@@ -13,7 +13,7 @@ mkdir -p "$CLAUDE_DIR"
 rendered=$(mktemp) && merged=$(mktemp)
 trap 'rm -f "$rendered" "$merged"' EXIT
 
-sed -e "s|{{DOTAGENTS}}|$ROOT|g" -e "s|{{HOME}}|$HOME|g" "$ROOT/config/settings.json" > "$rendered"
+sed -e "s|{{DOTAGENTS}}|$ROOT|g" -e "s|{{HOME}}|$HOME|g" -e '/^[[:space:]]*\/\//d' "$ROOT/config/settings.json" > "$rendered"
 
 if [ -f "$CLAUDE_DIR/settings.json" ]; then
 	jq -e 'type == "object"' "$CLAUDE_DIR/settings.json" >/dev/null 2>&1 \
