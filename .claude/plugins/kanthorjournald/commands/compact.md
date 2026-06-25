@@ -71,11 +71,13 @@ Replace the project's accumulated session journals with a single brief file, whi
 
    **B. Validate each 🔀 Tradeoff and ❓ Assumption for fit with the current project.** Keep EVERY entry in the Part B full log regardless (the learning-corpus invariant from step 5 still holds). Additionally classify each against concrete signals — existing repo rules in `AGENTS.md`, patterns repeated across journals, current architecture/test/build/dependency config, and any tree/journal evidence of rework or a bug it caused:
 
-   - **fits the project / good recurring pattern** → emit a **promote-to-rule** suggestion: the target file and the exact one-line imperative rule text to add.
+   - **fits the project / good recurring pattern** → emit a **promote-to-rule** suggestion: the target file and the exact rule text to add.
    - **misfit that led to wrong behavior** (cite the evidence) → emit a **prohibit-rule** suggestion: target file + exact `Never …` / `Don't …` text.
    - **neither** → no suggestion.
 
-   Rule target: default to `AGENTS.md` (this project's rules). Suggest `~/.claude/CLAUDE.md` only when the user would want the rule machine-wide — do not assume it. Phrase "what to write" as a one-line imperative the user can hand to the AI verbatim.
+   Rule target: default to `AGENTS.md` (this project's rules). Suggest `~/.claude/CLAUDE.md` only when the user would want the rule machine-wide — do not assume it.
+
+   **Every rule candidate MUST use the format `<name>: <rule>`** — a short kebab-case `<name>` (searchable handle) followed by the one-line imperative `<rule>` the user can hand to the AI verbatim. Naming each rule makes the candidates greppable and lets them graduate into a runbook once enough accumulate. Example: `commit-trailer: Always end commit messages with the Claude-Session trailer.`
 
 6. Compute `STAMP=$(date -u +%Y%m%dT%H%M%SZ)`. Write the brief to `$JDIR/compacted-$STAMP.md` using this template (the 🔴/🟡 items below already reflect the step 5b filtering — `invalid` items are NOT written to the file; rule candidates ARE):
 
@@ -106,9 +108,9 @@ Replace the project's accumulated session journals with a single brief file, whi
    - <assumption> (<sess>:t<n>)
    - ...
 
-   **📐 Rule candidates** _(suggestions — NOT rules; a human must apply them)_
-   - Promote: add to AGENTS.md → "<exact one-line rule>"   (from <sess>:t<n>)
-   - Prohibit: add to AGENTS.md → "Never <exact behavior>"  (caused <wrong behavior>, <sess>:t<n>)
+   **📐 Rule candidates** _(suggestions — NOT rules; a human must apply them; format `<name>: <rule>`)_
+   - Promote: add to AGENTS.md → "<name>: <exact one-line rule>"   (from <sess>:t<n>)
+   - Prohibit: add to AGENTS.md → "<name>: Never <exact behavior>"  (caused <wrong behavior>, <sess>:t<n>)
 
    **🟢 Skipped from brief**
    - <count> low-risk items across <M> sessions / <N> turns
@@ -142,9 +144,9 @@ Replace the project's accumulated session journals with a single brief file, whi
      **📝 Invalidated notes** (<count>)   ← discarded from the brief; surfaced here only
      - <item> — no longer valid because <evidence>
 
-     **📐 Rule candidates**
-     - Promote: AGENTS.md → "<exact rule>"
-     - Prohibit: AGENTS.md → "Never <…>"
+     **📐 Rule candidates** _(format `<name>: <rule>`)_
+     - Promote: AGENTS.md → "<name>: <exact rule>"
+     - Prohibit: AGENTS.md → "<name>: Never <…>"
      ```
 
      Omit any sub-section that has no entries (don't print empty headers). If the step 5b pass was skipped, say so plainly here instead.
