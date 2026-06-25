@@ -41,9 +41,11 @@ install-settings:
 install-plugins:
 	@ROOT="$(ROOT)" "$(ROOT)/scripts/install-plugins.sh"
 
-# Injects AGENTS.md at the top of ~/.claude/CLAUDE.md, wrapped in managed markers
-# (idempotent). Deliberately excluded from `install` — run it explicitly.
-# See scripts/install-persona.sh.
+# Injects AGENTS.md at the top of ~/.claude/CLAUDE.md, wrapped in managed markers,
+# and configures a global git ignore file (both idempotent). Deliberately excluded
+# from `install` — run it explicitly.
+# See scripts/install-persona.sh and scripts/setup-gitignore-global.sh.
 .PHONY: install-persona
 install-persona:
 	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-persona.sh"
+	@ROOT="$(ROOT)" "$(ROOT)/scripts/setup-gitignore-global.sh"
