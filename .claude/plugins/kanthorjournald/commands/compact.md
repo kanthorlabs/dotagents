@@ -1,6 +1,6 @@
 ---
 description: Compact all past-session journals for this project into one brief file, moving the originals to .trash/
-allowed-tools: Read, Write, Bash
+allowed-tools: Read, Write, Bash, Glob, Grep
 model: claude-sonnet-4-6
 ---
 
@@ -59,7 +59,25 @@ Replace the project's accumulated session journals with a single brief file, whi
    - Only collapse exact or near-exact duplicates across turns/sessions; cite all locations.
    - Do NOT drop a tradeoff or assumption because it looks minor — these are the signal future runs learn from. If compaction loses these, compaction is broken.
 
-6. Compute `STAMP=$(date -u +%Y%m%dT%H%M%SZ)`. Write the brief to `$JDIR/compacted-$STAMP.md` using this template:
+5b. **Self-validation pass against the current project state** (advisory — failures here NEVER abort the archive). Use Grep/Glob/Read plus `git log --oneline -20` and `git diff` to check the *current* working tree (the journals span older sessions; the project has moved on). In `--compacted-only` mode, run this pass fresh — do NOT trust any verdicts embedded in prior briefs.
+
+   **A. Validate each 🔴 Needs review and 🟡 Worth confirming item.** Assign exactly one of three states; never default uncertainty to "valid":
+
+   - **valid** — there is positive current-tree evidence the concern is still live. Keep the item; append `_still valid because <evidence: file:line or commit>_` and a `→ Recommend:` line: a **first triage action** the user can finish in **<1 hour and ≤2 steps** (e.g. write a repro test, add a guard, open an issue). The recommendation is the first de-risking step, NOT necessarily the full fix.
+   - **invalid** — there is positive evidence the concern is resolved, moot, or was never applied. **Remove it from the brief entirely** (it must not appear in 🔴/🟡 or anywhere in the file). Record it as a one-line note **for the terminal summary only** (step 8), with the evidence.
+   - **unverified** — neither valid nor invalid can be proven from the tree. **Keep it**, marked `_unverified against current tree; needs human confirmation_`, with a `→ Recommend:` confirmation action (<1hr, ≤2 steps). Never silently drop an unverified item and never relabel it "valid".
+
+   If this pass cannot run (tool error, no working tree, etc.): skip validation, write the brief unchanged, and label the 🔴/🟡 sections `⚠️ not validated against current project state` so the output never *implies* validation happened.
+
+   **B. Validate each 🔀 Tradeoff and ❓ Assumption for fit with the current project.** Keep EVERY entry in the Part B full log regardless (the learning-corpus invariant from step 5 still holds). Additionally classify each against concrete signals — existing repo rules in `AGENTS.md`, patterns repeated across journals, current architecture/test/build/dependency config, and any tree/journal evidence of rework or a bug it caused:
+
+   - **fits the project / good recurring pattern** → emit a **promote-to-rule** suggestion: the target file and the exact one-line imperative rule text to add.
+   - **misfit that led to wrong behavior** (cite the evidence) → emit a **prohibit-rule** suggestion: target file + exact `Never …` / `Don't …` text.
+   - **neither** → no suggestion.
+
+   Rule target: default to `AGENTS.md` (this project's rules). Suggest `~/.claude/CLAUDE.md` only when the user would want the rule machine-wide — do not assume it. Phrase "what to write" as a one-line imperative the user can hand to the AI verbatim.
+
+6. Compute `STAMP=$(date -u +%Y%m%dT%H%M%SZ)`. Write the brief to `$JDIR/compacted-$STAMP.md` using this template (the 🔴/🟡 items below already reflect the step 5b filtering — `invalid` items are NOT written to the file; rule candidates ARE):
 
    ```
    # Compacted brief — <project-key>
@@ -73,10 +91,12 @@ Replace the project's accumulated session journals with a single brief file, whi
    ## Journal brief — <project-key> (80/20 findings + full tradeoff/assumption log, compacted across <M> sessions / <N> turns)
 
    **🔴 Needs review (highest risk)**
-   - <item> — _<why>_ (<sess>:t<n>)
+   - <item> — _still valid because <evidence: file:line/commit>_ (<sess>:t<n>)
+     → Recommend: <first triage action — ≤2 steps, <1hr; not necessarily the full fix>
 
    **🟡 Worth confirming**
-   - <item> — _<why>_ (<sess>:t<n>)
+   - <item> — _unverified against current tree; needs human confirmation_ (<sess>:t<n>)
+     → Recommend: <≤2 steps, <1hr confirmation action>
 
    **🔀 Tradeoffs picked** _(full log — learning corpus)_
    - <picked X over Y> — _<why>_ (<sess>:t<n>)
@@ -85,6 +105,10 @@ Replace the project's accumulated session journals with a single brief file, whi
    **❓ Assumptions filled in** _(full log — learning corpus)_
    - <assumption> (<sess>:t<n>)
    - ...
+
+   **📐 Rule candidates** _(suggestions — NOT rules; a human must apply them)_
+   - Promote: add to AGENTS.md → "<exact one-line rule>"   (from <sess>:t<n>)
+   - Prohibit: add to AGENTS.md → "Never <exact behavior>"  (caused <wrong behavior>, <sess>:t<n>)
 
    **🟢 Skipped from brief**
    - <count> low-risk items across <M> sessions / <N> turns
@@ -106,10 +130,29 @@ Replace the project's accumulated session journals with a single brief file, whi
    - Path of the trash dir (e.g. `~/.kanthorlabs/kanthorjournald/journals/<project-key>/.trash/<STAMP>/`)
    - Reminder that the trash dir can be purged manually with `rm -rf` when confirmed safe
    - If not all eligible files were included, note how many remain and suggest re-running to compact them
+   - **Self-validation results** (from step 5b — terminal only; do not write these into any file):
+
+     ```
+     **✅ Validated — action recommended**
+     - <item> → <≤2-step, <1hr first triage action>
+
+     **❔ Unverified — needs human confirmation**
+     - <item> → <confirmation action>
+
+     **📝 Invalidated notes** (<count>)   ← discarded from the brief; surfaced here only
+     - <item> — no longer valid because <evidence>
+
+     **📐 Rule candidates**
+     - Promote: AGENTS.md → "<exact rule>"
+     - Prohibit: AGENTS.md → "Never <…>"
+     ```
+
+     Omit any sub-section that has no entries (don't print empty headers). If the step 5b pass was skipped, say so plainly here instead.
 
 ## Guardrails
 
-- **Never** touch `$JDIR/current-session.txt` or `$JDIR/<current-id>.md`.
-- **Never** use `rm` on journal files — only `mv` into `.trash/`.
-- If any step fails (missing project key, missing current-session.txt, no files to compact, write error), abort before the move step so no journals are touched.
+- **Destructive journal ops are blocked by the `guard-journals.sh` PreToolUse hook** (defense-in-depth, every session): deletes under the journals dir, and overwrite/move/delete of the live journal or `current-session.txt`. **Appends to the current journal stay allowed** (that's the plugin's job). The hook is best-effort, not a sandbox — the real guarantee is the reversible `mv`-to-`.trash/` design below.
+  - Never `rm` journal files — only `mv` into `.trash/`.
+  - Never overwrite/move/delete `$JDIR/current-session.txt` or the live `$JDIR/<current-id>.md`.
+- If any step fails (missing project key, missing current-session.txt, no files to compact, write error), abort before the move step so no journals are touched. **Exception:** the step 5b self-validation pass is advisory — if it fails, do NOT abort; write the brief unvalidated (labeled `⚠️ not validated against current project state`) and continue. _(LLM control flow — not hook-enforceable.)_
 - The `.trash/` dir itself is excluded from future briefs/compactions because it's a directory; `*.md` glob at the dir level won't descend into it.
