@@ -2,6 +2,22 @@
 
 Opinionated `.agents` setup — curated skills, sub-agents, and references for Claude Code. Drop them into any project to get consistent, high-quality AI assistance tuned to how I work.
 
+## Quick Start
+
+Install the repo customizations into `~/.claude`:
+
+```bash
+make install
+```
+
+Want my opinionated configuration on top (persona + global git ignore)? Run:
+
+```bash
+make install-persona
+```
+
+See [Installation](#installation) for details on what each step does.
+
 ## Repository Structure
 
 ```
