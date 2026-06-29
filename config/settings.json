@@ -59,6 +59,7 @@
   "cleanupPeriodDays": 30,
   // hide the "Co-authored-by" line in commit messages and PR 
   "includeCoAuthoredBy": false,
+  "autoInstallIdeExtension": false,
   "attribution": {
     "commit": "",
     "pr": ""
