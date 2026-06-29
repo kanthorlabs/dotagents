@@ -29,13 +29,13 @@ install-statusline:
 	@ln -sf "$(ROOT)/.claude/statusline-command.sh" "$(CLAUDE_DIR)/statusline-command.sh"
 	@echo "statusline -> $(CLAUDE_DIR)/statusline-command.sh"
 
-# Renders config/settings.json (placeholders -> absolute paths), then deep-merges
+# Renders .claude/config/settings.json (placeholders -> absolute paths), then deep-merges
 # it into ~/.claude/settings.json. See scripts/install-settings.sh.
 .PHONY: install-settings
 install-settings:
 	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-settings.sh"
 
-# Renders config/claude.json (placeholders -> absolute paths), then deep-merges
+# Renders .claude/config/claude.json (placeholders -> absolute paths), then deep-merges
 # it into ~/.claude.json (Claude Code's global config). See scripts/install-claude-json.sh.
 .PHONY: install-claude-json
 install-claude-json:

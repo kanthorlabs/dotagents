@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Renders config/settings.json (placeholders -> absolute paths), then deep-merges
+# Renders .claude/config/settings.json (placeholders -> absolute paths), then deep-merges
 # it into $CLAUDE_DIR/settings.json. Repo values win on conflict; permissions.allow
 # is a union so locally added entries survive. A .bak is written before merging.
 set -euo pipefail
@@ -13,7 +13,7 @@ mkdir -p "$CLAUDE_DIR"
 rendered=$(mktemp) && merged=$(mktemp)
 trap 'rm -f "$rendered" "$merged"' EXIT
 
-sed -e "s|{{DOTAGENTS}}|$ROOT|g" -e "s|{{HOME}}|$HOME|g" -e '/^[[:space:]]*\/\//d' "$ROOT/config/settings.json" > "$rendered"
+sed -e "s|{{DOTAGENTS}}|$ROOT|g" -e "s|{{HOME}}|$HOME|g" -e '/^[[:space:]]*\/\//d' "$ROOT/.claude/config/settings.json" > "$rendered"
 
 if [ -f "$CLAUDE_DIR/settings.json" ]; then
 	jq -e 'type == "object"' "$CLAUDE_DIR/settings.json" >/dev/null 2>&1 \
