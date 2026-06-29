@@ -2,7 +2,7 @@ CLAUDE_DIR ?= $(HOME)/.claude
 ROOT       := $(CURDIR)
 
 .PHONY: install
-install: install-skills install-commands install-statusline install-settings install-plugins
+install: install-skills install-commands install-statusline install-settings install-claude-json install-plugins
 	@echo "done — restart Claude Code to pick up settings changes"
 
 .PHONY: install-skills
@@ -34,6 +34,12 @@ install-statusline:
 .PHONY: install-settings
 install-settings:
 	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-settings.sh"
+
+# Renders config/claude.json (placeholders -> absolute paths), then deep-merges
+# it into ~/.claude.json (Claude Code's global config). See scripts/install-claude-json.sh.
+.PHONY: install-claude-json
+install-claude-json:
+	@ROOT="$(ROOT)" "$(ROOT)/scripts/install-claude-json.sh"
 
 # Registers the repo marketplace and installs every plugin it declares.
 # See scripts/install-plugins.sh.
