@@ -1,2 +1,4 @@
 **/.claude/settings.local.json
 **/CLAUDE.local.md
+**/ktdev_*.sh
+**/ktdev_*.py
