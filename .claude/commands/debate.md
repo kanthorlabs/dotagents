@@ -109,13 +109,13 @@ file in the same temp directory as the input file:
 `REPLY="${TMP%.*}-reply.txt"` (produces
 `debate-<YYYYMMDDHHmmss>-reply.txt`). Run the engine in the background with a
 watchdog: a healthy engine streams its first bytes within seconds, so a reply
-still empty after 120s is the known post-bootstrap hang — kill it so the run
+still empty after 300s is the known post-bootstrap hang — kill it so the run
 fails loudly instead of sitting silent:
 
 ```bash
 <engine command> > "$REPLY" 2>&1 &
 PID=$!
-( sleep 120; [ -s "$REPLY" ] || kill "$PID" 2>/dev/null ) & WD=$!
+( sleep 300; [ -s "$REPLY" ] || kill "$PID" 2>/dev/null ) & WD=$!
 wait "$PID"; RC=$?
 kill "$WD" 2>/dev/null
 echo '=== END ===' >> "$REPLY"
@@ -217,7 +217,7 @@ silent degradation.
   `--agent plan`): error, STOP.
 - Engine exits non-zero, times out, or returns empty output: error
   (include engine stderr if available), STOP.
-- Watchdog killed a stalled engine (empty reply after 120s): error
+- Watchdog killed a stalled engine (empty reply after 300s): error
   ("debate engine stalled — killed by watchdog"), STOP.
 - Validation gate failed (reply too short, or reply content is an engine
   error despite exit 0): error using the DEBATE ENGINE FAILED format, STOP.
