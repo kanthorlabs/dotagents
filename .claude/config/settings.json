@@ -1,11 +1,10 @@
 {
   "permissions": {
-    "allow": [
-      "Read(~/.kanthorlabs/kanthorjournald/**)",
-      "Edit(~/.kanthorlabs/kanthorjournald/**)",
-      "Write(~/.kanthorlabs/kanthorjournald/**)"
-    ],
+    "allow": [],
     "defaultMode": "auto"
+  },
+  "env": {
+    "BASH_DEFAULT_TIMEOUT_MS": "300000"
   },
   "hooks": {
     "Stop": [
