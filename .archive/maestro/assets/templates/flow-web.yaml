@@ -1,0 +1,15 @@
+url: ${APP_URL}
+name: Example web flow
+env:
+  APP_URL: https://example.com
+tags:
+  - smoke
+---
+- launchApp
+- assertVisible: "Sign in"
+- tapOn: "Sign in"
+- inputText:
+    text: ${USERNAME || "demo@example.com"}
+    label: "Type email"
+- tapOn: "Continue"
+- assertVisible: "Welcome"

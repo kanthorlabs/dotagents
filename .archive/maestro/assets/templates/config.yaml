@@ -1,0 +1,34 @@
+# .maestro/config.yaml — workspace settings
+flows:
+  - "tests/**"
+  - "subflows/*"
+
+testOutputDir: build/maestro-results
+
+includeTags:
+  - smoke
+excludeTags:
+  - wip
+  - flaky
+
+executionOrder:
+  continueOnFailure: false
+  flowsOrder:
+    - signup_flow
+    - verify_email_flow
+    - complete_profile
+
+# Cloud-only:
+baselineBranch: main
+# notifications:
+#   email:
+#     enabled: true
+#     recipients:
+#       - team@example.com   # Replace with actual team email
+
+platform:
+  ios:
+    snapshotKeyHonorModalViews: false
+    disableAnimations: true     # CLOUD ONLY
+  android:
+    disableAnimations: true     # CLOUD ONLY

@@ -1,0 +1,17 @@
+# run-test.yaml — top-level orchestrator that composes feature subflows.
+appId: ${APP_ID}
+env:
+  APP_ID: com.example.app
+tags:
+  - smoke
+---
+- launchApp:
+    clearState: true
+- runFlow: "onboarding/main.yaml"
+- runFlow: "dashboard/main.yaml"
+- runFlow:
+    file: "auth/login.yaml"
+    env:
+      USERNAME: ${USERNAME || "test_user"}
+      PASSWORD: ${PASSWORD || "test_pass"}
+- runFlow: "checkout/main.yaml"

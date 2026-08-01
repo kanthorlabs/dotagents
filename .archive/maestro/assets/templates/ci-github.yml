@@ -1,0 +1,72 @@
+name: maestro
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Run flows on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: "180000"
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_6
+          script: |
+            maestro test \
+              --include-tags=smoke \
+              --format junit --output build/report.xml \
+              --test-output-dir build/maestro-results \
+              ./.maestro
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-android-report
+          path: |
+            build/report.xml
+            build/maestro-results
+
+  cloud:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Submit to Maestro Cloud
+        env:
+          MAESTRO_CLOUD_API_KEY: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
+        run: |
+          maestro cloud \
+            --app-file ./build/app.apk \
+            --flows ./.maestro \
+            --branch ${{ github.head_ref }} \
+            --commit-sha ${{ github.event.pull_request.head.sha }} \
+            --pull-request-id ${{ github.event.pull_request.number }} \
+            --repo-owner ${{ github.repository_owner }} \
+            --repo-name ${{ github.event.repository.name }} \
+            --include-tags=smoke
