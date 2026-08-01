@@ -38,8 +38,7 @@ dotagents/
 
 | Skill | Description |
 |-------|-------------|
-| [maestro](skills/maestro/) | Author, run, and debug Maestro UI test flows for mobile and web. Activate for `.yaml` flows, `maestro test`/`cloud`/`studio`, or E2E tests targeting Android/iOS/web via Maestro. Requires `maestro` CLI on PATH. |
-| [seniorgo](skills/seniorgo/) | Senior Go developer — code review, refactoring, testing, performance. Effective Go 2026 guidelines. Requires Go 1.22+ |
+| [chromemcp](skills/chromemcp/) | Drive a real Chrome via the Chrome DevTools MCP for UI behaviour testing and browser automation. Preflight → plan → confirm → execute → report, with explicit confirmation for every dangerous action. Requires Chrome 136+ and the `chrome-devtools-mcp` server. |
 
 More skills coming.
 
@@ -68,7 +67,7 @@ Symlink or copy into your project's `.claude/skills/` directory:
 
 ```bash
 # symlink approach
-ln -s /path/to/dotagents/skills/seniorgo .claude/skills/seniorgo
+ln -s /path/to/dotagents/skills/chromemcp .claude/skills/chromemcp
 ```
 
 Or add as git submodule:

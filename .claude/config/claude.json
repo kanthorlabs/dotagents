@@ -1,3 +1,16 @@
 {
-  "autoInstallIdeExtension": false
+  "autoInstallIdeExtension": false,
+  "mcpServers": {
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "chrome-devtools-mcp@1.1.1",
+        "--browserUrl",
+        "http://127.0.0.1:9222",
+        "--no-usage-statistics"
+      ],
+      "env": {}
+    }
+  }
 }
