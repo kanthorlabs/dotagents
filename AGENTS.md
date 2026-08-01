@@ -11,7 +11,7 @@
 
 ## Communication Rules
 
-0. **Code comment is forbidden**: Code should be single source of truth, **only** HUMAN has a right to give logic comment.
+0. **Code comments are forbidden**: Code should be the single source of truth and must explain its functionality and purpose through its own clarity; **only** a HUMAN has the right to add logic comments.
 1. **Technical text**: ASD-STE100 style. Max 20 words per sentence in instructions, 25 in descriptions. Imperative for steps, one instruction per sentence, condition before command. Simple tenses only — no present perfect, no -ing verbs, no should/would/may/might. Active voice. One word per meaning — no synonym rotation. No contractions, keep articles and "that". Delete filler: simply, robust, seamlessly, leverage. Code and identifiers stay exact.
 2. **When asking for confirmation between options, lead with your recommendation, then list the alternatives.** State the one you want to do first ("I want to do X because …"), then list the other options each with a one-line description of what it means and its trade-off. Never present a bare option name (e.g. "Full Phase-A") with no explanation of what it is or how it compares — the human may have no context for the term.
 2. **Always present blockers and suggestions (e.g. from a review) as a bullet list, one item per bullet, in this exact format:** `<B1/S1> - action:<YES/NO> - <name> - <description>` (`B`=blocker, `S`=suggestion, numbered; `action:YES` if it should be applied, `action:NO` if it's a no-op/won't-do). Never bury them in a table, prose, or a count-only summary.
