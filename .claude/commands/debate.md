@@ -16,6 +16,9 @@ answer. The debate engine is selected by the `KANTHOR_DEBATE_ENGINE` env var.
 > permitted operations are reading and reasoning. This MUST be enforced at the
 > engine invocation level (below). If read-only cannot be guaranteed for the
 > selected engine, **hard-fail** — do not run the debate.
+>
+> **ONE EXCEPTION:** the temp files of step 2, and the statistics append of
+> step 5. Both write outside the user's project. Nothing else may be written.
 
 ## 0. Validate environment (hard-fail)
 
@@ -42,6 +45,12 @@ prompt. Call this `<CLAUDE_RESPONSE>`.
 
 This turn is READ-ONLY: Claude may read files and reason, but MUST NOT edit or
 create files, or run any mutating command. It is producing text only.
+
+Count the **statements** in `<CLAUDE_RESPONSE>`. A statement is one discrete,
+checkable claim or recommendation. Count the claim, not the sentence: one claim
+that spans three sentences is one statement, and a restatement of an earlier
+claim is not a new statement. Call this count `<STAT_STATEMENTS>`. Step 5
+records it.
 
 ## 2. Call the debate engine (read-only, hard-enforced)
 
@@ -180,6 +189,18 @@ Produce `<CLAUDE_DEBATE_MERGED_RESPONSE>` as **ORIGINAL-PLUS-DELTAS**: keep
 `<CLAUDE_RESPONSE>` intact and integrate accepted comments as explicit
 additions/corrections, rather than rewriting from scratch.
 
+Count the debate comments while you classify them. A **catch** is one distinct
+objection the engine argues — count the objection, not the paragraph. Assign
+every catch to exactly one bucket:
+
+- `<STAT_MERGED>` — catches you accepted into `<CLAUDE_DEBATE_MERGED_RESPONSE>`.
+- `<STAT_PUSHBACKS>` — catches you set aside. These are the "Worth noting"
+  items of step 4.
+
+`<STAT_CATCHES>` is the total. The invariant
+`<STAT_MERGED> + <STAT_PUSHBACKS> == <STAT_CATCHES>` MUST hold. A catch you
+merged in part counts as merged.
+
 ## 4. Output
 
 **DEFAULT** — return `<CLAUDE_DEBATE_MERGED_RESPONSE>` plus a "Worth noting"
@@ -203,6 +224,30 @@ output before the default block:
 --- Debate engine output ---
 <DEBATE_RESPONSE>
 ```
+
+## 5. Record statistics
+
+After you return the step 4 output, append ONE JSON line to
+`~/.kanthorlabs/state/debate.jsonl`. Substitute the four counts and run:
+
+```bash
+mkdir -p ~/.kanthorlabs/state
+printf '{"timestamp":"%s","engine":"%s","statements":%d,"catches":%d,"merged":%d,"pushbacks":%d}\n' \
+  "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" "$KANTHOR_DEBATE_ENGINE" \
+  <STAT_STATEMENTS> <STAT_CATCHES> <STAT_MERGED> <STAT_PUSHBACKS> \
+  >> ~/.kanthorlabs/state/debate.jsonl
+```
+
+Rules:
+
+- Write the line only for a run that reached step 4. A run that hard-fails
+  records nothing — a failed engine produces no measurable debate.
+- Write exactly one line per run. Never rewrite or delete earlier lines.
+- This step MUST NOT fail the command. If the append fails, report the failure
+  to the user in one line and keep the step 4 output.
+
+`merged` is the count of valid catches. `pushbacks` is the count of rejected
+catches. `merged / catches` is the engine's hit rate.
 
 ## Error handling (hard-fail)
 
