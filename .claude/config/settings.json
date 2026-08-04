@@ -45,7 +45,7 @@
     }
   },
   "outputStyle": "concise",
-  "effortLevel": "high",
+  "effortLevel": "medium",
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
   "verbose": false,
@@ -54,7 +54,7 @@
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "cleanupPeriodDays": 30,
-  // hide the "Co-authored-by" line in commit messages and PR 
+  // hide the "Co-authored-by" line in commit messages and PR
   "includeCoAuthoredBy": false,
   "attribution": {
     "commit": "",
