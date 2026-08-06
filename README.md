@@ -38,7 +38,7 @@ dotagents/
 
 | Skill | Description |
 |-------|-------------|
-| [chromemcp](skills/chromemcp/) | Drive a real Chrome via the Chrome DevTools MCP for UI behaviour testing and browser automation. Preflight → plan → confirm → execute → report, with explicit confirmation for every dangerous action. Requires Chrome 136+ and the `chrome-devtools-mcp` server. |
+|       |             |
 
 More skills coming.
 
@@ -67,7 +67,7 @@ Symlink or copy into your project's `.claude/skills/` directory:
 
 ```bash
 # symlink approach
-ln -s /path/to/dotagents/skills/chromemcp .claude/skills/chromemcp
+ln -s /path/to/dotagents/skills/<name> .claude/skills/<name>
 ```
 
 Or add as git submodule:
