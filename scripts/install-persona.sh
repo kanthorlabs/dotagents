@@ -17,7 +17,7 @@ trap 'rm -f "$tmp"' EXIT
 
 { printf '%s\n' "$begin"; cat "$ROOT/AGENTS.md"; printf '\n%s\n\n' "$end"; } > "$tmp"
 if [ -f "$target" ]; then
-	awk -v b="$begin" -v e="$end" 'index($0,b){d=1} !d{print} index($0,e){d=0}' "$target" | awk 'NF{f=1} f' >> "$tmp"
+	awk -v b="$begin" -v e="$end" 'index($0,b){d=1; next} index($0,e){d=0; next} !d' "$target" | awk 'NF{f=1} f' >> "$tmp"
 fi
 cp "$tmp" "$target"
 echo "persona    injected at top of $target"
