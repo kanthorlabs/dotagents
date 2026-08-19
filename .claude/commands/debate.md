@@ -262,7 +262,7 @@ silent degradation.
   `--agent plan`): error, STOP.
 - Engine exits non-zero, times out, or returns empty output: error
   (include engine stderr if available), STOP.
-- Watchdog killed a stalled engine (empty reply after 300s): error
+- Watchdog killed a stalled engine (empty reply after 900s): error
   ("debate engine stalled — killed by watchdog"), STOP.
 - Validation gate failed (reply too short, or reply content is an engine
   error despite exit 0): error using the DEBATE ENGINE FAILED format, STOP.
