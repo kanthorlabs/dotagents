@@ -118,13 +118,15 @@ file in the same temp directory as the input file:
 `REPLY="${TMP%.*}-reply.txt"` (produces
 `debate-<YYYYMMDDHHmmss>-reply.txt`). Run the engine in the background with a
 watchdog: a healthy engine streams its first bytes within seconds, so a reply
-still empty after 300s is the known post-bootstrap hang — kill it so the run
-fails loudly instead of sitting silent:
+still empty after 900s is the known post-bootstrap hang — kill it so the run
+fails loudly instead of sitting silent. **900s, not 300s:** a healthy `pi` run on a
+large inlined input regularly takes longer than 300s to emit its first byte, so a
+300s watchdog kills good runs and reports a false stall:
 
 ```bash
 <engine command> > "$REPLY" 2>&1 &
 PID=$!
-( sleep 300; [ -s "$REPLY" ] || kill "$PID" 2>/dev/null ) & WD=$!
+( sleep 900; [ -s "$REPLY" ] || kill "$PID" 2>/dev/null ) & WD=$!
 wait "$PID"; RC=$?
 kill "$WD" 2>/dev/null
 echo '=== END ===' >> "$REPLY"
