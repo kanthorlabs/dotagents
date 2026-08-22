@@ -1,8 +1,9 @@
-CLAUDE_DIR ?= $(HOME)/.claude
-ROOT       := $(CURDIR)
+CLAUDE_DIR   ?= $(HOME)/.claude
+OPENCODE_DIR ?= $(HOME)/.config/opencode
+ROOT         := $(CURDIR)
 
 .PHONY: install
-install: install-skills install-commands install-statusline install-settings install-claude-json install-plugins
+install: install-skills install-commands install-statusline install-settings install-claude-json install-opencode-json install-plugins
 	@echo "done — restart Claude Code to pick up settings changes"
 
 .PHONY: install-skills
@@ -22,6 +23,12 @@ install-commands:
 		ln -sf "$$file" "$(CLAUDE_DIR)/commands/$$name"; \
 		echo "command    $$name -> $(CLAUDE_DIR)/commands/$$name"; \
 	done
+	@mkdir -p "$(OPENCODE_DIR)/command"
+	@for file in "$(ROOT)"/.opencode/command/*.md; do \
+		name=$$(basename "$$file"); \
+		ln -sf "$$file" "$(OPENCODE_DIR)/command/$$name"; \
+		echo "command    $$name -> $(OPENCODE_DIR)/command/$$name"; \
+	done
 
 .PHONY: install-statusline
 install-statusline:
@@ -40,6 +47,13 @@ install-settings:
 .PHONY: install-claude-json
 install-claude-json:
 	@ROOT="$(ROOT)" "$(ROOT)/scripts/install-claude-json.sh"
+
+# Renders .opencode/config/opencode.jsonc (placeholders -> absolute paths), then
+# deep-merges it into ~/.config/opencode/opencode.jsonc (OpenCode's global config).
+# See scripts/install-opencode-json.sh.
+.PHONY: install-opencode-json
+install-opencode-json:
+	@ROOT="$(ROOT)" OPENCODE_DIR="$(OPENCODE_DIR)" "$(ROOT)/scripts/install-opencode-json.sh"
 
 # Registers the repo marketplace and installs every plugin it declares.
 # See scripts/install-plugins.sh.

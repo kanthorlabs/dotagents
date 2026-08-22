@@ -25,6 +25,9 @@ dotagents/
 ├── .claude/
 │   └── commands/
 │       └── <command-name>.md   # Slash command definitions
+├── .opencode/
+│   └── command/
+│       └── <command-name>.md   # OpenCode ports of the same commands
 ├── skills/
 │   └── <skill-name>/
 │       ├── SKILL.md        # Skill definition & core rules
@@ -54,12 +57,15 @@ Idempotent — safe to run repeatedly. It:
 
 - symlinks `skills/*` into `~/.claude/skills/`
 - symlinks `.claude/commands/*.md` into `~/.claude/commands/`
+- symlinks `.opencode/command/*.md` into `~/.config/opencode/command/` (the OpenCode ports of the same commands)
 - symlinks `.claude/statusline-command.sh` into `~/.claude/`
 - deep-merges `.claude/config/settings.json` into `~/.claude/settings.json` (statusline, sound hooks, default mode, plugin marketplace, notifications, permission skips, cleanup period, ...). Repo values win on conflict, `permissions.allow` entries are unioned, and the previous file is backed up to `settings.json.bak`.
 - deep-merges `.claude/config/claude.json` into `~/.claude.json` (Claude Code's global config — IDE auto-install and other keys that do not live in `settings.json`). Repo values win on conflict, and the previous file is backed up to `.claude.json.bak`.
 - registers `.claude/plugins` as a marketplace and installs every plugin it declares via the `claude` CLI (skipped if the CLI is missing — Claude Code then auto-installs from the merged settings on next launch)
 
-Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-plugins`.
+- deep-merges `.opencode/config/opencode.jsonc` into `~/.config/opencode/opencode.jsonc` (OpenCode's global config — the `external_directory` allow rules the ported commands need). Repo values win on conflict, and the previous file is backed up to `opencode.jsonc.bak`.
+
+Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`.
 
 ## Usage
 
