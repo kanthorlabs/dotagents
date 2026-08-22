@@ -1,33 +1,21 @@
 CLAUDE_DIR   ?= $(HOME)/.claude
 OPENCODE_DIR ?= $(HOME)/.config/opencode
+AGENTS_DIR   ?= $(HOME)/.agents
 ROOT         := $(CURDIR)
 
 .PHONY: install
-install: install-skills install-commands install-statusline install-settings install-claude-json install-opencode-json install-plugins
+install: install-skills install-statusline install-settings install-claude-json install-opencode-json install-plugins
 	@echo "done — restart Claude Code to pick up settings changes"
 
 .PHONY: install-skills
 install-skills:
-	@mkdir -p "$(CLAUDE_DIR)/skills"
-	@for dir in "$(ROOT)"/skills/*/; do \
-		name=$$(basename "$$dir"); \
-		ln -sfn "$(ROOT)/skills/$$name" "$(CLAUDE_DIR)/skills/$$name"; \
-		echo "skill      $$name -> $(CLAUDE_DIR)/skills/$$name"; \
-	done
-
-.PHONY: install-commands
-install-commands:
-	@mkdir -p "$(CLAUDE_DIR)/commands"
-	@for file in "$(ROOT)"/.claude/commands/*.md; do \
-		name=$$(basename "$$file"); \
-		ln -sf "$$file" "$(CLAUDE_DIR)/commands/$$name"; \
-		echo "command    $$name -> $(CLAUDE_DIR)/commands/$$name"; \
-	done
-	@mkdir -p "$(OPENCODE_DIR)/command"
-	@for file in "$(ROOT)"/.opencode/command/*.md; do \
-		name=$$(basename "$$file"); \
-		ln -sf "$$file" "$(OPENCODE_DIR)/command/$$name"; \
-		echo "command    $$name -> $(OPENCODE_DIR)/command/$$name"; \
+	@for target in "$(CLAUDE_DIR)/skills" "$(AGENTS_DIR)/skills"; do \
+		mkdir -p "$$target"; \
+		for dir in "$(ROOT)"/skills/*/; do \
+			name=$$(basename "$$dir"); \
+			ln -sfn "$(ROOT)/skills/$$name" "$$target/$$name"; \
+			echo "skill      $$name -> $$target/$$name"; \
+		done; \
 	done
 
 .PHONY: install-statusline

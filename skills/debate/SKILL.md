@@ -1,5 +1,6 @@
 ---
-description: Run your answer through an adversarial, READ-ONLY debate engine, then merge valid critiques back in.
+name: debate
+description: Run your answer through an adversarial, READ-ONLY debate engine, then merge valid critiques back in. Use ONLY when the user invokes it explicitly as /debate. Never load it on your own judgement.
 ---
 
 # /debate
@@ -33,9 +34,9 @@ invoked in read-only mode:
 **MUST** also validate the selected engine binary exists and is executable
 (`command -v <engine>`).
 
-This command runs inside OpenCode. If `KANTHOR_DEBATE_ENGINE` is `opencode`, the
-debate runs the same engine as the answer, so the critique is weak. Report this
-in one line to the user, then continue.
+If `KANTHOR_DEBATE_ENGINE` names the engine you are running in, the debate runs
+the same engine as the answer, so the critique is weak. Report this in one line
+to the user, then continue.
 
 If `KANTHOR_DEBATE_ENGINE` is unset/empty, is not in `{opencode, codex, pi}`, or
 the engine binary is missing or not executable: **return an error to the user
@@ -73,8 +74,8 @@ Act as an adversarial but fair debater. Challenge the assistant's response using
 `mkdir -p ~/.kanthorlabs/debate` then
 `TMP="$HOME/.kanthorlabs/debate/debate-$(date -u +'%Y%m%d%H%M%S').txt"`.
 
-Use this directory, NOT the system temp directory. OpenCode guards every path
-outside the session directory with the `external_directory` permission, and a
+Use this directory, NOT the system temp directory. Under OpenCode every path
+outside the session directory needs the `external_directory` permission, and a
 non-interactive `opencode run` auto-rejects the request. `~/.kanthorlabs/**` is
 the one external tree the install step allows.
 
@@ -128,18 +129,26 @@ read-only flag/agent is rejected: **return an error to the user and STOP.**
 file in the same temp directory as the input file:
 `REPLY="${TMP%.*}-reply.txt"` (produces
 `debate-<YYYYMMDDHHmmss>-reply.txt`). Run the engine in the background with a
-watchdog: a healthy engine streams its first bytes within seconds, so a reply
-still empty after 900s is the known post-bootstrap hang — kill it so the run
-fails loudly instead of sitting silent. **900s, not 300s:** a healthy `pi` run on a
-large inlined input regularly takes longer than 300s to emit its first byte, so a
-300s watchdog kills good runs and reports a false stall:
+watchdog: poll the run every 60s and give it a 900s budget. A reply still empty
+at the 900s deadline is the known post-bootstrap hang — kill it so the run fails
+loudly instead of sitting silent. Keep the budget at 900s: a healthy `pi` run on
+a large inlined input needs many minutes to emit its first byte, so a shorter
+deadline kills good runs and reports a false stall. Poll, do not sleep for
+the full budget — the loop exits as soon as the engine exits:
 
 ```bash
 <engine command> > "$REPLY" 2>&1 &
 PID=$!
-( sleep 900; [ -s "$REPLY" ] || kill "$PID" 2>/dev/null ) & WD=$!
+ELAPSED=0
+while kill -0 "$PID" 2>/dev/null; do
+  if [ "$ELAPSED" -ge 900 ]; then
+    [ -s "$REPLY" ] || kill "$PID" 2>/dev/null
+    break
+  fi
+  sleep 60
+  ELAPSED=$((ELAPSED + 60))
+done
 wait "$PID"; RC=$?
-kill "$WD" 2>/dev/null
 echo '=== END ===' >> "$REPLY"
 ```
 
@@ -275,7 +284,7 @@ silent degradation.
   `--agent plan`): error, STOP.
 - Engine exits non-zero, times out, or returns empty output: error
   (include engine stderr if available), STOP.
-- Watchdog killed a stalled engine (empty reply after 900s): error
+- Watchdog killed a stalled engine (empty reply at the 900s deadline): error
   ("debate engine stalled — killed by watchdog"), STOP.
 - Validation gate failed (reply too short, or reply content is an engine
   error despite exit 0): error using the DEBATE ENGINE FAILED format, STOP.
