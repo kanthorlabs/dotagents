@@ -4,7 +4,7 @@ import { isAbsolute } from "node:path";
 import { StringDecoder } from "node:string_decoder";
 import { classifyMetrics } from "./routing.mjs";
 
-const SERVER_VERSION = "0.2.0";
+const SERVER_VERSION = "0.3.0";
 const DEFAULT_PROTOCOL_VERSION = "2024-11-05";
 const MAX_RECORD_BYTES = 10 * 1024 * 1024;
 const MAX_RESPONSE_BYTES = 50 * 1024;
@@ -37,6 +37,27 @@ End the final response with STATUS, SUMMARY, CHANGES, VALIDATION, and QUESTIONS.
 
 Follow-up from Claude Code:`;
 
+function metricInputSchema(description) {
+  return {
+    type: "object",
+    properties: {
+      score: {
+        type: "integer",
+        minimum: 0,
+        maximum: 2,
+        description
+      },
+      evidence: {
+        type: "string",
+        minLength: 12,
+        description: "Specific task or inspection evidence supporting this score."
+      }
+    },
+    required: ["score", "evidence"],
+    additionalProperties: false
+  };
+}
+
 const TOOLS = [
   {
     name: "delegate",
@@ -56,38 +77,13 @@ const TOOLS = [
         },
         metrics: {
           type: "object",
-          description: "Claude's semantic scores. The bridge validates these scores and computes the route.",
+          description: "Evidence-backed semantic scores. The bridge validates these values and computes the route.",
           properties: {
-            reasoning_depth: {
-              type: "integer",
-              minimum: 0,
-              maximum: 2,
-              description: "0: mechanical. 1: normal design or debugging. 2: multiple hypotheses, algorithms, or invariants."
-            },
-            system_span: {
-              type: "integer",
-              minimum: 0,
-              maximum: 2,
-              description: "0: one local unit. 1: several files in one subsystem. 2: multiple subsystems, contracts, or repositories."
-            },
-            uncertainty: {
-              type: "integer",
-              minimum: 0,
-              maximum: 2,
-              description: "0: clear cause and solution. 1: some discovery. 2: unclear cause, requirements, or solution."
-            },
-            impact_risk: {
-              type: "integer",
-              minimum: 0,
-              maximum: 2,
-              description: "0: local and reversible. 1: public behavior or compatibility. 2: security, data, migration, concurrency, or irreversible impact."
-            },
-            verification_complexity: {
-              type: "integer",
-              minimum: 0,
-              maximum: 2,
-              description: "0: one deterministic check. 1: multiple tests or integration checks. 2: E2E, performance, nondeterminism, or missing infrastructure."
-            }
+            reasoning_depth: metricInputSchema("0: mechanical. 1: normal design or debugging. 2: multiple hypotheses, algorithms, or invariants."),
+            system_span: metricInputSchema("0: one local unit. 1: several files in one subsystem. 2: multiple subsystems, contracts, or repositories."),
+            uncertainty: metricInputSchema("0: clear cause and solution. 1: some discovery. 2: unclear cause, requirements, or solution."),
+            impact_risk: metricInputSchema("0: local and reversible. 1: public behavior or compatibility. 2: security, data, migration, concurrency, or irreversible impact."),
+            verification_complexity: metricInputSchema("0: one deterministic check. 1: multiple tests or integration checks. 2: E2E, performance, nondeterminism, or missing infrastructure.")
           },
           required: [
             "reasoning_depth",
@@ -97,9 +93,32 @@ const TOOLS = [
             "verification_complexity"
           ],
           additionalProperties: false
+        },
+        inspection: {
+          type: "object",
+          description: "Context used to score the task before delegation.",
+          properties: {
+            inspected_paths: {
+              type: "array",
+              items: { type: "string", minLength: 1 },
+              uniqueItems: true,
+              description: "Project paths inspected before scoring. Empty only for a self-contained task."
+            },
+            self_contained: {
+              type: "boolean",
+              description: "True only when the task text fully determines scope, risk, solution, and validation."
+            },
+            evidence: {
+              type: "string",
+              minLength: 12,
+              description: "Why the inspected context or self-contained task is sufficient for scoring."
+            }
+          },
+          required: ["inspected_paths", "self_contained", "evidence"],
+          additionalProperties: false
         }
       },
-      required: ["task", "cwd", "metrics"],
+      required: ["task", "cwd", "metrics", "inspection"],
       additionalProperties: false
     }
   },
@@ -650,7 +669,7 @@ async function callTool(name, args, requestId) {
   if (name === "delegate") {
     const task = requireString(args, "task");
     const cwd = await normalizeCwd(requireString(args, "cwd"));
-    const routing = classifyMetrics(args?.metrics);
+    const routing = classifyMetrics(args?.metrics, args?.inspection);
     const taskId = nextTaskId();
     const session = new PiSession(taskId, cwd, routing);
     sessions.set(taskId, session);
@@ -741,7 +760,7 @@ async function handleRequest(message) {
       protocolVersion: message.params?.protocolVersion || DEFAULT_PROTOCOL_VERSION,
       capabilities: { tools: { listChanged: false } },
       serverInfo: { name: "pi-orchestrator", version: SERVER_VERSION },
-      instructions: "Score all five task metrics before delegation. The bridge computes the model route. Inspect Pi's result, verify independently, and use follow_up for corrections."
+      instructions: "Support every metric with evidence. Inspect project paths unless the task is self-contained. The bridge validates the assessment and computes the route."
     });
     return;
   }

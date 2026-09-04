@@ -1,20 +1,48 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { classifyMetrics, validateMetrics } from "../server/routing.mjs";
+import {
+  classifyMetrics,
+  validateInspection,
+  validateMetrics
+} from "../server/routing.mjs";
 
-const base = {
-  reasoning_depth: 0,
-  system_span: 0,
-  uncertainty: 0,
-  impact_risk: 0,
-  verification_complexity: 0
+const METRIC_NAMES = [
+  "reasoning_depth",
+  "system_span",
+  "uncertainty",
+  "impact_risk",
+  "verification_complexity"
+];
+
+const ZERO_EVIDENCE = {
+  reasoning_depth: "The requested operation is entirely mechanical and direct.",
+  system_span: "The requested change affects one local unit only.",
+  uncertainty: "The task states both cause and solution clearly.",
+  impact_risk: "The local change is reversible without external effects.",
+  verification_complexity: "One deterministic assertion verifies the complete requested result."
 };
 
-function classify(changes) {
-  return classifyMetrics({ ...base, ...changes });
+const SELF_CONTAINED = {
+  inspected_paths: [],
+  self_contained: true,
+  evidence: "The exact operation and expected result are fully specified."
+};
+
+function metrics(scores = {}) {
+  return Object.fromEntries(METRIC_NAMES.map((name) => {
+    const score = scores[name] ?? 0;
+    const evidence = score === 0
+      ? ZERO_EVIDENCE[name]
+      : `The inspected task evidence supports score ${score} for ${name}.`;
+    return [name, { score, evidence }];
+  }));
 }
 
-test("routes totals below six to Luna with max effort", () => {
+function classify(scores, inspection = SELF_CONTAINED) {
+  return classifyMetrics(metrics(scores), inspection);
+}
+
+test("routes evidence-backed totals below six to Luna with max effort", () => {
   const result = classify({
     reasoning_depth: 1,
     system_span: 1,
@@ -28,9 +56,10 @@ test("routes totals below six to Luna with max effort", () => {
   assert.equal(result.model, "gpt-5.6-luna");
   assert.equal(result.effort, "max");
   assert.deepEqual(result.reasons, []);
+  assert.deepEqual(result.inspection, SELF_CONTAINED);
 });
 
-test("routes a total of six to Sol with high effort", () => {
+test("routes an evidence-backed total of six to Sol with high effort", () => {
   const result = classify({
     reasoning_depth: 1,
     system_span: 1,
@@ -45,29 +74,64 @@ test("routes a total of six to Sol with high effort", () => {
   assert.deepEqual(result.reasons, ["score>=6"]);
 });
 
-test("applies the impact-risk override", () => {
-  const result = classify({ impact_risk: 2 });
-  assert.equal(result.score, 2);
-  assert.equal(result.classification, "hard");
-  assert.deepEqual(result.reasons, ["impact_risk=2"]);
+test("applies every hard override", () => {
+  assert.deepEqual(
+    classify({ impact_risk: 2 }).reasons,
+    ["impact_risk=2"]
+  );
+  assert.deepEqual(
+    classify({ reasoning_depth: 2, uncertainty: 2 }).reasons,
+    ["reasoning_depth=2+uncertainty=2"]
+  );
+  assert.deepEqual(
+    classify({ system_span: 2, verification_complexity: 2 }).reasons,
+    ["system_span=2+verification_complexity=2"]
+  );
 });
 
-test("applies the reasoning-and-uncertainty override", () => {
-  const result = classify({ reasoning_depth: 2, uncertainty: 2 });
-  assert.equal(result.score, 4);
-  assert.equal(result.classification, "hard");
-  assert.deepEqual(result.reasons, ["reasoning_depth=2+uncertainty=2"]);
+test("rejects bare numeric metrics", () => {
+  const bare = Object.fromEntries(METRIC_NAMES.map((name) => [name, 0]));
+  assert.throws(() => validateMetrics(bare), /reasoning_depth must be an object/);
 });
 
-test("applies the span-and-verification override", () => {
-  const result = classify({ system_span: 2, verification_complexity: 2 });
-  assert.equal(result.score, 4);
-  assert.equal(result.classification, "hard");
-  assert.deepEqual(result.reasons, ["system_span=2+verification_complexity=2"]);
+test("rejects weak zero evidence", () => {
+  const values = metrics();
+  values.reasoning_depth = { score: 0, evidence: "Mechanical task evidence" };
+  assert.throws(
+    () => validateMetrics(values),
+    /reasoning_depth score 0 requires five evidence words proving a mechanical change/
+  );
 });
 
 test("rejects incomplete, out-of-range, and unknown metrics", () => {
-  assert.throws(() => validateMetrics({}), /reasoning_depth/);
-  assert.throws(() => validateMetrics({ ...base, uncertainty: 3 }), /uncertainty/);
-  assert.throws(() => validateMetrics({ ...base, extra: 1 }), /Unknown metrics: extra/);
+  assert.throws(() => validateMetrics({}), /reasoning_depth must be an object/);
+  assert.throws(
+    () => validateMetrics({ ...metrics(), uncertainty: { score: 3, evidence: "Specific inspected evidence supports this assigned score." } }),
+    /uncertainty score/
+  );
+  assert.throws(() => validateMetrics({ ...metrics(), extra: { score: 1, evidence: "Extra evidence is not part of the rubric." } }), /Unknown metrics: extra/);
+});
+
+test("requires inspected paths for non-self-contained tasks", () => {
+  assert.throws(
+    () => validateInspection({
+      inspected_paths: [],
+      self_contained: false,
+      evidence: "The task requires repository context before reliable scoring."
+    }),
+    /Inspect at least one path/
+  );
+});
+
+test("accepts unique inspected paths with evidence", () => {
+  const inspection = {
+    inspected_paths: ["src/auth.ts", "test/auth.test.ts"],
+    self_contained: false,
+    evidence: "These files define the affected behavior and its verification."
+  };
+  assert.deepEqual(validateInspection(inspection), inspection);
+  assert.throws(
+    () => validateInspection({ ...inspection, inspected_paths: ["src/auth.ts", "src/auth.ts"] }),
+    /must not contain duplicates/
+  );
 });

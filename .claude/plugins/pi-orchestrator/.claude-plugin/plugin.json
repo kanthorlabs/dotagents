@@ -1,6 +1,6 @@
 {
   "name": "pi-orchestrator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Lets Claude Code orchestrate persistent Pi coding workers through a structured MCP bridge.",
   "author": {
     "name": "kanthorlabs"

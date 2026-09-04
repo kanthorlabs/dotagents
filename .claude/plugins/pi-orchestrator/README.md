@@ -35,7 +35,15 @@ Claude scores five metrics after project inspection:
 - Impact risk
 - Verification complexity
 
-Each metric ranges from `0` through `2`. The bridge validates every score and computes the route.
+Each metric ranges from `0` through `2`. Claude starts each score at `1` and attaches specific evidence.
+
+A zero requires at least five evidence words that prove its zero anchor. Bare numeric metrics fail before Pi starts.
+
+Claude also reports inspected paths. An empty path list requires evidence that the task is fully self-contained.
+
+The bridge validates evidence structure and preserves every statement for review. It does not independently judge semantic truth.
+
+The bridge computes the route only after validation.
 
 A task is `hard` when the total reaches `6`. These conditions also force `hard`:
 
@@ -57,7 +65,7 @@ The bridge checks Pi's selected model and effort before sending the task. Any mi
 | `abort` | Stop an active run and retain its session. |
 | `close` | Stop and remove a retained Pi worker. |
 
-Each run returns its scores, classification, route, task identifier, outcome, final response, tool summary, and Pi session metadata.
+Each run returns its evidence, scores, inspection record, classification, route, task identifier, outcome, and Pi session metadata.
 
 ## Communication guarantees
 
@@ -65,6 +73,7 @@ The bridge provides these deterministic guarantees:
 
 - MCP request identifiers correlate every Claude call.
 - Pi RPC request identifiers correlate every worker command.
+- Server-owned rules reject incomplete or unsupported classification evidence.
 - Server-owned rules map validated metrics to fixed model routes.
 - Pi startup verifies the selected model and effort.
 - Strict LF-delimited parsing preserves Unicode line separators.

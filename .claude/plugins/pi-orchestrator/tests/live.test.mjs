@@ -80,11 +80,31 @@ test("real Pi modifies and validates an isolated workspace", { skip: !enabled, t
         cwd,
         task: "Create proof.txt with exactly pi-orchestrator-live-ok followed by one newline. Read it back and verify the exact content. Do not create other files.",
         metrics: {
-          reasoning_depth: 0,
-          system_span: 0,
-          uncertainty: 0,
-          impact_risk: 0,
-          verification_complexity: 0
+          reasoning_depth: {
+            score: 0,
+            evidence: "The exact file write is entirely mechanical and direct."
+          },
+          system_span: {
+            score: 0,
+            evidence: "The requested change affects one local file only."
+          },
+          uncertainty: {
+            score: 0,
+            evidence: "The task specifies both operation and expected result clearly."
+          },
+          impact_risk: {
+            score: 0,
+            evidence: "The isolated temporary change is local and fully reversible."
+          },
+          verification_complexity: {
+            score: 0,
+            evidence: "One deterministic byte comparison verifies the complete result."
+          }
+        },
+        inspection: {
+          inspected_paths: [],
+          self_contained: true,
+          evidence: "The task fully specifies its isolated operation and expected result."
         }
       }
     });

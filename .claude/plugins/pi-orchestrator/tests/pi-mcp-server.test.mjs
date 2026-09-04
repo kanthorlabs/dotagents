@@ -12,22 +12,57 @@ const pluginDir = dirname(testDir);
 const serverPath = join(pluginDir, "server", "pi-mcp-server.mjs");
 const fakePiPath = join(testDir, "fake-pi.mjs");
 const OTHER_METRICS = {
-  reasoning_depth: 0,
-  system_span: 0,
-  uncertainty: 0,
-  impact_risk: 0,
-  verification_complexity: 0
+  reasoning_depth: {
+    score: 0,
+    evidence: "The requested operation is entirely mechanical and direct."
+  },
+  system_span: {
+    score: 0,
+    evidence: "The requested change affects one local unit only."
+  },
+  uncertainty: {
+    score: 0,
+    evidence: "The task states both cause and solution clearly."
+  },
+  impact_risk: {
+    score: 0,
+    evidence: "The local change is reversible without external effects."
+  },
+  verification_complexity: {
+    score: 0,
+    evidence: "One deterministic assertion verifies the complete requested result."
+  }
 };
 const HARD_METRICS = {
-  reasoning_depth: 2,
-  system_span: 1,
-  uncertainty: 2,
-  impact_risk: 1,
-  verification_complexity: 0
+  reasoning_depth: {
+    score: 2,
+    evidence: "Diagnosis requires multiple competing hypotheses and system invariants."
+  },
+  system_span: {
+    score: 1,
+    evidence: "Several related files within one subsystem require coordinated changes."
+  },
+  uncertainty: {
+    score: 2,
+    evidence: "The root cause and correct solution remain entirely unknown."
+  },
+  impact_risk: {
+    score: 1,
+    evidence: "The change can alter public behavior within one subsystem."
+  },
+  verification_complexity: {
+    score: 0,
+    evidence: "One deterministic fixture assertion verifies the complete expected result."
+  }
+};
+const SELF_CONTAINED = {
+  inspected_paths: [],
+  self_contained: true,
+  evidence: "The integration fixture fully specifies operation and expected result."
 };
 
-function delegationArgs(cwd, task, metrics = OTHER_METRICS) {
-  return { cwd, task, metrics };
+function delegationArgs(cwd, task, metrics = OTHER_METRICS, inspection = SELF_CONTAINED) {
+  return { cwd, task, metrics, inspection };
 }
 
 class McpClient {
@@ -148,7 +183,7 @@ test("exposes the orchestration tools through MCP", async (context) => {
     listed.tools.map((tool) => tool.name),
     ["delegate", "follow_up", "status", "abort", "close"]
   );
-  assert.deepEqual(listed.tools[0].inputSchema.required, ["task", "cwd", "metrics"]);
+  assert.deepEqual(listed.tools[0].inputSchema.required, ["task", "cwd", "metrics", "inspection"]);
 });
 
 test("delegates, waits for settlement, preserves Unicode, and reuses the Pi session", async (context) => {
@@ -175,6 +210,7 @@ test("delegates, waits for settlement, preserves Unicode, and reuses the Pi sess
     score: 0,
     reasons: [],
     metrics: OTHER_METRICS,
+    inspection: SELF_CONTAINED,
     provider: "openai-codex",
     model: "gpt-5.6-luna",
     effort: "max"
@@ -215,6 +251,35 @@ test("delegates, waits for settlement, preserves Unicode, and reuses the Pi sess
   assert.deepEqual(closed, { task_id: delegated.task_id, closed: true });
   const all = payload(await client.call("status"));
   assert.deepEqual(all.tasks, []);
+});
+
+test("rejects bare numeric metrics before Pi starts", async (context) => {
+  const cwd = await mkdtemp(join(tmpdir(), "pi-orchestrator-bare-metrics-"));
+  const client = new McpClient();
+  context.after(async () => {
+    await client.close();
+    await rm(cwd, { recursive: true, force: true });
+  });
+  await client.initialize();
+
+  const result = await client.call("delegate", {
+    cwd,
+    task: "Do not start Pi.",
+    metrics: {
+      reasoning_depth: 0,
+      system_span: 0,
+      uncertainty: 0,
+      impact_risk: 0,
+      verification_complexity: 0
+    },
+    inspection: SELF_CONTAINED
+  });
+  const failure = payload(result);
+  assert.equal(result.isError, true);
+  assert.match(failure.error, /reasoning_depth must be an object/);
+
+  const status = payload(await client.call("status"));
+  assert.deepEqual(status.tasks, []);
 });
 
 test("routes hard tasks to Sol with high effort", async (context) => {

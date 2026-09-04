@@ -1,7 +1,7 @@
 ---
 name: pi-orchestration
 description: Use when Claude Code must delegate coding implementation to Pi, ask Pi to modify a project, or orchestrate Pi worker tasks.
-version: 0.2.0
+version: 0.3.0
 ---
 
 # Pi orchestration
@@ -26,6 +26,8 @@ Pass the absolute project directory as `cwd`.
 
 After context inspection, score every metric from `0` through `2`.
 
+Start every metric at `1`. Lower a score to `0` only when explicit evidence proves the zero anchor.
+
 | Metric | 0 | 1 | 2 |
 |---|---|---|---|
 | `reasoning_depth` | Mechanical | Normal design or debugging | Multiple hypotheses, algorithms, or invariants |
@@ -34,7 +36,15 @@ After context inspection, score every metric from `0` through `2`.
 | `impact_risk` | Local and reversible | Public behavior or compatibility | Security, data, migration, concurrency, or irreversible impact |
 | `verification_complexity` | One deterministic check | Multiple or integration checks | E2E, performance, nondeterminism, or missing infrastructure |
 
-Send all five scores as `metrics` with `delegate`.
+Send every metric as `{ "score": N, "evidence": "specific evidence" }`.
+
+Give every score specific evidence. For each zero, give at least five words that prove the zero anchor.
+
+Send `inspection` with all inspected paths, a `self_contained` flag, and evidence for the context basis.
+
+If the task is not self-contained, inspect at least one path. Never claim self-containment only to avoid inspection.
+
+The bridge rejects bare numbers, weak zero evidence, duplicate paths, and uninspected non-self-contained tasks.
 
 The bridge selects `hard` when the total reaches `6`. The bridge also selects `hard` for any approved override:
 
@@ -51,7 +61,8 @@ Wait for `agent_settled`, which the bridge enforces. Do not treat prompt accepta
 Inspect these result fields:
 
 - `outcome`
-- `routing`
+- `routing.metrics`
+- `routing.inspection`
 - `response`
 - `tools`
 - `interaction_requests`
