@@ -1,0 +1,7 @@
+{
+  "pi": {
+    "command": "node",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/server/pi-mcp-server.mjs"],
+    "request_timeout_ms": 1920000
+  }
+}

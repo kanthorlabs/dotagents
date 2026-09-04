@@ -3,5 +3,12 @@
   "owner": {
     "name": "kanthorlabs"
   },
-  "plugins": []
+  "description": "Claude Code plugins maintained by kanthorlabs.",
+  "plugins": [
+    {
+      "name": "pi-orchestrator",
+      "source": "./pi-orchestrator",
+      "description": "Lets Claude Code orchestrate persistent Pi coding workers through MCP."
+    }
+  ]
 }

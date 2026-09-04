@@ -1,0 +1,13 @@
+{
+  "name": "@kanthorlabs/claude-pi-orchestrator",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "test:live": "PI_ORCHESTRATOR_LIVE_TEST=1 node --test tests/live.test.mjs"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  }
+}

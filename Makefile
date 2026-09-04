@@ -3,8 +3,20 @@ OPENCODE_DIR ?= $(HOME)/.config/opencode
 AGENTS_DIR   ?= $(HOME)/.agents
 ROOT         := $(CURDIR)
 
+.PHONY: test
+test: test-pi-orchestrator
+
+.PHONY: test-pi-orchestrator
+test-pi-orchestrator:
+	@claude plugin validate --strict "$(ROOT)/.claude/plugins/pi-orchestrator"
+	@cd "$(ROOT)/.claude/plugins/pi-orchestrator" && npm test
+	@tmp=$$(mktemp -d); \
+		trap 'rm -rf "$$tmp"' EXIT; \
+		$(MAKE) --no-print-directory CLAUDE_DIR="$$tmp" install-commands >/dev/null; \
+		test "$$(readlink "$$tmp/commands/pi.md")" = "$(ROOT)/.claude/plugins/pi-orchestrator/commands/pi.md"
+
 .PHONY: install
-install: install-skills install-statusline install-settings install-claude-json install-opencode-json install-plugins
+install: install-skills install-commands install-statusline install-settings install-claude-json install-opencode-json install-plugins
 	@echo "done — restart Claude Code to pick up settings changes"
 
 .PHONY: install-skills
@@ -17,6 +29,12 @@ install-skills:
 			echo "skill      $$name -> $$target/$$name"; \
 		done; \
 	done
+
+.PHONY: install-commands
+install-commands:
+	@mkdir -p "$(CLAUDE_DIR)/commands"
+	@ln -sf "$(ROOT)/.claude/plugins/pi-orchestrator/commands/pi.md" "$(CLAUDE_DIR)/commands/pi.md"
+	@echo "command    pi -> $(CLAUDE_DIR)/commands/pi.md"
 
 .PHONY: install-statusline
 install-statusline:

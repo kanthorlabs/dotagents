@@ -34,7 +34,8 @@
     "command": "bash {{HOME}}/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "kanthorjournald@claude.kanthorlabs.com": true
+    "kanthorjournald@claude.kanthorlabs.com": true,
+    "pi-orchestrator@claude.kanthorlabs.com": true
   },
   "extraKnownMarketplaces": {
     "claude.kanthorlabs.com": {

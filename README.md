@@ -1,6 +1,6 @@
 # dotagents
 
-Opinionated `.agents` setup — curated skills, sub-agents, and references for Claude Code. Drop them into any project to get consistent, high-quality AI assistance tuned to how I work.
+Opinionated agent setup with curated skills, Claude Code plugins, sub-agents, and references.
 
 ## Quick Start
 
@@ -22,11 +22,12 @@ See [Installation](#installation) for details on what each step does.
 
 ```
 dotagents/
+├── .claude/plugins/       # Local Claude Code marketplace
 ├── skills/
 │   └── <skill-name>/
-│       ├── SKILL.md        # Skill definition & core rules
-│       ├── references/     # Deferred reference docs (loaded on-demand)
-│       └── scripts/        # Helper scripts (lint, test, etc.)
+│       ├── SKILL.md        # Skill definition and core rules
+│       ├── references/     # Deferred reference documents
+│       └── scripts/        # Helper scripts
 ├── LICENSE
 └── README.md
 ```
@@ -39,6 +40,14 @@ dotagents/
 
 More skills coming.
 
+## Claude Code Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| `pi-orchestrator` | Lets Claude orchestrate persistent Pi coding workers through MCP. |
+
+Use `/pi <task>` for explicit delegation. Pi must be installed and authenticated.
+
 ## Installation
 
 Install everything into `~/.claude` (requires `jq`):
@@ -50,6 +59,7 @@ make install
 Idempotent — safe to run repeatedly. It:
 
 - symlinks `skills/*` into `~/.claude/skills/` and `~/.agents/skills/` (OpenCode scans both trees, so one skill serves both hosts)
+- symlinks the plugin command into `~/.claude/commands/pi.md` for the exact `/pi` alias
 - symlinks `.claude/statusline-command.sh` into `~/.claude/`
 - deep-merges `.claude/config/settings.json` into `~/.claude/settings.json` (statusline, sound hooks, default mode, plugin marketplace, notifications, permission skips, cleanup period, ...). Repo values win on conflict, `permissions.allow` entries are unioned, and the previous file is backed up to `settings.json.bak`.
 - deep-merges `.claude/config/claude.json` into `~/.claude.json` (Claude Code's global config — IDE auto-install and other keys that do not live in `settings.json`). Repo values win on conflict, and the previous file is backed up to `.claude.json.bak`.
@@ -57,7 +67,22 @@ Idempotent — safe to run repeatedly. It:
 
 - deep-merges `.opencode/config/opencode.jsonc` into `~/.config/opencode/opencode.jsonc` (OpenCode's global config — the `external_directory` allow rules the skills need). Repo values win on conflict, and the previous file is backed up to `opencode.jsonc.bak`.
 
-Each step is also available standalone: `make install-skills`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`.
+Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`.
+
+## Validation
+
+Run plugin validation and deterministic bridge tests:
+
+```bash
+make test
+```
+
+Run the optional real-Pi proof:
+
+```bash
+cd .claude/plugins/pi-orchestrator
+npm run test:live
+```
 
 ## Usage
 
