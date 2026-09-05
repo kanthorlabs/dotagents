@@ -7,6 +7,8 @@ OPENCODE2_HOSTNAME="${OPENCODE2_HOSTNAME:-0.0.0.0}"
 OPENCODE2_PORT="${OPENCODE2_PORT:-27798}"
 OPENCODE2_PROJECTS_DIR="${OPENCODE2_PROJECTS_DIR:-$HOME/Projects}"
 OPENCODE2_SKIP_INSTALL="${OPENCODE2_SKIP_INSTALL:-0}"
+OPENCODE2_ENV_ALLOWLIST="${OPENCODE2_ENV_ALLOWLIST:-}"
+OPENCODE2_ENV_VARS="${OPENCODE2_ENV_VARS:-}"
 label="ai.opencode.opencode2"
 domain="gui/$(id -u)"
 service_json="$OPENCODE_DIR/service.json"
@@ -23,6 +25,50 @@ command -v jq >/dev/null 2>&1 || { echo "error: jq is required"; exit 1; }
 command -v curl >/dev/null 2>&1 || { echo "error: curl is required"; exit 1; }
 [[ "$OPENCODE2_PORT" =~ ^[0-9]+$ ]] && (( OPENCODE2_PORT >= 1 && OPENCODE2_PORT <= 65535 )) \
   || { echo "error: OPENCODE2_PORT must be between 1 and 65535"; exit 1; }
+
+requested_env_names=()
+if [ -n "$OPENCODE2_ENV_ALLOWLIST" ]; then
+  [ -f "$OPENCODE2_ENV_ALLOWLIST" ] \
+    || { echo "error: environment allowlist not found: $OPENCODE2_ENV_ALLOWLIST"; exit 1; }
+  while IFS= read -r env_name || [ -n "$env_name" ]; do
+    env_name="${env_name#"${env_name%%[![:space:]]*}"}"
+    env_name="${env_name%"${env_name##*[![:space:]]}"}"
+    [ -n "$env_name" ] && requested_env_names+=("$env_name")
+  done < "$OPENCODE2_ENV_ALLOWLIST"
+fi
+if [ -n "$OPENCODE2_ENV_VARS" ]; then
+  inline_env_names=()
+  read -r -a inline_env_names <<< "$OPENCODE2_ENV_VARS"
+  if (( ${#inline_env_names[@]} > 0 )); then
+    requested_env_names+=("${inline_env_names[@]}")
+  fi
+fi
+if (( ${#requested_env_names[@]} == 0 )); then
+  requested_env_names=(KANTHOR_DEBATE_ENGINE)
+fi
+
+env_names=()
+for env_name in "${requested_env_names[@]}"; do
+  [[ "$env_name" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] \
+    || { echo "error: invalid environment variable name: $env_name"; exit 1; }
+  duplicate=0
+  if (( ${#env_names[@]} > 0 )); then
+    for existing_env_name in "${env_names[@]}"; do
+      if [ "$existing_env_name" = "$env_name" ]; then
+        duplicate=1
+        break
+      fi
+    done
+  fi
+  (( duplicate == 1 )) || env_names+=("$env_name")
+done
+
+plist_environment='{}'
+for env_name in "${env_names[@]}"; do
+  /usr/bin/printenv "$env_name" >/dev/null \
+    || { echo "error: allowlisted environment variable is not exported: $env_name"; exit 1; }
+  plist_environment="$(/usr/bin/jq --arg name "$env_name" --arg value "${!env_name}" '. + {($name): $value}' <<< "$plist_environment")"
+done
 
 if [ -z "${OPENCODE2_PASSWORD:-}" ]; then
   [ -t 0 ] || { echo "error: set OPENCODE2_PASSWORD for non-interactive setup"; exit 1; }
@@ -180,11 +226,12 @@ jq -n \
   --arg path "$launch_path" \
   --arg stdout "$log_dir/launchd.stdout.log" \
   --arg stderr "$log_dir/launchd.stderr.log" \
+  --argjson environment "$plist_environment" \
   '{
     Label: $label,
     ProgramArguments: [$launcher],
     WorkingDirectory: $directory,
-    EnvironmentVariables: {HOME: $home, PATH: $path},
+    EnvironmentVariables: ({HOME: $home, PATH: $path} + $environment),
     RunAtLoad: true,
     ProcessType: "Background",
     StandardOutPath: $stdout,
