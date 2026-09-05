@@ -141,6 +141,7 @@ for candidate in "$package_root/bin/opencode2.exe" "$package_root/bin/opencode2"
   fi
 done
 [ -n "$real" ] || { echo "error: opencode2 executable not found under $package_root/bin"; exit 1; }
+node_bin_dir="$(dirname "$(command -v node)")"
 
 mkdir -p "$OPENCODE2_PROJECTS_DIR" "$OPENCODE_DIR" "$bin_dir" "$log_dir" "$HOME/Library/LaunchAgents" "$HOME/.agents/skills" "$(dirname "$OPENCODE2_PATH_FILE")"
 OPENCODE2_PROJECTS_DIR="$(cd "$OPENCODE2_PROJECTS_DIR" && pwd -P)"
@@ -260,7 +261,7 @@ EOF
 } > "$server_launcher"
 chmod 700 "$server_launcher"
 
-launch_path="$(dirname "$real"):$bin_dir:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+launch_path="$node_bin_dir:$(dirname "$real"):$bin_dir:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 jq -n \
   --arg label "$label" \
   --arg launcher "$server_launcher" \
