@@ -31,11 +31,24 @@ if [ -z "${OPENCODE2_PASSWORD:-}" ]; then
 fi
 [ -n "$OPENCODE2_PASSWORD" ] || { echo "error: the password cannot be empty"; exit 1; }
 
+package_root="$(npm root -g)/@opencode-ai/cli"
+real=""
+for candidate in "$package_root/bin/opencode2.exe" "$package_root/bin/opencode2"; do
+  if [ -x "$candidate" ]; then
+    real="$candidate"
+    break
+  fi
+done
+
 if [ "$OPENCODE2_SKIP_INSTALL" != 1 ]; then
-  npm install -g '@opencode-ai/cli@beta'
+  if [ -n "$real" ]; then
+    target_version="$(npm view '@opencode-ai/cli@beta' version)"
+    "$real" upgrade "$target_version" --method npm
+  else
+    npm install -g '@opencode-ai/cli@beta'
+  fi
 fi
 
-package_root="$(npm root -g)/@opencode-ai/cli"
 real=""
 for candidate in "$package_root/bin/opencode2.exe" "$package_root/bin/opencode2"; do
   if [ -x "$candidate" ]; then
@@ -220,8 +233,14 @@ jq -e --arg directory "$OPENCODE2_PROJECTS_DIR" '.directory == $directory' /tmp/
 unauthenticated="$(curl -sS -o /dev/null -w '%{http_code}' "http://127.0.0.1:$OPENCODE2_PORT/api/location")"
 [ "$unauthenticated" = 401 ] || { echo "error: OpenCode 2 authentication is not active"; exit 1; }
 "$wrapper" api GET /api/location | jq -e --arg directory "$OPENCODE2_PROJECTS_DIR" '.directory == $directory' >/dev/null
+client_version="$("$real" --version)"
+client_version_number="${client_version##* }"
+client_version_number="${client_version_number#v}"
+server_version="$(curl -fsS -u "opencode:$OPENCODE2_PASSWORD" "http://127.0.0.1:$OPENCODE2_PORT/api/health" | jq -er '.version')"
+[ "$server_version" = "$client_version_number" ] \
+  || { echo "error: OpenCode 2 server version $server_version does not match client version $client_version"; exit 1; }
 
-printf 'OpenCode 2: %s\n' "$("$real" --version)"
+printf 'OpenCode 2: %s\n' "$client_version"
 printf 'Default directory: %s\n' "$OPENCODE2_PROJECTS_DIR"
 printf 'Local URL: http://127.0.0.1:%s\n' "$OPENCODE2_PORT"
 printf 'Username: opencode\n'
