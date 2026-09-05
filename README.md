@@ -36,7 +36,7 @@ dotagents/
 
 | Skill | Description |
 |-------|-------------|
-| `/debate` | Run an answer through an adversarial debate engine, then merge valid critiques back in. Requires `KANTHOR_DEBATE_ENGINE=opencode\|codex\|pi`. READ-ONLY: no filesystem or state changes. |
+| `/debate` | Run an answer through an adversarial debate engine, then merge valid critiques back in. Requires `KANTHOR_DEBATE_ENGINE=opencode2\|codex\|pi`. READ-ONLY: no filesystem or state changes. |
 
 More skills coming.
 
@@ -68,6 +68,35 @@ Idempotent — safe to run repeatedly. It:
 - deep-merges `.opencode/config/opencode.jsonc` into `~/.config/opencode/opencode.jsonc` (OpenCode's global config — the `external_directory` allow rules the skills need). Repo values win on conflict, and the previous file is backed up to `opencode.jsonc.bak`.
 
 Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`.
+
+## OpenCode 2 Server Setup
+
+On macOS, run the setup script:
+
+```bash
+./scripts/setup-opencode2.sh
+```
+
+The script prompts for a password. The Basic Authentication username is `opencode`.
+
+For non-interactive setup, pass the password through the environment:
+
+```bash
+OPENCODE2_PASSWORD='<password>' ./scripts/setup-opencode2.sh
+```
+
+The script performs these actions:
+
+- installs `@opencode-ai/cli@beta`
+- installs the OpenCode configuration and agent skills
+- starts the native server on `0.0.0.0:27798`
+- sets `~/Projects` as the default directory
+- creates a login LaunchAgent
+- makes `opencode2` attach through the official `--server` flag
+
+Set `OPENCODE2_PROJECTS_DIR`, `OPENCODE2_PORT`, or `OPENCODE2_HOSTNAME` to override their defaults. Set `OPENCODE2_SKIP_INSTALL=1` to reuse an installed CLI.
+
+The server accepts LAN traffic because it binds all interfaces. Install and connect Tailscale separately for remote access.
 
 ## Validation
 
@@ -107,7 +136,7 @@ git submodule add https://github.com/kanthorlabs/dotagents.git .agents
 
 Flows:
 1. Claude answers the prompt (read-only).
-2. The debate engine (`opencode --agent plan` or `codex exec --sandbox read-only`) challenges the answer.
+2. The debate engine (`opencode2 run --agent plan` or `codex exec --sandbox read-only`) challenges the answer.
 3. Claude merges valid critiques into a final `<original + deltas>` response.
 4. Unmerged comments appear in a "Worth noting" list.
 

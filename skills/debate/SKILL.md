@@ -27,7 +27,7 @@ ALWAYS assert that `KANTHOR_DEBATE_ENGINE` exists and is one of the valid
 values below. Its value decides which engine runs the debate, and each MUST be
 invoked in read-only mode:
 
-- `opencode` → `opencode run --agent plan < <DEBATE_ARGUMENTS_FILE>` (stdin REQUIRED, see below)
+- `opencode2` → `opencode2 run --agent plan < <DEBATE_ARGUMENTS_FILE>` (stdin REQUIRED, see below)
 - `codex`    → `codex exec --sandbox read-only --ask-for-approval never <DEBATE_ARGUMENTS>`
 - `pi`       → `pi --print --no-session --tools read,grep,find,ls < <DEBATE_ARGUMENTS_FILE>` (stdin REQUIRED, see below)
 
@@ -38,7 +38,7 @@ If `KANTHOR_DEBATE_ENGINE` names the engine you are running in, the debate runs
 the same engine as the answer, so the critique is weak. Report this in one line
 to the user, then continue.
 
-If `KANTHOR_DEBATE_ENGINE` is unset/empty, is not in `{opencode, codex, pi}`, or
+If `KANTHOR_DEBATE_ENGINE` is unset/empty, is not in `{opencode2, codex, pi}`, or
 the engine binary is missing or not executable: **return an error to the user
 and STOP.** Do not fall back, do not proceed.
 
@@ -76,13 +76,13 @@ Act as an adversarial but fair debater. Challenge the assistant's response using
 
 Use this directory, NOT the system temp directory. Under OpenCode every path
 outside the session directory needs the `external_directory` permission, and a
-non-interactive `opencode run` auto-rejects the request. `~/.kanthorlabs/**` is
+non-interactive `opencode2 run` auto-rejects the request. `~/.kanthorlabs/**` is
 the one external tree the install step allows.
 
 How the file reaches the engine is per-engine:
 
-- `opencode`: stdin is REQUIRED — `opencode run --agent plan < "$TMP"`.  
-  Passing the block as a long argv reproducibly hangs `opencode run` right
+- `opencode2`: stdin is REQUIRED — `opencode2 run --agent plan < "$TMP"`.
+  Passing the block as a long argv reproducibly hangs `opencode2 run` right
   after bootstrap (no session, no model request, empty reply forever).
 - `codex`: pass as a SINGLE quoted argument — `"$(cat "$TMP")"`.  
 - `pi`: stdin is REQUIRED — `pi --print --no-session --tools read,grep,find,ls < "$TMP"`.  
@@ -109,9 +109,9 @@ mode; a debater that tries to Read a file outside the project dir gets
   `--dangerously-bypass-approvals-and-sandbox` — any of these breaks the
   guarantee and MUST be treated as a hard-fail condition.
 
-- `opencode`: use the built-in read-only `plan` agent, fed via stdin:
-  `opencode run --agent plan < "$TMP"`.  
-  Plan mode disables file edits. A plain `opencode run` (no `--agent`) is NOT
+- `opencode2`: use the built-in read-only `plan` agent, fed via stdin:
+  `opencode2 run --agent plan < "$TMP"`.
+  Plan mode disables file edits. A plain `opencode2 run` (no `--agent`) is NOT
   read-only — permissions default to "allow" — and MUST NOT be used.
 
 - `pi`: invoke as
@@ -276,11 +276,11 @@ catches. `merged / catches` is the engine's hit rate.
 All failures stop execution and return an error to the user. No fallbacks, no
 silent degradation.
 
-- `KANTHOR_DEBATE_ENGINE` unset, empty, or not in `{opencode, codex, pi}`:
+- `KANTHOR_DEBATE_ENGINE` unset, empty, or not in `{opencode2, codex, pi}`:
   error with the valid values, STOP.
 - Engine binary not found or not executable: error, STOP.
 - Read-only mode unavailable, rejected, or bypassed (e.g. a `--yolo` /
-  `danger-full-access` codex flag, or an opencode invocation without
+  `danger-full-access` codex flag, or an opencode2 invocation without
   `--agent plan`): error, STOP.
 - Engine exits non-zero, times out, or returns empty output: error
   (include engine stderr if available), STOP.

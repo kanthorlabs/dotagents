@@ -21,7 +21,16 @@ if [ -f "$OPENCODE_JSON" ]; then
 	jq -e 'type == "object"' "$OPENCODE_JSON" >/dev/null 2>&1 \
 		|| { echo "error: $OPENCODE_JSON is not a valid JSON object — fix or remove it first"; exit 1; }
 	cp "$OPENCODE_JSON" "$OPENCODE_JSON.bak"
-	jq -s '.[0] * .[1]' "$OPENCODE_JSON" "$rendered" > "$merged" \
+	jq -s '
+		.[0] as $base
+		| .[1] as $overlay
+		| ($base * $overlay)
+		| if (($base | has("permissions")) or ($overlay | has("permissions"))) then
+			.permissions = (reduce (($base.permissions // []) + ($overlay.permissions // []))[] as $rule
+				([]; map(select(.action != $rule.action or .resource != $rule.resource)) + [$rule]))
+		  else .
+		  end
+	' "$OPENCODE_JSON" "$rendered" > "$merged" \
 		|| { echo "error: merge failed — $OPENCODE_JSON left untouched"; exit 1; }
 	mv "$merged" "$OPENCODE_JSON"
 	echo "opencode.jsonc merged into $OPENCODE_JSON (backup: opencode.jsonc.bak)"

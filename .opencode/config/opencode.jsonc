@@ -4,15 +4,17 @@
   // directory, so OpenCode guards them with the external_directory permission and
   // a non-interactive run auto-rejects them.
   "$schema": "https://opencode.ai/config.json",
-  "permission": {
-    "external_directory": {
-      "{{HOME}}/.kanthorlabs/**": "allow"
+  "permissions": [
+    {
+      "action": "external_directory",
+      "resource": "{{HOME}}/.kanthorlabs/**",
+      "effect": "allow"
     }
-  },
+  ],
   "compaction": {
     "auto": true
   },
-  "provider": {
+  "providers": {
     "openai": {
       "models": {
         "gpt-5.6-luna": {
