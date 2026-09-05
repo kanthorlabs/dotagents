@@ -93,8 +93,26 @@ The script performs these actions:
 - sets `~/Projects` as the default directory
 - creates a login LaunchAgent
 - makes `opencode2` attach through the official `--server` flag
+- creates `~/.config/shell/path.sh` and loads it in Zsh and the server
+- resolves standalone `.zshrc` `export PATH=` lines into absolute paths
+- writes unique resolved lines into the shared file
+- lists the original lines and requests confirmation before deletion
 
-Set `OPENCODE2_PROJECTS_DIR`, `OPENCODE2_PORT`, or `OPENCODE2_HOSTNAME` to override their defaults. Set `OPENCODE2_SKIP_INSTALL=1` to reuse an installed CLI.
+Resolution expands `~`, `$HOME`, and exported variables. Existing `$PATH` references remain dynamic.
+Non-interactive setup copies unique lines but keeps the original `.zshrc` `PATH` lines.
+The scanner ignores comments, prefixed commands, and other environment assignments.
+
+Keep only shell-independent setup in the shared file. Both Bash and Zsh must accept its syntax.
+
+Restart the server after each change:
+
+```bash
+launchctl kickstart -k "gui/$(id -u)/ai.opencode.opencode2"
+```
+
+Set `OPENCODE2_PROJECTS_DIR`, `OPENCODE2_PORT`, or `OPENCODE2_HOSTNAME` to override their defaults.
+Set `OPENCODE2_PATH_FILE` to select another shared file.
+Set `OPENCODE2_SKIP_INSTALL=1` to reuse an installed CLI.
 
 The server accepts LAN traffic because it binds all interfaces. Install and connect Tailscale separately for remote access.
 

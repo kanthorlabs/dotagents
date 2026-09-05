@@ -9,6 +9,7 @@ OPENCODE2_PROJECTS_DIR="${OPENCODE2_PROJECTS_DIR:-$HOME/Projects}"
 OPENCODE2_SKIP_INSTALL="${OPENCODE2_SKIP_INSTALL:-0}"
 OPENCODE2_ENV_ALLOWLIST="${OPENCODE2_ENV_ALLOWLIST:-}"
 OPENCODE2_ENV_VARS="${OPENCODE2_ENV_VARS:-}"
+OPENCODE2_PATH_FILE="${OPENCODE2_PATH_FILE:-$HOME/.config/shell/path.sh}"
 label="ai.opencode.opencode2"
 domain="gui/$(id -u)"
 service_json="$OPENCODE_DIR/service.json"
@@ -18,6 +19,43 @@ server_launcher="$bin_dir/opencode2-server"
 plist="$HOME/Library/LaunchAgents/$label.plist"
 log_dir="$HOME/.local/share/opencode/log"
 shell_rc="${OPENCODE2_SHELL_RC:-$HOME/.zshrc}"
+
+resolve_path_export() {
+  local path_export="$1"
+  local sentinel="/__opencode2_path_$$_${RANDOM}__"
+  local resolved_path
+  local remaining_path
+  local before_path
+  local quoted_path
+  local resolved_export='export PATH='
+
+  case "$path_export" in
+    *'$('*|*'`'*|*';'*|*'&'*|*'|'*|*'<'*|*'>'*)
+      printf 'error: unsupported PATH export: %s\n' "$path_export" >&2
+      return 1
+      ;;
+  esac
+
+  if ! resolved_path="$(PATH="$sentinel" /bin/zsh -c 'setopt nounset; eval "$1"; printf "%s" "$PATH"' zsh "$path_export")"; then
+    printf 'error: PATH export cannot be resolved: %s\n' "$path_export" >&2
+    return 1
+  fi
+  remaining_path="$resolved_path"
+  while [[ "$remaining_path" == *"$sentinel"* ]]; do
+    before_path="${remaining_path%%"$sentinel"*}"
+    if [ -n "$before_path" ]; then
+      printf -v quoted_path '%q' "$before_path"
+      resolved_export+="$quoted_path"
+    fi
+    resolved_export+='"$PATH"'
+    remaining_path="${remaining_path#*"$sentinel"}"
+  done
+  if [ -n "$remaining_path" ] || [ "$resolved_export" = 'export PATH=' ]; then
+    printf -v quoted_path '%q' "$remaining_path"
+    resolved_export+="$quoted_path"
+  fi
+  printf '%s\n' "$resolved_export"
+}
 
 [ "$(uname -s)" = Darwin ] || { echo "error: this setup requires macOS"; exit 1; }
 command -v npm >/dev/null 2>&1 || { echo "error: npm is required"; exit 1; }
@@ -104,8 +142,9 @@ for candidate in "$package_root/bin/opencode2.exe" "$package_root/bin/opencode2"
 done
 [ -n "$real" ] || { echo "error: opencode2 executable not found under $package_root/bin"; exit 1; }
 
-mkdir -p "$OPENCODE2_PROJECTS_DIR" "$OPENCODE_DIR" "$bin_dir" "$log_dir" "$HOME/Library/LaunchAgents" "$HOME/.agents/skills"
+mkdir -p "$OPENCODE2_PROJECTS_DIR" "$OPENCODE_DIR" "$bin_dir" "$log_dir" "$HOME/Library/LaunchAgents" "$HOME/.agents/skills" "$(dirname "$OPENCODE2_PATH_FILE")"
 OPENCODE2_PROJECTS_DIR="$(cd "$OPENCODE2_PROJECTS_DIR" && pwd -P)"
+touch "$OPENCODE2_PATH_FILE"
 
 ROOT="$ROOT" OPENCODE_DIR="$OPENCODE_DIR" "$ROOT/scripts/install-opencode-json.sh"
 for dir in "$ROOT"/skills/*/; do
@@ -116,7 +155,8 @@ done
 service_tmp="$(mktemp "$OPENCODE_DIR/service.json.XXXXXX")"
 plist_json="$(mktemp)"
 plist_tmp="$(mktemp)"
-trap 'rm -f "$service_tmp" "$plist_json" "$plist_tmp" /tmp/opencode2-setup-location.json /tmp/opencode2-setup-bootstrap.err' EXIT
+shell_rc_tmp=""
+trap 'rm -f "$service_tmp" "$plist_json" "$plist_tmp" "$shell_rc_tmp" /tmp/opencode2-setup-location.json /tmp/opencode2-setup-bootstrap.err' EXIT
 if [ -f "$service_json" ]; then
   jq -e 'type == "object"' "$service_json" >/dev/null \
     || { echo "error: $service_json is not a JSON object"; exit 1; }
@@ -205,8 +245,11 @@ EOF
 chmod 755 "$wrapper"
 
 {
-  printf '#!/bin/bash\nset -euo pipefail\n\nreal=%q\n' "$real"
+  printf '#!/bin/bash\nset -euo pipefail\n\nreal=%q\npath_file=%q\n' "$real" "$OPENCODE2_PATH_FILE"
   cat <<'EOF'
+if [[ -r "$path_file" ]]; then
+  . "$path_file"
+fi
 config="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/service.json"
 hostname=$(/usr/bin/jq -er '.hostname' "$config")
 port=$(/usr/bin/jq -er '.port' "$config")
@@ -245,9 +288,63 @@ plutil -lint "$plist" >/dev/null
 if [ ! -f "$shell_rc" ]; then
   touch "$shell_rc"
 fi
-path_line='export PATH="$HOME/.opencode/bin:$PATH"'
-if ! grep -Fqx "$path_line" "$shell_rc" >/dev/null 2>&1; then
-  printf '\n%s\n' "$path_line" >> "$shell_rc"
+path_exports=()
+while IFS= read -r shell_line || [ -n "$shell_line" ]; do
+  if [[ "$shell_line" =~ ^[[:space:]]*export[[:space:]]+PATH= ]]; then
+    duplicate=0
+    if (( ${#path_exports[@]} > 0 )); then
+      for path_export in "${path_exports[@]}"; do
+        if [ "$path_export" = "$shell_line" ]; then
+          duplicate=1
+          break
+        fi
+      done
+    fi
+    (( duplicate == 1 )) || path_exports+=("$shell_line")
+  fi
+done < "$shell_rc"
+
+if (( ${#path_exports[@]} > 0 )); then
+  printf 'Found PATH exports in %s:\n' "$shell_rc"
+  for path_export in "${path_exports[@]}"; do
+    printf '  %s\n' "$path_export"
+    resolved_path_export="$(resolve_path_export "$path_export")"
+    if ! grep -Fqx -- "$resolved_path_export" "$OPENCODE2_PATH_FILE" >/dev/null 2>&1; then
+      printf '%s\n' "$resolved_path_export" >> "$OPENCODE2_PATH_FILE"
+    fi
+  done
+
+  delete_path_exports=0
+  if [ -t 0 ]; then
+    read -r -p "Delete these PATH exports from $shell_rc? [y/N] " delete_path_exports_answer
+    case "$delete_path_exports_answer" in
+      [yY]|[yY][eE][sS])
+        delete_path_exports=1
+        ;;
+    esac
+  else
+    printf 'PATH exports remain in %s because deletion requires interactive confirmation.\n' "$shell_rc"
+  fi
+
+  if (( delete_path_exports == 1 )); then
+    shell_rc_tmp="$(mktemp)"
+    /usr/bin/awk '!/^[[:space:]]*export[[:space:]]+PATH=/' "$shell_rc" > "$shell_rc_tmp"
+    /bin/cat "$shell_rc_tmp" > "$shell_rc"
+    rm -f "$shell_rc_tmp"
+    shell_rc_tmp=""
+    printf 'Deleted PATH exports from %s.\n' "$shell_rc"
+  else
+    printf 'Kept PATH exports in %s.\n' "$shell_rc"
+  fi
+fi
+
+shared_path_line="$(resolve_path_export 'export PATH="$HOME/.opencode/bin:$PATH"')"
+if ! grep -Fqx "$shared_path_line" "$OPENCODE2_PATH_FILE" >/dev/null 2>&1; then
+  printf '%s\n' "$shared_path_line" >> "$OPENCODE2_PATH_FILE"
+fi
+source_line="[ ! -r \"$OPENCODE2_PATH_FILE\" ] || . \"$OPENCODE2_PATH_FILE\""
+if ! grep -Fqx "$source_line" "$shell_rc" >/dev/null 2>&1; then
+  printf '\n%s\n' "$source_line" >> "$shell_rc"
 fi
 
 if launchctl print "$domain/$label" >/dev/null 2>&1; then
@@ -291,6 +388,7 @@ printf 'OpenCode 2: %s\n' "$client_version"
 printf 'Default directory: %s\n' "$OPENCODE2_PROJECTS_DIR"
 printf 'Local URL: http://127.0.0.1:%s\n' "$OPENCODE2_PORT"
 printf 'Username: opencode\n'
+printf 'Shared PATH file: %s\n' "$OPENCODE2_PATH_FILE"
 tailscale_bin="$(command -v tailscale || true)"
 if [ -z "$tailscale_bin" ] && [ -x /Applications/Tailscale.app/Contents/MacOS/Tailscale ]; then
   tailscale_bin="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
@@ -301,4 +399,4 @@ if [ -n "$tailscale_bin" ]; then
     printf 'Tailscale URL: http://%s:%s\n' "$tailscale_ip" "$OPENCODE2_PORT"
   fi
 fi
-printf 'Run rehash in an existing shell.\n'
+printf 'Restart each existing shell to load the shared PATH file.\n'
