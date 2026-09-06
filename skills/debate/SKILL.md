@@ -28,7 +28,6 @@ values below. Its value decides which engine runs the debate, and each MUST be
 invoked in read-only mode:
 
 - `opencode2` → `opencode2 run --agent plan < <DEBATE_ARGUMENTS_FILE>` (stdin REQUIRED, see below)
-- `codex`    → `codex exec --sandbox read-only --ask-for-approval never <DEBATE_ARGUMENTS>`
 - `pi`       → `pi --print --no-session --tools read,grep,find,ls < <DEBATE_ARGUMENTS_FILE>` (stdin REQUIRED, see below)
 
 **MUST** also validate the selected engine binary exists and is executable
@@ -38,7 +37,7 @@ If `KANTHOR_DEBATE_ENGINE` names the engine you are running in, the debate runs
 the same engine as the answer, so the critique is weak. Report this in one line
 to the user, then continue.
 
-If `KANTHOR_DEBATE_ENGINE` is unset/empty, is not in `{opencode2, codex, pi}`, or
+If `KANTHOR_DEBATE_ENGINE` is unset/empty, is not in `{opencode2, pi}`, or
 the engine binary is missing or not executable: **return an error to the user
 and STOP.** Do not fall back, do not proceed.
 
@@ -84,7 +83,6 @@ How the file reaches the engine is per-engine:
 - `opencode2`: stdin is REQUIRED — `opencode2 run --agent plan < "$TMP"`.
   Passing the block as a long argv reproducibly hangs `opencode2 run` right
   after bootstrap (no session, no model request, empty reply forever).
-- `codex`: pass as a SINGLE quoted argument — `"$(cat "$TMP")"`.  
 - `pi`: stdin is REQUIRED — `pi --print --no-session --tools read,grep,find,ls < "$TMP"`.  
   `--tools read,grep,find,ls` restricts pi to read-only built-ins (`bash`, `edit`, `write`
   are excluded). `--no-session` makes the run ephemeral (no saved state).
@@ -101,13 +99,6 @@ mode; a debater that tries to Read a file outside the project dir gets
 `rejected permission` and exits 0 with an error instead of a debate.
 
 **READ-ONLY ENFORCEMENT (per engine):**
-
-- `codex`: invoke as
-  `codex exec --sandbox read-only "$(cat "$TMP")"`.  
-  In `read-only` mode the engine can read files but cannot write anywhere
-  (including /tmp). Do NOT use `--full-auto`, `--yolo`, or
-  `--dangerously-bypass-approvals-and-sandbox` — any of these breaks the
-  guarantee and MUST be treated as a hard-fail condition.
 
 - `opencode2`: use the built-in read-only `plan` agent, fed via stdin:
   `opencode2 run --agent plan < "$TMP"`.
@@ -276,12 +267,11 @@ catches. `merged / catches` is the engine's hit rate.
 All failures stop execution and return an error to the user. No fallbacks, no
 silent degradation.
 
-- `KANTHOR_DEBATE_ENGINE` unset, empty, or not in `{opencode2, codex, pi}`:
+- `KANTHOR_DEBATE_ENGINE` unset, empty, or not in `{opencode2, pi}`:
   error with the valid values, STOP.
 - Engine binary not found or not executable: error, STOP.
-- Read-only mode unavailable, rejected, or bypassed (e.g. a `--yolo` /
-  `danger-full-access` codex flag, or an opencode2 invocation without
-  `--agent plan`): error, STOP.
+- Read-only mode unavailable, rejected, or bypassed (e.g. an opencode2
+  invocation without `--agent plan`): error, STOP.
 - Engine exits non-zero, times out, or returns empty output: error
   (include engine stderr if available), STOP.
 - Watchdog killed a stalled engine (empty reply at the 900s deadline): error

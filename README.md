@@ -36,7 +36,7 @@ dotagents/
 
 | Skill | Description |
 |-------|-------------|
-| `/debate` | Run an answer through an adversarial debate engine, then merge valid critiques back in. Requires `KANTHOR_DEBATE_ENGINE=opencode2\|codex\|pi`. READ-ONLY: no filesystem or state changes. |
+| `/debate` | Run an answer through an adversarial debate engine, then merge valid critiques back in. Requires `KANTHOR_DEBATE_ENGINE=opencode2\|pi`. READ-ONLY: no filesystem or state changes. |
 
 More skills coming.
 
@@ -154,7 +154,7 @@ git submodule add https://github.com/kanthorlabs/dotagents.git .agents
 
 Flows:
 1. Claude answers the prompt (read-only).
-2. The debate engine (`opencode2 run --agent plan` or `codex exec --sandbox read-only`) challenges the answer.
+2. The debate engine (`opencode2 run --agent plan` or `pi --print --no-session`) challenges the answer.
 3. Claude merges valid critiques into a final `<original + deltas>` response.
 4. Unmerged comments appear in a "Worth noting" list.
 
