@@ -118,7 +118,7 @@ The server accepts LAN traffic because it binds all interfaces. Install and conn
 
 ## Validation
 
-Run plugin validation and deterministic bridge tests:
+Run plugin validation, the debate script tests, and deterministic bridge tests:
 
 ```bash
 make test

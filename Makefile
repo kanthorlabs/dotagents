@@ -4,7 +4,11 @@ AGENTS_DIR   ?= $(HOME)/.agents
 ROOT         := $(CURDIR)
 
 .PHONY: test
-test: test-pi-orchestrator test-opencode2-wrapper
+test: test-pi-orchestrator test-opencode2-wrapper test-debate
+
+.PHONY: test-debate
+test-debate:
+	@"$(ROOT)/skills/debate/scripts/run.test.sh"
 
 .PHONY: test-opencode2-wrapper
 test-opencode2-wrapper:
