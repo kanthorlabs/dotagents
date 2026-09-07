@@ -52,5 +52,8 @@ assert_args 'unknown passthrough' 'future-command' future-command
 assert_args 'passthrough argument named run' $'plugin\nadd\nrun' plugin add run
 assert_args 'explicit server' $'auth\nlogin\n--server\nhttp://example.test' auth login --server http://example.test
 assert_args 'standalone' $'auth\nlogin\n--standalone' auth login --standalone
+ln -s "$(basename "$wrapper")" "$tmp/opencode"
+wrapper="$tmp/opencode"
+assert_args 'opencode alias' $'auth\nlogin\n--server\nhttp://127.0.0.1:27798' auth login
 
 printf 'setup-opencode2 wrapper tests passed\n'

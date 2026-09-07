@@ -15,6 +15,7 @@ domain="gui/$(id -u)"
 service_json="$OPENCODE_DIR/service.json"
 bin_dir="$HOME/.opencode/bin"
 wrapper="$bin_dir/opencode2"
+wrapper_alias="$bin_dir/opencode"
 server_launcher="$bin_dir/opencode2-server"
 plist="$HOME/Library/LaunchAgents/$label.plist"
 log_dir="$HOME/.local/share/opencode/log"
@@ -249,6 +250,8 @@ exec "$real" --server "$server" "$@"
 EOF
 } > "$wrapper"
 chmod 755 "$wrapper"
+rm -f "$wrapper_alias"
+ln -s "$(basename "$wrapper")" "$wrapper_alias"
 
 {
   printf '#!/bin/bash\nset -euo pipefail\n\nreal=%q\npath_file=%q\n' "$real" "$OPENCODE2_PATH_FILE"

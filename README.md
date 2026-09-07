@@ -92,7 +92,7 @@ The script performs these actions:
 - starts the native server on `0.0.0.0:27798`
 - sets `~/Projects` as the default directory
 - creates a login LaunchAgent
-- makes `opencode2` attach through the official `--server` flag
+- makes `opencode` and `opencode2` attach through the official `--server` flag
 - creates `~/.config/shell/path.sh` and loads it in Zsh and the server
 - resolves standalone `.zshrc` `export PATH=` lines into absolute paths
 - writes unique resolved lines into the shared file
