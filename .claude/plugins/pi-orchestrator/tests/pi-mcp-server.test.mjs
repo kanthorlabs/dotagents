@@ -297,17 +297,17 @@ test("routes hard tasks to Sol with high effort", async (context) => {
   assert.equal(delegated.routing.classification, "hard");
   assert.equal(delegated.routing.score, 6);
   assert.deepEqual(delegated.routing.reasons, ["score>=6", "reasoning_depth=2+uncertainty=2"]);
-  assert.equal(delegated.routing.model, "gpt-5.6-sol");
+  assert.equal(delegated.routing.model, "gpt-6-astra");
   assert.equal(delegated.routing.effort, "high");
 
   const proof = JSON.parse(await readFile(join(cwd, "fake-pi-proof.json"), "utf8"));
-  assert.equal(proof.model, "openai-codex/gpt-5.6-sol");
+  assert.equal(proof.model, "openai-codex/gpt-6-astra");
   assert.equal(proof.effort, "high");
 });
 
 test("rejects a Pi model mismatch before prompting", async (context) => {
   const cwd = await mkdtemp(join(tmpdir(), "pi-orchestrator-model-mismatch-"));
-  const client = new McpClient({ FAKE_PI_REPORTED_MODEL: "openai-codex/gpt-5.6-sol" });
+  const client = new McpClient({ FAKE_PI_REPORTED_MODEL: "openai-codex/gpt-6-astra" });
   context.after(async () => {
     await client.close();
     await rm(cwd, { recursive: true, force: true });
@@ -318,7 +318,7 @@ test("rejects a Pi model mismatch before prompting", async (context) => {
   const failure = payload(result);
   assert.equal(result.isError, true);
   assert.equal(failure.outcome, "failed");
-  assert.match(failure.error, /selected openai-codex\/gpt-5\.6-sol; expected openai-codex\/gpt-5\.6-luna/);
+  assert.match(failure.error, /selected openai-codex\/gpt-6-astra; expected openai-codex\/gpt-5\.6-luna/);
 });
 
 test("rejects a Pi effort mismatch before prompting", async (context) => {

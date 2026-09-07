@@ -54,7 +54,7 @@ The bridge classifies the task as `hard` when any condition applies:
 
 The bridge classifies every remaining task as `other`.
 
-The bridge routes `hard` to `gpt-5.6-sol` with `high` effort. It routes `other` to `gpt-5.6-luna` with `max` effort.
+The bridge routes `hard` to `gpt-6-astra` with `high` effort. It routes `other` to `gpt-5.6-luna` with `max` effort.
 
 File count alone does not determine hardness. Use cognitive complexity, uncertainty, impact, and verification requirements.
 

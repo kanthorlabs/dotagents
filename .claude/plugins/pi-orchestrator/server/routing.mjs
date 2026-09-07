@@ -16,7 +16,7 @@ const ZERO_REQUIREMENTS = {
 
 const HARD_ROUTE = {
   provider: "openai-codex",
-  model: "gpt-5.6-sol",
+  model: "gpt-6-astra",
   effort: "high"
 };
 

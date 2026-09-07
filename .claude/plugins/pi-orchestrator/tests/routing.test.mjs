@@ -69,7 +69,7 @@ test("routes an evidence-backed total of six to Sol with high effort", () => {
   });
   assert.equal(result.score, 6);
   assert.equal(result.classification, "hard");
-  assert.equal(result.model, "gpt-5.6-sol");
+  assert.equal(result.model, "gpt-6-astra");
   assert.equal(result.effort, "high");
   assert.deepEqual(result.reasons, ["score>=6"]);
 });

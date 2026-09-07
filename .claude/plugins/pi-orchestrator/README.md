@@ -7,7 +7,7 @@ Pi Orchestrator lets Claude Code assign coding work to persistent Pi workers. Cl
 - Claude Code 2.1 or newer
 - Pi 0.82 or newer
 - Node.js 22.19 or newer
-- OpenAI Codex authentication for `gpt-5.6-sol` and `gpt-5.6-luna`
+- OpenAI Codex authentication for `gpt-6-astra` and `gpt-5.6-luna`
 
 ## Usage
 
@@ -51,7 +51,7 @@ A task is `hard` when the total reaches `6`. These conditions also force `hard`:
 - Reasoning depth and uncertainty both equal `2`.
 - System span and verification complexity both equal `2`.
 
-The `hard` route uses `openai-codex/gpt-5.6-sol` with `high` effort. The `other` route uses `openai-codex/gpt-5.6-luna` with `max` effort.
+The `hard` route uses `openai-codex/gpt-6-astra` with `high` effort. The `other` route uses `openai-codex/gpt-5.6-luna` with `max` effort.
 
 The bridge checks Pi's selected model and effort before sending the task. Any mismatch returns a structured failure.
 

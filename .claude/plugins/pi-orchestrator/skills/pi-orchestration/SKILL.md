@@ -52,7 +52,7 @@ The bridge selects `hard` when the total reaches `6`. The bridge also selects `h
 - `reasoning_depth` and `uncertainty` both equal `2`.
 - `system_span` and `verification_complexity` both equal `2`.
 
-The bridge routes `hard` to `gpt-5.6-sol` with `high` effort. It routes every other task to `gpt-5.6-luna` with `max` effort.
+The bridge routes `hard` to `gpt-6-astra` with `high` effort. It routes every other task to `gpt-5.6-luna` with `max` effort.
 
 ## Result contract
 
