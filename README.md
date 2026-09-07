@@ -37,6 +37,7 @@ dotagents/
 | Skill | Description |
 |-------|-------------|
 | `/debate` | Run an answer through an adversarial debate engine, then merge valid critiques back in. Requires `KANTHOR_DEBATE_ENGINE=opencode2\|pi`. READ-ONLY: no filesystem or state changes. |
+| `/supersaiyan` | Delegate the modification to a write-mode engine, which edits an isolated clone; the caller verifies the patch and applies it. Requires `KANTHOR_SUPERSAIYAN_ENGINE=opencode2\|pi`. Harness-agnostic: any harness that runs bash. |
 
 More skills coming.
 
@@ -161,6 +162,25 @@ Flows:
 Pass `--verbose` to also see the original answer and raw engine output.
 
 **Hard-fail conditions:** `KANTHOR_DEBATE_ENGINE` unset or invalid; engine binary missing; read-only mode unavailable; engine exits non-zero or returns empty output.
+
+## `/supersaiyan` usage
+
+```
+/supersaiyan <your task>
+```
+
+Flows:
+1. The caller writes a task packet: objective, paths, acceptance criteria, constraints, required validation.
+2. `run.sh` refuses a dirty work tree, records the baseline commit, clones the repository, and runs the engine inside the clone with write access.
+3. `run.sh` exports every change of the clone as one binary patch. The project stays untouched.
+4. The caller reviews the patch against the packet, then `apply.sh` lands it as unstaged changes.
+5. The caller runs the project checks and reverts when they fail.
+
+Export `KANTHOR_SUPERSAIYAN_ENGINE` in the shell that runs the harness. Add the name to `OPENCODE2_ENV_VARS` before `scripts/setup-opencode2.sh` when the OpenCode 2 service must also see it.
+
+**Isolation is not a sandbox.** The engine inherits the operating-system permissions of the caller. It can read and run anything the caller can, inside the clone and outside it.
+
+**Hard-fail conditions:** `KANTHOR_SUPERSAIYAN_ENGINE` unset or invalid; engine binary missing; git missing; a nested run; a non-git or dirty target; engine exits non-zero; watchdog kill; empty patch; a repository that moved from the baseline.
 
 ## Adding New Skills
 
