@@ -83,7 +83,7 @@ if [ -n "$OPENCODE2_ENV_VARS" ]; then
   fi
 fi
 if (( ${#requested_env_names[@]} == 0 )); then
-  requested_env_names=(KANTHOR_DEBATE_ENGINE)
+  requested_env_names=(KANTHOR_DEBATE_ENGINE KANTHOR_SUPERSAIYAN_ENGINE)
 fi
 
 env_names=()

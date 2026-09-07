@@ -176,7 +176,7 @@ Flows:
 4. The caller reviews the patch against the packet, then `apply.sh` lands it as unstaged changes.
 5. The caller runs the project checks and reverts when they fail.
 
-Export `KANTHOR_SUPERSAIYAN_ENGINE` in the shell that runs the harness. Add the name to `OPENCODE2_ENV_VARS` before `scripts/setup-opencode2.sh` when the OpenCode 2 service must also see it.
+Export both engine variables in the shell that runs the harness. The default setup passes both variables to the OpenCode 2 service. If `OPENCODE2_ENV_ALLOWLIST` or `OPENCODE2_ENV_VARS` is set, include both engine names explicitly.
 
 **Isolation is not a sandbox.** The engine inherits the operating-system permissions of the caller. It can read and run anything the caller can, inside the clone and outside it.
 
