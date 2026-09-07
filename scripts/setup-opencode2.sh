@@ -191,21 +191,26 @@ for arg in "${args[@]}"; do
 done
 
 command_index=-1
-for ((i = 0; i < ${#args[@]}; i++)); do
-  case "${args[$i]}" in
-    api|models|stats|export|import|mini|run)
-      command_index=$i
-      break
-      ;;
-    upgrade|update|acp|debug|console|auth|mcp|plugin|service|pair|serve)
-      exec "$real" "$@"
-      ;;
-  esac
-done
-
 case "${1:-}" in
-  --help|-h|--version|-v|--completions)
-    exec "$real" "$@"
+  api|models|stats|export|import|mini|run)
+    command_index=0
+    ;;
+  auth)
+    case "${2:-}" in
+      list|login|logout)
+        command_index=1
+        ;;
+      *)
+        exec "$real" "$@"
+        ;;
+    esac
+    ;;
+  ""|--auto|--continue|-c|--session|-s|--prompt|--log-level|--print-logs)
+    ;;
+  *)
+    if [[ ! -d "${1:-}" ]]; then
+      exec "$real" "$@"
+    fi
     ;;
 esac
 
