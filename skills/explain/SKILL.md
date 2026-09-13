@@ -67,9 +67,10 @@ section when its criterion holds. Skip it when the criterion fails.
 5. **What changes.** Include it when the message proposes a change to a file or
    to a component. A bulleted list of the concrete changes. Each bullet names
    one file or one component.
-6. **Recommendation and alternatives.** Include it when more than one option
-   exists. State the recommended option first, with its cost. Then give each
-   alternative one or two lines, with what it is and what it costs.
+6. **Recommendation and alternatives.** Include it when an alternative beats the
+   recommendation on at least one specific aspect. State the recommended option
+   first, with its cost. Give each alternative one or two lines. State what it
+   is, where it beats the recommendation, and what it costs.
 7. **Close.** Mandatory. One ruling question when an open item exists. The
    single next step and no question when no item is open. Nothing after it.
 
@@ -132,6 +133,9 @@ evidence settles that step, then skip section 4 until the evidence arrives.
   is required, and state why.
 - **Never present a bare option name.** Every option states what it is and what
   it costs. This covers the recommended option.
+- **Require an advantage for each alternative.** Name a specific aspect where
+  it beats the primary recommendation. State the concrete advantage on that
+  aspect. If no such advantage exists, omit the alternative.
 
 ### The conversation
 
@@ -207,11 +211,8 @@ recommends that `charge-retry` reads the stored key. It costs one query.
 **Recommendation.** Aelita recommends the stored key. It costs one query on the
 order row and no new service.
 
-**Alternative: a lock per order.** A lock service blocks the second attempt. It
-adds a service and a lock timeout failure mode.
-
-**Alternative: a charge lookup before each retry.** It needs no schema change.
-It still double-charges when `stripe-live` reports the charge late.
+**Alternative: add a per-order lock.** It blocks concurrent retries that the
+stored key alone permits. It adds a lock service and a lock timeout failure mode.
 
 **Question.** Does `charge-retry` fail the attempt when `chargeKey` is absent,
 or does it write a key and continue?
@@ -225,6 +226,8 @@ or does it write a key and continue?
 - Do not nest a branch inside a timeline step. Write a second timeline.
 - Do not put two rulings in one question.
 - Do not name an option without its description and its cost.
+- Do not list an alternative without a stated advantage over the primary
+  recommendation.
 - Do not repeat an unchanged step in the fixed timeline. Name the divergence
   step, then rewrite from there. Repeat a step only when clarity needs it.
 - Do not claim a divergence step that is later than the first changed step.
