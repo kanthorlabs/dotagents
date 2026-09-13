@@ -36,9 +36,13 @@ dotagents/
 
 | Skill | Description |
 |-------|-------------|
+| `/coding` | Seven code rules cover linear control flow, bounded loops, resource ownership, small functions, assertions, explicit errors, and zero warnings. |
 | `/debate` | Run an answer through an adversarial debate engine, then merge valid critiques back in. Requires `KANTHOR_DEBATE_ENGINE=opencode2\|pi`. READ-ONLY: no filesystem or state changes. |
 | `/supersaiyan` | Delegate the modification to a write-mode engine, which edits an isolated clone; the caller verifies the patch and applies it. Requires `KANTHOR_SUPERSAIYAN_ENGINE=opencode2\|pi`. Harness-agnostic: any harness that runs bash. |
 | `/explain` | Explain a problem, a bug, a design gap or a proposal with named actors, a numbered timeline and one question. No engine, no script: it shapes the message. |
+
+`/coding` adapts ideas from [*The Power of 10: Rules for Developing Safety-Critical Code*](https://spinroot.com/gerard/pdf/P10.pdf).
+Gerard J. Holzmann of NASA/JPL published the paper in *IEEE Computer* in June 2006.
 
 More skills coming.
 
