@@ -1,10 +1,15 @@
 CLAUDE_DIR   ?= $(HOME)/.claude
 OPENCODE_DIR ?= $(HOME)/.config/opencode
 AGENTS_DIR   ?= $(HOME)/.agents
+PI_DIR       ?= $(HOME)/.pi/agent
 ROOT         := $(CURDIR)
 
 .PHONY: test
-test: test-pi-orchestrator test-opencode2-wrapper test-debate test-supersaiyan
+test: test-pi-extensions test-pi-orchestrator test-opencode2-wrapper test-debate test-supersaiyan
+
+.PHONY: test-pi-extensions
+test-pi-extensions:
+	@node --test "$(ROOT)/.pi/tests/"*.test.mjs
 
 .PHONY: test-debate
 test-debate:
@@ -28,8 +33,14 @@ test-pi-orchestrator:
 		test "$$(readlink "$$tmp/commands/pi.md")" = "$(ROOT)/.claude/plugins/pi-orchestrator/commands/pi.md"
 
 .PHONY: install
-install: install-skills install-commands install-statusline install-settings install-claude-json install-opencode-json install-plugins
-	@echo "done — restart Claude Code to pick up settings changes"
+install: install-skills install-commands install-statusline install-settings install-claude-json install-opencode-json install-plugins install-pi-extensions
+	@echo "done — restart Claude Code and run /reload in pi"
+
+.PHONY: install-pi-extensions
+install-pi-extensions:
+	@mkdir -p "$(PI_DIR)/extensions"
+	@ln -sf "$(ROOT)/.pi/extensions/completion-sound.ts" "$(PI_DIR)/extensions/completion-sound.ts"
+	@echo "extension  completion-sound -> $(PI_DIR)/extensions/completion-sound.ts"
 
 .PHONY: install-skills
 install-skills:

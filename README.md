@@ -54,9 +54,33 @@ More skills coming.
 
 Use `/pi <task>` for explicit delegation. Pi must be installed and authenticated.
 
+## Pi Extensions
+
+`.pi/extensions/completion-sound.ts` reuses the Claude audio files through macOS `afplay`:
+
+- Non-error completion plays `assets/audio/success.mp3`.
+- A final agent error plays `assets/audio/failure.mp3`.
+- Aborted responses stay silent.
+- Other operating systems skip audio.
+
+The extension uses `agent_settled`, after automatic retries, compaction, and queued work finish.
+The final agent response selects the sound, not individual tool exit codes.
+Use a pi version with the `agent_settled` event.
+
+Install the extension for all projects:
+
+```bash
+make install-pi-extensions
+```
+
+The target creates a symlink in `~/.pi/agent/extensions/`. Keep this checkout and its audio files at their current paths.
+For a custom pi agent directory, pass `PI_DIR=/path/to/agent`.
+Run `/reload` in pi, or restart pi.
+Without global installation, pi loads the extension only in this trusted repository.
+
 ## Installation
 
-Install everything into `~/.claude` (requires `jq`):
+Install the agent customizations (requires `jq`):
 
 ```bash
 make install
@@ -67,13 +91,14 @@ Idempotent — safe to run repeatedly. It:
 - symlinks `skills/*` into `~/.claude/skills/` and `~/.agents/skills/` (OpenCode scans both trees, so one skill serves both hosts)
 - symlinks the plugin command into `~/.claude/commands/pi.md` for the exact `/pi` alias
 - symlinks `.claude/statusline-command.sh` into `~/.claude/`
+- symlinks the pi audio extension into `~/.pi/agent/extensions/`
 - deep-merges `.claude/config/settings.json` into `~/.claude/settings.json` (statusline, sound hooks, default mode, plugin marketplace, notifications, permission skips, cleanup period, ...). Repo values win on conflict, `permissions.allow` entries are unioned, and the previous file is backed up to `settings.json.bak`.
 - deep-merges `.claude/config/claude.json` into `~/.claude.json` (Claude Code's global config — IDE auto-install and other keys that do not live in `settings.json`). Repo values win on conflict, and the previous file is backed up to `.claude.json.bak`.
 - registers `.claude/plugins` as a marketplace and installs every plugin it declares via the `claude` CLI (skipped if the CLI is missing — Claude Code then auto-installs from the merged settings on next launch)
 
 - deep-merges `.opencode/config/opencode.jsonc` into `~/.config/opencode/opencode.jsonc` (OpenCode's global config — the `external_directory` allow rules the skills need). Repo values win on conflict, and the previous file is backed up to `opencode.jsonc.bak`.
 
-Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`.
+Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`, `install-pi-extensions`.
 
 ## OpenCode 2 Server Setup
 
@@ -124,10 +149,16 @@ The server accepts LAN traffic because it binds all interfaces. Install and conn
 
 ## Validation
 
-Run plugin validation, the debate script tests, and deterministic bridge tests:
+Run the repository checks, plus the pi extension tests (Node.js 22.18 or later):
 
 ```bash
 make test
+```
+
+Run only the pi extension tests without audio playback or API calls:
+
+```bash
+make test-pi-extensions
 ```
 
 Run the optional real-Pi proof:
