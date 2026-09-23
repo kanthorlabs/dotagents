@@ -7,6 +7,17 @@
     "BASH_DEFAULT_TIMEOUT_MS": "300000"
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{DOTAGENTS}}/hooks/secret-guard/claude.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

@@ -1,11 +1,11 @@
 CLAUDE_DIR   ?= $(HOME)/.claude
 OPENCODE_DIR ?= $(HOME)/.config/opencode
 AGENTS_DIR   ?= $(HOME)/.agents
-PI_DIR       ?= $(HOME)/.pi/agent
+PI_DIR       ?= $(if $(PI_CODING_AGENT_DIR),$(PI_CODING_AGENT_DIR),$(HOME)/.pi/agent)
 ROOT         := $(CURDIR)
 
 .PHONY: test
-test: test-pi-extensions test-pi-orchestrator test-opencode2-wrapper test-debate test-supersaiyan
+test: test-pi-extensions test-pi-orchestrator test-opencode2-wrapper test-debate test-supersaiyan test-secret-guard
 
 .PHONY: test-pi-extensions
 test-pi-extensions:
@@ -18,6 +18,11 @@ test-debate:
 .PHONY: test-supersaiyan
 test-supersaiyan:
 	@"$(ROOT)/skills/supersaiyan/scripts/run.test.sh"
+
+.PHONY: test-secret-guard
+test-secret-guard:
+	@"$(ROOT)/hooks/secret-guard/test.sh"
+	@node --test "$(ROOT)/.pi/tests/secret-guard.test.mjs"
 
 .PHONY: test-opencode2-wrapper
 test-opencode2-wrapper:
@@ -41,6 +46,8 @@ install-pi-extensions:
 	@mkdir -p "$(PI_DIR)/extensions"
 	@ln -sf "$(ROOT)/.pi/extensions/completion-sound.ts" "$(PI_DIR)/extensions/completion-sound.ts"
 	@echo "extension  completion-sound -> $(PI_DIR)/extensions/completion-sound.ts"
+	@ln -sf "$(ROOT)/.pi/extensions/secret-guard.ts" "$(PI_DIR)/extensions/secret-guard.ts"
+	@echo "extension  secret-guard -> $(PI_DIR)/extensions/secret-guard.ts"
 
 .PHONY: install-skills
 install-skills:

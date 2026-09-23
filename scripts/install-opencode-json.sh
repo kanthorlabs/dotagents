@@ -30,6 +30,11 @@ if [ -f "$OPENCODE_JSON" ]; then
 				([]; map(select(.action != $rule.action or .resource != $rule.resource)) + [$rule]))
 		  else .
 		  end
+		| if (($base | has("plugins")) or ($overlay | has("plugins"))) then
+			.plugins = (reduce (($base.plugins // []) + ($overlay.plugins // []))[] as $plugin
+				([]; if index($plugin) == null then . + [$plugin] else . end))
+		  else .
+		  end
 	' "$OPENCODE_JSON" "$rendered" > "$merged" \
 		|| { echo "error: merge failed — $OPENCODE_JSON left untouched"; exit 1; }
 	mv "$merged" "$OPENCODE_JSON"

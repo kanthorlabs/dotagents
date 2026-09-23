@@ -4,6 +4,7 @@
   // directory, so OpenCode guards them with the external_directory permission and
   // a non-interactive run auto-rejects them.
   "$schema": "https://opencode.ai/config.json",
+  "plugins": ["{{DOTAGENTS}}/hooks/secret-guard/opencode.js"],
   "permissions": [
     {
       "action": "external_directory",

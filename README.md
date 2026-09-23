@@ -23,6 +23,7 @@ See [Installation](#installation) for details on what each step does.
 ```
 dotagents/
 ├── .claude/plugins/       # Local Claude Code marketplace
+├── hooks/                 # Agent-neutral hook scripts
 ├── skills/
 │   └── <skill-name>/
 │       ├── SKILL.md        # Skill definition and core rules
@@ -54,7 +55,44 @@ More skills coming.
 
 Use `/pi <task>` for explicit delegation. Pi must be installed and authenticated.
 
+## Hooks
+
+`hooks/secret-guard/` holds a secret scanner that all agents share:
+
+- `scan.sh <file>` prints one finding per line and exits 1 on a match. It does not depend on an agent.
+- `claude.sh` adapts `scan.sh` to the Claude Code hook protocol.
+- `opencode.js` denies sensitive OpenCode 2 `read` resources through a permission hook.
+- `pi.ts` blocks sensitive Pi `read` calls through the `tool_call` event, without approval.
+
+To support another agent, add an adapter next to `claude.sh` that calls `scan.sh`.
+
+`claude.sh` runs as a `PreToolUse` hook on the `Read` tool.
+`opencode.js` checks OpenCode 2 `read` permissions before the file read.
+If the file contains possible sensitive data, the hook blocks the read.
+
+The hook detects these categories:
+
+- AWS access key IDs, secret access keys, and session tokens.
+- URLs and database DSNs with a password, including Go MySQL `user:<password>@tcp(...)` DSNs.
+- Private keys, and GitHub, Slack, Stripe, Google, Anthropic, and OpenAI tokens.
+- JSON Web Tokens.
+- Password and secret literals in code, and in env files.
+
+The denial message shows the category and the line numbers, not the secret value.
+The hooks do not scan shell output, grep output, or web content.
+If `jq` is missing or the input is invalid, the Claude hook allows the read.
+Pi blocks reads when the scanner reports an error or exceeds its timeout, in all modes.
+The scanner uses patterns; it does not detect every secret or inspect image content.
+`make install-settings` registers the Claude hook. `make install-opencode-json` registers the OpenCode hook.
+`make install-pi-extensions` registers the Pi hook.
+Run `make test-secret-guard` to test the adapters.
+Restart the OpenCode 2 service after installation to load the plugin.
+
 ## Pi Extensions
+
+`.pi/extensions/secret-guard.ts` loads `hooks/secret-guard/pi.ts`.
+The hook scans the full file before each `read`, even when the call requests only selected lines.
+Sensitive reads fail in interactive, RPC, JSON, and print modes. The hook never requests approval.
 
 `.pi/extensions/completion-sound.ts` reuses the Claude audio files through macOS `afplay`:
 
@@ -67,16 +105,19 @@ The extension uses `agent_settled`, after automatic retries, compaction, and que
 The final agent response selects the sound, not individual tool exit codes.
 Use a pi version with the `agent_settled` event.
 
-Install the extension for all projects:
+The scanner requires Bash, `grep`, `cut`, `uniq`, `head`, and `paste`.
+The Pi hook does not require `jq` or Claude Code.
+On a machine with Pi and Make, install both extensions for all projects:
 
 ```bash
 make install-pi-extensions
 ```
 
-The target creates a symlink in `~/.pi/agent/extensions/`. Keep this checkout and its audio files at their current paths.
-For a custom pi agent directory, pass `PI_DIR=/path/to/agent`.
+The target creates symlinks in `~/.pi/agent/extensions/`. It also runs through `make install`.
+Keep this checkout at its current path. After a move, repeat the install command.
+The target respects `PI_CODING_AGENT_DIR`. To override it, pass `PI_DIR=/path/to/agent`.
 Run `/reload` in pi, or restart pi.
-Without global installation, pi loads the extension only in this trusted repository.
+Without global installation, pi loads these extensions only in this trusted repository.
 
 ## Installation
 
@@ -91,12 +132,12 @@ Idempotent — safe to run repeatedly. It:
 - symlinks `skills/*` into `~/.claude/skills/` and `~/.agents/skills/` (OpenCode scans both trees, so one skill serves both hosts)
 - symlinks the plugin command into `~/.claude/commands/pi.md` for the exact `/pi` alias
 - symlinks `.claude/statusline-command.sh` into `~/.claude/`
-- symlinks the pi audio extension into `~/.pi/agent/extensions/`
+- symlinks the pi audio and secret guard extensions into `~/.pi/agent/extensions/`
 - deep-merges `.claude/config/settings.json` into `~/.claude/settings.json` (statusline, sound hooks, default mode, plugin marketplace, notifications, permission skips, cleanup period, ...). Repo values win on conflict, `permissions.allow` entries are unioned, and the previous file is backed up to `settings.json.bak`.
 - deep-merges `.claude/config/claude.json` into `~/.claude.json` (Claude Code's global config — IDE auto-install and other keys that do not live in `settings.json`). Repo values win on conflict, and the previous file is backed up to `.claude.json.bak`.
 - registers `.claude/plugins` as a marketplace and installs every plugin it declares via the `claude` CLI (skipped if the CLI is missing — Claude Code then auto-installs from the merged settings on next launch)
 
-- deep-merges `.opencode/config/opencode.jsonc` into `~/.config/opencode/opencode.jsonc` (OpenCode's global config — the `external_directory` allow rules the skills need). Repo values win on conflict, and the previous file is backed up to `opencode.jsonc.bak`.
+- deep-merges `.opencode/config/opencode.jsonc` into `~/.config/opencode/opencode.jsonc` (OpenCode's global config — the `external_directory` allow rules and secret guard plugin). Repo values win on conflict, and the previous file is backed up to `opencode.jsonc.bak`.
 
 Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`, `install-pi-extensions`.
 
