@@ -22,8 +22,8 @@ const HARD_ROUTE = {
 
 const OTHER_ROUTE = {
   provider: "openai-codex",
-  model: "gpt-5.6-luna",
-  effort: "max"
+  model: "gpt-6-sol",
+  effort: "medium"
 };
 
 function wordCount(value) {

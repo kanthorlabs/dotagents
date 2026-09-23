@@ -212,8 +212,8 @@ test("delegates, waits for settlement, preserves Unicode, and reuses the Pi sess
     metrics: OTHER_METRICS,
     inspection: SELF_CONTAINED,
     provider: "openai-codex",
-    model: "gpt-5.6-luna",
-    effort: "max"
+    model: "gpt-6-sol",
+    effort: "medium"
   });
   assert.ok(delegated.elapsed_ms >= 50);
   assert.ok(Date.now() - startedAt >= 50);
@@ -223,8 +223,8 @@ test("delegates, waits for settlement, preserves Unicode, and reuses the Pi sess
 
   const proof = JSON.parse(await readFile(join(cwd, "fake-pi-proof.json"), "utf8"));
   assert.equal(proof.promptCount, 1);
-  assert.equal(proof.model, "openai-codex/gpt-5.6-luna");
-  assert.equal(proof.effort, "max");
+  assert.equal(proof.model, "openai-codex/gpt-6-sol");
+  assert.equal(proof.effort, "medium");
   assert.match(proof.message, /Task from Claude Code:/);
   assert.match(proof.message, /Create the requested proof artifact\./);
 
@@ -282,7 +282,7 @@ test("rejects bare numeric metrics before Pi starts", async (context) => {
   assert.deepEqual(status.tasks, []);
 });
 
-test("routes hard tasks to Sol with high effort", async (context) => {
+test("routes hard tasks to Astra with high effort", async (context) => {
   const cwd = await mkdtemp(join(tmpdir(), "pi-orchestrator-hard-"));
   const client = new McpClient();
   context.after(async () => {
@@ -318,7 +318,7 @@ test("rejects a Pi model mismatch before prompting", async (context) => {
   const failure = payload(result);
   assert.equal(result.isError, true);
   assert.equal(failure.outcome, "failed");
-  assert.match(failure.error, /selected openai-codex\/gpt-6-astra; expected openai-codex\/gpt-5\.6-luna/);
+  assert.match(failure.error, /selected openai-codex\/gpt-6-astra; expected openai-codex\/gpt-6-sol/);
 });
 
 test("rejects a Pi effort mismatch before prompting", async (context) => {
@@ -334,7 +334,7 @@ test("rejects a Pi effort mismatch before prompting", async (context) => {
   const failure = payload(result);
   assert.equal(result.isError, true);
   assert.equal(failure.outcome, "failed");
-  assert.match(failure.error, /selected high effort; expected max/);
+  assert.match(failure.error, /selected high effort; expected medium/);
 });
 
 test("returns cancelled Pi dialog requests as blockers", async (context) => {

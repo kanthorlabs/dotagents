@@ -42,7 +42,7 @@ function classify(scores, inspection = SELF_CONTAINED) {
   return classifyMetrics(metrics(scores), inspection);
 }
 
-test("routes evidence-backed totals below six to Luna with max effort", () => {
+test("routes evidence-backed totals below six to Sol with medium effort", () => {
   const result = classify({
     reasoning_depth: 1,
     system_span: 1,
@@ -53,13 +53,13 @@ test("routes evidence-backed totals below six to Luna with max effort", () => {
   assert.equal(result.score, 5);
   assert.equal(result.classification, "other");
   assert.equal(result.provider, "openai-codex");
-  assert.equal(result.model, "gpt-5.6-luna");
-  assert.equal(result.effort, "max");
+  assert.equal(result.model, "gpt-6-sol");
+  assert.equal(result.effort, "medium");
   assert.deepEqual(result.reasons, []);
   assert.deepEqual(result.inspection, SELF_CONTAINED);
 });
 
-test("routes an evidence-backed total of six to Sol with high effort", () => {
+test("routes an evidence-backed total of six to Astra with high effort", () => {
   const result = classify({
     reasoning_depth: 1,
     system_span: 1,
