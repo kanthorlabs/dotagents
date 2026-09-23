@@ -61,5 +61,7 @@
     "commit": "",
     "pr": "",
     "sessionUrl": false
-  }
+  },
+  "awaySummaryEnabled": false,
+  "promptSuggestionEnabled": false
 }

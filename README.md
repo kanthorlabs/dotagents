@@ -102,9 +102,11 @@ Each step is also available standalone: `make install-skills`, `install-commands
 
 ## OpenCode 2 Server Setup
 
-On macOS, run the setup script:
+On macOS, export both engine variables before setup. This example selects `pi`:
 
 ```bash
+export KANTHOR_DEBATE_ENGINE=pi
+export KANTHOR_SUPERSAIYAN_ENGINE=pi
 ./scripts/setup-opencode2.sh
 ```
 
@@ -138,8 +140,15 @@ Keep only shell-independent setup in the shared file. Both Bash and Zsh must acc
 Restart the server after each change:
 
 ```bash
-launchctl kickstart -k "gui/$(id -u)/ai.opencode.opencode2"
+opencode2 service restart
 ```
+
+The wrapper routes `service start`, `service stop`, `service restart`, and `service status` to the same LaunchAgent.
+`start` preserves an active process. `restart` replaces it. Both commands print the process ID.
+`stop` sends SIGTERM and keeps the LaunchAgent registered for the next `start`.
+`status` prints the LaunchAgent details, with its state and process ID when active.
+These commands require the LaunchAgent from setup. They accept only help or version flags; other extra arguments fail.
+`service get`, `service set`, and `service unset` still use OpenCode's native configuration commands.
 
 Set `OPENCODE2_PROJECTS_DIR`, `OPENCODE2_PORT`, or `OPENCODE2_HOSTNAME` to override their defaults.
 Set `OPENCODE2_PATH_FILE` to select another shared file.

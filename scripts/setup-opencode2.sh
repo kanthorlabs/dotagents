@@ -182,6 +182,31 @@ if [[ ! -x "$real" ]]; then
   exit 127
 fi
 
+if [[ "${1:-}" = service && "${2:-}" =~ ^(start|stop|restart|status)$ ]]; then
+  if [[ $# -eq 3 && "${3:-}" =~ ^(--help|-h|--version|-v)$ ]]; then
+    exec "$real" "$@"
+  fi
+  if (( $# != 2 )); then
+    printf 'opencode2: service %s accepts no extra arguments or flags\n' "$2" >&2
+    exit 2
+  fi
+  service_target="gui/$(id -u)/ai.opencode.opencode2"
+  case "$2" in
+    start)
+      exec launchctl kickstart -p "$service_target"
+      ;;
+    stop)
+      exec launchctl kill SIGTERM "$service_target"
+      ;;
+    restart)
+      exec launchctl kickstart -k -p "$service_target"
+      ;;
+    status)
+      exec launchctl print "$service_target"
+      ;;
+  esac
+fi
+
 args=("$@")
 for arg in "${args[@]}"; do
   case "$arg" in
