@@ -7,18 +7,19 @@
   "permissions": [
     {
       "action": "external_directory",
-      "resource": "{{HOME}}/.kanthorlabs/**",
+      "resource": "{{HOME}}/.kanthorlabs/*",
       "effect": "allow"
     }
   ],
   "compaction": {
-    "auto": true
+    "auto": true,
+    "buffer": 32000
   },
   "providers": {
     "openai": {
       "models": {
         "gpt-6-sol": {
-          "options": {
+          "settings": {
             "reasoningEffort": "medium"
           },
           "limit": {
@@ -27,35 +28,10 @@
             "output": 128000
           }
         },
-        "gpt-5.6-luna-fast": {
-          "limit": {
-            "context": 404000,
-            "input": 276000,
-            "output": 128000
-          }
-        },
-        "gpt-5.6-sol": {
-          "limit": {
-            "context": 404000,
-            "input": 276000,
-            "output": 128000
-          }
-        },
-        "gpt-5.6-sol-fast": {
-          "limit": {
-            "context": 404000,
-            "input": 276000,
-            "output": 128000
-          }
-        },
-        "gpt-5.6-terra": {
-          "limit": {
-            "context": 404000,
-            "input": 276000,
-            "output": 128000
-          }
-        },
-        "gpt-5.6-terra-fast": {
+        "gpt-6-luna": {
+          "settings": {
+            "reasoningEffort": "max"
+          },
           "limit": {
             "context": 404000,
             "input": 276000,
