@@ -19,7 +19,7 @@
   "providers": {
     "openai": {
       "models": {
-        "gpt-6-sol": {
+        "gpt-6.1-sol": {
           "settings": {
             "reasoningEffort": "medium"
           },

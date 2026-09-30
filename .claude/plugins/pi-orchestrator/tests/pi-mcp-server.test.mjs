@@ -212,7 +212,7 @@ test("delegates, waits for settlement, preserves Unicode, and reuses the Pi sess
     metrics: OTHER_METRICS,
     inspection: SELF_CONTAINED,
     provider: "openai-codex",
-    model: "gpt-6-sol",
+    model: "gpt-6.1-sol",
     effort: "medium"
   });
   assert.ok(delegated.elapsed_ms >= 50);
@@ -223,7 +223,7 @@ test("delegates, waits for settlement, preserves Unicode, and reuses the Pi sess
 
   const proof = JSON.parse(await readFile(join(cwd, "fake-pi-proof.json"), "utf8"));
   assert.equal(proof.promptCount, 1);
-  assert.equal(proof.model, "openai-codex/gpt-6-sol");
+  assert.equal(proof.model, "openai-codex/gpt-6.1-sol");
   assert.equal(proof.effort, "medium");
   assert.match(proof.message, /Task from Claude Code:/);
   assert.match(proof.message, /Create the requested proof artifact\./);
@@ -318,7 +318,7 @@ test("rejects a Pi model mismatch before prompting", async (context) => {
   const failure = payload(result);
   assert.equal(result.isError, true);
   assert.equal(failure.outcome, "failed");
-  assert.match(failure.error, /selected openai-codex\/gpt-6-astra; expected openai-codex\/gpt-6-sol/);
+  assert.match(failure.error, /selected openai-codex\/gpt-6-astra; expected openai-codex\/gpt-6\.1-sol/);
 });
 
 test("rejects a Pi effort mismatch before prompting", async (context) => {

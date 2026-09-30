@@ -22,7 +22,7 @@ const HARD_ROUTE = {
 
 const OTHER_ROUTE = {
   provider: "openai-codex",
-  model: "gpt-6-sol",
+  model: "gpt-6.1-sol",
   effort: "medium"
 };
 

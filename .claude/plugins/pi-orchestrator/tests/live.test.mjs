@@ -111,7 +111,7 @@ test("real Pi modifies and validates an isolated workspace", { skip: !enabled, t
     const payload = JSON.parse(result.content[0].text);
     assert.equal(result.isError, false, JSON.stringify(payload));
     assert.equal(payload.outcome, "completed", JSON.stringify(payload));
-    assert.equal(payload.routing.model, "gpt-6-sol");
+    assert.equal(payload.routing.model, "gpt-6.1-sol");
     assert.equal(payload.routing.effort, "medium");
     assert.equal(await readFile(join(cwd, "proof.txt"), "utf8"), "pi-orchestrator-live-ok\n");
   } finally {
