@@ -3,7 +3,7 @@ set -euo pipefail
 umask 077
 
 DEBATE_DIR="${DEBATE_DIR:-$HOME/.kanthorlabs/debate}"
-DEBATE_TIMEOUT="${DEBATE_TIMEOUT:-900}"
+DEBATE_TIMEOUT="${DEBATE_TIMEOUT:-1800}"
 DEBATE_MAX="${DEBATE_MAX:-1800}"
 DEBATE_POLL="${DEBATE_POLL:-5}"
 DEBATE_MIN_BYTES="${DEBATE_MIN_BYTES:-1000}"
@@ -56,7 +56,14 @@ errlog="$args-stderr.txt"
 
 case "$engine" in
   opencode2) engine_command=(opencode2 run --agent plan) ;;
-  pi) engine_command=(pi --print --no-session --tools read,grep,find,ls) ;;
+  pi)
+    session="${DEBATE_PI_SESSION:-$args-session.jsonl}"
+    if [ -n "${DEBATE_PI_SESSION:-}" ] && [ ! -s "$session" ]; then
+      echo "error: DEBATE_PI_SESSION must name an existing nonempty Pi session" >&2
+      exit 1
+    fi
+    engine_command=(pi --print --session "$session" --tools read,grep,find,ls)
+    ;;
 esac
 
 fail() {

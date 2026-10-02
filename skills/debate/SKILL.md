@@ -29,7 +29,7 @@ Never invoke an engine binary yourself. Never reimplement what a script does.
 > side: it selects the read-only invocation and it refuses an args file outside
 > `~/.kanthorlabs/debate`.
 >
-> **ONE EXCEPTION:** the temp files of step 2, and the statistics append of
+> **ONE EXCEPTION:** the temp files and Pi session records of step 2, and the statistics append of
 > step 4. Both write outside the user's project. Nothing else may be written.
 
 ## 0. Validate environment (hard-fail)
@@ -97,12 +97,20 @@ Then run the engine:
 ```
 
 The script selects the read-only invocation for the engine (`opencode2 run
---agent plan`, or `pi --print --no-session --tools read,grep,find,ls`), feeds
-the block on stdin, polls the run every 5s, kills a silent run at 900s and any
+--agent plan`, or `pi --print --session <session-path> --tools read,grep,find,ls`), feeds
+the block on stdin, polls the run every 5s, kills a silent run at 1800s and any
 run at 1800s, and validates the reply (exit code, completion marker, minimum
 1000 bytes, engine-failure signatures). Its stdout is `<DEBATE_RESPONSE>`. The
 full reply stays in `<args>-reply.txt` and the engine stderr in
 `<args>-stderr.txt`.
+
+Pi saves its session in `<args>-session.jsonl`. Retain it after success, failure or timeout.
+To resume, set `DEBATE_PI_SESSION` to an existing nonempty session file.
+Allocate a new args file with `--check` and write the continuation prompt there.
+Run `DEBATE_PI_SESSION="<saved-session-path>" "$SKILL_DIR/scripts/run.sh" "<new-args-path>"`.
+The new args path preserves the earlier reply and stderr files.
+Use a shell-tool timeout of `1860000` milliseconds. The runner owns the 30-minute deadline; the extra minute permits cleanup.
+Do not impose a ten-minute outer timeout.
 
 Exit codes:
 

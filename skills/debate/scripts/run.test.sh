@@ -65,6 +65,24 @@ check 'stdout holds the reply' "$long" "$(cat "$work/out")"
 check 'stdout drops the marker' '' "$(grep -c '=== END ===' "$work/out" | tr -d ' ' | sed 's/^0$//')"
 check 'reply file keeps the marker' '=== END ===' "$(tail -n 1 "$work/debate/debate-test.txt-reply.txt")"
 
+stub 'printf "%s\n" "$@" > "$STATE_DIR/pi-args"; cat > "$STATE_DIR/pi-input"; head -c 1200 /dev/zero | tr "\0" a'
+check 'saved-session invocation succeeds' 0 "$(rc_of "$RUN" "$(body)")"
+check 'Pi saves a session beside args' "$(cd "$work/debate" && pwd -P)/debate-test.txt-session.jsonl" "$(sed -n '3p' "$STATE_DIR/pi-args")"
+check 'Pi receives session option' '--session' "$(sed -n '2p' "$STATE_DIR/pi-args")"
+check 'Pi keeps read-only tools' 'read,grep,find,ls' "$(sed -n '5p' "$STATE_DIR/pi-args")"
+check 'Pi receives the prompt' 'debate body' "$(cat "$STATE_DIR/pi-input")"
+printf 'saved session\n' > "$work/debate/saved.jsonl"
+check 'explicit saved session resumes' 0 "$(DEBATE_PI_SESSION="$work/debate/saved.jsonl" rc_of "$RUN" "$(body)")"
+check 'Pi receives the existing session' "$work/debate/saved.jsonl" "$(sed -n '3p' "$STATE_DIR/pi-args")"
+check 'missing resume session fails' 1 "$(DEBATE_PI_SESSION="$work/debate/missing.jsonl" rc_of "$RUN" "$(body)")"
+
+printf '#!/usr/bin/env bash\nprintf "%%s\\n" "$1" >> "$STATE_DIR/sleeps"\n/bin/sleep 0.1\n' > "$work/bin/sleep"
+chmod 755 "$work/bin/sleep"
+stub 'cat >/dev/null; /bin/sleep 5'
+check 'default deadline allows 30 minutes' 1 "$(rc_of env -u DEBATE_TIMEOUT -u DEBATE_MAX DEBATE_POLL=600 "$RUN" "$(body)")"
+check 'watchdog waits three ten-minute intervals' 3 "$(wc -l < "$STATE_DIR/sleeps" | tr -d ' ')"
+rm "$work/bin/sleep"
+
 stub "cat >/dev/null; printf '%s\n' '$long'; echo noise >&2"
 check 'stderr stays out of the reply' 0 "$(rc_of "$RUN" "$(body)")"
 check 'stderr goes to its own file' 'noise' "$(cat "$work/debate/debate-test.txt-stderr.txt")"
