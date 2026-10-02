@@ -44,6 +44,11 @@ ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 five_h=$(echo "$input"  | jq -r '.rate_limits.five_hour.used_percentage  // empty')
 seven_d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage  // empty')
 
+if [ -n "$five_h" ]; then
+  echo "$input" | jq -c '{session_id, rate_limits, updated_at: now}' > "$HOME/.claude/rate-limits.json.tmp" 2>/dev/null \
+    && mv "$HOME/.claude/rate-limits.json.tmp" "$HOME/.claude/rate-limits.json"
+fi
+
 # --- assemble segments ---
 out=""
 
