@@ -79,6 +79,8 @@ The hook detects these categories:
 - Password and secret literals in code, and in env files.
 
 The denial message shows the category and the line numbers, not the secret value.
+Secret literals, env values and DSN passwords with the exact prefix `debug_` or `test_` are permitted fixture values.
+The prefixes are case-sensitive. Each match is checked separately; a fixture does not exempt another secret on the same line.
 The hooks do not scan shell output, grep output, or web content.
 If `jq` is missing or the input is invalid, the Claude hook allows the read.
 Pi blocks reads when the scanner reports an error or exceeds its timeout, in all modes.

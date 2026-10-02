@@ -40,6 +40,25 @@ check 'Anthropic key denies' deny "$(decision_for "sk-""ant-api03-0123456789abcd
 check 'password literal denies' deny "$(decision_for "password = \"hunter2""hunter2\"")"
 check 'env file secret denies' deny "$(decision_for "export STRIPE_SECRET=abcdef""123456")"
 
+check 'debug secret literal allows' '' "$(decision_for 'const SECRET = "debug_fixture-value";')"
+check 'test secret literal allows' '' "$(decision_for "const SECRET = 'test_fixture-value';")"
+check 'JSON fixture value allows' '' "$(decision_for '{"api_key":"test_fixture-value"}')"
+check 'debug env value allows' '' "$(decision_for 'export SERVICE_SECRET=debug_fixture-value')"
+check 'test quoted env value allows' '' "$(decision_for 'SERVICE_TOKEN="test_fixture-value"')"
+check 'test DSN password allows' '' "$(decision_for 'postgres://app:test_fixture-value@db.internal/app')"
+check 'debug Go DSN password allows' '' "$(decision_for 'app:debug_fixture-value@tcp(db.internal:3306)/app')"
+check 'fixture named variable with ordinary value denies' deny "$(decision_for 'test_secret = "ordinary-value";')"
+check 'uppercase prefix denies' deny "$(decision_for 'secret = "TEST_fixture-value";')"
+check 'embedded prefix denies' deny "$(decision_for 'secret = "ordinary-test_fixture";')"
+check 'prefix after a colon in the value denies' deny "$(decision_for 'secret = "ordinary:test_fixture";')"
+check 'prefix after an equals sign in the value denies' deny "$(decision_for 'SERVICE_SECRET=ordinary=debug_fixture')"
+check 'fixture and ordinary literal on one line denies' deny "$(decision_for 'secret = "test_fixture-value"; password = "ordinary-value";')"
+check 'fixture and ordinary JSON value on one line denies' deny "$(decision_for '{"secret":"debug_fixture-value","password":"ordinary-value"}')"
+check 'fixture env and ordinary literal on one line denies' deny "$(decision_for 'SERVICE_SECRET=test_fixture-value password="ordinary-value"')"
+check 'fixture and ordinary DSN on one line denies' deny "$(decision_for 'postgres://app:test_fixture@db/app postgres://app:ordinary-value@db/app')"
+check 'fixture DSN username with ordinary password denies' deny "$(decision_for 'postgres://test_user:ordinary-value@db/app')"
+check 'fixture Go DSN username with ordinary password denies' deny "$(decision_for 'debug_user:ordinary-value@tcp(db.internal:3306)/app')"
+
 check 'plain source allows' '' "$(decision_for "func main() { fmt.Println(\"hello\") }")"
 check 'DSN on localhost allows' '' "$(decision_for "postgres://app:s3cr""et@localhost:5432/app")"
 check 'DSN on 127.0.0.1 allows' '' "$(decision_for "redis://default:s3cr""et@127.0.0.1:6379/0")"
@@ -70,5 +89,5 @@ check 'scan exits 0 on a clean file' 0 "$(rc=0; "$SCAN" "$work/scan-clean" >/dev
 check 'scan exits 0 without an argument' 0 "$(rc=0; "$SCAN" >/dev/null || rc=$?; echo $rc)"
 
 [ "$failures" -eq 0 ] || { printf '%s failure(s)\n' "$failures"; exit 1; }
-node --test "$ROOT/opencode.test.mjs"
+node --test "$ROOT/opencode.test.mjs" "$ROOT/pi.test.mjs"
 printf 'all passed\n'
