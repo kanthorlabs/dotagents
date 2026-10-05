@@ -95,6 +95,12 @@ check 'password literal placeholder allows' '' "$(decision_for "export OPENCODE_
 check 'code constant named like a token allows' '' "$(decision_for "TOKEN_ROW = re.compile(r\"^abc\")")"
 check 'env file reference allows' '' "$(decision_for "DB_PASSWORD=\${VAULT_DB_PASSWORD}")"
 check 'DSN with angle placeholder allows' '' "$(decision_for "mysql://app:<password>@db/app and app:<password>@tcp(db)/app")"
+mkdir "$work/failing-bin"
+printf '#!/bin/sh\nexit 2\n' > "$work/failing-bin/sed"
+chmod +x "$work/failing-bin/sed"
+printf 'hello\n' > "$work/scan-fails"
+check 'scan failure denies' deny "$(jq -n --arg p "$work/scan-fails" '{tool_input: {file_path: $p}}' \
+  | PATH="$work/failing-bin:$PATH" "$GUARD" 2>/dev/null | jq -r '.hookSpecificOutput.permissionDecision // empty')"
 check 'missing file allows' '' "$(jq -n '{tool_input: {file_path: "/nonexistent/file"}}' | "$GUARD")"
 check 'invalid input allows' '' "$(printf 'not json' | "$GUARD")"
 

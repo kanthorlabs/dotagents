@@ -85,6 +85,7 @@ The permitted forms are `NAME=value`, `export NAME=value`, and the YAML forms `N
 The scanner ignores the value of such an assignment. The env prefixes are case-sensitive.
 The hooks do not scan shell output, grep output, or web content.
 If `jq` is missing or the input is invalid, the Claude hook allows the read.
+The Claude hook blocks the read when the scanner fails.
 Pi blocks reads when the scanner reports an error or exceeds its timeout, in all modes.
 The scanner uses patterns; it does not detect every secret or inspect image content.
 `make install-settings` registers the Claude hook. `make install-opencode-json` registers the OpenCode hook.
