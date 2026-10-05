@@ -6,7 +6,7 @@ file_path="${1:-}"
 
 masked="$(mktemp)" || exit 2
 trap 'rm -f "$masked"' EXIT
-fixture_env_value='s/^([[:space:]]*(export[[:space:]]+)?(E2E_|TEST_|DEBUG_)[A-Za-z0-9_]*=)("[^"]*"|'\''[^'\'']*'\''|[^[:space:]]*)/\1/'
+fixture_env_value='s/^([[:space:]]*(-[[:space:]]+|export[[:space:]]+)?(E2E_|TEST_|DEBUG_)[A-Za-z0-9_]*(=|:[[:space:]]+))("[^"]*"|'\''[^'\'']*'\''|[^[:space:]]*)/\1/'
 LC_ALL=C sed -E "$fixture_env_value" < "$file_path" > "$masked" || exit 2
 
 findings=()
