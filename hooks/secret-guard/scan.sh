@@ -39,7 +39,7 @@ scan 'Stripe live key' '' '\b(sk|rk)_live_[A-Za-z0-9]{24,}'
 scan 'Google API key' '' '\bAIza[A-Za-z0-9_-]{35}'
 scan 'Anthropic or OpenAI API key' '' '\bsk-(ant-|proj-)?[A-Za-z0-9_-]{32,}'
 scan 'Password or secret literal' -i '(password|passwd|secret|api_?key|access_?token|auth_?token)["'\'']?[[:space:]]*[:=][[:space:]]*["'\''][^"'\''[:space:]$<{][^"'\''[:space:]]{7,}["'\'']' "$fixture_assignment"
-scan 'Password or secret in env file' '' '^[[:space:]]*(export[[:space:]]+)?[A-Z0-9_]*(PASSWORD|PASSWD|SECRET|TOKEN|API_KEY|PRIVATE_KEY)=["'\'']?[^[:space:]$"'\''{<]{8,}' "$fixture_assignment"
+scan 'Password or secret in env file' '' '^[[:space:]]*(-[[:space:]]+|export[[:space:]]+)?[A-Z0-9_]*(PASSWORD|PASSWD|SECRET|TOKEN|API_KEY|PRIVATE_KEY)=["'\'']?[^[:space:]$"'\''{<]{8,}' "$fixture_assignment"
 
 [ "${#findings[@]}" -eq 0 ] && exit 0
 

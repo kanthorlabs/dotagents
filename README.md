@@ -75,7 +75,7 @@ The hook detects these categories:
 - AWS access key IDs, secret access keys, and session tokens.
 - URLs and database DSNs with a password, including Go MySQL `user:<password>@tcp(...)` DSNs.
 - Private keys, and GitHub, Slack, Stripe, Google, Anthropic, and OpenAI tokens.
-- Password and secret literals in code, and in env files.
+- Password and secret literals in code, in env files, and in YAML `- NAME=value` env lists.
 
 The denial message shows the category and the line numbers, not the secret value.
 Secret literals, env values and DSN passwords with the exact prefix `debug_` or `test_` are permitted fixture values.
