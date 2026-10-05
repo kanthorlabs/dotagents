@@ -38,7 +38,6 @@ scan 'Slack token' '' '\bxox[abprs]-[A-Za-z0-9-]{10,}'
 scan 'Stripe live key' '' '\b(sk|rk)_live_[A-Za-z0-9]{24,}'
 scan 'Google API key' '' '\bAIza[A-Za-z0-9_-]{35}'
 scan 'Anthropic or OpenAI API key' '' '\bsk-(ant-|proj-)?[A-Za-z0-9_-]{32,}'
-scan 'JSON Web Token' '' '\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'
 scan 'Password or secret literal' -i '(password|passwd|secret|api_?key|access_?token|auth_?token)["'\'']?[[:space:]]*[:=][[:space:]]*["'\''][^"'\''[:space:]$<{][^"'\''[:space:]]{7,}["'\'']' "$fixture_assignment"
 scan 'Password or secret in env file' '' '^[[:space:]]*(export[[:space:]]+)?[A-Z0-9_]*(PASSWORD|PASSWD|SECRET|TOKEN|API_KEY|PRIVATE_KEY)=["'\'']?[^[:space:]$"'\''{<]{8,}' "$fixture_assignment"
 

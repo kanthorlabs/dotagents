@@ -75,7 +75,6 @@ The hook detects these categories:
 - AWS access key IDs, secret access keys, and session tokens.
 - URLs and database DSNs with a password, including Go MySQL `user:<password>@tcp(...)` DSNs.
 - Private keys, and GitHub, Slack, Stripe, Google, Anthropic, and OpenAI tokens.
-- JSON Web Tokens.
 - Password and secret literals in code, and in env files.
 
 The denial message shows the category and the line numbers, not the secret value.

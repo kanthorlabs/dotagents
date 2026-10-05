@@ -72,6 +72,7 @@ check 'prefix in a code literal denies' deny "$(decision_for "TEST_PASSWORD = \"
 check 'E2E env and ordinary literal on one line denies' deny "$(decision_for "export E2E_SECRET=x password=\"hunter2""hunter2\"")"
 check 'E2E env and ordinary env on next line denies' deny "$(decision_for "$(printf 'E2E_SECRET=abcdef''123456\nSTRIPE_SECRET=abcdef''123456')")"
 
+check 'JSON Web Token allows' '' "$(decision_for "token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U")"
 check 'plain source allows' '' "$(decision_for "func main() { fmt.Println(\"hello\") }")"
 check 'DSN on localhost allows' '' "$(decision_for "postgres://app:s3cr""et@localhost:5432/app")"
 check 'DSN on 127.0.0.1 allows' '' "$(decision_for "redis://default:s3cr""et@127.0.0.1:6379/0")"
