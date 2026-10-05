@@ -4,11 +4,16 @@ set -uo pipefail
 file_path="${1:-}"
 [ -n "$file_path" ] && [ -f "$file_path" ] && [ -r "$file_path" ] || exit 0
 
+masked="$(mktemp)" || exit 2
+trap 'rm -f "$masked"' EXIT
+fixture_env_value='s/^([[:space:]]*(export[[:space:]]+)?(E2E_|TEST_|DEBUG_)[A-Za-z0-9_]*=)("[^"]*"|'\''[^'\'']*'\''|[^[:space:]]*)/\1/'
+LC_ALL=C sed -E "$fixture_env_value" < "$file_path" > "$masked" || exit 2
+
 findings=()
 
 scan() {
   local label="$1" case_flag="$2" regex="$3" allowed="${4:-^$}" lines
-  lines="$(grep -noIE $case_flag -e "$regex" -- "$file_path" 2>/dev/null | grep -vE "$allowed" | cut -d: -f1 | uniq | head -5 | paste -sd, -)"
+  lines="$(grep -noIE $case_flag -e "$regex" -- "$masked" 2>/dev/null | grep -vE "$allowed" | cut -d: -f1 | uniq | head -5 | paste -sd, -)"
   [ -n "$lines" ] && findings+=("$label (lines $lines)")
 }
 
@@ -18,7 +23,7 @@ fixture_dsn='^[0-9]+:([^:]+://)?[^:]+:(debug_|test_)[^@]+@'
 
 scan_dsn() {
   local label="$1" regex="$2" lines
-  lines="$(grep -noIE -e "$regex" -- "$file_path" 2>/dev/null | grep -vE "$local_host|$fixture_dsn" | cut -d: -f1 | uniq | head -5 | paste -sd, -)"
+  lines="$(grep -noIE -e "$regex" -- "$masked" 2>/dev/null | grep -vE "$local_host|$fixture_dsn" | cut -d: -f1 | uniq | head -5 | paste -sd, -)"
   [ -n "$lines" ] && findings+=("$label (lines $lines)")
 }
 
