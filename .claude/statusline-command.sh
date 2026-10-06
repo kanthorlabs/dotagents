@@ -83,3 +83,74 @@ if [ -n "$seven_d" ]; then
 fi
 
 printf "%b\n" "$out"
+
+C_WARM="\033[38;5;114m"
+C_LOW="\033[38;5;221m"
+C_COLD="\033[38;5;203m"
+CACHE_SEP=" · "
+
+cache_fields=$(echo "$input" | jq -r '
+  .prompt_cache // empty
+  | [ (.warm | tostring),
+      (.ttl // ""),
+      (.expires_at // "" | tostring),
+      (if .hit_ratio == null then "" else (.hit_ratio * 100 | round | tostring) end),
+      (.misses // "" | tostring),
+      ((.last_miss_cause.causes // []) | join(",")),
+      (if .recache_tokens_if_cold == null then "" else (.recache_tokens_if_cold / 1000 | round | tostring) end)
+    ]
+  | join("|")')
+
+[ -n "$cache_fields" ] || exit 0
+
+IFS='|' read -r c_warm c_ttl c_expires c_hit c_misses c_cause c_recache_k <<EOF
+$cache_fields
+EOF
+
+now=$(date +%s)
+remaining=""
+if [ -n "$c_expires" ]; then
+  remaining=$((c_expires - now))
+fi
+
+if [ "$c_warm" = "true" ] && { [ -z "$remaining" ] || [ "$remaining" -gt 0 ]; }; then
+  case "$c_ttl" in
+    *m) ttl_s=$((${c_ttl%m} * 60)) ;;
+    *h) ttl_s=$((${c_ttl%h} * 3600)) ;;
+    *)  ttl_s="" ;;
+  esac
+
+  colour="$C_WARM"
+  seg="cache ●"
+  [ -n "$c_ttl" ] && seg="${seg} ${c_ttl}"
+
+  if [ -n "$remaining" ]; then
+    if [ -n "$ttl_s" ] && [ "$ttl_s" -gt 0 ]; then
+      [ $((remaining * 5)) -lt "$ttl_s" ] && colour="$C_LOW"
+      filled=$(((remaining * 6 + ttl_s / 2) / ttl_s))
+      [ "$filled" -gt 6 ] && filled=6
+      bar=""
+      i=0
+      while [ "$i" -lt 6 ]; do
+        if [ "$i" -lt "$filled" ]; then bar="${bar}█"; else bar="${bar}░"; fi
+        i=$((i + 1))
+      done
+      seg="${seg} ${bar}"
+    fi
+    if [ "$remaining" -ge 60 ]; then
+      seg="${seg} $((remaining / 60))m left"
+    else
+      seg="${seg} ${remaining}s left"
+    fi
+  fi
+
+  [ -n "$c_hit" ] && seg="${seg}${CACHE_SEP}hit ${c_hit}%"
+  [ -n "$c_misses" ] && seg="${seg}${CACHE_SEP}misses ${c_misses}"
+else
+  colour="$C_COLD"
+  seg="cache ○ cold"
+  [ -n "$c_recache_k" ] && seg="${seg}${CACHE_SEP}next message re-caches ${c_recache_k}k tokens"
+  [ -n "$c_cause" ] && seg="${seg}${CACHE_SEP}last miss: ${c_cause}"
+fi
+
+printf "%b\n" "${colour}${seg}${RESET}"
