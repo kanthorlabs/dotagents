@@ -99,12 +99,13 @@ Restart the OpenCode 2 service after installation to load the plugin.
 The hook scans the full file before each `read`, even when the call requests only selected lines.
 Sensitive reads fail in interactive, RPC, JSON, and print modes. The hook never requests approval.
 
-`.pi/extensions/completion-sound.ts` reuses the Claude audio files through macOS `afplay`:
+`.pi/extensions/completion-sound.ts` reuses the Claude audio files through `afplay` on macOS and `mpg123` on Linux:
 
 - Non-error completion plays `assets/audio/success.mp3`.
 - A final agent error plays `assets/audio/failure.mp3`.
 - Aborted responses stay silent.
 - Other operating systems skip audio.
+- On Debian or Ubuntu, install the player with `apt install mpg123`.
 
 The extension uses `agent_settled`, after automatic retries, compaction, and queued work finish.
 The final agent response selects the sound, not individual tool exit codes.

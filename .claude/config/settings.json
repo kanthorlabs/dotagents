@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay {{DOTAGENTS}}/assets/audio/success.mp3"
+            "command": "if command -v afplay >/dev/null; then afplay {{DOTAGENTS}}/assets/audio/success.mp3; else mpg123 -q {{DOTAGENTS}}/assets/audio/success.mp3; fi"
           }
         ]
       }
@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay {{DOTAGENTS}}/assets/audio/failure.mp3"
+            "command": "if command -v afplay >/dev/null; then afplay {{DOTAGENTS}}/assets/audio/failure.mp3; else mpg123 -q {{DOTAGENTS}}/assets/audio/failure.mp3; fi"
           }
         ]
       }

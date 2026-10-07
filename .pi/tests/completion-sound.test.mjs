@@ -138,8 +138,17 @@ test("does not notify while another extension starts more work", async () => {
   assert.deepEqual(h.calls, []);
 });
 
-test("skips audio outside macOS", async (t) => {
+test("plays audio through mpg123 on Linux", async (t) => {
   Object.defineProperty(process, "platform", { value: "linux" });
+  t.after(() => Object.defineProperty(process, "platform", { value: "darwin" }));
+  const h = harness();
+  await h.emit("agent_end", { messages: [assistant("stop")] });
+  await h.emit("agent_settled");
+  assert.deepEqual(h.calls, [["mpg123", ["-q", resolve(root, "assets/audio/success.mp3")], { timeout: 10000 }]]);
+});
+
+test("skips audio outside macOS and Linux", async (t) => {
+  Object.defineProperty(process, "platform", { value: "win32" });
   t.after(() => Object.defineProperty(process, "platform", { value: "darwin" }));
   const h = harness();
   await h.emit("agent_end", { messages: [assistant("stop")] });

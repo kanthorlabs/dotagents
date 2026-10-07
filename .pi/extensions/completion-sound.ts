@@ -4,6 +4,12 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const audioDirectory = resolve(dirname(realpathSync(new URL(import.meta.url))), "../../assets/audio");
 
+function player(file: string): [string, string[]] | undefined {
+  if (process.platform === "darwin") return ["afplay", [file]];
+  if (process.platform === "linux") return ["mpg123", ["-q", file]];
+  return undefined;
+}
+
 export default function (pi: ExtensionAPI) {
   let sound: "success" | "failure" | undefined;
 
@@ -23,12 +29,15 @@ export default function (pi: ExtensionAPI) {
     if (!ctx.isIdle()) return;
     const completedSound = sound;
     sound = undefined;
-    if (!completedSound || process.platform !== "darwin") return;
+    if (!completedSound) return;
+    const command = player(resolve(audioDirectory, `${completedSound}.mp3`));
+    if (!command) return;
 
     try {
-      const result = await pi.exec("afplay", [resolve(audioDirectory, `${completedSound}.mp3`)], { timeout: 10000 });
+      const [program, args] = command;
+      const result = await pi.exec(program, args, { timeout: 10000 });
       if (result.code !== 0) {
-        throw new Error(result.stderr.trim() || `afplay exited with code ${result.code}`);
+        throw new Error(result.stderr.trim() || `${program} exited with code ${result.code}`);
       }
     } catch (error) {
       if (ctx.hasUI) ctx.ui.notify(`Completion sound failed: ${String(error)}`, "warning");
