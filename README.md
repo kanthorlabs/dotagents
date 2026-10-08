@@ -60,13 +60,16 @@ Use `/pi <task>` for explicit delegation. Pi must be installed and authenticated
 `hooks/secret-guard/` holds a secret scanner that all agents share:
 
 - `scan.sh <file>` prints one finding per line and exits 1 on a match. It does not depend on an agent.
-- `claude.sh` adapts `scan.sh` to the Claude Code hook protocol.
+- `claude.sh` adapts `scan.sh` to the Claude Code hook protocol for `Read`.
+- `claude-bash.sh` adapts `scan.sh` to the Claude Code hook protocol for `Bash` output.
 - `opencode.js` denies sensitive OpenCode 2 `read` resources through a permission hook.
 - `pi.ts` blocks sensitive Pi `read` calls through the `tool_call` event, without approval.
 
 To support another agent, add an adapter next to `claude.sh` that calls `scan.sh`.
 
 `claude.sh` runs as a `PreToolUse` hook on the `Read` tool.
+`claude-bash.sh` runs as a `PostToolUse` hook on the `Bash` tool.
+If the `Bash` stdout or stderr contains possible sensitive data, the hook replaces both with the denial message.
 `opencode.js` checks OpenCode 2 `read` permissions before the file read.
 If the file contains possible sensitive data, the hook blocks the read.
 
@@ -83,9 +86,9 @@ The prefixes are case-sensitive. Each match is checked separately; a fixture doe
 Env assignments with a name that starts with `E2E_`, `TEST_` or `DEBUG_` are permitted.
 The permitted forms are `NAME=value`, `export NAME=value`, and the YAML forms `NAME: value` and `- NAME=value`.
 The scanner ignores the value of such an assignment. The env prefixes are case-sensitive.
-The hooks do not scan shell output, grep output, or web content.
+The OpenCode and Pi hooks do not scan shell output. The hooks do not scan `Grep` tool output or web content.
 If `jq` is missing or the input is invalid, the Claude hook allows the read.
-The Claude hook blocks the read when the scanner fails.
+The Claude hook blocks the read when the scanner fails. The Claude `Bash` hook redacts the output when the scanner fails.
 Pi blocks reads when the scanner reports an error or exceeds its timeout, in all modes.
 The scanner uses patterns; it does not detect every secret or inspect image content.
 `make install-settings` registers the Claude hook. `make install-opencode-json` registers the OpenCode hook.

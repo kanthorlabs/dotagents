@@ -18,6 +18,17 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash {{DOTAGENTS}}/hooks/secret-guard/claude-bash.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GUARD="$ROOT/claude.sh"
+BASH_GUARD="$ROOT/claude-bash.sh"
 SCAN="$ROOT/scan.sh"
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
@@ -35,6 +36,7 @@ check 'DSN on a lookalike local host denies' deny "$(decision_for "postgres://ap
 check 'DSN on a 192.168 prefix host name denies' deny "$(decision_for "postgres://app:s3cr""et@192.168.1.10.evil.com/app")"
 check 'local and remote DSN on one line denies' deny "$(decision_for "a=postgres://app:s3cr""et@localhost/app b=postgres://app:s3cr""et@db.internal/app")"
 check 'private key denies' deny "$(decision_for "-----BEGIN RSA PRIVATE ""KEY-----")"
+check 'PKCS8 private key denies' deny "$(decision_for "-----BEGIN PRIVATE ""KEY-----")"
 check 'GitHub token denies' deny "$(decision_for "token: gh""p_0123456789abcdefghijABCDEFGHIJ012345")"
 check 'Anthropic key denies' deny "$(decision_for "sk-""ant-api03-0123456789abcdefghijABCDEFGHIJ")"
 check 'password literal denies' deny "$(decision_for "password = \"hunter2""hunter2\"")"
@@ -112,6 +114,35 @@ reason="$(printf 'user=AKIA''IOSFODNN7EXAMPLE\n' > "$work/leak" \
   | jq -r '.hookSpecificOutput.permissionDecisionReason')"
 check 'reason omits the secret value' absent "$(printf '%s' "$reason" | grep -q 'IOSFODNN7' && echo present || echo absent)"
 check 'reason names the line' present "$(printf '%s' "$reason" | grep -q 'lines 1' && echo present || echo absent)"
+
+bash_output_for() {
+  jq -n --arg out "$1" --arg err "${2:-}" \
+    '{tool_name: "Bash", tool_input: {command: "x"}, tool_response: {stdout: $out, stderr: $err, interrupted: false}}' \
+    | "$BASH_GUARD" \
+    | jq -r '.hookSpecificOutput.updatedToolOutput.stdout // empty'
+}
+
+bash_redacted() {
+  bash_output_for "$@" | grep -q '^secret-guard: ' && echo redacted || echo kept
+}
+
+check 'Bash stdout private key redacts' redacted "$(bash_redacted "-----BEGIN PRIVATE ""KEY-----")"
+check 'Bash stderr private key redacts' redacted "$(bash_redacted 'hello' "-----BEGIN RSA PRIVATE ""KEY-----")"
+check 'Bash stdout AWS key redacts' redacted "$(bash_redacted "key = AKIA""IOSFODNN7EXAMPLE")"
+check 'Bash clean output keeps' '' "$(bash_output_for 'hello')"
+check 'Bash fixture env output keeps' '' "$(bash_output_for "E2E_PASSWORD=hunter2""hunter2")"
+check 'Bash redaction clears stderr' '' "$(jq -n --arg err "-----BEGIN PRIVATE ""KEY-----" \
+  '{tool_response: {stdout: "", stderr: $err, interrupted: false}}' \
+  | "$BASH_GUARD" | jq -r '.hookSpecificOutput.updatedToolOutput.stderr')"
+check 'Bash redaction keeps other fields' false "$(jq -n --arg out "-----BEGIN PRIVATE ""KEY-----" \
+  '{tool_response: {stdout: $out, stderr: "", interrupted: false}}' \
+  | "$BASH_GUARD" | jq -r '.hookSpecificOutput.updatedToolOutput.interrupted')"
+check 'Bash reason omits the secret value' absent "$(bash_output_for "user=AKIA""IOSFODNN7EXAMPLE" | grep -q 'IOSFODNN7' && echo present || echo absent)"
+check 'Bash scan failure redacts' redacted "$(jq -n '{tool_response: {stdout: "hello", stderr: "", interrupted: false}}' \
+  | PATH="$work/failing-bin:$PATH" "$BASH_GUARD" 2>/dev/null \
+  | jq -r '.hookSpecificOutput.updatedToolOutput.stdout // empty' | grep -q '^secret-guard: ' && echo redacted || echo kept)"
+check 'Bash invalid input keeps' '' "$(printf 'not json' | "$BASH_GUARD")"
+check 'Bash missing response keeps' '' "$(jq -n '{tool_input: {command: "x"}}' | "$BASH_GUARD")"
 
 printf 'aws_key=AKIA''IOSFODNN7EXAMPLE\n' > "$work/scan-hit"
 printf 'hello\n' > "$work/scan-clean"
