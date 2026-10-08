@@ -15,6 +15,7 @@ C_MODEL="\033[38;5;141m" # lavender    — model name
 C_CTX="\033[38;5;79m"    # teal        — context %
 C_5H="\033[38;5;210m"    # salmon      — 5-hour limit
 C_7D="\033[38;5;183m"    # lilac       — 7-day limit
+C_ACCT="\033[38;5;151m"
 C_SEP="\033[38;5;240m"   # grey        — separators
 
 SEP=" ${C_SEP}|${RESET} "
@@ -37,6 +38,8 @@ fi
 # --- model display name ---
 model=$(echo "$input" | jq -r '.model.display_name // .model.id // empty')
 
+account=$(jq -r '.oauthAccount.emailAddress // empty' "${CLAUDE_CONFIG_DIR:-$HOME}/.claude.json" 2>/dev/null)
+
 # --- context used % ---
 ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
@@ -57,6 +60,10 @@ if [ -n "$branch" ]; then
   out="${C_PATH}${BOLD}${proj}${RESET}${C_SEP}:${RESET}${C_GIT}${branch}${RESET}"
 else
   out="${C_PATH}${BOLD}${proj}${RESET}"
+fi
+
+if [ -n "$account" ]; then
+  out="${out}${SEP}${C_ACCT}${account}${RESET}"
 fi
 
 # model
