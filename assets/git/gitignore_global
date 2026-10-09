@@ -3,4 +3,6 @@
 **/AGENTS.local.md
 **/dev_*.sh
 **/dev_*.py
+**/dev-*.sh
+**/dev-*.py
 **/.dev
