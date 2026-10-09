@@ -6,3 +6,5 @@
 **/dev-*.sh
 **/dev-*.py
 **/.dev
+**/.env
+**/*.env
