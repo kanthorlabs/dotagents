@@ -70,6 +70,7 @@
   },
   "outputStyle": "concise",
   "effortLevel": "medium",
+  "autoCompactWindow": 440000,
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
   "verbose": false,
