@@ -45,6 +45,7 @@ ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
 # --- rate limits ---
 five_h=$(echo "$input"  | jq -r '.rate_limits.five_hour.used_percentage  // empty')
+five_h_reset=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty | floor')
 seven_d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage  // empty')
 
 if [ -n "$five_h" ]; then
@@ -80,7 +81,13 @@ fi
 # 5-hour limit (show remaining = 100 - used)
 if [ -n "$five_h" ]; then
   five_rem=$(printf '%.0f' "$(echo "100 - $five_h" | bc)")
-  out="${out}${SEP}${C_5H}5h: ${five_rem}%${RESET}"
+  five_seg="5h: ${five_rem}%"
+  if [ -n "$five_h_reset" ]; then
+    five_left=$((five_h_reset - $(date +%s)))
+    [ "$five_left" -lt 0 ] && five_left=0
+    five_seg="${five_seg} ($((five_left / 3600))h$(((five_left % 3600) / 60))m)"
+  fi
+  out="${out}${SEP}${C_5H}${five_seg}${RESET}"
 fi
 
 # 7-day limit (show remaining)
