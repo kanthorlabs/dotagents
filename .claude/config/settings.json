@@ -51,6 +51,7 @@
     ]
   },
   "enableWorkflows": false,
+  "promptCacheTtl": "1h",
   "statusLine": {
     "type": "command",
     "command": "bash {{HOME}}/.claude/statusline-command.sh",
