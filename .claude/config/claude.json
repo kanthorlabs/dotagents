@@ -12,5 +12,10 @@
       ],
       "env": {}
     }
+  },
+  "projects": {
+    "{{HOME}}/Projects": {
+      "hasTrustDialogAccepted": true
+    }
   }
 }
