@@ -105,3 +105,11 @@ install-plugins:
 install-persona:
 	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-persona.sh"
 	@ROOT="$(ROOT)" "$(ROOT)/scripts/setup-gitignore-global.sh"
+
+.PHONY: install-remote-control
+install-remote-control:
+	@"$(ROOT)/scripts/setup-remote-control.sh" install
+
+.PHONY: uninstall-remote-control
+uninstall-remote-control:
+	@"$(ROOT)/scripts/setup-remote-control.sh" uninstall
