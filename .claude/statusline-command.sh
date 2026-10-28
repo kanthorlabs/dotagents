@@ -47,6 +47,11 @@ ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 five_h=$(echo "$input"  | jq -r '.rate_limits.five_hour.used_percentage  // empty')
 five_h_reset=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty | floor')
 seven_d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage  // empty')
+seven_d_reset=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty | floor')
+
+format_epoch() {
+  date -r "$1" "+$2" 2>/dev/null || date -d "@$1" "+$2"
+}
 
 if [ -n "$five_h" ]; then
   echo "$input" | jq -c '{session_id, rate_limits, updated_at: now}' > "$HOME/.claude/rate-limits.json.tmp" 2>/dev/null \
@@ -83,9 +88,7 @@ if [ -n "$five_h" ]; then
   five_rem=$(printf '%.0f' "$(echo "100 - $five_h" | bc)")
   five_seg="5h: ${five_rem}%"
   if [ -n "$five_h_reset" ]; then
-    five_left=$((five_h_reset - $(date +%s)))
-    [ "$five_left" -lt 0 ] && five_left=0
-    five_seg="${five_seg} ($((five_left / 3600))h$(((five_left % 3600) / 60))m)"
+    five_seg="${five_seg} ($(format_epoch "$five_h_reset" '%I:%M %p'))"
   fi
   out="${out}${SEP}${C_5H}${five_seg}${RESET}"
 fi
@@ -93,7 +96,11 @@ fi
 # 7-day limit (show remaining)
 if [ -n "$seven_d" ]; then
   seven_rem=$(printf '%.0f' "$(echo "100 - $seven_d" | bc)")
-  out="${out}${SEP}${C_7D}7d: ${seven_rem}%${RESET}"
+  seven_seg="7d: ${seven_rem}%"
+  if [ -n "$seven_d_reset" ]; then
+    seven_seg="${seven_seg} ($(format_epoch "$seven_d_reset" '%m/%d %I:%M %p'))"
+  fi
+  out="${out}${SEP}${C_7D}${seven_seg}${RESET}"
 fi
 
 printf "%b\n" "$out"
