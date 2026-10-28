@@ -1,17 +1,6 @@
 {
-  // /debate writes its temp files to ~/.kanthorlabs/debate and appends run statistics
-  // to ~/.kanthorlabs/state/debate.jsonl. Both paths sit outside the session
-  // directory, so OpenCode guards them with the external_directory permission and
-  // a non-interactive run auto-rejects them.
   "$schema": "https://opencode.ai/config.json",
   "plugins": ["{{DOTAGENTS}}/hooks/secret-guard/opencode.js"],
-  "permissions": [
-    {
-      "action": "external_directory",
-      "resource": "{{HOME}}/.kanthorlabs/*",
-      "effect": "allow"
-    }
-  ],
   "compaction": {
     "auto": true,
     "buffer": 32000

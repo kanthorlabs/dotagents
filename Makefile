@@ -5,19 +5,11 @@ PI_DIR       ?= $(if $(PI_CODING_AGENT_DIR),$(PI_CODING_AGENT_DIR),$(HOME)/.pi/a
 ROOT         := $(CURDIR)
 
 .PHONY: test
-test: test-pi-extensions test-pi-orchestrator test-opencode2-wrapper test-debate test-supersaiyan test-secret-guard
+test: test-pi-extensions test-pi-orchestrator test-opencode2-wrapper test-secret-guard
 
 .PHONY: test-pi-extensions
 test-pi-extensions:
 	@node --test "$(ROOT)/.pi/tests/"*.test.mjs
-
-.PHONY: test-debate
-test-debate:
-	@"$(ROOT)/skills/debate/scripts/run.test.sh"
-
-.PHONY: test-supersaiyan
-test-supersaiyan:
-	@"$(ROOT)/skills/supersaiyan/scripts/run.test.sh"
 
 .PHONY: test-secret-guard
 test-secret-guard:

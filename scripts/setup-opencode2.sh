@@ -82,12 +82,9 @@ if [ -n "$OPENCODE2_ENV_VARS" ]; then
     requested_env_names+=("${inline_env_names[@]}")
   fi
 fi
-if (( ${#requested_env_names[@]} == 0 )); then
-  requested_env_names=(KANTHOR_DEBATE_ENGINE KANTHOR_SUPERSAIYAN_ENGINE)
-fi
 
 env_names=()
-for env_name in "${requested_env_names[@]}"; do
+for env_name in ${requested_env_names[@]+"${requested_env_names[@]}"}; do
   [[ "$env_name" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] \
     || { echo "error: invalid environment variable name: $env_name"; exit 1; }
   duplicate=0
@@ -103,7 +100,7 @@ for env_name in "${requested_env_names[@]}"; do
 done
 
 plist_environment='{}'
-for env_name in "${env_names[@]}"; do
+for env_name in ${env_names[@]+"${env_names[@]}"}; do
   /usr/bin/printenv "$env_name" >/dev/null \
     || { echo "error: allowlisted environment variable is not exported: $env_name"; exit 1; }
   plist_environment="$(/usr/bin/jq --arg name "$env_name" --arg value "${!env_name}" '. + {($name): $value}' <<< "$plist_environment")"

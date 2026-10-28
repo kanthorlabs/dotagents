@@ -37,13 +37,7 @@ dotagents/
 
 | Skill | Description |
 |-------|-------------|
-| `/coding` | Seven code rules cover linear control flow, bounded loops, resource ownership, small functions, assertions, explicit errors, and zero warnings. |
-| `/debate` | Run an answer through an adversarial debate engine, then merge valid critiques back in. Requires `KANTHOR_DEBATE_ENGINE=opencode2\|pi`. READ-ONLY: no filesystem or state changes. |
-| `/supersaiyan` | Delegate the modification to a write-mode engine, which edits an isolated clone; the caller verifies the patch and applies it. Requires `KANTHOR_SUPERSAIYAN_ENGINE=opencode2\|pi`. Harness-agnostic: any harness that runs bash. |
 | `/explain` | Explain a problem, a bug, a design gap or a proposal with named actors, a numbered timeline and one question. No engine, no script: it shapes the message. |
-
-`/coding` adapts ideas from [*The Power of 10: Rules for Developing Safety-Critical Code*](https://spinroot.com/gerard/pdf/P10.pdf).
-Gerard J. Holzmann of NASA/JPL published the paper in *IEEE Computer* in June 2006.
 
 More skills coming.
 
@@ -146,17 +140,15 @@ Idempotent — safe to run repeatedly. It:
 - deep-merges `.claude/config/claude.json` into `~/.claude.json` (Claude Code's global config — IDE auto-install and other keys that do not live in `settings.json`). Repo values win on conflict, and the previous file is backed up to `.claude.json.bak`.
 - registers `.claude/plugins` as a marketplace and installs every plugin it declares via the `claude` CLI (skipped if the CLI is missing — Claude Code then auto-installs from the merged settings on next launch)
 
-- deep-merges `.opencode/config/opencode.jsonc` into `~/.config/opencode/opencode.jsonc` (OpenCode's global config — the `external_directory` allow rules and secret guard plugin). Repo values win on conflict, and the previous file is backed up to `opencode.jsonc.bak`.
+- deep-merges `.opencode/config/opencode.jsonc` into `~/.config/opencode/opencode.jsonc` (OpenCode's global config — the secret guard plugin). Repo values win on conflict, and the previous file is backed up to `opencode.jsonc.bak`.
 
 Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`, `install-pi-extensions`.
 
 ## OpenCode 2 Server Setup
 
-On macOS, export both engine variables before setup. This example selects `pi`:
+On macOS, run setup:
 
 ```bash
-export KANTHOR_DEBATE_ENGINE=pi
-export KANTHOR_SUPERSAIYAN_ENGINE=pi
 ./scripts/setup-opencode2.sh
 ```
 
@@ -241,41 +233,6 @@ Or add as git submodule:
 ```bash
 git submodule add https://github.com/kanthorlabs/dotagents.git .agents
 ```
-
-## `/debate` usage
-
-```
-/debate [--verbose] <your prompt>
-```
-
-Flows:
-1. Claude answers the prompt (read-only).
-2. The debate engine (`opencode2 run --agent plan` or `pi --print --no-session`) challenges the answer.
-3. Claude merges valid critiques into a final `<original + deltas>` response.
-4. Unmerged comments appear in a "Worth noting" list.
-
-Pass `--verbose` to also see the original answer and raw engine output.
-
-**Hard-fail conditions:** `KANTHOR_DEBATE_ENGINE` unset or invalid; engine binary missing; read-only mode unavailable; engine exits non-zero or returns empty output.
-
-## `/supersaiyan` usage
-
-```
-/supersaiyan <your task>
-```
-
-Flows:
-1. The caller writes a task packet: objective, paths, acceptance criteria, constraints, required validation.
-2. `run.sh` refuses a dirty work tree, records the baseline commit, clones the repository, and runs the engine inside the clone with write access.
-3. `run.sh` exports every change of the clone as one binary patch. The project stays untouched.
-4. The caller reviews the patch against the packet, then `apply.sh` lands it as unstaged changes.
-5. The caller runs the project checks and reverts when they fail.
-
-Export both engine variables in the shell that runs the harness. The default setup passes both variables to the OpenCode 2 service. If `OPENCODE2_ENV_ALLOWLIST` or `OPENCODE2_ENV_VARS` is set, include both engine names explicitly.
-
-**Isolation is not a sandbox.** The engine inherits the operating-system permissions of the caller. It can read and run anything the caller can, inside the clone and outside it.
-
-**Hard-fail conditions:** `KANTHOR_SUPERSAIYAN_ENGINE` unset or invalid; engine binary missing; git missing; a nested run; a non-git or dirty target; engine exits non-zero; watchdog kill; empty patch; a repository that moved from the baseline.
 
 ## Adding New Skills
 

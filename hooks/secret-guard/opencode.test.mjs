@@ -51,7 +51,7 @@ test("installer preserves existing plugins across repeated installs", () => {
     execFileSync(resolve(root, "scripts/install-opencode-json.sh"), { env })
     const installed = JSON.parse(readFileSync(config, "utf8"))
     assert.deepEqual(installed.plugins, ["other-plugin", `${root}/hooks/secret-guard/opencode.js`])
-    assert.equal(installed.permissions.length, 1)
+    assert.equal(installed.permissions.length, 0)
   } finally {
     rmSync(directory, { recursive: true, force: true })
   }
