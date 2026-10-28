@@ -1,0 +1,39 @@
+{
+  "mode": "Ruling acknowledgement. Two open items remain after the ruling.",
+  "common": [
+    "style"
+  ],
+  "checks": [
+    {
+      "name": "ruling-first",
+      "kind": "mechanical",
+      "rule": "R07",
+      "fn": "first_block_regex",
+      "args": {
+        "pattern": "invoices@mail\\.larkspur\\.io"
+      },
+      "criterion": "The first block of the message names invoices@mail.larkspur.io."
+    },
+    {
+      "name": "timeline-bounds",
+      "kind": "mechanical",
+      "rule": "R24",
+      "fn": "full_timelines_bounded",
+      "criterion": "Every full timeline holds 4 to 8 steps and at least one full timeline exists."
+    },
+    {
+      "name": "close-last",
+      "kind": "mechanical",
+      "rule": "R17",
+      "fn": "close_last",
+      "criterion": "The last block is a labeled close and nothing follows it."
+    },
+    {
+      "name": "close-one-question",
+      "kind": "mechanical",
+      "rule": "R40",
+      "fn": "close_single_question",
+      "criterion": "The close holds exactly one question mark."
+    }
+  ]
+}

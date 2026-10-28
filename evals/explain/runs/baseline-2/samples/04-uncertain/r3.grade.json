@@ -1,0 +1,184 @@
+{
+  "key": "d59e5b420198cfc60e9efa6996e81f0d3dec641bd4c01679d6cf255f766b0133",
+  "cost_usd": 0.041749999999999995,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"A corrective migration would restore to `paid` every invoice that 0042 archived and that was issued within 90 days of 25 Oct.\" Matches the restore recommendation.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"The one step I can't verify is that the cached `hide_archived` flag was on for `northwind`.\" Other facts (0042 SQL, README, 188/0/188, 3-day cache) match.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message answers why empty, why only northwind (\"only `northwind` fits 'on'\"), what is unknown (audit log or cached flag file), and that 0042 ignores its 90-day rule.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"Recommended: a corrective migration 0043 ... Alternative: turn `hide_archived` off\". Key says no fix is chosen yet; it waits for the flag value.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should I draft a corrective migration `0043`... or do you prefer the flag change?\" One decision; reader gave a real answer: \"Neither yet...draft 0043 as a dry-run SELECT\".",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: turn `hide_archived` off for `northwind`.\" This is not in valid_alternatives and does not fix the wrongly archived data.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 12911,
+    "stop_reason": "tool_use",
+    "session_id": "92755f8e-4078-41aa-b318-f2cb11e4247e",
+    "total_cost_usd": 0.041749999999999995,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5925,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1786,
+      "output_tokens_details": {
+        "thinking_tokens": 1196
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5925,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1786,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5925,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5925
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1786,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5925,
+        "webSearchRequests": 0,
+        "costUSD": 0.041749999999999995,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1196,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5925,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"A corrective migration would restore to `paid` every invoice that 0042 archived and that was issued within 90 days of 25 Oct.\\\" Matches the restore recommendation.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"The one step I can't verify is that the cached `hide_archived` flag was on for `northwind`.\\\" Other facts (0042 SQL, README, 188/0/188, 3-day cache) match.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message answers why empty, why only northwind (\\\"only `northwind` fits 'on'\\\"), what is unknown (audit log or cached flag file), and that 0042 ignores its 90-day rule.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"Recommended: a corrective migration 0043 ... Alternative: turn `hide_archived` off\\\". Key says no fix is chosen yet; it waits for the flag value.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should I draft a corrective migration `0043`... or do you prefer the flag change?\\\" One decision; reader gave a real answer: \\\"Neither yet...draft 0043 as a dry-run SELECT\\\".\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: turn `hide_archived` off for `northwind`.\\\" This is not in valid_alternatives and does not fix the wrongly archived data.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"A corrective migration would restore to `paid` every invoice that 0042 archived and that was issued within 90 days of 25 Oct.\" Matches the restore recommendation.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The one step I can't verify is that the cached `hide_archived` flag was on for `northwind`.\" Other facts (0042 SQL, README, 188/0/188, 3-day cache) match.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message answers why empty, why only northwind (\"only `northwind` fits 'on'\"), what is unknown (audit log or cached flag file), and that 0042 ignores its 90-day rule.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"Recommended: a corrective migration 0043 ... Alternative: turn `hide_archived` off\". Key says no fix is chosen yet; it waits for the flag value.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should I draft a corrective migration `0043`... or do you prefer the flag change?\" One decision; reader gave a real answer: \"Neither yet...draft 0043 as a dry-run SELECT\".",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: turn `hide_archived` off for `northwind`.\" This is not in valid_alternatives and does not fix the wrongly archived data.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 10198,
+    "type": "result",
+    "duration_ms": 13482,
+    "uuid": "d9522d4d-5e84-4314-bbc4-ae3af06daa41",
+    "ttft_stream_ms": 1412,
+    "time_to_request_ms": 576,
+    "first_content_frame_ms": 1412,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "key": "42924db11f0543ca20391a74d1ef35fd11b1a940bbc918bbc4f13773ef2e9ac5",
+  "cost_usd": 0.031246000000000003,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends enforcing the documented range in `validate`.\" Plus changing acme-labs.yaml matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"checks only `< 0`\", \"1 to 3650\", \"15-minute cycle\", \"up to 6 hours\", \"retention_days: 0\" all match the key; none left unverified."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message explains cutoff=now deletes in-progress uploads, 0 unsupported (1 to 3650), acme-labs fails validation until it picks a value. Reader gaps are beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"`validate` ... rejects only `retention_days < 0`, so it accepts 0\"; fix and cost (acme-labs must pick a valid value) match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve enforcing 1 to 3650 in `validate`... or do you want `purge_tenant` to skip...?\" Reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: skip in-progress uploads in `purge_tenant`... beats the recommendation when `acme-labs` needs 0\" states trade-off and condition; matches the valid alternative."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 6829,
+    "stop_reason": "tool_use",
+    "session_id": "23e1f6fe-ec31-482b-a78c-956e064c0413",
+    "total_cost_usd": 0.031246000000000003,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5394,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 948,
+      "output_tokens_details": {
+        "thinking_tokens": 405
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5394,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 948,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5394,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5394
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 948,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5394,
+        "webSearchRequests": 0,
+        "costUSD": 0.031246000000000003,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 405,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5394,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends enforcing the documented range in `validate`.\\\" Plus changing acme-labs.yaml matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"checks only `< 0`\\\", \\\"1 to 3650\\\", \\\"15-minute cycle\\\", \\\"up to 6 hours\\\", \\\"retention_days: 0\\\" all match the key; none left unverified.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message explains cutoff=now deletes in-progress uploads, 0 unsupported (1 to 3650), acme-labs fails validation until it picks a value. Reader gaps are beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"`validate` ... rejects only `retention_days < 0`, so it accepts 0\\\"; fix and cost (acme-labs must pick a valid value) match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve enforcing 1 to 3650 in `validate`... or do you want `purge_tenant` to skip...?\\\" Reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: skip in-progress uploads in `purge_tenant`... beats the recommendation when `acme-labs` needs 0\\\" states trade-off and condition; matches the valid alternative.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends enforcing the documented range in `validate`.\" Plus changing acme-labs.yaml matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"checks only `< 0`\", \"1 to 3650\", \"15-minute cycle\", \"up to 6 hours\", \"retention_days: 0\" all match the key; none left unverified."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message explains cutoff=now deletes in-progress uploads, 0 unsupported (1 to 3650), acme-labs fails validation until it picks a value. Reader gaps are beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"`validate` ... rejects only `retention_days < 0`, so it accepts 0\"; fix and cost (acme-labs must pick a valid value) match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve enforcing 1 to 3650 in `validate`... or do you want `purge_tenant` to skip...?\" Reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: skip in-progress uploads in `purge_tenant`... beats the recommendation when `acme-labs` needs 0\" states trade-off and condition; matches the valid alternative."
+        }
+      ]
+    },
+    "ttft_ms": 4170,
+    "type": "result",
+    "duration_ms": 7221,
+    "uuid": "01744d68-1663-45a1-b2cd-5cb0119865dd",
+    "ttft_stream_ms": 1246,
+    "time_to_request_ms": 392,
+    "first_content_frame_ms": 1246,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

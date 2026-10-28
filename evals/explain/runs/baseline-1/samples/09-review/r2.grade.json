@@ -1,0 +1,160 @@
+{
+  "key": "2364fee56e7cb235ef82e023d562295d7189724ca4cfd6c4cb38bc946d29f3bf",
+  "cost_usd": 0.033336,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends moving `verify` to the top of `handle`.\" This matches the key's verify-before-ledger block. B4 adds dedupe on event id as a compatible extra step.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`verify` only runs at line 27. A rejected request still moves money.\" Secret default, `==` compare, payload log, dead helper, ValueError and retry double-credit all match the key.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"not safe to merge\" answers the merge question. B1 to B4 give the changes, and S1, S2 and S4 cover the suggestions. The reader lists no follow-up questions.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"Call `verify(header, payload)` first... Only after that parse\". The reader's breaks and fix omit the retry that credits twice and the dedupe on event id, which the key requires.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10617,
+    "stop_reason": "tool_use",
+    "session_id": "3bcde8a1-4638-412b-bd20-90bd2c73da2d",
+    "total_cost_usd": 0.033336,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5364,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1169,
+      "output_tokens_details": {
+        "thinking_tokens": 753
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5364,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1169,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5364,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5364
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1169,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5364,
+        "webSearchRequests": 0,
+        "costUSD": 0.033336,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 753,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5364,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends moving `verify` to the top of `handle`.\\\" This matches the key's verify-before-ledger block. B4 adds dedupe on event id as a compatible extra step.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`verify` only runs at line 27. A rejected request still moves money.\\\" Secret default, `==` compare, payload log, dead helper, ValueError and retry double-credit all match the key.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"not safe to merge\\\" answers the merge question. B1 to B4 give the changes, and S1, S2 and S4 cover the suggestions. The reader lists no follow-up questions.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"Call `verify(header, payload)` first... Only after that parse\\\". The reader's breaks and fix omit the retry that credits twice and the dedupe on event id, which the key requires.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends moving `verify` to the top of `handle`.\" This matches the key's verify-before-ledger block. B4 adds dedupe on event id as a compatible extra step.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`verify` only runs at line 27. A rejected request still moves money.\" Secret default, `==` compare, payload log, dead helper, ValueError and retry double-credit all match the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"not safe to merge\" answers the merge question. B1 to B4 give the changes, and S1, S2 and S4 cover the suggestions. The reader lists no follow-up questions.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"Call `verify(header, payload)` first... Only after that parse\". The reader's breaks and fix omit the retry that credits twice and the dedupe on event id, which the key requires.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 8599,
+    "type": "result",
+    "duration_ms": 10982,
+    "uuid": "7f2099de-a6d9-42db-b861-098dfcfa4a7f",
+    "ttft_stream_ms": 2952,
+    "time_to_request_ms": 363,
+    "first_content_frame_ms": 2952,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

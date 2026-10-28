@@ -1,0 +1,172 @@
+{
+  "key": "a1d9efaafa6944c43c853cf4b3f3aac00d675bd735c732e3f8602b037620a66a",
+  "cost_usd": 0.039616,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends switching to `POST /v2/contacts:batchUpsert` and adding a small `Retry-After` retry as a safety net.\" Matches the key, and the extra step is compatible."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Juniper allows 100 per minute per key\"; \"11,940 upserted and 34,860 pending\"; \"1,450 USD per month and has a 3-week lead time\". All match the key, and none is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"Backoff only spaces the retries. The ceiling stays at 100 contacts per minute, or 12,000 per run.\" The batch change and the deadline and November volume are also answered. The reader lists no follow-ups."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"one PUT per contact with 8 workers... 400 requests per minute. Juniper allows 100\". The reader's break, fix (batch of 100) and cost (two files, per-contact results) all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve batching with 4 workers and a `Retry-After` retry, so I can implement it...?\" It is one question with one decision, and the reader answered \"Yes, I approve batching\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: the enterprise tier... It becomes the primary only if the volume grows past about 6,000 batch calls per run.\" The enterprise tier is in invalid_options, and valid_alternatives is empty."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9737,
+    "stop_reason": "tool_use",
+    "session_id": "a4a76f70-ada7-45cb-afa6-c9e8d5857483",
+    "total_cost_usd": 0.039616,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6369,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1395,
+      "output_tokens_details": {
+        "thinking_tokens": 793
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6369,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1395,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6369,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6369
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1395,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6369,
+        "webSearchRequests": 0,
+        "costUSD": 0.039616,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 793,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6369,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends switching to `POST /v2/contacts:batchUpsert` and adding a small `Retry-After` retry as a safety net.\\\" Matches the key, and the extra step is compatible.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Juniper allows 100 per minute per key\\\"; \\\"11,940 upserted and 34,860 pending\\\"; \\\"1,450 USD per month and has a 3-week lead time\\\". All match the key, and none is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"Backoff only spaces the retries. The ceiling stays at 100 contacts per minute, or 12,000 per run.\\\" The batch change and the deadline and November volume are also answered. The reader lists no follow-ups.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"one PUT per contact with 8 workers... 400 requests per minute. Juniper allows 100\\\". The reader's break, fix (batch of 100) and cost (two files, per-contact results) all agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve batching with 4 workers and a `Retry-After` retry, so I can implement it...?\\\" It is one question with one decision, and the reader answered \\\"Yes, I approve batching\\\".\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: the enterprise tier... It becomes the primary only if the volume grows past about 6,000 batch calls per run.\\\" The enterprise tier is in invalid_options, and valid_alternatives is empty.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends switching to `POST /v2/contacts:batchUpsert` and adding a small `Retry-After` retry as a safety net.\" Matches the key, and the extra step is compatible."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Juniper allows 100 per minute per key\"; \"11,940 upserted and 34,860 pending\"; \"1,450 USD per month and has a 3-week lead time\". All match the key, and none is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"Backoff only spaces the retries. The ceiling stays at 100 contacts per minute, or 12,000 per run.\" The batch change and the deadline and November volume are also answered. The reader lists no follow-ups."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"one PUT per contact with 8 workers... 400 requests per minute. Juniper allows 100\". The reader's break, fix (batch of 100) and cost (two files, per-contact results) all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve batching with 4 workers and a `Retry-After` retry, so I can implement it...?\" It is one question with one decision, and the reader answered \"Yes, I approve batching\"."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: the enterprise tier... It becomes the primary only if the volume grows past about 6,000 batch calls per run.\" The enterprise tier is in invalid_options, and valid_alternatives is empty."
+        }
+      ]
+    },
+    "ttft_ms": 6844,
+    "type": "result",
+    "duration_ms": 10190,
+    "uuid": "5d1b26bc-83db-4647-abfc-7dac864540a0",
+    "ttft_stream_ms": 1529,
+    "time_to_request_ms": 457,
+    "first_content_frame_ms": 1529,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

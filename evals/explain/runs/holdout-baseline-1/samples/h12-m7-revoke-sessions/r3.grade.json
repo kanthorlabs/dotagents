@@ -1,0 +1,172 @@
+{
+  "key": "744f3a116c9702ad1e5fc27284d3180e735b6a7e5e12eb793c22f96308ee7ea1",
+  "cost_usd": 0.035646,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends deleting all refresh tokens of the user in `change_password` before it issues the new pair.\" Matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"ACCESS_TTL of 15 minutes\"; \"30 days\"; \"reads neither the database nor Redis\"; \"about 2,500 requests per second\"; \"logs out every user\". All match the key; nothing is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"The laptop stays logged in.\" The message also answers why other devices stay logged in and that the 15-minute window meets SR-12. The reader's follow-ups ask for detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"One DELETE per password change and nothing per request.\" Problem, breaks, fix and cost all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Does Aelita add the `DELETE`... or do you want the immediate-revocation alternative with the Redis check?\" This is one decision and matches closing_decision. The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: rotate `SIGNING_KEY`.\" This option is in invalid_options. The message offers it as an alternative and gives no condition that makes it primary."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9067,
+    "stop_reason": "tool_use",
+    "session_id": "a88a1526-d656-4c90-a2f2-ae77b90c4a5b",
+    "total_cost_usd": 0.035646,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5939,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1170,
+      "output_tokens_details": {
+        "thinking_tokens": 631
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5939,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1170,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5939,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5939
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1170,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5939,
+        "webSearchRequests": 0,
+        "costUSD": 0.035646,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 631,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5939,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends deleting all refresh tokens of the user in `change_password` before it issues the new pair.\\\" Matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"ACCESS_TTL of 15 minutes\\\"; \\\"30 days\\\"; \\\"reads neither the database nor Redis\\\"; \\\"about 2,500 requests per second\\\"; \\\"logs out every user\\\". All match the key; nothing is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"The laptop stays logged in.\\\" The message also answers why other devices stay logged in and that the 15-minute window meets SR-12. The reader's follow-ups ask for detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"One DELETE per password change and nothing per request.\\\" Problem, breaks, fix and cost all agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Does Aelita add the `DELETE`... or do you want the immediate-revocation alternative with the Redis check?\\\" This is one decision and matches closing_decision. The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: rotate `SIGNING_KEY`.\\\" This option is in invalid_options. The message offers it as an alternative and gives no condition that makes it primary.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends deleting all refresh tokens of the user in `change_password` before it issues the new pair.\" Matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"ACCESS_TTL of 15 minutes\"; \"30 days\"; \"reads neither the database nor Redis\"; \"about 2,500 requests per second\"; \"logs out every user\". All match the key; nothing is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The laptop stays logged in.\" The message also answers why other devices stay logged in and that the 15-minute window meets SR-12. The reader's follow-ups ask for detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"One DELETE per password change and nothing per request.\" Problem, breaks, fix and cost all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Does Aelita add the `DELETE`... or do you want the immediate-revocation alternative with the Redis check?\" This is one decision and matches closing_decision. The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: rotate `SIGNING_KEY`.\" This option is in invalid_options. The message offers it as an alternative and gives no condition that makes it primary."
+        }
+      ]
+    },
+    "ttft_ms": 7101,
+    "type": "result",
+    "duration_ms": 9443,
+    "uuid": "7ca3795d-a2cc-47e9-bffb-bde269d0366a",
+    "ttft_stream_ms": 1692,
+    "time_to_request_ms": 375,
+    "first_content_frame_ms": 1692,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

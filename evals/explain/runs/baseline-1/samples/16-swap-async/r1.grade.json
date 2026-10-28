@@ -1,0 +1,172 @@
+{
+  "key": "b66059313b7d5fde3914afbb3ee21304ae517ab98880bba8b7838878298b57d0",
+  "cost_usd": 0.038996,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends moving the export to a `taskq` job on the `documents` queue that emails a signed link\" matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`idle_timeout_seconds: 30` and `request_timeout_seconds: 300`\", \"1,840,211 rows\", \"12 workers\", \"about 900 exports\" all match the key; p99 9.4 s is within the approximate 8-9 s range."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"What can break?\" expects mail delays, link expiry and documents queue load. The message names only request email and `storage.put`; reader lists them as follow-ups."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"`export_invoices` builds the whole CSV in an in-memory StringIO before sending any byte\"; fix is the job emailing a signed link; cost is email delivery instead of download."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Single closing question: \"Should the CSV export become a `documents` queue job that emails a signed link, or must the file download in the browser\"; reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "Streaming listed with trade-off and \"becomes the primary if tenants must get the file in the browser\"; timeout alternative has a trade-off and a stopgap condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10085,
+    "stop_reason": "tool_use",
+    "session_id": "2efac2d1-863f-4162-b04a-ef860cf67d3c",
+    "total_cost_usd": 0.038996,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6364,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1335,
+      "output_tokens_details": {
+        "thinking_tokens": 794
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6364,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1335,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6364,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6364
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1335,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6364,
+        "webSearchRequests": 0,
+        "costUSD": 0.038996,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 794,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6364,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends moving the export to a `taskq` job on the `documents` queue that emails a signed link\\\" matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`idle_timeout_seconds: 30` and `request_timeout_seconds: 300`\\\", \\\"1,840,211 rows\\\", \\\"12 workers\\\", \\\"about 900 exports\\\" all match the key; p99 9.4 s is within the approximate 8-9 s range.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"What can break?\\\" expects mail delays, link expiry and documents queue load. The message names only request email and `storage.put`; reader lists them as follow-ups.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"`export_invoices` builds the whole CSV in an in-memory StringIO before sending any byte\\\"; fix is the job emailing a signed link; cost is email delivery instead of download.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Single closing question: \\\"Should the CSV export become a `documents` queue job that emails a signed link, or must the file download in the browser\\\"; reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"Streaming listed with trade-off and \\\"becomes the primary if tenants must get the file in the browser\\\"; timeout alternative has a trade-off and a stopgap condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends moving the export to a `taskq` job on the `documents` queue that emails a signed link\" matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`idle_timeout_seconds: 30` and `request_timeout_seconds: 300`\", \"1,840,211 rows\", \"12 workers\", \"about 900 exports\" all match the key; p99 9.4 s is within the approximate 8-9 s range."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"What can break?\" expects mail delays, link expiry and documents queue load. The message names only request email and `storage.put`; reader lists them as follow-ups."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"`export_invoices` builds the whole CSV in an in-memory StringIO before sending any byte\"; fix is the job emailing a signed link; cost is email delivery instead of download."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Single closing question: \"Should the CSV export become a `documents` queue job that emails a signed link, or must the file download in the browser\"; reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "Streaming listed with trade-off and \"becomes the primary if tenants must get the file in the browser\"; timeout alternative has a trade-off and a stopgap condition."
+        }
+      ]
+    },
+    "ttft_ms": 7722,
+    "type": "result",
+    "duration_ms": 10665,
+    "uuid": "bc717e4f-3160-4f68-b005-b97505506b30",
+    "ttft_stream_ms": 1459,
+    "time_to_request_ms": 580,
+    "first_content_frame_ms": 1459,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

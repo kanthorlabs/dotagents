@@ -1,0 +1,150 @@
+{
+  "key": "d3fc9a8da8859e34d1d42a5be411216ddfaf08db912dbc115cd2f9db98c936ce",
+  "cost_usd": 0.023032,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"registry.mint.internal/mint-shop:<sha>\"; \"kubectl ... set image deployment/mint-shop web=<tag>\"; \"--timeout=300s\"",
+      "evidence_note": "",
+      "reason": "All dependent facts (config, tag, build/push, rollout, Slack text/webhook) match the key; none deferred or marked unverified."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Reader: \"How does `deploy staging` reach `deploy(\\\"staging\\\")`: where is the entry point or dispatcher\" and message: \"I found no CLI entry point\"",
+      "reason": "Required questions are answered, but the reader lists the unresolved dispatch gap as a real gap and wants it resolved before accepting the walkthrough."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader problem: \"reads `mint.toml`, tags the image with the short SHA of HEAD, builds it, pushes it, runs `kubectl set image`... posts to Slack\"",
+      "reason": "Problem matches the key; breaks, fix and cost are n/a in the key and are skipped."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3981,
+    "stop_reason": "tool_use",
+    "session_id": "b160499e-d99a-48d4-9867-63a81b0b5e6b",
+    "total_cost_usd": 0.023032,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4588,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 449,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4588,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 449,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4588,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4588
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 449,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4588,
+        "webSearchRequests": 0,
+        "costUSD": 0.023032,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4588,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"registry.mint.internal/mint-shop:<sha>\\\"; \\\"kubectl ... set image deployment/mint-shop web=<tag>\\\"; \\\"--timeout=300s\\\"\",\"evidence_note\":\"\",\"reason\":\"All dependent facts (config, tag, build/push, rollout, Slack text/webhook) match the key; none deferred or marked unverified.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Reader: \\\"How does `deploy staging` reach `deploy(\\\\\\\"staging\\\\\\\")`: where is the entry point or dispatcher\\\" and message: \\\"I found no CLI entry point\\\"\",\"reason\":\"Required questions are answered, but the reader lists the unresolved dispatch gap as a real gap and wants it resolved before accepting the walkthrough.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader problem: \\\"reads `mint.toml`, tags the image with the short SHA of HEAD, builds it, pushes it, runs `kubectl set image`... posts to Slack\\\"\",\"reason\":\"Problem matches the key; breaks, fix and cost are n/a in the key and are skipped.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"registry.mint.internal/mint-shop:<sha>\"; \"kubectl ... set image deployment/mint-shop web=<tag>\"; \"--timeout=300s\"",
+          "evidence_note": "",
+          "reason": "All dependent facts (config, tag, build/push, rollout, Slack text/webhook) match the key; none deferred or marked unverified."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Reader: \"How does `deploy staging` reach `deploy(\\\"staging\\\")`: where is the entry point or dispatcher\" and message: \"I found no CLI entry point\"",
+          "reason": "Required questions are answered, but the reader lists the unresolved dispatch gap as a real gap and wants it resolved before accepting the walkthrough."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader problem: \"reads `mint.toml`, tags the image with the short SHA of HEAD, builds it, pushes it, runs `kubectl set image`... posts to Slack\"",
+          "reason": "Problem matches the key; breaks, fix and cost are n/a in the key and are skipped."
+        }
+      ]
+    },
+    "ttft_ms": 4356,
+    "type": "result",
+    "duration_ms": 4389,
+    "uuid": "00d18fbd-8ee3-4146-970c-8b9336bd1106",
+    "ttft_stream_ms": 1893,
+    "time_to_request_ms": 420,
+    "first_content_frame_ms": 1893,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

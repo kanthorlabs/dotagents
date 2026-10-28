@@ -1,0 +1,47 @@
+{
+  "M1": {
+    "name": "Right decision",
+    "kind": "judged",
+    "definition": "Find the primary recommendation of the message: the option that the message names as its recommendation or ranks first. When the message recommends two steps, the primary is the one it leads with or calls the recommendation. Pass when the primary matches one entry of correct_recommendations in substance. A compatible extra step still matches. Fail when the primary is in invalid_options, when the message recommends nothing, or when it offers options without a primary."
+  },
+  "M2": {
+    "name": "True facts",
+    "kind": "judged",
+    "definition": "Check every statement in the message that touches a dependent_facts entry. Ignore statements about anything else. Pass when each such statement matches the true_value. Fail when one statement contradicts the key. Fail when the message leaves a dependent fact to be checked later, for example 'check X before the PR' or 'verify that X later', instead of stating it. Announcing a separate item for a later message is not a deferral. For a fact with verifiable false, pass only when the message names it as unverified or unknown, and fail when the message states a value as true. For a fact with verifiable true, fail when the message names it as unverified or unknown, because the files settle it. Ignore dependent facts that the message does not mention."
+  },
+  "M3": {
+    "name": "No follow-up",
+    "kind": "judged",
+    "definition": "Pass when the message answers every required_questions item in a way that agrees with its expected_answer, and the reader lists no follow-up question that is a real gap. A reader question is a real gap when the message does not answer it and Ulrich needs the answer to rule. A reader question that the message already answers, or that asks for detail beyond the ruling, is not a real gap. Name the first unanswered required question or the first real gap in the evidence."
+  },
+  "M4": {
+    "name": "Understanding",
+    "kind": "judged",
+    "definition": "Compare the reader reconstruction with the understanding fields of the key: problem, breaks, fix and cost. Skip a field whose key value is n/a. Pass when each remaining reader field agrees with the key in substance. Fail when a reader field is wrong, names a different cause or fix, or is 'not stated' while the key field holds content that the message needed to convey. A reader field that says no fix is chosen yet matches a key field that says the same."
+  },
+  "M5": {
+    "name": "Answerable close",
+    "kind": "judged",
+    "definition": "Pass when the message ends with exactly one question, that question holds one decision, the decision matches closing_decision in substance, and the reader closing_answer is a real answer and not 'cannot answer'. A question that offers two options for the same decision holds one decision. Fail when the message ends with no question, with two questions, or with a question that hides two decisions."
+  },
+  "M5none": {
+    "name": "Answerable close",
+    "kind": "mechanical",
+    "definition": "closing_decision is none. Pass when the message holds no question mark outside code."
+  },
+  "M7": {
+    "name": "Valid alternative",
+    "kind": "judged",
+    "definition": "List every alternative that the message offers besides the primary recommendation. Pass when each listed alternative matches a valid_alternatives entry in substance and the message states its trade-off and the condition that makes it the primary. Fail when a listed alternative is in invalid_options or does not produce the correct result. Fail when a valid_alternatives entry with must_list true is absent. Pass when the message lists no alternative and no entry has must_list true."
+  },
+  "MF": {
+    "name": "Factual answer",
+    "kind": "mechanical",
+    "definition": "The answer names the correct value, holds at most 80 words, and holds no template element."
+  },
+  "M6": {
+    "name": "Reading cost",
+    "kind": "reported",
+    "definition": "Word count of the message. Reported, not scored."
+  }
+}

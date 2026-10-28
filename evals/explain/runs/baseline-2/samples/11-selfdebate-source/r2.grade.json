@@ -1,0 +1,172 @@
+{
+  "key": "e5d5bbbef6ac3043a58ebdd84cba5f358bd5b247a6a4b71614f3049437d32b2d",
+  "cost_usd": 0.037662,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends deleting the crontab line, because the duplicate run is the root cause.\" Matches the key's primary fix."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`logs/digest-builder-2026-10-26.log` shows `enqueued=18412` from both.\" The schedules, open checklist item and missing unique constraint all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message answers all five required questions. The reader's live-crontab question is flagged by the message as unverifiable and does not block the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"`digest-builder` runs twice every Monday... Delete line 3... costs one line and breaks no code.\" Agrees with the key's problem, breaks, fix and cost."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve deleting the `digest_builder` line from the `ops-box-2` crontab, with the unique index left as a later follow-up?\" One question matching the closing decision; the reader answered it."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "The unique index is offered with its trade-offs: \"It becomes the primary if the builder must stay on two schedulers.\" Mailer dedupe is rejected, not offered as an option."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8802,
+    "stop_reason": "tool_use",
+    "session_id": "61bbd473-604d-4ee4-8bef-1f58f8bc9eec",
+    "total_cost_usd": 0.037662,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6358,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1204,
+      "output_tokens_details": {
+        "thinking_tokens": 693
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6358,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1204,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6358,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6358
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1204,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6358,
+        "webSearchRequests": 0,
+        "costUSD": 0.037662,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 693,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6358,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends deleting the crontab line, because the duplicate run is the root cause.\\\" Matches the key's primary fix.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`logs/digest-builder-2026-10-26.log` shows `enqueued=18412` from both.\\\" The schedules, open checklist item and missing unique constraint all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message answers all five required questions. The reader's live-crontab question is flagged by the message as unverifiable and does not block the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"`digest-builder` runs twice every Monday... Delete line 3... costs one line and breaks no code.\\\" Agrees with the key's problem, breaks, fix and cost.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve deleting the `digest_builder` line from the `ops-box-2` crontab, with the unique index left as a later follow-up?\\\" One question matching the closing decision; the reader answered it.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"The unique index is offered with its trade-offs: \\\"It becomes the primary if the builder must stay on two schedulers.\\\" Mailer dedupe is rejected, not offered as an option.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends deleting the crontab line, because the duplicate run is the root cause.\" Matches the key's primary fix."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`logs/digest-builder-2026-10-26.log` shows `enqueued=18412` from both.\" The schedules, open checklist item and missing unique constraint all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message answers all five required questions. The reader's live-crontab question is flagged by the message as unverifiable and does not block the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"`digest-builder` runs twice every Monday... Delete line 3... costs one line and breaks no code.\" Agrees with the key's problem, breaks, fix and cost."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve deleting the `digest_builder` line from the `ops-box-2` crontab, with the unique index left as a later follow-up?\" One question matching the closing decision; the reader answered it."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "The unique index is offered with its trade-offs: \"It becomes the primary if the builder must stay on two schedulers.\" Mailer dedupe is rejected, not offered as an option."
+        }
+      ]
+    },
+    "ttft_ms": 6614,
+    "type": "result",
+    "duration_ms": 9404,
+    "uuid": "e963bf1f-3679-42f6-a5e0-ad9f9ea78749",
+    "ttft_stream_ms": 1543,
+    "time_to_request_ms": 600,
+    "first_content_frame_ms": 1543,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

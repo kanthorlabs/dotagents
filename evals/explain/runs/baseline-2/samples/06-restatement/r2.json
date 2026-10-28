@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 8306,
+  "stop_reason": "end_turn",
+  "session_id": "8cfad405-967c-4316-885c-236f610791ea",
+  "total_cost_usd": 0.0189641,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1584,
+    "cache_read_input_tokens": 25261,
+    "output_tokens": 1009,
+    "output_tokens_details": {
+      "thinking_tokens": 37
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1584,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 483,
+        "cache_read_input_tokens": 8872,
+        "cache_creation_input_tokens": 728,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 728
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1009,
+      "cacheReadInputTokens": 25261,
+      "cacheCreationInputTokens": 1584,
+      "webSearchRequests": 0,
+      "costUSD": 0.0189641,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 37,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1584,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "- **Confirmed:** `session-gc` runs every 10 minutes. `config/prod.yaml:2` sets `*/10 * * * *`.\n- **Confirmed:** It deletes sessions idle for 30 minutes. `auth/session_gc.py:3` sets `IDLE_LIMIT` to 30 minutes, and line 8 deletes rows with `last_seen_at < cutoff`.\n- **Corrected:** `session-gc` does not compare local time against UTC. `auth/session_gc.py:7` builds `cutoff` with `datetime.now(timezone.utc)`. `auth/schema.sql:4` types `last_seen_at` as `timestamptz`, so Postgres compares absolute instants. No timezone mismatch exists in these files.\n\nThe case is not a clock bug. Active sessions look old because nothing updates `last_seen_at` after login. `edge-proxy/session.py:8` calls `auth_client.touch` only when `touch_on_request` is true, and `config/prod.yaml:1` sets it to false.\n\nA timezone bug would delete sessions at a wrong offset, for example after 30 minutes plus or minus the zone difference. Lena Vogt's session dies at the 09:40 run, which is the first run after 30 idle minutes counted from her 09:00 login. That matches the missing touch.\n\n**Question.** Do we turn on `touch_on_request` in production, or move the touch into `auth-service`?",
+  "ttft_ms": 1541,
+  "type": "result",
+  "duration_ms": 8836,
+  "uuid": "57a8c72f-26cd-49d8-baa2-881a1569b099",
+  "ttft_stream_ms": 1289,
+  "time_to_request_ms": 506,
+  "first_content_frame_ms": 1289,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

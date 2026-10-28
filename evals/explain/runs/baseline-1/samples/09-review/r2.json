@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 20224,
+  "stop_reason": "end_turn",
+  "session_id": "2490070d-f6a1-4901-ba1f-8ea3fbd67bcd",
+  "total_cost_usd": 0.0332961,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 1424,
+    "cache_read_input_tokens": 15521,
+    "output_tokens": 2604,
+    "output_tokens_details": {
+      "thinking_tokens": 805
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1424,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2452,
+        "cache_read_input_tokens": 7940,
+        "cache_creation_input_tokens": 1065,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1065
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 4,
+      "outputTokens": 2604,
+      "cacheReadInputTokens": 15521,
+      "cacheCreationInputTokens": 1424,
+      "webSearchRequests": 0,
+      "costUSD": 0.0332961,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 805,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1424,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 3,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`quillpay/webhooks.py` in PR 311 is not safe to merge. `handle` changes the ledger before it checks the signature, so anyone who can reach the endpoint can credit an account. Aelita recommends fixing B1 first, because B2 to B4 only matter once B1 is closed.\n\n## Timeline without the fix\n\n1. An attacker posts `{\"type\":\"charge.succeeded\",\"data\":{\"account_id\":\"A\",\"amount_cents\":99999}}` to the webhook. They send no `Quill-Signature` header.\n2. `handle` runs `json.loads(payload)` at line 19 and logs the body at line 20.\n3. `handle` matches `charge.succeeded` at line 22 and calls `ledger.credit`.\n4. `ledger.credit` writes 99999 cents to account A.\n5. `handle` calls `verify` at line 27. The header is empty, so `header.split(\",\")` gives `[\"\"]` and `\"\".split(\"=\", 1)` has one element. `dict` raises `ValueError`.\n6. The request returns a 500, or a 400 if the header was merely wrong. The credit is already written. The attacker has created money.\n\n## Findings\n\n**Blockers**\n\n- **B1** - status:OPEN - action:YES - Ledger written before signature check - `handle` calls `ledger.credit` and `ledger.debit` at lines 22-25, and `verify` only runs at line 27. A rejected request still moves money. - fix: call `verify` first and return 400 before parsing the JSON or touching `ledger`. - why: the signature is the only authentication on this endpoint.\n- **B2** - status:OPEN - action:YES - Default secret `dev-secret` - `settings.py` line 52 uses `os.environ.get(\"QUILL_WEBHOOK_SECRET\", \"dev-secret\")`. A missing variable in production silently leaves a public secret in place. - fix: use `os.environ[\"QUILL_WEBHOOK_SECRET\"]`, as `DATABASE_URL` does on the line above. - why: the service should fail at start-up, not accept forged events.\n- **B3** - status:OPEN - action:YES - Non-constant-time compare - `verify` line 42 uses `expected == parts.get(\"v1\")`. - fix: use `hmac.compare_digest(expected, parts.get(\"v1\", \"\"))`. - why: `==` leaks how many leading characters matched.\n- **B4** - status:OPEN - action:YES - No replay or duplicate protection - a signed event replayed inside the 300-second window credits twice. A provider retry does the same. - fix: store `event[\"id\"]` with a unique constraint and skip events already seen. - why: `ledger.credit` is not idempotent.\n\n**Suggestions**\n\n- **S1** - status:OPEN - action:YES - Raw payload logged - line 20 logs the whole body at info level before verification. - fix: log only `event[\"id\"]` and `event[\"type\"]`, and only after `verify` passes. - why: the body holds account data, and unverified input can fill the logs.\n- **S2** - status:OPEN - action:YES - Malformed input gives a 500 - a bad header, a non-numeric `t`, invalid JSON or a missing key such as `account_id` raises. - fix: catch `ValueError` and `KeyError`, then return 400. - why: the provider retries 5xx responses, so bad input becomes a retry storm.\n- **S3** - status:OPEN - action:YES - Unknown event types return 200 silently - `handle` has no `else` branch. - fix: add `log.warning` for unhandled types. - why: a new event type would otherwise vanish without a trace.\n- **S4** - status:OPEN - action:YES - Dead code and no tests - `_unused_helper` at line 45 does nothing, and the diff adds no test file. - fix: delete the helper and add tests for a bad signature, a stale timestamp and a replay. - why: B1 is exactly the regression a test would catch.\n\n## What changes for B1\n\n- `quillpay/webhooks.py` old behaviour: `handle` parses, logs and updates the ledger, then calls `verify`. New behaviour: `handle` calls `verify(header, payload)` first and returns 400 on failure. Only then does it parse and update the ledger.\n\n## Recommendation and alternatives\n\n**Recommendation.** Aelita recommends moving `verify` to the top of `handle`. It costs one reordering and removes the root cause. The only thing that can break is a client that sent invalid signatures and relied on the 400 arriving after the work was done.\n\n**Alternative: wrap the ledger calls and the check in one transaction.** `handle` rolls back when `verify` fails. It beats the recommendation if `ledger` already has transaction support. It still parses and logs unauthenticated input. It becomes the primary only if the signature check must read ledger state.\n\n**Question.** Do you approve moving `verify` to the top of `handle` as the fix for B1? B2 follows after your answer.",
+  "ttft_ms": 1998,
+  "type": "result",
+  "duration_ms": 20660,
+  "uuid": "b452c9ce-5e82-461c-875b-6b70b375218e",
+  "ttft_stream_ms": 1326,
+  "time_to_request_ms": 431,
+  "first_content_frame_ms": 1326,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

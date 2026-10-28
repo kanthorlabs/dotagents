@@ -1,0 +1,172 @@
+{
+  "key": "427e9e5345b05383c8b7287c1407f9e927631a367c37f573ee33ae607ec15f86",
+  "cost_usd": 0.039150000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the late ack with prefetch.\" Together with the 20 to 90 s grace period, this matches correct_recommendations."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Whether `meter.internal` dedupes on `ref` is not in this repository.\" The other stated facts (auto_ack, 60 s drain, 20 s grace, 25-70 s videos, the lost job IDs) match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message says \"The process died, so no error is logged\" and \"a job can run twice\". The reader's Billing-dedupe question is unanswerable from the files and is not a real gap."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"A job can run twice... bill an upload twice\"; the fix is late ack plus a 90 s grace period. The problem and breaks fields also agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the late ack with prefetch and the 90s grace period, or only the grace period change?\" This is one question and one decision. The reader gave a real, conditional answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: grace period only... fails on a crash, an OOM kill or a node loss... becomes the primary if Billing says `meter.internal` cannot dedupe.\" This matches a valid alternative with its trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8438,
+    "stop_reason": "tool_use",
+    "session_id": "ffc4cc33-bf3c-4d33-80d1-6c5f9cd8f2ed",
+    "total_cost_usd": 0.039150000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6805,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1174,
+      "output_tokens_details": {
+        "thinking_tokens": 621
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6805,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1174,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6805,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6805
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1174,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6805,
+        "webSearchRequests": 0,
+        "costUSD": 0.039150000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 621,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6805,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the late ack with prefetch.\\\" Together with the 20 to 90 s grace period, this matches correct_recommendations.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Whether `meter.internal` dedupes on `ref` is not in this repository.\\\" The other stated facts (auto_ack, 60 s drain, 20 s grace, 25-70 s videos, the lost job IDs) match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message says \\\"The process died, so no error is logged\\\" and \\\"a job can run twice\\\". The reader's Billing-dedupe question is unanswerable from the files and is not a real gap.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"A job can run twice... bill an upload twice\\\"; the fix is late ack plus a 90 s grace period. The problem and breaks fields also agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the late ack with prefetch and the 90s grace period, or only the grace period change?\\\" This is one question and one decision. The reader gave a real, conditional answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: grace period only... fails on a crash, an OOM kill or a node loss... becomes the primary if Billing says `meter.internal` cannot dedupe.\\\" This matches a valid alternative with its trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the late ack with prefetch.\" Together with the 20 to 90 s grace period, this matches correct_recommendations."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Whether `meter.internal` dedupes on `ref` is not in this repository.\" The other stated facts (auto_ack, 60 s drain, 20 s grace, 25-70 s videos, the lost job IDs) match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message says \"The process died, so no error is logged\" and \"a job can run twice\". The reader's Billing-dedupe question is unanswerable from the files and is not a real gap."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"A job can run twice... bill an upload twice\"; the fix is late ack plus a 90 s grace period. The problem and breaks fields also agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the late ack with prefetch and the 90s grace period, or only the grace period change?\" This is one question and one decision. The reader gave a real, conditional answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: grace period only... fails on a crash, an OOM kill or a node loss... becomes the primary if Billing says `meter.internal` cannot dedupe.\" This matches a valid alternative with its trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 5758,
+    "type": "result",
+    "duration_ms": 8917,
+    "uuid": "0a85f9ed-762c-42bb-a54a-9c60e0667daf",
+    "ttft_stream_ms": 1344,
+    "time_to_request_ms": 484,
+    "first_content_frame_ms": 1345,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-api
+spec:
+  replicas: 6
+  template:
+    spec:
+      containers:
+        - name: shop-api
+          image: registry.saltmarsh.example/shop-api:2026.10.5
+          command: ["uvicorn", "shop.app:app", "--host", "0.0.0.0", "--port", "8080"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-api
+spec:
+  selector:
+    app: shop-api
+  ports:
+    - port: 80
+      targetPort: 8080

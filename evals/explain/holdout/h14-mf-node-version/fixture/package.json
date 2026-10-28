@@ -1,0 +1,11 @@
+{
+  "name": "glimmer-ui",
+  "version": "4.2.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "vitest run"
+  }
+}

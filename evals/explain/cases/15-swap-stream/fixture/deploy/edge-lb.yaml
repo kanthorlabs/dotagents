@@ -1,0 +1,4 @@
+name: edge-lb
+upstream: ferngrove-web
+idle_timeout_seconds: 30
+request_timeout_seconds: none

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 22186,
+  "stop_reason": "end_turn",
+  "session_id": "e8bfbc49-e061-4d12-b7c4-79d4b58670d0",
+  "total_cost_usd": 0.035202,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 1418,
+    "cache_read_input_tokens": 15520,
+    "output_tokens": 2797,
+    "output_tokens_details": {
+      "thinking_tokens": 973
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1418,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2646,
+        "cache_read_input_tokens": 7939,
+        "cache_creation_input_tokens": 1060,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1060
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 4,
+      "outputTokens": 2797,
+      "cacheReadInputTokens": 15520,
+      "cacheCreationInputTokens": 1418,
+      "webSearchRequests": 0,
+      "costUSD": 0.035202,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 973,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1418,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 3,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`handle` in `quillpay/webhooks.py` changes the ledger before it checks the signature, so anyone can forge a credit. Aelita recommends blocking PR 311 until B1 to B3 are fixed. B1 and B2 are small edits.\n\n**Existing behaviour**\n\n1. `handle` parses the body and logs it (`pr-311.diff:19-20`).\n2. `handle` calls `ledger.credit` or `ledger.debit` by event type (`pr-311.diff:22-25`).\n3. `handle` calls `verify` and returns 400 or 200 (`pr-311.diff:27-29`).\n\n**Timeline without the fix**\n\n1. An attacker posts `{\"type\":\"charge.succeeded\",\"data\":{\"account_id\":\"acc_9\",\"amount_cents\":500000}}` with no `Quill-Signature` header.\n2. `handle` parses the body and logs it.\n3. `handle` calls `ledger.credit(\"acc_9\", 500000)`. The ledger now holds the credit.\n4. `verify` gets an empty header. `dict()` raises `ValueError` and the request ends in a 500. With a bad but well-formed header, it returns 400.\n5. The error response does not undo the credit.\n6. The attacker repeats the request. `acc_9` is credited with money that never moved.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `handle` calls `verify` first. It finds no valid signature and returns 400.\n3. `ledger.credit` is never called. The forged event changes nothing.\n\n**What changes**\n\n- `quillpay/webhooks.py` old behaviour: `handle` mutates the ledger, then verifies. New behaviour: `handle` verifies first, then parses and mutates.\n- `quillpay/webhooks.py` old behaviour: `verify` raises on a malformed header. New behaviour: it returns `False`.\n- `quillpay/settings.py` old behaviour: `os.environ.get(\"QUILL_WEBHOOK_SECRET\", \"dev-secret\")`. New behaviour: `os.environ[\"QUILL_WEBHOOK_SECRET\"]`, which matches `DATABASE_URL` on the line above.\n\n**Recommendation.** Aelita recommends moving `verify` to the top of `handle` and removing the secret default. Both are small edits that remove the cause. The only break is that deployments without `QUILL_WEBHOOK_SECRET` fail at import. That is the intended outcome.\n\n**Findings**\n\n- `B1 - status:OPEN - action:YES - Ledger changes before signature check - handle calls ledger.credit and ledger.debit before verify at pr-311.diff:22-29, so unsigned requests move money - fix:call verify first and return 400 before any parsing - why:any internet client can forge credits`\n- `B2 - status:OPEN - action:YES - Default signing secret - settings.py:52 falls back to \"dev-secret\" when the env var is missing - fix:use os.environ[\"QUILL_WEBHOOK_SECRET\"] - why:a missing variable in production lets anyone compute a valid signature`\n- `B3 - status:OPEN - action:YES - No replay or retry protection - handle never records event ids, so a provider retry or a replay inside the 300 second window credits twice - fix:store event[\"id\"] with a unique constraint and skip duplicates, in the same transaction as the ledger write - why:payment providers retry by design`\n- `S1 - status:OPEN - action:YES - Malformed header raises - verify at pr-311.diff:33-34 fails on an empty header or a non-numeric t - fix:wrap the parsing in try/except (ValueError) and return False - why:a bad request should give 400, not 500`\n- `S2 - status:OPEN - action:YES - Non-constant-time compare - verify uses == at pr-311.diff:42 - fix:use hmac.compare_digest - why:it removes a timing side channel`\n- `S3 - status:OPEN - action:YES - Raw payload logged - log.info at pr-311.diff:20 logs the full body before verification - fix:log event id and type after verification - why:it leaks account data and lets unsigned callers write to logs`\n- `S4 - status:OPEN - action:YES - Unvalidated event fields - json.loads, event[\"type\"] and event[\"data\"][...] raise on bad input, and amount_cents and currency are not checked against LEDGER_CURRENCY - fix:return 400 on a bad shape and reject non-positive amounts - why:bad input should not cause 500s or negative credits`\n- `S5 - status:OPEN - action:YES - Dead code and no tests - _unused_helper at pr-311.diff:45-46 does nothing, and the diff adds no tests - fix:delete the helper and add tests for forged, stale, replayed and valid events - why:a payment path needs regression cover`\n\n**Question.** Should Aelita apply the B1 and B2 fixes to `webhooks.py` and `settings.py` now? The B3 dedupe design follows after your answer.",
+  "ttft_ms": 2273,
+  "type": "result",
+  "duration_ms": 22679,
+  "uuid": "0da7794f-1ced-4497-a805-e014e1930057",
+  "ttft_stream_ms": 1581,
+  "time_to_request_ms": 478,
+  "first_content_frame_ms": 1581,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

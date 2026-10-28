@@ -1,0 +1,184 @@
+{
+  "key": "87d97736bc349e775c2ab3daf9152625641cacbd1bca6d98a33fb6f89851545c",
+  "cost_usd": 0.04024,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the split, because the replica must stay read-only and `report_runs` lives on the primary.\" Matches the split recommendation: replica reads, CTE, primary record_run.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"The p99 is 2 seconds, and the job reads yesterday's data at 01:00 UTC.\" Temp table, report_runs insert, hot standby and 88% CPU statements all match the key.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"the 88% CPU spike stays\"; \"CREATE TEMP TABLE churn_window ... rejects it\". All five questions are covered. Checkout p95 is omitted, but the reader's follow-ups go beyond the ruling.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"churn_by_plan runs CREATE TEMP TABLE, and record_run inserts into report_runs. The hot standby rejects every write.\" Fix and cost match the key.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the split: reads on `pg-osprey-2` with the churn CTE, and `record_run` on `pg-osprey-1`?\" It is one question with one decision, and the reader answered it.",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: keep the job on the primary and tune the queries.\" This does not match either valid alternative (lower-traffic hour, or a separate wrapper step) and does not remove the load.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 11562,
+    "stop_reason": "tool_use",
+    "session_id": "bd8838f6-d90e-423f-9958-5073fe39dd74",
+    "total_cost_usd": 0.04024,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6090,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1569,
+      "output_tokens_details": {
+        "thinking_tokens": 946
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6090,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1569,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6090,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6090
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1569,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6090,
+        "webSearchRequests": 0,
+        "costUSD": 0.04024,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 946,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6090,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the split, because the replica must stay read-only and `report_runs` lives on the primary.\\\" Matches the split recommendation: replica reads, CTE, primary record_run.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"The p99 is 2 seconds, and the job reads yesterday's data at 01:00 UTC.\\\" Temp table, report_runs insert, hot standby and 88% CPU statements all match the key.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"the 88% CPU spike stays\\\"; \\\"CREATE TEMP TABLE churn_window ... rejects it\\\". All five questions are covered. Checkout p95 is omitted, but the reader's follow-ups go beyond the ruling.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"churn_by_plan runs CREATE TEMP TABLE, and record_run inserts into report_runs. The hot standby rejects every write.\\\" Fix and cost match the key.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the split: reads on `pg-osprey-2` with the churn CTE, and `record_run` on `pg-osprey-1`?\\\" It is one question with one decision, and the reader answered it.\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: keep the job on the primary and tune the queries.\\\" This does not match either valid alternative (lower-traffic hour, or a separate wrapper step) and does not remove the load.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the split, because the replica must stay read-only and `report_runs` lives on the primary.\" Matches the split recommendation: replica reads, CTE, primary record_run.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The p99 is 2 seconds, and the job reads yesterday's data at 01:00 UTC.\" Temp table, report_runs insert, hot standby and 88% CPU statements all match the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"the 88% CPU spike stays\"; \"CREATE TEMP TABLE churn_window ... rejects it\". All five questions are covered. Checkout p95 is omitted, but the reader's follow-ups go beyond the ruling.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"churn_by_plan runs CREATE TEMP TABLE, and record_run inserts into report_runs. The hot standby rejects every write.\" Fix and cost match the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the split: reads on `pg-osprey-2` with the churn CTE, and `record_run` on `pg-osprey-1`?\" It is one question with one decision, and the reader answered it.",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: keep the job on the primary and tune the queries.\" This does not match either valid alternative (lower-traffic hour, or a separate wrapper step) and does not remove the load.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 9031,
+    "type": "result",
+    "duration_ms": 11942,
+    "uuid": "ef6657b9-4fca-4895-9f03-5a164caae42b",
+    "ttft_stream_ms": 1819,
+    "time_to_request_ms": 380,
+    "first_content_frame_ms": 1820,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

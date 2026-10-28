@@ -1,0 +1,64 @@
+{
+  "measures": ["M2", "M3", "M4", "M5"],
+  "correct_recommendations": [],
+  "invalid_options": [],
+  "root_cause": "cache_key uses only the path and the query string, while serve_image renders the format that negotiate picks from the Accept header. The first request decides the cached bytes for every browser. The ruled fix adds the negotiated format, one of avif, webp or orig, to the key. It does not add the whole Accept header.",
+  "dependent_facts": [
+    {
+      "fact": "Current cache key",
+      "true_value": "path and query string only",
+      "source": "edge/cache.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Negotiated format",
+      "true_value": "negotiate maps the Accept header to one of avif, webp or orig",
+      "source": "edge/negotiate.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Accept header variety",
+      "true_value": "1,912 distinct Accept values under /img/ in October, so a key with the whole header splits each image into many entries",
+      "source": "logs/accept-stats-2026-10.txt",
+      "verifiable": true
+    },
+    {
+      "fact": "Safari 13",
+      "true_value": "decodes neither WebP nor AVIF",
+      "source": "docs/browser-support.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Ruling",
+      "true_value": "add the negotiated format avif, webp or orig to the cache key; no item remains open",
+      "source": "prompt",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Is the key today the URL only?",
+      "expected_answer": "Yes: path and query string."
+    },
+    {
+      "question": "Does the fix append the whole Accept header?",
+      "expected_answer": "No. It appends the negotiated format, one of avif, webp or orig. The whole header has 1,912 distinct values and would split the cache."
+    },
+    {
+      "question": "Do the images break because Safari 13 cannot decode WebP?",
+      "expected_answer": "Yes."
+    },
+    {
+      "question": "Is anything still open?",
+      "expected_answer": "No. The next step is the change of cache_key in edge/cache.py."
+    }
+  ],
+  "valid_alternatives": [],
+  "closing_decision": "none",
+  "understanding": {
+    "problem": "The image cache key ignores the negotiated image format.",
+    "breaks": "Safari 13 receives a cached WebP image and shows a broken image.",
+    "fix": "Add the negotiated format avif, webp or orig to the cache key, not the whole Accept header.",
+    "cost": "n/a"
+  }
+}

@@ -1,0 +1,12 @@
+2026-10-27T14:01:47Z lantern-worker-7f9c-2 INFO job start upload=u-88213 kind=video
+2026-10-27T14:01:52Z lantern-worker-7f9c-2 INFO job start upload=u-88214 kind=image
+2026-10-27T14:01:53Z lantern-worker-7f9c-2 INFO job done upload=u-88214 kind=image 1.2s
+2026-10-27T14:02:05Z lantern-worker-7f9c-2 INFO job start upload=u-88217 kind=video
+2026-10-27T14:02:06Z lantern-worker-7f9c-2 INFO job start upload=u-88218 kind=video
+2026-10-27T14:02:07Z lantern-worker-7f9c-2 INFO job start upload=u-88219 kind=video
+2026-10-27T14:02:10Z lantern-worker-7f9c-2 INFO SIGTERM received, stop consuming, drain up to 60s
+2026-10-27T14:02:21Z lantern-worker-7f9c-2 INFO job done upload=u-88213 kind=video 34.0s
+2026-10-27T14:02:21Z lantern-worker-7f9c-2 INFO job start upload=u-88220 kind=image
+2026-10-27T14:02:23Z lantern-worker-7f9c-2 INFO job done upload=u-88220 kind=image 1.9s
+2026-10-27T14:02:23Z lantern-worker-7f9c-2 INFO job start upload=u-88221 kind=video
+2026-10-27T14:02:30Z kubelet Killing container lantern-worker with SIGKILL: grace period 20s expired

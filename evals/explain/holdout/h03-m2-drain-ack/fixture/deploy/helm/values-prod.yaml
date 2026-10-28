@@ -1,0 +1,10 @@
+worker:
+  image: registry.lantern.example/lantern-jobs:2026.10.27
+  replicas: 3
+  terminationGracePeriodSeconds: 20
+  resources:
+    requests:
+      cpu: "2"
+      memory: 3Gi
+  env:
+    LANTERN_CONCURRENCY: "4"

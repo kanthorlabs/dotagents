@@ -1,0 +1,172 @@
+{
+  "key": "40ef588afb3152ac38f9aceefdef1bb71bd99aca8baf9482a4e28aba89942b19",
+  "cost_usd": 0.038624,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"raising the lock TTL to 3600 seconds and setting `lock_backend: redis` in `config/us-east.yaml`\" covers both readings, matching the first correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"With `lock_backend: none`, `acquire` returns `True`\"; eu-west redis TTL 60s, 4 minutes, 01:00/01:02 all match. Region is never asserted, both branches are given."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"The region does not matter, because both configs fail.\" It answers all three required questions, and the reader listed no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"In eu-west (redis) the lock expires mid-run... In us-east (lock_backend: none) acquire always returns True\"; the fix and cost agree in substance with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"approve raising the TTL to 3600 and switching us-east... or ... the idempotent purchase order instead?\" Reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: make `create_purchase_order` idempotent... beats the recommendation if `reorder` must tolerate any lock failure... primary if you can change `purchasing`.\" It matches a valid alternative with a condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10799,
+    "stop_reason": "tool_use",
+    "session_id": "b2b47a49-7ac6-422e-99d8-d2a43aa0da84",
+    "total_cost_usd": 0.038624,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6101,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1403,
+      "output_tokens_details": {
+        "thinking_tokens": 858
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6101,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1403,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6101,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6101
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1403,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6101,
+        "webSearchRequests": 0,
+        "costUSD": 0.038624,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 858,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6101,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"raising the lock TTL to 3600 seconds and setting `lock_backend: redis` in `config/us-east.yaml`\\\" covers both readings, matching the first correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"With `lock_backend: none`, `acquire` returns `True`\\\"; eu-west redis TTL 60s, 4 minutes, 01:00/01:02 all match. Region is never asserted, both branches are given.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"The region does not matter, because both configs fail.\\\" It answers all three required questions, and the reader listed no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"In eu-west (redis) the lock expires mid-run... In us-east (lock_backend: none) acquire always returns True\\\"; the fix and cost agree in substance with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"approve raising the TTL to 3600 and switching us-east... or ... the idempotent purchase order instead?\\\" Reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: make `create_purchase_order` idempotent... beats the recommendation if `reorder` must tolerate any lock failure... primary if you can change `purchasing`.\\\" It matches a valid alternative with a condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"raising the lock TTL to 3600 seconds and setting `lock_backend: redis` in `config/us-east.yaml`\" covers both readings, matching the first correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"With `lock_backend: none`, `acquire` returns `True`\"; eu-west redis TTL 60s, 4 minutes, 01:00/01:02 all match. Region is never asserted, both branches are given."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The region does not matter, because both configs fail.\" It answers all three required questions, and the reader listed no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"In eu-west (redis) the lock expires mid-run... In us-east (lock_backend: none) acquire always returns True\"; the fix and cost agree in substance with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"approve raising the TTL to 3600 and switching us-east... or ... the idempotent purchase order instead?\" Reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: make `create_purchase_order` idempotent... beats the recommendation if `reorder` must tolerate any lock failure... primary if you can change `purchasing`.\" It matches a valid alternative with a condition."
+        }
+      ]
+    },
+    "ttft_ms": 8051,
+    "type": "result",
+    "duration_ms": 11215,
+    "uuid": "6544e027-3ffb-4ffe-8a0b-07157d4d55ff",
+    "ttft_stream_ms": 1572,
+    "time_to_request_ms": 418,
+    "first_content_frame_ms": 1573,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

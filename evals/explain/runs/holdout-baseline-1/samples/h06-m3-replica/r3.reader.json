@@ -1,0 +1,135 @@
+{
+  "key": "00af787b3644bd9bf3e733b5019d13d03a7f7b282717b9d415d2f5050aaaf4b2",
+  "cost_usd": 0.019235299999999997,
+  "reader": {
+    "decision": "Approve the split: reads (revenue_by_region and the churn CTE) on pg-osprey-2, and record_run on pg-osprey-1 through a new PRIMARY_DATABASE_URL secret.",
+    "decision_reason": "The message says the hot standby rejects the job's writes. A read-only churn CTE plus a separate primary connection for the one small insert fixes that, and it removes the 22-minute reporting load from the primary. The cost is one extra secret and one extra connection. The alternative keeps the 88% CPU spike.",
+    "reconstruction": {
+      "problem": "The nightly report job was pointed at the read replica pg-osprey-2 to take load off the primary. The job writes twice. churn_by_plan runs CREATE TEMP TABLE, and record_run inserts into report_runs. The hot standby rejects every write.",
+      "what_breaks": "Today, with DATABASE_URL on the replica, the temp table creation fails and main raises. No PDF is written and report_runs gets no row for the day. After the fix, a missing PRIMARY_DATABASE_URL fails the job after the PDF exists. A failed insert leaves a PDF with no run row.",
+      "fix": "Replace the temp table with one WITH churn_window AS (...) SELECT query that runs on the replica. Open a separate primary connection only for record_run. In deploy/cronjob.yaml, switch DATABASE_URL to osprey-replica and add PRIMARY_DATABASE_URL from osprey-primary, key url.",
+      "cost": "One extra secret and one extra connection. There are two failure modes: a missing secret, and a failed insert after the PDF exists. The insert takes milliseconds. Replica lag is not a risk: p99 is 2 seconds and the job reads yesterday's data."
+    },
+    "follow_up_questions": [
+      "Does the team allow the job to hold write access to the primary through a second secret? The message names this as the condition under which the alternative becomes the primary option.",
+      "Is a PDF with no report_runs row acceptable, or must the job retry or alert when the insert fails?"
+    ],
+    "closing_answer": "Yes, I approve the split: reads on pg-osprey-2 with the churn CTE, and record_run on pg-osprey-1. I approve it on the condition that the team grants the second secret."
+  },
+  "raw": {
+    "duration_api_ms": 6552,
+    "stop_reason": "tool_use",
+    "session_id": "4796764d-1211-43a5-b6c4-8f91ddb70d97",
+    "total_cost_usd": 0.019235299999999997,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2596,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 865,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2596,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 865,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2596,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2596
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 865,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2596,
+        "webSearchRequests": 0,
+        "costUSD": 0.019235299999999997,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2596,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve the split: reads (revenue_by_region and the churn CTE) on pg-osprey-2, and record_run on pg-osprey-1 through a new PRIMARY_DATABASE_URL secret.\",\"decision_reason\":\"The message says the hot standby rejects the job's writes. A read-only churn CTE plus a separate primary connection for the one small insert fixes that, and it removes the 22-minute reporting load from the primary. The cost is one extra secret and one extra connection. The alternative keeps the 88% CPU spike.\",\"reconstruction\":{\"problem\":\"The nightly report job was pointed at the read replica pg-osprey-2 to take load off the primary. The job writes twice. churn_by_plan runs CREATE TEMP TABLE, and record_run inserts into report_runs. The hot standby rejects every write.\",\"what_breaks\":\"Today, with DATABASE_URL on the replica, the temp table creation fails and main raises. No PDF is written and report_runs gets no row for the day. After the fix, a missing PRIMARY_DATABASE_URL fails the job after the PDF exists. A failed insert leaves a PDF with no run row.\",\"fix\":\"Replace the temp table with one WITH churn_window AS (...) SELECT query that runs on the replica. Open a separate primary connection only for record_run. In deploy/cronjob.yaml, switch DATABASE_URL to osprey-replica and add PRIMARY_DATABASE_URL from osprey-primary, key url.\",\"cost\":\"One extra secret and one extra connection. There are two failure modes: a missing secret, and a failed insert after the PDF exists. The insert takes milliseconds. Replica lag is not a risk: p99 is 2 seconds and the job reads yesterday's data.\"},\"follow_up_questions\":[\"Does the team allow the job to hold write access to the primary through a second secret? The message names this as the condition under which the alternative becomes the primary option.\",\"Is a PDF with no report_runs row acceptable, or must the job retry or alert when the insert fails?\"],\"closing_answer\":\"Yes, I approve the split: reads on pg-osprey-2 with the churn CTE, and record_run on pg-osprey-1. I approve it on the condition that the team grants the second secret.\"}",
+    "structured_output": {
+      "decision": "Approve the split: reads (revenue_by_region and the churn CTE) on pg-osprey-2, and record_run on pg-osprey-1 through a new PRIMARY_DATABASE_URL secret.",
+      "decision_reason": "The message says the hot standby rejects the job's writes. A read-only churn CTE plus a separate primary connection for the one small insert fixes that, and it removes the 22-minute reporting load from the primary. The cost is one extra secret and one extra connection. The alternative keeps the 88% CPU spike.",
+      "reconstruction": {
+        "problem": "The nightly report job was pointed at the read replica pg-osprey-2 to take load off the primary. The job writes twice. churn_by_plan runs CREATE TEMP TABLE, and record_run inserts into report_runs. The hot standby rejects every write.",
+        "what_breaks": "Today, with DATABASE_URL on the replica, the temp table creation fails and main raises. No PDF is written and report_runs gets no row for the day. After the fix, a missing PRIMARY_DATABASE_URL fails the job after the PDF exists. A failed insert leaves a PDF with no run row.",
+        "fix": "Replace the temp table with one WITH churn_window AS (...) SELECT query that runs on the replica. Open a separate primary connection only for record_run. In deploy/cronjob.yaml, switch DATABASE_URL to osprey-replica and add PRIMARY_DATABASE_URL from osprey-primary, key url.",
+        "cost": "One extra secret and one extra connection. There are two failure modes: a missing secret, and a failed insert after the PDF exists. The insert takes milliseconds. Replica lag is not a risk: p99 is 2 seconds and the job reads yesterday's data."
+      },
+      "follow_up_questions": [
+        "Does the team allow the job to hold write access to the primary through a second secret? The message names this as the condition under which the alternative becomes the primary option.",
+        "Is a PDF with no report_runs row acceptable, or must the job retry or alert when the insert fails?"
+      ],
+      "closing_answer": "Yes, I approve the split: reads on pg-osprey-2 with the churn CTE, and record_run on pg-osprey-1. I approve it on the condition that the team grants the second secret."
+    },
+    "ttft_ms": 7028,
+    "type": "result",
+    "duration_ms": 7047,
+    "uuid": "ef269a50-1ce7-49c3-947b-765b4866a67d",
+    "ttft_stream_ms": 1892,
+    "time_to_request_ms": 495,
+    "first_content_frame_ms": 1892,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

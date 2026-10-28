@@ -1,0 +1,160 @@
+{
+  "key": "536ee3df16aecce9a8f77447ed2f75a7bd9c84bff2c84c235e2b7c19504a3b33",
+  "cost_usd": 0.026218,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"recommends the verify-first ordering from B1\"; B2 dedupe also listed as blocker. Matches: verify before ledger call, dedupe on event id.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"ledger mutated before signature check\"; \"Nothing records the event id\"; dev-secret fallback, `==` compare, payload log, unused helper, ValueError all match the key.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message says \"blocking the merge on B1 to B4\"; lists fixes; S1-S3 as suggestions. Reader lists no follow-up questions.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"credits and debits before it calls `verify`... Replays and provider retries can double-apply\"; fix: verify first, dedupe on event id. Matches key.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3338,
+    "stop_reason": "tool_use",
+    "session_id": "0ecc3894-9fd6-4979-a80a-75025732c218",
+    "total_cost_usd": 0.026218,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5542,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 386,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5542,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 386,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5542,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5542
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 386,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5542,
+        "webSearchRequests": 0,
+        "costUSD": 0.026218,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5542,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"recommends the verify-first ordering from B1\\\"; B2 dedupe also listed as blocker. Matches: verify before ledger call, dedupe on event id.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"ledger mutated before signature check\\\"; \\\"Nothing records the event id\\\"; dev-secret fallback, `==` compare, payload log, unused helper, ValueError all match the key.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message says \\\"blocking the merge on B1 to B4\\\"; lists fixes; S1-S3 as suggestions. Reader lists no follow-up questions.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"credits and debits before it calls `verify`... Replays and provider retries can double-apply\\\"; fix: verify first, dedupe on event id. Matches key.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"recommends the verify-first ordering from B1\"; B2 dedupe also listed as blocker. Matches: verify before ledger call, dedupe on event id.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"ledger mutated before signature check\"; \"Nothing records the event id\"; dev-secret fallback, `==` compare, payload log, unused helper, ValueError all match the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message says \"blocking the merge on B1 to B4\"; lists fixes; S1-S3 as suggestions. Reader lists no follow-up questions.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"credits and debits before it calls `verify`... Replays and provider retries can double-apply\"; fix: verify first, dedupe on event id. Matches key.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 3802,
+    "type": "result",
+    "duration_ms": 3816,
+    "uuid": "09787a72-b987-48ef-b14d-601a5e0199a1",
+    "ttft_stream_ms": 1357,
+    "time_to_request_ms": 487,
+    "first_content_frame_ms": 1357,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

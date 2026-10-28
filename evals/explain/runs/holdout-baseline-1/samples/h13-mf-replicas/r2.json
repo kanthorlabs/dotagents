@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 5541,
+  "stop_reason": "end_turn",
+  "session_id": "7ce66fbc-eb98-4858-9cda-730a1b00355e",
+  "total_cost_usd": 0.0157565,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1728,
+    "cache_read_input_tokens": 23725,
+    "output_tokens": 646,
+    "output_tokens_details": {
+      "thinking_tokens": 38
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1728,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 230,
+        "cache_read_input_tokens": 8549,
+        "cache_creation_input_tokens": 447,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 447
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 646,
+      "cacheReadInputTokens": 23725,
+      "cacheCreationInputTokens": 1728,
+      "webSearchRequests": 0,
+      "costUSD": 0.0157565,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 38,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1728,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`ashgrove-portal` runs **7 replicas** in production.\n\n- **Base:** `k8s/base/deployment.yaml:6` sets `replicas: 2`.\n- **Prod overlay:** `k8s/overlays/prod/replicas.yaml:6` patches that to `replicas: 7`. `k8s/overlays/prod/kustomization.yaml` applies the patch.\n- **Staging, for comparison:** `k8s/overlays/staging/replicas.yaml` sets 3.\n\nThe directory has no autoscaler manifest. The 7 is the declared count in these files. A HorizontalPodAutoscaler defined elsewhere in the cluster could change the live count.",
+  "ttft_ms": 1715,
+  "type": "result",
+  "duration_ms": 6260,
+  "uuid": "e407b94e-7182-46c9-8b2b-0a3a992678bc",
+  "ttft_stream_ms": 1189,
+  "time_to_request_ms": 497,
+  "first_content_frame_ms": 1190,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 38199,
+  "stop_reason": "end_turn",
+  "session_id": "699c676f-63e3-4828-9c99-405b93877584",
+  "total_cost_usd": 0.0743515,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 4929,
+    "cache_read_input_tokens": 34995,
+    "output_tokens": 5112,
+    "output_tokens_details": {
+      "thinking_tokens": 2459
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4929,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3315,
+        "cache_read_input_tokens": 11284,
+        "cache_creation_input_tokens": 1248,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1248
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 5112,
+      "cacheReadInputTokens": 34995,
+      "cacheCreationInputTokens": 4929,
+      "webSearchRequests": 0,
+      "costUSD": 0.0743515,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2459,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4929,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 12,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`lantern-worker` loses jobs on deploy because `consume.py:22` sets `auto_ack=True`, so RabbitMQ deletes each job on delivery. The pod then gets SIGKILL after 20s, while the drain waits up to 60s. Aelita recommends manual acks after the job finishes, plus a grace period longer than the drain.\n\n**Timeline without the fix**\n\n1. `consume.py:22` uses `auto_ack=True`. RabbitMQ forgets u-88217, u-88218 and u-88219 at 14:02:05 to 14:02:07. They only exist in the `ThreadPoolExecutor` of `lantern-worker-7f9c-2`.\n2. At 14:02:10 Kubernetes sends SIGTERM. `consume.py:23` stops consuming and the log promises a drain of up to 60s.\n3. `drain` calls `pool.shutdown(wait=False)`, which keeps pending work. At 14:02:21 u-88213 finishes, and u-88220 and u-88221 start. This is real work after SIGTERM.\n4. At 14:02:30 the kubelet sends SIGKILL. `values-prod.yaml` sets `terminationGracePeriodSeconds: 20`, which is 40s before the drain deadline.\n5. u-88217, u-88218, u-88219 and u-88221 have no `job done` line. The process died with no exception and no `drain deadline reached` warning.\n6. RabbitMQ holds no copy, so nothing retries. The upload page shows the placeholder forever, as `docs/thumbnails.md` says. Jobs that were queued in the pool but never started are lost too, and the log cannot show them.\n\n**Timeline with the fix**, diverges at step 1. Steps 2 and 3 are unchanged.\n\n1. The worker consumes with `auto_ack=False` and `prefetch_count=4`. RabbitMQ keeps u-88217, u-88218 and u-88219 as unacked until each job finishes.\n4. SIGKILL is now unlikely, because the grace period is 90s and the drain deadline is 75s. If a SIGKILL or a crash still comes, the connection drops.\n5. RabbitMQ requeues every unacked job. Finished jobs were already acked.\n6. Another worker renders the requeued jobs. The thumbnails appear.\n\n**What changes**\n\n- `worker/consume.py`: add `channel.basic_qos(prefetch_count=settings.CONCURRENCY)` and set `auto_ack=False`.\n  - `on_message` submits a wrapper that runs `handle`, then calls `connection.add_callback_threadsafe` to `basic_ack`. pika channels are not thread-safe, so the pool threads cannot ack directly.\n  - On an exception the wrapper logs it and calls `basic_nack` with `requeue=False`, so a bad job cannot loop.\n- `worker/lifecycle.py`: `drain` takes the `connection`. It replaces `time.sleep(0.5)` with `connection.process_data_events(time_limit=0.5)`. After `stop_consuming`, nothing else runs the ack callbacks, so jobs that finish during the drain would never be acked and would be redelivered.\n- `deploy/helm/values-prod.yaml`: change `terminationGracePeriodSeconds` from `20` to `90`. Add `LANTERN_DRAIN_SECONDS: \"75\"`, replacing the default of 60. `docs/thumbnails.md` gives video jobs up to 70s, so the drain must cover that and the grace period must exceed the drain.\n\n**Recommendation.** Aelita recommends manual acks plus the longer grace period. This removes the root cause, which is that the broker forgets jobs the worker has not finished. It also covers OOM kills and node loss. The cost is possible redelivery. `put_thumbnail` writes a fixed key, so a repeat is harmless. A kill between `put_thumbnail` and `record_usage` would send `record_usage` twice for one `ref`. `meter.internal` belongs to Billing, and no file in this repository says whether it dedupes on `ref`.\n\n**Alternative: raise only the grace period and drain.** Set `terminationGracePeriodSeconds: 90` and `LANTERN_DRAIN_SECONDS: 75`, with no code change. It is cheap and cannot cause duplicate billing. It still loses jobs on a crash or OOM kill. It becomes the primary if Billing confirms that `meter.internal` does not dedupe on `ref` and cannot start doing so.\n\n**Question.** Do you approve manual acks plus the longer grace period, or should Aelita ship only the grace and drain change?",
+  "ttft_ms": 1545,
+  "type": "result",
+  "duration_ms": 38557,
+  "uuid": "38368b13-a9ac-48d3-9364-350ff41bae1d",
+  "ttft_stream_ms": 1337,
+  "time_to_request_ms": 309,
+  "first_content_frame_ms": 1337,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

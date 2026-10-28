@@ -1,0 +1,27 @@
+{
+  "mode": "Explanation of a bug with a fix proposal. One dependent fact has no source.",
+  "common": [
+    "style",
+    "explanation",
+    "fix"
+  ],
+  "checks": [
+    {
+      "name": "names-self",
+      "kind": "mechanical",
+      "rule": "R22",
+      "fn": "regex_present",
+      "args": {
+        "pattern": "\\bAelita (recommends|proposes|prefers|suggests)"
+      },
+      "criterion": "The recommendation names Aelita as the recommender."
+    },
+    {
+      "name": "no-deferral",
+      "kind": "mechanical",
+      "rule": "R34",
+      "fn": "no_deferral",
+      "criterion": "The message defers no dependent fact to a later check."
+    }
+  ]
+}

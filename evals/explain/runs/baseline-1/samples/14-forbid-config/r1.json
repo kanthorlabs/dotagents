@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 15956,
+  "stop_reason": "end_turn",
+  "session_id": "94da6c67-695f-478d-b5ab-8b5375b3d19a",
+  "total_cost_usd": 0.0324749,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2155,
+    "cache_read_input_tokens": 23729,
+    "output_tokens": 2147,
+    "output_tokens_details": {
+      "thinking_tokens": 638
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2155,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1594,
+        "cache_read_input_tokens": 8484,
+        "cache_creation_input_tokens": 939,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 939
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2147,
+      "cacheReadInputTokens": 23729,
+      "cacheCreationInputTokens": 2155,
+      "webSearchRequests": 0,
+      "costUSD": 0.0324749,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 638,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2155,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 7,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`purge-worker` deleted the in-progress uploads because `TenantConfig.validate` accepts `retention_days: 0`, while `docs/retention.md` supports only 1 to 3650. Aelita recommends making the validator enforce the documented range.\n\n**Timeline without the fix**\n\n1. The `acme-labs` tenant sets `retention_days: 0` in `tenants/acme-labs.yaml`.\n2. `TenantConfig.validate` in `config/schema.py` checks only `< 0`. It accepts 0.\n3. A user starts a multipart upload at 10:00. `created_at` is 10:00. The upload can stay in progress for up to 6 hours.\n4. `purge-worker` runs at 10:15. `purge_tenant` computes `cutoff = now - timedelta(days=0)`, which is 10:15.\n5. `upload.created_at < cutoff` is true for the 10:00 upload.\n6. `store.delete` removes the upload while it is still in progress. The user loses it.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `TenantConfig.validate` rejects 0 with a `ValueError`. The tenant file is not accepted.\n3. The tenant sets `retention_days: 1`. A multipart upload starts at 10:00.\n4. `purge-worker` runs at 10:15. The cutoff is 24 hours back, so the 10:00 upload is not older than it.\n5. The upload finishes within its 6 hours. The upload stays under the cutoff until the next day.\n6. A tenant that wants no retention deletes uploads through the API, as the docs say.\n\n**What changes**\n\n- `config/schema.py` old behaviour: `if self.retention_days < 0` raises \"retention_days must be >= 0\". New behaviour: `if not 1 <= self.retention_days <= 3650` raises \"retention_days must be between 1 and 3650\".\n- `tenants/acme-labs.yaml` old value: `retention_days: 0`. New value: `retention_days: 1`, so the file passes validation.\n\n**Recommendation.** Aelita recommends the validator fix. It removes the root cause: config and docs disagree, and 0 was never a supported value. It costs one line. Any other tenant file with 0 will now fail validation. I searched the repository and found only `acme-labs` with that value. Any minimum of 1 day also covers the 6-hour upload limit.\n\n**Alternative: skip in-progress uploads in `purge_tenant`.** The worker would skip any upload that is not complete. It protects uploads even when the retention is short. It needs a status field on the upload object. The repository holds no `store` code, so I cannot confirm that field exists. It becomes the primary if you decide that 0 must be a valid value.\n\n**Question.** Do you approve the validator range of 1 to 3650 and the change of `acme-labs` to `retention_days: 1`?",
+  "ttft_ms": 1797,
+  "type": "result",
+  "duration_ms": 16482,
+  "uuid": "894e884d-7dfa-4ca7-a2fe-bef5cff80a1e",
+  "ttft_stream_ms": 1210,
+  "time_to_request_ms": 513,
+  "first_content_frame_ms": 1210,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

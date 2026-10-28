@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 10656,
+  "stop_reason": "end_turn",
+  "session_id": "eba270ee-f6aa-408d-bb4e-e598ac488fae",
+  "total_cost_usd": 0.021673699999999997,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1584,
+    "cache_read_input_tokens": 25257,
+    "output_tokens": 1280,
+    "output_tokens_details": {
+      "thinking_tokens": 365
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1584,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 757,
+        "cache_read_input_tokens": 8867,
+        "cache_creation_input_tokens": 733,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 733
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1280,
+      "cacheReadInputTokens": 25257,
+      "cacheCreationInputTokens": 1584,
+      "webSearchRequests": 0,
+      "costUSD": 0.021673699999999997,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 365,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1584,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "- **Schedule: correct.** `config/prod.yaml:2` sets `session_gc_schedule: \"*/10 * * * *\"`, so `session-gc` runs every 10 minutes.\n- **Idle rule: correct.** `auth/session_gc.py:3` sets `IDLE_LIMIT` to 30 minutes. `collect` deletes rows where `last_seen_at` is older than that.\n- **Time zone mismatch: wrong.** `collect` builds `cutoff` with `datetime.now(timezone.utc)` at `auth/session_gc.py:7`. The column `last_seen_at` is `timestamptz` in `auth/schema.sql:4`. Both sides are timezone-aware, so the comparison is correct.\n\nThe case is not a clock bug. `session-gc` reads the right time and finds a stale `last_seen_at`. That value is stale because `edge-proxy/session.py:8` skips `auth_client.touch` while `touch_on_request` is false in `config/prod.yaml:1`.\n\n**Close.** One item is still open from my last message. Aelita recommends turning on `touch_on_request` in production, because it is a one-line config change and the touch code already exists. Do we turn it on, or move the touch into `auth-service`?",
+  "ttft_ms": 1351,
+  "type": "result",
+  "duration_ms": 10914,
+  "uuid": "731d034f-4d5a-4ac3-a4ef-5845bd266502",
+  "ttft_stream_ms": 1174,
+  "time_to_request_ms": 229,
+  "first_content_frame_ms": 1174,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

@@ -1,0 +1,90 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Stream the CSV response: write rows as they come, with a server-side cursor or batches, so edge-lb sees bytes before 30 s of silence."
+  ],
+  "invalid_options": [
+    "Change nothing."
+  ],
+  "root_cause": "export_contacts builds the whole CSV in memory and sends nothing until it is done. Large exports take about 90 s, and edge-lb closes a connection after 30 s without a byte.",
+  "dependent_facts": [
+    {
+      "fact": "Export code",
+      "true_value": "export_contacts builds the full CSV in a StringIO and returns it at the end",
+      "source": "app/exports.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Proxy timeout",
+      "true_value": "edge-lb idle timeout 30 s, restarts on every byte; no total timeout",
+      "source": "deploy/edge-lb.yaml and docs/exports.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Export duration",
+      "true_value": "about 89 to 90 s for bluefin-logistics with 412,880 rows; query 12 s",
+      "source": "logs/export-2026-10-27.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Worker timeout",
+      "true_value": "gunicorn timeout 120 s, 16 workers",
+      "source": "deploy/gunicorn.conf.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Volume",
+      "true_value": "about 6 exports per day",
+      "source": "docs/exports.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Infrastructure",
+      "true_value": "no job queue and no email service today; each new component needs an owner and on-call coverage",
+      "source": "docs/exports.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why the 504?",
+      "expected_answer": "No byte reaches edge-lb for more than 30 s while the CSV builds in memory."
+    },
+    {
+      "question": "Why streaming and not a background job?",
+      "expected_answer": "Streaming keeps the browser download, fits the 120 s worker timeout at 6 exports per day, and needs no new component; a background job needs a job queue and email, which the stack lacks."
+    },
+    {
+      "question": "What can break?",
+      "expected_answer": "An export longer than the 120 s gunicorn timeout still fails; a stream error mid-file leaves a partial download."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Asynchronous export job that stores the file and sends a link",
+      "trade_off": "Frees web workers and has no duration limit, but needs a job queue and email or a download page, which the stack lacks today.",
+      "primary_when": "Exports outgrow the 120 s worker timeout, export volume grows, or new infrastructure is allowed.",
+      "must_list": true
+    },
+    {
+      "option": "Raise the edge-lb idle timeout above the longest export of 90 s",
+      "trade_off": "One config line and no code change, but it weakens slow-client protection on every route and breaks again when exports grow.",
+      "primary_when": "The export code cannot change soon.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve streaming for export_contacts, or a single follow-up on it.",
+  "understanding": {
+    "problem": "Large contact exports return 504.",
+    "breaks": "The CSV builds in memory for about 90 s with no byte sent, and edge-lb closes idle connections after 30 s.",
+    "fix": "Stream the CSV rows as they are produced.",
+    "cost": "A code change in export_contacts; a worker stays busy for the full export."
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Cache the pnpm store in the ci workflow, with cache: pnpm on actions/setup-node or an actions/cache step keyed on pnpm-lock.yaml."
+  ],
+  "invalid_options": [
+    "Cache node_modules instead of the pnpm store, which breaks with pnpm symlinks and frozen lockfile checks.",
+    "Run CI only on pull requests, which changes the trigger and not the install cost."
+  ],
+  "root_cause": "Not a bug. Every run downloads the full dependency set because the workflow has no cache.",
+  "dependent_facts": [
+    {
+      "fact": "Median Install step time",
+      "true_value": "3 min 40 s",
+      "source": "docs/ci-metrics.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Install time with a warm store",
+      "true_value": "35 s, measured on 20 manual runs",
+      "source": "docs/ci-metrics.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Runs per week",
+      "true_value": "412",
+      "source": "docs/ci-metrics.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Runner price",
+      "true_value": "0.008 USD per minute",
+      "source": "docs/ci-metrics.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Saving",
+      "true_value": "about 3 min 05 s per run, about 21 runner hours and about 10 USD per week",
+      "source": "docs/ci-metrics.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Cache size against limit",
+      "true_value": "1.1 GB store against a 10 GB repository cache limit",
+      "source": "docs/ci-metrics.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Current workflow",
+      "true_value": "no cache step; Install runs pnpm install --frozen-lockfile",
+      "source": ".github/workflows/ci.yml",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "What does the change buy?",
+      "expected_answer": "About 3 minutes per run, about 21 runner hours and about 10 USD per week, and shorter waits before merge."
+    },
+    {
+      "question": "What does it cost or risk?",
+      "expected_answer": "1.1 GB of the 10 GB cache, a cold run when pnpm-lock.yaml changes, and a few lines of YAML."
+    },
+    {
+      "question": "What exactly changes in ci.yml?",
+      "expected_answer": "Add cache: pnpm to setup-node, or add an actions/cache step keyed on pnpm-lock.yaml."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Explicit actions/cache step on the pnpm store path keyed on pnpm-lock.yaml",
+      "trade_off": "Gives control over the key and restore-keys, but needs more YAML and a store-path step.",
+      "primary_when": "The team needs custom cache keys or restore-keys.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve adding the pnpm store cache to ci.yml, or choose the cache form.",
+  "understanding": {
+    "problem": "Every CI run reinstalls all dependencies from scratch.",
+    "breaks": "Nothing breaks. The cost is about 3 minutes per run, about 21 runner hours or 10 USD per week, and slower merges.",
+    "fix": "Cache the pnpm store in the ci workflow.",
+    "cost": "A few YAML lines and 1.1 GB of the 10 GB cache."
+  }
+}

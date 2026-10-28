@@ -1,0 +1,160 @@
+{
+  "key": "7af6b09bb998cb41a89bb3d1097474f80a6471c14536689d9f05c1c35f271707",
+  "cost_usd": 0.02324,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`session_gc_schedule: \"*/10 * * * *\"`\" ... \"`IDLE_LIMIT` to 30 minutes\" ... \"`datetime.now(timezone.utc)`\" ... \"`timestamptz`\" \u2014 all match the key; touch_on_request false is also correct.",
+      "pass_note": "none"
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message answers all three: \"Schedule: correct.\" \"Idle limit: correct.\" \"Timezone mismatch: wrong.\" Reader's follow-ups (cost, other environments) are beyond the ruling; reader still decided.",
+      "pass_note": "none"
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader cost: \"not stated\". Key cost is n/a, so skipped. But reader fix: \"Set `touch_on_request` to true ... The alternative is to move the touch into `auth-service`.\" This matches the key. Problem and breaks match too.",
+      "pass_note": "recheck"
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do we turn on `touch_on_request` in `config/prod.yaml`... or move the touch into `auth-service`?\" Reader closing answer: \"Turn on `touch_on_request` in `config/prod.yaml`.\"",
+      "pass_note": "none"
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 4478,
+    "stop_reason": "tool_use",
+    "session_id": "ff261e5b-5894-4bff-8347-1e21852417a3",
+    "total_cost_usd": 0.02324,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4440,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 529,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4440,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 529,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4440,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4440
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 529,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4440,
+        "webSearchRequests": 0,
+        "costUSD": 0.02324,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4440,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`session_gc_schedule: \\\"*/10 * * * *\\\"`\\\" ... \\\"`IDLE_LIMIT` to 30 minutes\\\" ... \\\"`datetime.now(timezone.utc)`\\\" ... \\\"`timestamptz`\\\" \u2014 all match the key; touch_on_request false is also correct.\",\"pass_note\":\"none\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message answers all three: \\\"Schedule: correct.\\\" \\\"Idle limit: correct.\\\" \\\"Timezone mismatch: wrong.\\\" Reader's follow-ups (cost, other environments) are beyond the ruling; reader still decided.\",\"pass_note\":\"none\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader cost: \\\"not stated\\\". Key cost is n/a, so skipped. But reader fix: \\\"Set `touch_on_request` to true ... The alternative is to move the touch into `auth-service`.\\\" This matches the key. Problem and breaks match too.\",\"pass_note\":\"recheck\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do we turn on `touch_on_request` in `config/prod.yaml`... or move the touch into `auth-service`?\\\" Reader closing answer: \\\"Turn on `touch_on_request` in `config/prod.yaml`.\\\"\",\"pass_note\":\"none\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`session_gc_schedule: \"*/10 * * * *\"`\" ... \"`IDLE_LIMIT` to 30 minutes\" ... \"`datetime.now(timezone.utc)`\" ... \"`timestamptz`\" \u2014 all match the key; touch_on_request false is also correct.",
+          "pass_note": "none"
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message answers all three: \"Schedule: correct.\" \"Idle limit: correct.\" \"Timezone mismatch: wrong.\" Reader's follow-ups (cost, other environments) are beyond the ruling; reader still decided.",
+          "pass_note": "none"
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader cost: \"not stated\". Key cost is n/a, so skipped. But reader fix: \"Set `touch_on_request` to true ... The alternative is to move the touch into `auth-service`.\" This matches the key. Problem and breaks match too.",
+          "pass_note": "recheck"
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do we turn on `touch_on_request` in `config/prod.yaml`... or move the touch into `auth-service`?\" Reader closing answer: \"Turn on `touch_on_request` in `config/prod.yaml`.\"",
+          "pass_note": "none"
+        }
+      ]
+    },
+    "ttft_ms": 4809,
+    "type": "result",
+    "duration_ms": 4824,
+    "uuid": "cedb4f3e-6a78-4b3f-83f8-39521658cbb8",
+    "ttft_stream_ms": 1810,
+    "time_to_request_ms": 351,
+    "first_content_frame_ms": 1811,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

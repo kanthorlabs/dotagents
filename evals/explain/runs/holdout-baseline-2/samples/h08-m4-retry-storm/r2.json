@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 22225,
+  "stop_reason": "end_turn",
+  "session_id": "f322530b-0727-4664-9c52-2dacc0f3e72c",
+  "total_cost_usd": 0.0406805,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2631,
+    "cache_read_input_tokens": 23745,
+    "output_tokens": 2777,
+    "output_tokens_details": {
+      "thinking_tokens": 903
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2631,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2108,
+        "cache_read_input_tokens": 8131,
+        "cache_creation_input_tokens": 2128,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2128
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2777,
+      "cacheReadInputTokens": 23745,
+      "cacheCreationInputTokens": 2631,
+      "webSearchRequests": 0,
+      "costUSD": 0.0406805,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 903,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2631,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Search stayed down because retries multiplied each search into about 9 `ranker` requests, and `ranker` kept scoring queued requests that nobody was waiting for. Aelita recommends a bounded queue in `ranker` that rejects excess requests with 429.\n\n**Timeline without the fix**\n\n1. 14:02: The index merge slows `ranker`. p99 goes from 400 ms to 900 ms.\n2. 14:04: `query-gw` has a 600 ms timeout, so requests time out. It retries each one twice, which makes 3 attempts per search.\n3. 14:04: `searchClient.ts` waits 2000 ms and makes up to 3 attempts. The `query-gw` retries are inside each web attempt, so each search can make up to 9 `ranker` requests. 400 searches per second becomes about 3,600 requests per second, which matches the 3,500 in the notes.\n4. 14:06: The merge ends. `ranker` can serve only about 1,200 requests per second, so the 3,500 per second still arriving is nearly 3 times its capacity.\n5. 14:06 to 14:39: The queue has no limit, so it grows to about 180,000 requests. At 1,200 per second that is a wait of about 150 s, far beyond the 600 ms timeout. Every client has already given up, but `ranker` still scores each abandoned request. Each timeout triggers another retry, so the load sustains itself.\n6. 14:39: Tomasz turns on the maintenance page. User traffic drops to zero. The queue drains in about 2 minutes (180,000 / 1,200 = 150 s) and is empty at 14:41. Search was down for 37 minutes with no cause left except the backlog and the retries.\n\n**Timeline with the fix**, diverges at step 5.\n\n5. 14:06: Each `ranker` instance holds a short queue, for example 64 waiting requests. That is about 0.4 s of work, which is under the 600 ms timeout. It rejects the rest at once with 429. `query-gw` does not retry 429, because `retry_on` covers only timeouts and 5xx.\n6. 14:07: The backlog holds only requests that can still succeed. Real searches get through again within seconds of the merge ending. Search is down for about 4 minutes, not 37.\n\n**What changes**\n\n- `ranker/server.py`: old behaviour is that `rank` sends every request to `executor`, with an unlimited queue. New behaviour is that `rank` counts in-flight requests. Above the limit it returns HTTP 429 without calling `score`.\n- `docs/capacity.md`: replace \"The queue has no limit.\" with the new limit and the reason for it.\n\n**Recommendation.** Aelita recommends the bounded queue with 429 in `ranker`. It removes the root cause, which is an unbounded backlog of stale work. It costs a few lines in `server.py`. Two things can go wrong. A limit set too low rejects real traffic during normal peaks. A limit set too high brings the backlog back. The choice of 429 matters: a 503 would match `retry_on: 5xx` and keep the retry storm going.\n\n**Alternative: cut the retries.** Set `retries: 0` in `config.yaml` and `MAX_ATTEMPTS = 1` in `searchClient.ts`. This is simpler and removes the 9x amplification. It does not remove the backlog, so a real overload would still leave `ranker` scoring dead requests. It becomes the primary if `ranker` cannot be changed soon.\n\n**Question.** Should `ranker` reject excess requests with 429 at about 64 queued requests per instance, or should we cut the retries first?",
+  "ttft_ms": 2139,
+  "type": "result",
+  "duration_ms": 23162,
+  "uuid": "66ed4716-e6e8-415e-bffb-86c19e31c3b4",
+  "ttft_stream_ms": 2083,
+  "time_to_request_ms": 902,
+  "first_content_frame_ms": 2084,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

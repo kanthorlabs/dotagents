@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 16118,
+  "stop_reason": "end_turn",
+  "session_id": "76aba312-f58e-43c4-8237-6ef2abb75e00",
+  "total_cost_usd": 0.0274934,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1705,
+    "cache_read_input_tokens": 24814,
+    "output_tokens": 1818,
+    "output_tokens_details": {
+      "thinking_tokens": 589
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1705,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1284,
+        "cache_read_input_tokens": 8520,
+        "cache_creation_input_tokens": 1153,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1153
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1818,
+      "cacheReadInputTokens": 24814,
+      "cacheCreationInputTokens": 1705,
+      "webSearchRequests": 0,
+      "costUSD": 0.0274934,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 589,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1705,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling 3 recorded:** `invoice-mailer` switches `SMTP_RELAY` to `smtp-mx-2` on 14 November. The project has no decision register or handoff file, so I wrote nothing to disk. All three rulings are below.\n\n- **Ruling 1:** `invoice-mailer` sends from `invoices@mail.larkspur.io`.\n- **Ruling 2:** soft bounces retry at most 3 times per hour, and hard bounces never retry.\n- **Ruling 3:** the cutover date is 14 November.\n\n**No open item remains.** 14 November is 16 days before `smtp-old-1` goes offline on 30 November. That leaves time to fix problems before the month-end invoice run. I checked the files and found no conflict between the three rulings:\n\n- **Sender and SPF:** `mail.larkspur.io` already has an SPF record that includes `smtp-mx-2.larkspur.internal` (`docs/dns.md:6`). The new sender passes SPF on the new relay.\n- **Retry limit and relay block:** 3 soft retries per hour stays under the `smtp-mx-2` block threshold of more than 5 bounces per hour (`docs/mail-provider.md:3`).\n\n**Next step:** all three changes must ship together, before 14 November. `mailer/config.py` still holds the old values, and `mailer/bounces.py` cannot tell hard bounces from soft ones.\n\n- **`FROM_ADDRESS`:** change `billing@larkspur.io` to `invoices@mail.larkspur.io`.\n- **`SMTP_RELAY`:** change `smtp-old-1.larkspur.internal` to `smtp-mx-2.larkspur.internal`.\n- **Retry settings:** replace `BOUNCE_RETRY_LIMIT = 12` and `BOUNCE_RETRY_INTERVAL_SECONDS = 60`. Today `handle_bounce` retries up to 12 times at 60-second intervals. That would trip the 24-hour block on the first bad mailbox.\n- **`handle_bounce`:** add hard/soft classification. It must call `message.mark_failed()` on a hard bounce, with no retry.\n\nI will make these edits when you say so.",
+  "ttft_ms": 1526,
+  "type": "result",
+  "duration_ms": 16588,
+  "uuid": "d5281584-6c2b-4e62-a88f-83ed88bafb98",
+  "ttft_stream_ms": 1217,
+  "time_to_request_ms": 456,
+  "first_content_frame_ms": 1217,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

@@ -1,0 +1,172 @@
+{
+  "key": "60684583307c1d18ebf1bdab85cb82610750a0331a73b90921b6d02f416c45b1",
+  "cost_usd": 0.039448000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"every `shop-api` pod subscribes to `price.changed` and drops the SKU from its own cache\" matches the correct recommendation; the TTL 300 backstop is a compatible extra step."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`/api/*` to `cache: false`\", \"6 replicas\", \"3600 second TTL\", \"clears only the pod that served the admin request\" all match the key. Nothing is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message answers all three required questions. The reader's follow-ups (where startup call goes, reconnect) are detail beyond the ruling, not real gaps."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"pops the SKU only on the pod that served the admin request\"; fix is the price.changed subscriber; cost is a small subscriber. All match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"approve the `price.changed` subscriber with the TTL reduced to 300... or ... `ttl=60`?\" The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "The ttl=60 and shared Redis alternatives both match valid_alternatives and each states its trade-off and \"becomes the primary if\" condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9013,
+    "stop_reason": "tool_use",
+    "session_id": "6346ad97-3a1e-4f50-8bc8-d9b8d4a1f15b",
+    "total_cost_usd": 0.039448000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6817,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1199,
+      "output_tokens_details": {
+        "thinking_tokens": 682
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6817,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1199,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6817,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6817
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1199,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6817,
+        "webSearchRequests": 0,
+        "costUSD": 0.039448000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 682,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6817,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"every `shop-api` pod subscribes to `price.changed` and drops the SKU from its own cache\\\" matches the correct recommendation; the TTL 300 backstop is a compatible extra step.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`/api/*` to `cache: false`\\\", \\\"6 replicas\\\", \\\"3600 second TTL\\\", \\\"clears only the pod that served the admin request\\\" all match the key. Nothing is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message answers all three required questions. The reader's follow-ups (where startup call goes, reconnect) are detail beyond the ruling, not real gaps.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"pops the SKU only on the pod that served the admin request\\\"; fix is the price.changed subscriber; cost is a small subscriber. All match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"approve the `price.changed` subscriber with the TTL reduced to 300... or ... `ttl=60`?\\\" The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"The ttl=60 and shared Redis alternatives both match valid_alternatives and each states its trade-off and \\\"becomes the primary if\\\" condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"every `shop-api` pod subscribes to `price.changed` and drops the SKU from its own cache\" matches the correct recommendation; the TTL 300 backstop is a compatible extra step."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`/api/*` to `cache: false`\", \"6 replicas\", \"3600 second TTL\", \"clears only the pod that served the admin request\" all match the key. Nothing is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message answers all three required questions. The reader's follow-ups (where startup call goes, reconnect) are detail beyond the ruling, not real gaps."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"pops the SKU only on the pod that served the admin request\"; fix is the price.changed subscriber; cost is a small subscriber. All match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"approve the `price.changed` subscriber with the TTL reduced to 300... or ... `ttl=60`?\" The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "The ttl=60 and shared Redis alternatives both match valid_alternatives and each states its trade-off and \"becomes the primary if\" condition."
+        }
+      ]
+    },
+    "ttft_ms": 6631,
+    "type": "result",
+    "duration_ms": 9755,
+    "uuid": "0ecb77bd-8d29-4de3-a8db-dab63a2e5a59",
+    "ttft_stream_ms": 1621,
+    "time_to_request_ms": 741,
+    "first_content_frame_ms": 1621,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

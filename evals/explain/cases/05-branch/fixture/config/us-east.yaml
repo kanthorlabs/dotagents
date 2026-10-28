@@ -1,0 +1,4 @@
+region: us-east
+replicas: 1
+autoscale_max_replicas: 3
+lock_backend: none

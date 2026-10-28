@@ -1,0 +1,172 @@
+{
+  "key": "1dc2a3b8e9865be4b4a43a341dbc6c7b84a25018a738d31c0503e65d5b3482a0",
+  "cost_usd": 0.048574000000000006,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends approving the proposal with one amendment.\" Matches the key: approve with a read_at guard on the latest_reading upsert."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`max_ack_pending: 1` plus `with_retries` holds the whole consumer for 62 s\"; \"17 such stalls\"; unconditional upsert; max_deliver 6. All match the key; no contradiction."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The message never says the handler sends to ingest.dlq and acks. It also omits max_ack_pending 256 and the same-transaction insert, so \"How does it work now?\" and \"What stays?\" are unanswered."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"Approve the proposal as in `docs/proposals/redelivery.md`\". The reader never learns the nak delays or max_ack_pending 256, and the cost field drifts to the INSERT_HISTORY risk."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve the proposal with the conditional `UPSERT_LATEST` added, or reject it?\" The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: reject and keep serial processing. Keep `max_ack_pending: 1` and shorten the delays.\" It still stalls and is not the valid per-device partition alternative; it is close to an invalid option."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 15643,
+    "stop_reason": "tool_use",
+    "session_id": "6e50aaff-f48f-415e-b987-2d79a53bc449",
+    "total_cost_usd": 0.048574000000000006,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6456,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 2256,
+      "output_tokens_details": {
+        "thinking_tokens": 1679
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6456,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2256,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6456,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6456
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 2256,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6456,
+        "webSearchRequests": 0,
+        "costUSD": 0.048574000000000006,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1679,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6456,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends approving the proposal with one amendment.\\\" Matches the key: approve with a read_at guard on the latest_reading upsert.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`max_ack_pending: 1` plus `with_retries` holds the whole consumer for 62 s\\\"; \\\"17 such stalls\\\"; unconditional upsert; max_deliver 6. All match the key; no contradiction.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The message never says the handler sends to ingest.dlq and acks. It also omits max_ack_pending 256 and the same-transaction insert, so \\\"How does it work now?\\\" and \\\"What stays?\\\" are unanswered.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"Approve the proposal as in `docs/proposals/redelivery.md`\\\". The reader never learns the nak delays or max_ack_pending 256, and the cost field drifts to the INSERT_HISTORY risk.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve the proposal with the conditional `UPSERT_LATEST` added, or reject it?\\\" The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: reject and keep serial processing. Keep `max_ack_pending: 1` and shorten the delays.\\\" It still stalls and is not the valid per-device partition alternative; it is close to an invalid option.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends approving the proposal with one amendment.\" Matches the key: approve with a read_at guard on the latest_reading upsert."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`max_ack_pending: 1` plus `with_retries` holds the whole consumer for 62 s\"; \"17 such stalls\"; unconditional upsert; max_deliver 6. All match the key; no contradiction."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The message never says the handler sends to ingest.dlq and acks. It also omits max_ack_pending 256 and the same-transaction insert, so \"How does it work now?\" and \"What stays?\" are unanswered."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"Approve the proposal as in `docs/proposals/redelivery.md`\". The reader never learns the nak delays or max_ack_pending 256, and the cost field drifts to the INSERT_HISTORY risk."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve the proposal with the conditional `UPSERT_LATEST` added, or reject it?\" The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: reject and keep serial processing. Keep `max_ack_pending: 1` and shorten the delays.\" It still stalls and is not the valid per-device partition alternative; it is close to an invalid option."
+        }
+      ]
+    },
+    "ttft_ms": 12854,
+    "type": "result",
+    "duration_ms": 16133,
+    "uuid": "0d8e3ee4-4bf5-4241-8ba9-1c416e2d7f84",
+    "ttft_stream_ms": 1275,
+    "time_to_request_ms": 490,
+    "first_content_frame_ms": 1275,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

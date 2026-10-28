@@ -1,0 +1,80 @@
+{
+  "measures": ["M1", "M2", "M3", "M4", "M5", "M7"],
+  "correct_recommendations": [
+    "Send the contacts through POST /v2/contacts:batchUpsert with up to 100 contacts per call, so the 46,800 contacts need about 468 requests instead of 46,800. Honoring Retry-After as an extra guard is compatible."
+  ],
+  "invalid_options": [
+    "Add exponential backoff and retries to upsert_contact as the fix. The limit stays 100 requests per minute, so at most about 12,000 single upserts fit in the 2-hour window.",
+    "Add a shared rate limiter of 100 requests per minute and keep single upserts. It stops the 429s but still upserts at most about 12,000 contacts per night.",
+    "Buy the enterprise tier as the fix for this week. The 3-week lead time misses Friday 30 October.",
+    "Raise the number of workers or the job deadline as the fix.",
+    "Change nothing and let the backlog drain over several nights."
+  ],
+  "root_cause": "run_sync sends one PUT per contact from 8 workers, about 400 requests per minute, through one API key that Juniper limits to 100 requests per minute. 46,800 changed contacts need 46,800 requests, and at most about 12,000 fit in the 2-hour job window, so the Fairhaven leads cannot reach Juniper by Friday.",
+  "dependent_facts": [
+    {
+      "fact": "Juniper rate limit",
+      "true_value": "100 requests per minute per API key; excess returns 429 with Retry-After 60; all workers share one key",
+      "source": "docs/juniper-api.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Current request pattern",
+      "true_value": "one PUT per contact from 8 worker threads, about 400 requests per minute, about 300 of them return 429",
+      "source": "sync/run_sync.py, sync/crm_client.py and logs/sync-2026-10-27.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Backlog and window",
+      "true_value": "46,800 changed contacts; the job starts 01:00 UTC with a 7,200 s deadline; the 27 October run upserted 11,940 and left 34,860 pending",
+      "source": "logs/sync-2026-10-27.log and deploy/cron.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Batch endpoint",
+      "true_value": "POST /v2/contacts:batchUpsert takes up to 100 contacts and counts as one request",
+      "source": "docs/juniper-api.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Deadline and future volume",
+      "true_value": "Fairhaven leads needed in Juniper by Friday 30 October 09:00 UTC; two November expos of about 40,000 leads each",
+      "source": "tickets/TS-77.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Enterprise tier",
+      "true_value": "1,000 requests per minute, 1,450 USD per month extra, 3-week lead time",
+      "source": "docs/juniper-api.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Normal volume before the import",
+      "true_value": "1,140 contacts on 29 September, done in about 3 minutes",
+      "source": "logs/sync-2026-09-29.log",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why does backoff not fix it?",
+      "expected_answer": "Backoff only spreads the same 46,800 requests. The limit stays 100 per minute, so at most about 12,000 contacts fit in the 2-hour window."
+    },
+    {
+      "question": "What exactly changes?",
+      "expected_answer": "The sync groups contacts into batches of up to 100 and calls POST /v2/contacts:batchUpsert instead of one PUT per contact."
+    },
+    {
+      "question": "Does it meet the Friday deadline and the November imports?",
+      "expected_answer": "Yes. About 468 batch calls fit well inside one night, and 40,000 leads need about 400 calls."
+    }
+  ],
+  "valid_alternatives": [],
+  "closing_decision": "One decision: approve the switch to batchUpsert, or a single follow-up on it such as a manual run before Friday.",
+  "understanding": {
+    "problem": "The sync sends one request per contact, about 400 per minute, against a Juniper limit of 100 per minute per key.",
+    "breaks": "Most requests get 429; only about 12,000 of 46,800 contacts sync per night, so the Fairhaven leads miss Friday 30 October.",
+    "fix": "Use the batchUpsert endpoint with up to 100 contacts per request.",
+    "cost": "A change in crm_client and run_sync to build batches and read per-contact results."
+  }
+}

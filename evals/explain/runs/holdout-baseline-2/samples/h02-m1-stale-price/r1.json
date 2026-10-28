@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 22439,
+  "stop_reason": "end_turn",
+  "session_id": "cad8bd8a-c52f-43c5-bdb1-8df5f7139a5c",
+  "total_cost_usd": 0.048004000000000005,
+  "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 4037,
+    "cache_read_input_tokens": 46560,
+    "output_tokens": 2718,
+    "output_tokens_details": {
+      "thinking_tokens": 154
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4037,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1273,
+        "cache_read_input_tokens": 11423,
+        "cache_creation_input_tokens": 235,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 235
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 10,
+      "outputTokens": 2718,
+      "cacheReadInputTokens": 46560,
+      "cacheCreationInputTokens": 4037,
+      "webSearchRequests": 0,
+      "costUSD": 0.048004000000000005,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 154,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4037,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 14,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "The stale price comes from the per-pod `price_cache` in `pricing/service.py`, not from the CDN. Lowering the CDN TTL would change nothing. Aelita recommends dropping the 3600-second `TTLCache` and reading the database on each price request. The other fix is to have each pod subscribe to `price.changed`.\n\n**Existing behaviour**\n\n1. `cdn/rules.yaml` sets `/api/*` to `cache: false`. The 3600 TTL there belongs to `/product/*`, whose HTML holds no price.\n2. `shop-api` runs 6 replicas. Each pod has its own in-process `price_cache`, a `TTLCache` with `ttl=3600`.\n3. `update_price` in `admin/prices.py` calls `price_cache.pop(sku)`. That clears only the pod that handled the admin request.\n4. `update_price` also publishes `price.changed`. Only `search/indexer.py` subscribes to it. No pricing code does.\n\n**Timeline without the fix**\n\n1. Before 10:02, all 6 pods hold KET-2210 at 39.90 in their `price_cache`.\n2. At 10:02, Tove Lindqvist posts 34.90. The load balancer sends it to pod A.\n3. Pod A writes the database, pops its own cache entry and publishes `price.changed`. Only the search indexer reacts.\n4. Pods B to F still hold 39.90. Their entries expire up to 3600 seconds after they were filled.\n5. A reload of `/api/prices?sku=KET-2210` goes to a random pod. Tove sees 34.90 on some reloads and 39.90 on others.\n6. The last pod expires its entry around 10:58, and customers see 39.90 at checkout until then. This matches SM-140.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. Pods B to F have no cached KET-2210 entry. The next request on each pod reads 34.90 from the database.\n5. Every reload returns 34.90 from whichever pod serves it.\n6. Customers see 34.90 at checkout right after step 3.\n\n**What changes**\n\n- `pricing/service.py`: delete `price_cache` and its `TTLCache` import. `get_price` returns `db.fetch_price(sku)` directly.\n- `admin/prices.py`: delete the `price_cache` import and the `price_cache.pop(sku, None)` line.\n- `cdn/rules.yaml`: no change. A 60-second TTL there would not touch `/api/*`.\n\n**Recommendation.** Aelita recommends removing the per-pod cache. It removes the root cause, which is six caches that nothing keeps in sync. A price change then shows immediately, and there is no invalidation logic left to fail. It costs one database read per price request, and the product pages, cart and checkout all call this endpoint. If `db.fetch_price` is slow under that load, this option breaks.\n\n**Alternative: subscribe each pod to `price.changed`.** Each pod calls `subscribe(\"price.changed\", ...)` from `shared/events.py` and pops the SKU from its own `price_cache`. This keeps the read-through cache and its database savings. The cost is a startup hook in `shop.app`, and a pod that misses a Redis pub/sub message (which is not durable) stays stale for up to an hour. It becomes the primary if load tests show the database cannot take every price read.\n\n**Alternative: your proposal, a 60-second TTL.** Set `ttl=60` on `price_cache`, and not in the CDN. It is one line and caps staleness at a minute. It still shows the old price for up to 60 seconds, which is wrong at checkout. It is the primary only if a one-minute delay is acceptable to the business.\n\n**Question.** Should `get_price` read the database directly, or should each pod subscribe to `price.changed`?",
+  "ttft_ms": 2374,
+  "type": "result",
+  "duration_ms": 42938,
+  "uuid": "925dcabf-033b-49d6-9da3-5a5e65baa913",
+  "ttft_stream_ms": 1410,
+  "time_to_request_ms": 457,
+  "first_content_frame_ms": 1410,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

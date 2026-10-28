@@ -1,0 +1,65 @@
+{
+  "measures": [
+    "M2",
+    "M3",
+    "M4",
+    "M5"
+  ],
+  "correct_recommendations": [],
+  "invalid_options": [],
+  "root_cause": "Not applicable. Walk-through with no failure.",
+  "dependent_facts": [
+    {
+      "fact": "Config",
+      "true_value": "mint.toml env staging: cluster gke-mint-staging, namespace shop, channel #deploys-staging",
+      "source": "mint.toml",
+      "verifiable": true
+    },
+    {
+      "fact": "Image tag",
+      "true_value": "registry.mint.internal/mint-shop:<short git sha>",
+      "source": "mintctl/deploy.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Build and push",
+      "true_value": "docker build then docker push of that tag",
+      "source": "mintctl/deploy.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Rollout",
+      "true_value": "kubectl set image on deployment/mint-shop container web, then kubectl rollout status with --timeout=300s",
+      "source": "mintctl/deploy.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Notification",
+      "true_value": "posts 'mint-shop <sha> is live on staging' to #deploys-staging through MINT_SLACK_WEBHOOK",
+      "source": "mintctl/slack.py",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "What does the command do, step by step?",
+      "expected_answer": "Load config, read sha, build image, push, set image, wait for rollout, post to Slack."
+    },
+    {
+      "question": "Where does the image go and what gets updated?",
+      "expected_answer": "registry.mint.internal; deployment/mint-shop in namespace shop on gke-mint-staging."
+    },
+    {
+      "question": "How does Ines know it worked?",
+      "expected_answer": "The rollout status returns and a message lands in #deploys-staging."
+    }
+  ],
+  "valid_alternatives": [],
+  "closing_decision": "none",
+  "understanding": {
+    "problem": "What happens when mintctl deploy staging runs: config, build, push, rollout, Slack post.",
+    "breaks": "n/a",
+    "fix": "n/a",
+    "cost": "n/a"
+  }
+}

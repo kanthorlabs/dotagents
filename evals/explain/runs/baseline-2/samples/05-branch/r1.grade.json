@@ -1,0 +1,184 @@
+{
+  "key": "91d5a757820f7f8b8f3ca233745b22ded0db19cba1de0c972fe709c547fc7c24",
+  "cost_usd": 0.031670000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends a 900-second lock TTL and removing the `none` lock backend, which fixes both regions.\" Matches fix both readings: redis in us-east plus longer TTL in eu-west.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"I found no file that settles this.\" (us-east reaching redis-locks) is not a dependent fact, but the message states 'You don't need to know the region' without naming the region as unknown; also it never states us-east replicas correctly? It does. Main fail: region fact is not named unverified.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Reader follow-up: \"Can us-east pods reach the `redis-locks` Redis?\" The message admits it found no file settling this, and the reader holds approval on it: a real gap.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Which region produced the real duplicate is unknown.\" Reader problem, breaks, fix (TTL 900, redis in us-east) and cost (crash holds lock 15 min) agree with the key in substance.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "Reader closing_answer: \"Neither yet.\" The question offers lock fix vs idempotent POs, which fits closing_decision, but the reader could not give a real answer and held approval.",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"It becomes the primary if you want protection that does not depend on Redis.\" The trade-off is stated, but the alternative is said to need a change in an unread package, not the schema change the key names; the condition differs from the key's 'one guard covering every cause'.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 5530,
+    "stop_reason": "tool_use",
+    "session_id": "b35df6df-8b4a-45c0-b5ff-43ec91cfd11b",
+    "total_cost_usd": 0.031670000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6230,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 656,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6230,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 656,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6230,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6230
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 656,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6230,
+        "webSearchRequests": 0,
+        "costUSD": 0.031670000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6230,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends a 900-second lock TTL and removing the `none` lock backend, which fixes both regions.\\\" Matches fix both readings: redis in us-east plus longer TTL in eu-west.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"I found no file that settles this.\\\" (us-east reaching redis-locks) is not a dependent fact, but the message states 'You don't need to know the region' without naming the region as unknown; also it never states us-east replicas correctly? It does. Main fail: region fact is not named unverified.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Reader follow-up: \\\"Can us-east pods reach the `redis-locks` Redis?\\\" The message admits it found no file settling this, and the reader holds approval on it: a real gap.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Which region produced the real duplicate is unknown.\\\" Reader problem, breaks, fix (TTL 900, redis in us-east) and cost (crash holds lock 15 min) agree with the key in substance.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"Reader closing_answer: \\\"Neither yet.\\\" The question offers lock fix vs idempotent POs, which fits closing_decision, but the reader could not give a real answer and held approval.\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"It becomes the primary if you want protection that does not depend on Redis.\\\" The trade-off is stated, but the alternative is said to need a change in an unread package, not the schema change the key names; the condition differs from the key's 'one guard covering every cause'.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends a 900-second lock TTL and removing the `none` lock backend, which fixes both regions.\" Matches fix both readings: redis in us-east plus longer TTL in eu-west.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"I found no file that settles this.\" (us-east reaching redis-locks) is not a dependent fact, but the message states 'You don't need to know the region' without naming the region as unknown; also it never states us-east replicas correctly? It does. Main fail: region fact is not named unverified.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Reader follow-up: \"Can us-east pods reach the `redis-locks` Redis?\" The message admits it found no file settling this, and the reader holds approval on it: a real gap.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Which region produced the real duplicate is unknown.\" Reader problem, breaks, fix (TTL 900, redis in us-east) and cost (crash holds lock 15 min) agree with the key in substance.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "Reader closing_answer: \"Neither yet.\" The question offers lock fix vs idempotent POs, which fits closing_decision, but the reader could not give a real answer and held approval.",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"It becomes the primary if you want protection that does not depend on Redis.\" The trade-off is stated, but the alternative is said to need a change in an unread package, not the schema change the key names; the condition differs from the key's 'one guard covering every cause'.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 5919,
+    "type": "result",
+    "duration_ms": 5945,
+    "uuid": "f0615657-f70b-40df-8501-3e54394082ab",
+    "ttft_stream_ms": 1471,
+    "time_to_request_ms": 413,
+    "first_content_frame_ms": 1472,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

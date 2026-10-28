@@ -1,0 +1,97 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Replace the denylist with an allowlist: plugin_env builds the plugin environment from named variables only, including PATH, HOME, HTTPS_PROXY and the TINKERBOX_ variables."
+  ],
+  "invalid_options": [
+    "Add STRIPE_API_KEY and SENTRY_DSN to DENYLIST.",
+    "A pattern-based denylist on names such as *_KEY or *_SECRET.",
+    "Only remove the environment dump from feed-fetch debug output.",
+    "An allowlist limited to TINKERBOX_ variables as the contract document states."
+  ],
+  "root_cause": "plugin_env copies the whole runner environment with dict(os.environ) and removes only DENYLIST, so every new variable in deploy/runner.env reaches every plugin by default.",
+  "dependent_facts": [
+    {
+      "fact": "Inheritance",
+      "true_value": "plugin_env starts from dict(os.environ) and pops DENYLIST names",
+      "source": "runner/spawn.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Leak path",
+      "true_value": "feed-fetch prints dict(os.environ) to stderr when debug is set; a customer pasted it into a public ticket",
+      "source": "plugins/feed-fetch/main.py and incidents/INC-57.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Other unlisted secrets",
+      "true_value": "BILLING_WEBHOOK_SECRET is also in the runner environment and not denied",
+      "source": "deploy/runner.env",
+      "verifiable": true
+    },
+    {
+      "fact": "feed-fetch needs",
+      "true_value": "HTTPS_PROXY",
+      "source": "plugins/feed-fetch/main.py",
+      "verifiable": true
+    },
+    {
+      "fact": "pdf-stamp needs",
+      "true_value": "HOME, and PATH to run qpdf",
+      "source": "plugins/pdf-stamp/main.py",
+      "verifiable": true
+    },
+    {
+      "fact": "csv-clean needs",
+      "true_value": "TINKERBOX_CSV_DELIMITER",
+      "source": "plugins/csv-clean/main.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Contract document",
+      "true_value": "claims plugins read only TINKERBOX_ variables, which the plugin code contradicts",
+      "source": "docs/plugin-contract.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why does the plugin see STRIPE_API_KEY at all?",
+      "expected_answer": "plugin_env copies the full runner environment."
+    },
+    {
+      "question": "Why not just extend the denylist?",
+      "expected_answer": "Every future secret leaks until someone adds it; BILLING_WEBHOOK_SECRET already leaks."
+    },
+    {
+      "question": "Which variables must the allowlist keep?",
+      "expected_answer": "PATH, HOME, HTTPS_PROXY, TINKERBOX_ variables; found in the plugin code."
+    },
+    {
+      "question": "What can break?",
+      "expected_answer": "A plugin that reads a variable outside the allowlist."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Per-plugin declared environment: each plugin lists the variables it needs and the runner passes only those",
+      "trade_off": "Tighter per plugin, but needs a manifest format and a change to every plugin.",
+      "primary_when": "Plugins come from third parties or need different variables.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve the allowlist with its variable list, or decide a single follow-up such as removing the feed-fetch env dump.",
+  "understanding": {
+    "problem": "A plugin leaked STRIPE_API_KEY because plugins inherit the full runner environment.",
+    "breaks": "Any new secret reaches every plugin; feed-fetch debug output exposes the environment.",
+    "fix": "Build the plugin environment from an allowlist of named variables.",
+    "cost": "A plugin that needs a new variable needs an allowlist edit; small code change in plugin_env."
+  }
+}

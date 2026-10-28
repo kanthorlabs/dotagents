@@ -1,0 +1,7 @@
+{
+  "skill": "skills/explain/SKILL.md",
+  "model": "sonnet",
+  "effort": "medium",
+  "tools": "Read,Grep,Glob",
+  "steps": ["read.py", "grade.py"]
+}

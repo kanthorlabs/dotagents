@@ -1,0 +1,4 @@
+name: settle_renewals
+job: billing.settle.settle_renewals
+cron: "0 5 * * *"
+timezone: Europe/Berlin

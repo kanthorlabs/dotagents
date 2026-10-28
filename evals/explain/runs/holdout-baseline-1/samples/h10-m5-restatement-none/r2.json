@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 9029,
+  "stop_reason": "end_turn",
+  "session_id": "9342411b-6373-4074-bc54-30f8a3e11800",
+  "total_cost_usd": 0.0205415,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1590,
+    "cache_read_input_tokens": 25395,
+    "output_tokens": 1163,
+    "output_tokens_details": {
+      "thinking_tokens": 142
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1590,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 686,
+        "cache_read_input_tokens": 8878,
+        "cache_creation_input_tokens": 792,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 792
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1163,
+      "cacheReadInputTokens": 25395,
+      "cacheCreationInputTokens": 1590,
+      "webSearchRequests": 0,
+      "costUSD": 0.0205415,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 142,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1590,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "- **Cache key today: correct.** `cache_key` in `edge/cache.py:5` returns `request.path` plus `request.query_string`. It has no format part.\n- **Breakage cause: correct.** `docs/browser-support.md` says Safari 13 decodes neither WebP nor AVIF. It gets the cached WebP bytes and shows a broken image.\n- **Key with the fix: wrong.** The key does not get the whole `Accept` header. It gets only the negotiated format, which is `avif`, `webp` or `orig`.\n\nThe case is not \"append the raw `Accept` header\". `negotiate` in `edge/negotiate.py` already reduces that header to one of three values. `edge/handler.py:10` calls it on every request.\n\n**Why the raw header is wrong.** `logs/accept-stats-2026-10.txt` counts 1,912 distinct `Accept` values in October. Each value would create its own cache entry for the same image. The hit rate would collapse. The three-value key makes at most three entries per URL.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `img-edge` negotiates `webp` for Jonas Ek in Chrome 129. It caches under `/img/tr-1180.jpg?w=800` plus `webp`.\n3. Hanna Lind opens the same page in Safari 13 at 08:05.\n4. `img-edge` negotiates `orig` for her. It finds no entry under the `orig` key, renders the original and caches it.\n5. Safari 13 decodes the original. Hanna sees the image.\n\n**What changes**\n\n- `edge/cache.py` old behaviour: `cache_key(request)` returns path and query string. New behaviour: it also takes the negotiated format and appends it. `lookup` and `save` pass the format through.\n- `edge/handler.py` old behaviour: calls `negotiate` and uses the result only to render. New behaviour: passes the same result to `lookup` and `save`.\n\n**Question.** Is this version correct for Petra: the key gets the negotiated format only, never the raw `Accept` header?",
+  "ttft_ms": 2009,
+  "type": "result",
+  "duration_ms": 9531,
+  "uuid": "69ee4368-d43c-45ef-b688-952f600bf32d",
+  "ttft_stream_ms": 1131,
+  "time_to_request_ms": 448,
+  "first_content_frame_ms": 1132,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

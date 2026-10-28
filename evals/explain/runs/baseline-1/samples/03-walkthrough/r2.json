@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 11822,
+  "stop_reason": "end_turn",
+  "session_id": "faa3e46a-4237-43b9-a597-a69303fafa1e",
+  "total_cost_usd": 0.0233584,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1745,
+    "cache_read_input_tokens": 23564,
+    "output_tokens": 1401,
+    "output_tokens_details": {
+      "thinking_tokens": 216
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1745,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 946,
+        "cache_read_input_tokens": 8053,
+        "cache_creation_input_tokens": 1269,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1269
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1401,
+      "cacheReadInputTokens": 23564,
+      "cacheCreationInputTokens": 1745,
+      "webSearchRequests": 0,
+      "costUSD": 0.0233584,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 216,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1745,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`mintctl deploy staging` builds the current commit as a Docker image, pushes it, rolls it out to the staging cluster, and posts to Slack. Every step runs in order, and any failing command stops the run.\n\n**Timeline**\n\n1. **Read config.** `deploy(\"staging\")` in `mintctl/deploy.py` opens `mint.toml` from the current directory. It takes `env.staging`: cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`.\n2. **Read the commit.** Ines Albrecht's checkout of `mint-shop` supplies the short SHA from `git rev-parse --short HEAD`.\n3. **Build the tag.** The tag is `registry.mint.internal/mint-shop:<sha>`. The host comes from `HOST` in `mintctl/registry.py`.\n4. **Build.** `docker build -t <tag> .` runs in the current directory. This includes uncommitted changes, because the tag only records `HEAD`.\n5. **Push.** `docker push <tag>` sends the image to `registry.mint.internal`.\n6. **Set the image.** `kubectl --context gke-mint-staging -n shop set image deployment/mint-shop web=<tag>` updates the `web` container.\n7. **Wait for rollout.** `kubectl rollout status deployment/mint-shop --timeout=300s` blocks for up to 300 seconds. A timeout raises an error and skips step 8.\n8. **Notify.** `slack.post` in `mintctl/slack.py` sends \"mint-shop <sha> is live on staging\" to `#deploys-staging`. It uses the URL in `MINT_SLACK_WEBHOOK` and a 10-second timeout. A missing variable raises `KeyError` after the rollout has already succeeded.\n\n**Observations**\n\n- **No entry point.** No file in this directory parses `deploy staging` from the command line. I assumed something calls `deploy(\"staging\")`.\n- **No rollback.** If step 7 fails, the new image stays set on the deployment.\n\n**Next step.** I can trace how the `mintctl` command reaches `deploy()` if you point me to the packaging or CLI file.",
+  "ttft_ms": 1718,
+  "type": "result",
+  "duration_ms": 12328,
+  "uuid": "7e4328db-e915-4af3-a8c6-ceb3289a9c60",
+  "ttft_stream_ms": 1569,
+  "time_to_request_ms": 494,
+  "first_content_frame_ms": 1569,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

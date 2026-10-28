@@ -1,0 +1,137 @@
+{
+  "key": "c9364cb2e546417d4e2edcbe71a8967af667b18cc4bbf79179515912b5b7fe6d",
+  "cost_usd": 0.0219273,
+  "reader": {
+    "decision": "Approve both changes: the scheduler fix plus the charge guard (unique index on renewal_charges, insert-first), with a `pending` state designed in so Payrail timeout retries aren't broken. Also add the idempotency key only if Payrail support is confirmed.",
+    "decision_reason": "The scheduler fix removes the cause, but last_fired is in memory so a restart can still double charge; the DB guard protects money against any double fire at the cost of one unique index and a few lines. The scheduler-only option leaves a known double-charge path.",
+    "reconstruction": {
+      "problem": "On 25 Oct the Berlin clock went back at 03:00, so 02:30 occurred twice. kestrel-scheduler's due_jobs matched `30 2 * * *` again at 01:30Z because the only guard is MIN_GAP_SECONDS = 60 and last_fired was 60 minutes old. charge_renewals reran and, since renews_on is only advanced by settle_renewals later and nothing checks renewal_charges, charged the same 212 subscriptions twice. send_dunning also reran, re-emailing 41 customers.",
+      "what_breaks": "212 subscribers hold two identical 25 Oct charges; 41 got duplicate dunning emails. Support refunded some by hand on 26 Oct with no list kept, so who still holds a double charge is unknown. After the fix, a retry after a Payrail timeout can break: the row exists but the charge never happened, which needs a pending state.",
+      "fix": "Scheduler (scheduler/clock.py): skip a job that already fired for the same naive local minute. Optionally persist last_fired in scheduler/loop.py. Billing (billing/renewals.py): insert the renewal_charges row first under a unique key (subscription_id, charged_on), skip on rejection, then call psp.charge. billing/psp.py: send an idempotency key like `Renewal {sub.id}:{today}` (Payrail support unverified). No change to dunning.",
+      "cost": "One unique index and a few lines of code; plus a pending state to handle Payrail timeout retries. Scheduler-only alternative costs no billing code but a restart can still double charge."
+    },
+    "follow_up_questions": [
+      "Does Payrail support idempotency keys, and what do its docs say about timeouts and retries?",
+      "Is the pending state included in this change, or a follow-up? The guard as described breaks timeout retries without it.",
+      "Are there existing duplicate (subscription_id, charged_on) rows in renewal_charges from 25 Oct that would block creating the unique index?"
+    ],
+    "closing_answer": "Approve both changes: scheduler fix and charge guard, with the pending state for Payrail timeout retries. Then raise the open item: compare Payrail against renewal_charges to find who still holds a double charge."
+  },
+  "raw": {
+    "duration_api_ms": 7823,
+    "stop_reason": "tool_use",
+    "session_id": "1342fc03-bc67-47a5-9bb1-7c50199a8a83",
+    "total_cost_usd": 0.0219273,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2854,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 1031,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2854,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1031,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2854,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2854
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1031,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2854,
+        "webSearchRequests": 0,
+        "costUSD": 0.0219273,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2854,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve both changes: the scheduler fix plus the charge guard (unique index on renewal_charges, insert-first), with a `pending` state designed in so Payrail timeout retries aren't broken. Also add the idempotency key only if Payrail support is confirmed.\",\"decision_reason\":\"The scheduler fix removes the cause, but last_fired is in memory so a restart can still double charge; the DB guard protects money against any double fire at the cost of one unique index and a few lines. The scheduler-only option leaves a known double-charge path.\",\"reconstruction\":{\"problem\":\"On 25 Oct the Berlin clock went back at 03:00, so 02:30 occurred twice. kestrel-scheduler's due_jobs matched `30 2 * * *` again at 01:30Z because the only guard is MIN_GAP_SECONDS = 60 and last_fired was 60 minutes old. charge_renewals reran and, since renews_on is only advanced by settle_renewals later and nothing checks renewal_charges, charged the same 212 subscriptions twice. send_dunning also reran, re-emailing 41 customers.\",\"what_breaks\":\"212 subscribers hold two identical 25 Oct charges; 41 got duplicate dunning emails. Support refunded some by hand on 26 Oct with no list kept, so who still holds a double charge is unknown. After the fix, a retry after a Payrail timeout can break: the row exists but the charge never happened, which needs a pending state.\",\"fix\":\"Scheduler (scheduler/clock.py): skip a job that already fired for the same naive local minute. Optionally persist last_fired in scheduler/loop.py. Billing (billing/renewals.py): insert the renewal_charges row first under a unique key (subscription_id, charged_on), skip on rejection, then call psp.charge. billing/psp.py: send an idempotency key like `Renewal {sub.id}:{today}` (Payrail support unverified). No change to dunning.\",\"cost\":\"One unique index and a few lines of code; plus a pending state to handle Payrail timeout retries. Scheduler-only alternative costs no billing code but a restart can still double charge.\"},\"follow_up_questions\":[\"Does Payrail support idempotency keys, and what do its docs say about timeouts and retries?\",\"Is the pending state included in this change, or a follow-up? The guard as described breaks timeout retries without it.\",\"Are there existing duplicate (subscription_id, charged_on) rows in renewal_charges from 25 Oct that would block creating the unique index?\"],\"closing_answer\":\"Approve both changes: scheduler fix and charge guard, with the pending state for Payrail timeout retries. Then raise the open item: compare Payrail against renewal_charges to find who still holds a double charge.\"}",
+    "structured_output": {
+      "decision": "Approve both changes: the scheduler fix plus the charge guard (unique index on renewal_charges, insert-first), with a `pending` state designed in so Payrail timeout retries aren't broken. Also add the idempotency key only if Payrail support is confirmed.",
+      "decision_reason": "The scheduler fix removes the cause, but last_fired is in memory so a restart can still double charge; the DB guard protects money against any double fire at the cost of one unique index and a few lines. The scheduler-only option leaves a known double-charge path.",
+      "reconstruction": {
+        "problem": "On 25 Oct the Berlin clock went back at 03:00, so 02:30 occurred twice. kestrel-scheduler's due_jobs matched `30 2 * * *` again at 01:30Z because the only guard is MIN_GAP_SECONDS = 60 and last_fired was 60 minutes old. charge_renewals reran and, since renews_on is only advanced by settle_renewals later and nothing checks renewal_charges, charged the same 212 subscriptions twice. send_dunning also reran, re-emailing 41 customers.",
+        "what_breaks": "212 subscribers hold two identical 25 Oct charges; 41 got duplicate dunning emails. Support refunded some by hand on 26 Oct with no list kept, so who still holds a double charge is unknown. After the fix, a retry after a Payrail timeout can break: the row exists but the charge never happened, which needs a pending state.",
+        "fix": "Scheduler (scheduler/clock.py): skip a job that already fired for the same naive local minute. Optionally persist last_fired in scheduler/loop.py. Billing (billing/renewals.py): insert the renewal_charges row first under a unique key (subscription_id, charged_on), skip on rejection, then call psp.charge. billing/psp.py: send an idempotency key like `Renewal {sub.id}:{today}` (Payrail support unverified). No change to dunning.",
+        "cost": "One unique index and a few lines of code; plus a pending state to handle Payrail timeout retries. Scheduler-only alternative costs no billing code but a restart can still double charge."
+      },
+      "follow_up_questions": [
+        "Does Payrail support idempotency keys, and what do its docs say about timeouts and retries?",
+        "Is the pending state included in this change, or a follow-up? The guard as described breaks timeout retries without it.",
+        "Are there existing duplicate (subscription_id, charged_on) rows in renewal_charges from 25 Oct that would block creating the unique index?"
+      ],
+      "closing_answer": "Approve both changes: scheduler fix and charge guard, with the pending state for Payrail timeout retries. Then raise the open item: compare Payrail against renewal_charges to find who still holds a double charge."
+    },
+    "ttft_ms": 8251,
+    "type": "result",
+    "duration_ms": 8263,
+    "uuid": "9a93c81c-b122-4028-b65a-766f60f8dfd9",
+    "ttft_stream_ms": 2000,
+    "time_to_request_ms": 441,
+    "first_content_frame_ms": 2001,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

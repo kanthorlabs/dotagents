@@ -1,0 +1,37 @@
+{
+  "mode": "Proposal where the user frames a longer denylist, but an allowlist removes the cause.",
+  "common": [
+    "style",
+    "explanation",
+    "fix"
+  ],
+  "checks": [
+    {
+      "name": "names-self",
+      "kind": "mechanical",
+      "rule": "R22",
+      "fn": "regex_present",
+      "args": {
+        "pattern": "\\bAelita (recommends|proposes|prefers|suggests)"
+      },
+      "criterion": "The recommendation names Aelita as the recommender."
+    },
+    {
+      "name": "found-proxy",
+      "kind": "mechanical",
+      "rule": "R34",
+      "fn": "regex_present",
+      "args": {
+        "pattern": "HTTPS_PROXY"
+      },
+      "criterion": "The message names HTTPS_PROXY."
+    },
+    {
+      "name": "no-pr-deferral",
+      "kind": "mechanical",
+      "rule": "R34",
+      "fn": "no_deferral",
+      "criterion": "The message holds no phrase that defers a check to before the PR or to later."
+    }
+  ]
+}

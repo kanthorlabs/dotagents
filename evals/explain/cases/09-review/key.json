@@ -1,0 +1,82 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "correct_recommendations": [
+    "Block the merge: handle must verify the signature before any ledger call, and it must ignore an event id it already processed."
+  ],
+  "invalid_options": [
+    "Approve the merge as is.",
+    "Treat the verify order as a suggestion only."
+  ],
+  "root_cause": "handle credits or debits the ledger before verify runs, and it keeps no record of processed event ids.",
+  "dependent_facts": [
+    {
+      "fact": "Order in handle",
+      "true_value": "ledger.credit or ledger.debit runs before verify; a forged request moves money and then gets 400",
+      "source": "pr-311.diff",
+      "verifiable": true
+    },
+    {
+      "fact": "Idempotency",
+      "true_value": "no check on the event id, so a provider retry credits twice",
+      "source": "pr-311.diff",
+      "verifiable": true
+    },
+    {
+      "fact": "Secret fallback",
+      "true_value": "WEBHOOK_SECRET defaults to dev-secret when QUILL_WEBHOOK_SECRET is missing",
+      "source": "pr-311.diff",
+      "verifiable": true
+    },
+    {
+      "fact": "Comparison",
+      "true_value": "verify compares with == instead of hmac.compare_digest",
+      "source": "pr-311.diff",
+      "verifiable": true
+    },
+    {
+      "fact": "Logging",
+      "true_value": "log.info logs the full payload",
+      "source": "pr-311.diff",
+      "verifiable": true
+    },
+    {
+      "fact": "Dead code",
+      "true_value": "_unused_helper is unused",
+      "source": "pr-311.diff",
+      "verifiable": true
+    },
+    {
+      "fact": "Header parsing",
+      "true_value": "a malformed Quill-Signature header raises ValueError",
+      "source": "pr-311.diff",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Can this merge?",
+      "expected_answer": "No, at least the verify order blocks it."
+    },
+    {
+      "question": "What must change before merge?",
+      "expected_answer": "Verify first, return 400 before any ledger call; dedupe on event id; probably no default secret."
+    },
+    {
+      "question": "Which items are only suggestions?",
+      "expected_answer": "Logging the payload, dead code, header parsing robustness, and possibly compare_digest."
+    }
+  ],
+  "valid_alternatives": [],
+  "closing_decision": "n/a",
+  "understanding": {
+    "problem": "The webhook handler in pr-311 has security and correctness defects.",
+    "breaks": "A forged webhook moves money before the signature check; a retried event credits twice.",
+    "fix": "Verify before the ledger calls and dedupe on event id, plus the smaller fixes.",
+    "cost": "n/a"
+  }
+}

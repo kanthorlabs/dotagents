@@ -1,0 +1,172 @@
+{
+  "key": "d9d471d6940891eb4a7a314d58240f871238078e618f4807409c8970509642f4",
+  "cost_usd": 0.037456,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends that every `shop-api` pod subscribe to `price.changed` and drop its own cached SKU.\" Matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"The CDN rule for `/api/*` has `cache: false`\"; \"6 `shop-api` pods\"; \"ttl=3600\"; only indexer subscribes. All match the key, and nothing is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message answers the CDN question (\"cache: false\", \"/product/*, which holds no price\"), the mixed reloads (pod A vs B\u2013F), and the change. The shop/app.py question is detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"only the pod that handled the POST (pod A) clears its price_cache entry... CDN is not involved\"; fix and cost agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve the `price.changed` subscriber in every `shop-api` pod, or do you prefer the 60-second `price_cache` TTL?\" The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "The 60 s TTL alternative gives its trade-off and \"primary if the team will not add a subscriber\". The DB-read alternative gives its trade-off and \"primary if the price table is small\". Both are valid."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8384,
+    "stop_reason": "tool_use",
+    "session_id": "9a386373-907f-4c33-b3bc-168213a80642",
+    "total_cost_usd": 0.037456,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6359,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1183,
+      "output_tokens_details": {
+        "thinking_tokens": 615
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6359,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1183,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6359,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6359
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1183,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6359,
+        "webSearchRequests": 0,
+        "costUSD": 0.037456,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 615,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6359,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends that every `shop-api` pod subscribe to `price.changed` and drop its own cached SKU.\\\" Matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"The CDN rule for `/api/*` has `cache: false`\\\"; \\\"6 `shop-api` pods\\\"; \\\"ttl=3600\\\"; only indexer subscribes. All match the key, and nothing is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message answers the CDN question (\\\"cache: false\\\", \\\"/product/*, which holds no price\\\"), the mixed reloads (pod A vs B\u2013F), and the change. The shop/app.py question is detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"only the pod that handled the POST (pod A) clears its price_cache entry... CDN is not involved\\\"; fix and cost agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve the `price.changed` subscriber in every `shop-api` pod, or do you prefer the 60-second `price_cache` TTL?\\\" The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"The 60 s TTL alternative gives its trade-off and \\\"primary if the team will not add a subscriber\\\". The DB-read alternative gives its trade-off and \\\"primary if the price table is small\\\". Both are valid.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends that every `shop-api` pod subscribe to `price.changed` and drop its own cached SKU.\" Matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The CDN rule for `/api/*` has `cache: false`\"; \"6 `shop-api` pods\"; \"ttl=3600\"; only indexer subscribes. All match the key, and nothing is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message answers the CDN question (\"cache: false\", \"/product/*, which holds no price\"), the mixed reloads (pod A vs B\u2013F), and the change. The shop/app.py question is detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"only the pod that handled the POST (pod A) clears its price_cache entry... CDN is not involved\"; fix and cost agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve the `price.changed` subscriber in every `shop-api` pod, or do you prefer the 60-second `price_cache` TTL?\" The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "The 60 s TTL alternative gives its trade-off and \"primary if the team will not add a subscriber\". The DB-read alternative gives its trade-off and \"primary if the price table is small\". Both are valid."
+        }
+      ]
+    },
+    "ttft_ms": 5707,
+    "type": "result",
+    "duration_ms": 8863,
+    "uuid": "f5fe95b4-47ef-484b-83ae-01ce2180c5c3",
+    "ttft_stream_ms": 1298,
+    "time_to_request_ms": 501,
+    "first_content_frame_ms": 1298,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

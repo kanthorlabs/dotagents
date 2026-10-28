@@ -1,0 +1,97 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Keep bounce retries for one recipient at 5 or fewer per hour, for example a lower BOUNCE_RETRY_LIMIT or a longer interval, so smtp-mx-2 never blocks the sender.",
+    "Stop retrying hard bounces and cap soft-bounce retries at 5 or fewer per hour."
+  ],
+  "invalid_options": [
+    "Keep BOUNCE_RETRY_LIMIT 12 with a 60 s interval.",
+    "Raise the retry limit.",
+    "Stay on smtp-old-1 to avoid the limit."
+  ],
+  "root_cause": "invoice-mailer retries a bounce up to 12 times at 60 s intervals, but smtp-mx-2 blocks the sender for 24 hours when one recipient bounces more than 5 times in one hour.",
+  "dependent_facts": [
+    {
+      "fact": "Retry limit",
+      "true_value": "BOUNCE_RETRY_LIMIT 12",
+      "source": "mailer/config.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Retry interval",
+      "true_value": "60 seconds",
+      "source": "mailer/config.py",
+      "verifiable": true
+    },
+    {
+      "fact": "smtp-mx-2 rule",
+      "true_value": "blocks a sender for 24 hours when one recipient bounces more than 5 times in one hour",
+      "source": "docs/mail-provider.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Bounce types",
+      "true_value": "invoice-mailer does not tell hard from soft bounces today",
+      "source": "docs/mail-provider.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Ruling just made",
+      "true_value": "sender moves to invoices@mail.larkspur.io",
+      "source": "prompt",
+      "verifiable": true
+    },
+    {
+      "fact": "SPF of the new address",
+      "true_value": "mail.larkspur.io already lists smtp-mx-2, so the ruling settles the sender item",
+      "source": "docs/dns.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Was my ruling recorded?",
+      "expected_answer": "Yes: the sender moves to invoices@mail.larkspur.io."
+    },
+    {
+      "question": "Why does the current retry policy hurt on smtp-mx-2?",
+      "expected_answer": "12 retries in about 12 minutes exceed 5 bounces per hour, so the sender is blocked for 24 hours and no invoice goes out."
+    },
+    {
+      "question": "What is the proposed limit?",
+      "expected_answer": "At most 5 retries per hour per recipient, and no retry for a hard bounce if the mailer learns the bounce type."
+    },
+    {
+      "question": "What item comes after this one?",
+      "expected_answer": "The cutover date for smtp-old-1."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Tell hard from soft bounces and never retry a hard bounce",
+      "trade_off": "Fixes the waste on dead mailboxes too, but needs bounce classification code.",
+      "primary_when": "The team accepts more code for fewer wasted retries.",
+      "must_list": false
+    },
+    {
+      "option": "Only lower the retry count or stretch the interval",
+      "trade_off": "Config-only change, but still retries dead mailboxes.",
+      "primary_when": "The team wants a config-only change now.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: the bounce retry policy for smtp-mx-2.",
+  "understanding": {
+    "problem": "The current bounce retry policy of invoice-mailer breaks the smtp-mx-2 limit.",
+    "breaks": "12 retries per bounce at 60 s exceed 5 per hour, so smtp-mx-2 blocks the sender for 24 hours.",
+    "fix": "Cap retries at 5 or fewer per hour per recipient, possibly skip hard bounces.",
+    "cost": "A config change, or bounce classification code."
+  }
+}

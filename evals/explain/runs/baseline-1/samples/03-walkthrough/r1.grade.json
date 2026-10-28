@@ -1,0 +1,148 @@
+{
+  "key": "ad1163636893e06f4b0b38e9b550f03197d4cb0e4e2823b4690ac9d5746eaa67",
+  "cost_usd": 0.02119,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`\" and \"`mint-shop <sha> is live on staging`\" match the key; rollout, tag, build/push all match.",
+      "pass_note": "no contradictions or deferrals"
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Reader follow-up: \"Where is the CLI entry point that maps `mintctl deploy staging` to `deploy(\"staging\")`\" \u2013 the message hedges the core link, so Ulrich can't rule. Also the third question (how Ines knows it worked) is not stated explicitly.",
+      "pass_note": "real gap"
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader problem: \"a timeline built from `mintctl/deploy.py`\" covering config, build, push, rollout, Slack; breaks/fix/cost are n/a in key.",
+      "pass_note": "only problem field applies and it agrees in substance"
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3378,
+    "stop_reason": "tool_use",
+    "session_id": "b8f063ed-1246-4312-980d-e354e90248e4",
+    "total_cost_usd": 0.02119,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4260,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 396,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4260,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 396,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4260,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4260
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 396,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4260,
+        "webSearchRequests": 0,
+        "costUSD": 0.02119,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4260,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`\\\" and \\\"`mint-shop <sha> is live on staging`\\\" match the key; rollout, tag, build/push all match.\",\"pass_note\":\"no contradictions or deferrals\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Reader follow-up: \\\"Where is the CLI entry point that maps `mintctl deploy staging` to `deploy(\\\"staging\\\")`\\\" \u2013 the message hedges the core link, so Ulrich can't rule. Also the third question (how Ines knows it worked) is not stated explicitly.\",\"pass_note\":\"real gap\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader problem: \\\"a timeline built from `mintctl/deploy.py`\\\" covering config, build, push, rollout, Slack; breaks/fix/cost are n/a in key.\",\"pass_note\":\"only problem field applies and it agrees in substance\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`\" and \"`mint-shop <sha> is live on staging`\" match the key; rollout, tag, build/push all match.",
+          "pass_note": "no contradictions or deferrals"
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Reader follow-up: \"Where is the CLI entry point that maps `mintctl deploy staging` to `deploy(\"staging\")`\" \u2013 the message hedges the core link, so Ulrich can't rule. Also the third question (how Ines knows it worked) is not stated explicitly.",
+          "pass_note": "real gap"
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader problem: \"a timeline built from `mintctl/deploy.py`\" covering config, build, push, rollout, Slack; breaks/fix/cost are n/a in key.",
+          "pass_note": "only problem field applies and it agrees in substance"
+        }
+      ]
+    },
+    "ttft_ms": 3907,
+    "type": "result",
+    "duration_ms": 3921,
+    "uuid": "bad92e12-94b7-4d92-a11f-e2bc8854951b",
+    "ttft_stream_ms": 1625,
+    "time_to_request_ms": 543,
+    "first_content_frame_ms": 1625,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

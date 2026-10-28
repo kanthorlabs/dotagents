@@ -1,0 +1,172 @@
+{
+  "key": "c9d2ec6e4ee4b620ac125b0a708479d6a83d71b40aeaf6ae54f051871ee71e1e",
+  "cost_usd": 0.040074,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends manual ack with prefetch and a matching grace period.\" This matches late ack plus a longer grace period (90 s), with the drain shorter than the grace period (75 s)."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`terminationGracePeriodSeconds` is 20\"; \"no file here settles it\" for meter.internal dedup. Verifiable facts match the key, and the unverifiable dedup is named as unknown."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"RabbitMQ already acked all of them at delivery... placeholder with no error\"; \"could bill twice unless `meter.internal` dedupes\". All three required questions are answered. The reader's DLQ question goes beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"A job can render twice... record_usage... could bill twice\"; the problem, breaks and fix fields match the key's understanding."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "\"Do you approve the manual ack, prefetch, drain and grace changes? If so, should I also ask Billing...?\" The message ends with two questions."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"only raise the grace period and drain time... still loses jobs on a crash, an OOM kill or a node loss. It becomes the primary only if you need a hotfix.\" This is a valid alternative with its trade-off and its primary condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9311,
+    "stop_reason": "tool_use",
+    "session_id": "bd46cf15-565d-4c74-8572-87a13adae51c",
+    "total_cost_usd": 0.040074,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6866,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1242,
+      "output_tokens_details": {
+        "thinking_tokens": 677
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6866,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1242,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6866,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6866
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1242,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6866,
+        "webSearchRequests": 0,
+        "costUSD": 0.040074,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 677,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6866,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends manual ack with prefetch and a matching grace period.\\\" This matches late ack plus a longer grace period (90 s), with the drain shorter than the grace period (75 s).\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`terminationGracePeriodSeconds` is 20\\\"; \\\"no file here settles it\\\" for meter.internal dedup. Verifiable facts match the key, and the unverifiable dedup is named as unknown.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"RabbitMQ already acked all of them at delivery... placeholder with no error\\\"; \\\"could bill twice unless `meter.internal` dedupes\\\". All three required questions are answered. The reader's DLQ question goes beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"A job can render twice... record_usage... could bill twice\\\"; the problem, breaks and fix fields match the key's understanding.\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"\\\"Do you approve the manual ack, prefetch, drain and grace changes? If so, should I also ask Billing...?\\\" The message ends with two questions.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"only raise the grace period and drain time... still loses jobs on a crash, an OOM kill or a node loss. It becomes the primary only if you need a hotfix.\\\" This is a valid alternative with its trade-off and its primary condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends manual ack with prefetch and a matching grace period.\" This matches late ack plus a longer grace period (90 s), with the drain shorter than the grace period (75 s)."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`terminationGracePeriodSeconds` is 20\"; \"no file here settles it\" for meter.internal dedup. Verifiable facts match the key, and the unverifiable dedup is named as unknown."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"RabbitMQ already acked all of them at delivery... placeholder with no error\"; \"could bill twice unless `meter.internal` dedupes\". All three required questions are answered. The reader's DLQ question goes beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"A job can render twice... record_usage... could bill twice\"; the problem, breaks and fix fields match the key's understanding."
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "\"Do you approve the manual ack, prefetch, drain and grace changes? If so, should I also ask Billing...?\" The message ends with two questions."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"only raise the grace period and drain time... still loses jobs on a crash, an OOM kill or a node loss. It becomes the primary only if you need a hotfix.\" This is a valid alternative with its trade-off and its primary condition."
+        }
+      ]
+    },
+    "ttft_ms": 7199,
+    "type": "result",
+    "duration_ms": 9712,
+    "uuid": "06cb770e-184f-4b68-bcf4-2e641834eebf",
+    "ttft_stream_ms": 1818,
+    "time_to_request_ms": 398,
+    "first_content_frame_ms": 1819,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

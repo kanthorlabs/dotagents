@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 41387,
+  "stop_reason": "end_turn",
+  "session_id": "03b87a6b-03ff-467f-8a64-d8c6ac217724",
+  "total_cost_usd": 0.0680156,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 3182,
+    "cache_read_input_tokens": 23856,
+    "output_tokens": 5289,
+    "output_tokens_details": {
+      "thinking_tokens": 3069
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3182,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 4313,
+        "cache_read_input_tokens": 8312,
+        "cache_creation_input_tokens": 2463,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2463
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 5289,
+      "cacheReadInputTokens": 23856,
+      "cacheCreationInputTokens": 3182,
+      "webSearchRequests": 0,
+      "costUSD": 0.0680156,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 3069,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 3182,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 11,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Aelita recommends approving the proposal with one amendment. `UPSERT_LATEST` in `ingest/store.py` must refuse to overwrite a newer row with an older one. Without that, parallel redelivery can write stale values into `latest_reading`.\n\nThe proposal does fix the stall. Today `max_ack_pending: 1` plus `with_retries` holds the whole consumer for 62 s per failing reading. The log shows 17 such stalls on 26 October. The proposal keeps the same 2, 4, 8, 16, 32 s delays and the same six attempts, so only the blocking goes away.\n\n**Timeline without the amendment**\n\nThis uses one device and the failover window from `logs/lag-2026-10-26.txt`. The database is down until 10:14:40. Reading A is stamped 10:14:03, B 10:14:33 and C 10:15:03.\n\n1. 10:14:03: A fails with `TransientError`. The handler naks it for 2 s. Redeliveries land at :05, :09, :17 and :33, all failing.\n2. 10:14:33: A's fifth delivery fails and is naked for 32 s. Its sixth is due at 10:15:05. B arrives and fails too.\n3. 10:14:47: B succeeds on its fourth delivery. `latest_reading` holds B.\n4. 10:15:03: C arrives and succeeds. `latest_reading` holds C.\n5. 10:15:05: A's sixth delivery succeeds. `UPSERT_LATEST` sets `value` and `read_at` unconditionally, so A overwrites C.\n6. `latest_reading` now holds a 62 s old value until the next reading at 10:15:33. The live map shows it.\n\nThe `freezer-temp-high` alert needs 10 minutes above -15 \u00b0C, so a 28 s blip is unlikely to fire it falsely. I did not find the rule's definition, so I can't confirm that. The `readings` history table is not affected, because reports read it by `read_at`.\n\n**Timeline with the amendment**, diverges at step 5.\n\n5. 10:15:05: A's sixth delivery succeeds. The conditional upsert sees `latest_reading.read_at` (C) is newer than A and changes nothing. `readings` still receives A.\n6. `latest_reading` holds C until D arrives at 10:15:33.\n\n**What changes**\n\n- `ingest/store.py` `UPSERT_LATEST`: add `WHERE latest_reading.read_at < EXCLUDED.read_at` after the `DO UPDATE SET` clause. Old behaviour: it always overwrites. New behaviour: it overwrites only when the incoming reading is newer.\n- `ingest/handler.py`, `ingest/retry.py`, `deploy/consumer.yaml`: as in `docs/proposals/redelivery.md`. No other change.\n\n**Recommendation.** Aelita recommends approving with the conditional upsert. It removes the cause, which is that ordering was only guaranteed by serial processing. It costs one extra comparison per upsert. It breaks nothing, because a first insert for a device still succeeds.\n\n**Alternative: reject and keep serial processing.** Keep `max_ack_pending: 1` and shorten the delays. Ordering stays guaranteed and no code changes. It still stalls every reading behind one failure. It becomes the primary only if `latest_reading` can't take a conditional write.\n\n**Next item after your answer:** `INSERT_HISTORY` has no conflict guard. Moving to `max_deliver: 6` means an ack lost past `ack_wait: 90s` can now insert a duplicate history row.\n\n**Question.** Do you approve the proposal with the conditional `UPSERT_LATEST` added, or reject it?",
+  "ttft_ms": 2166,
+  "type": "result",
+  "duration_ms": 41758,
+  "uuid": "c3a76e47-9f9a-44ca-99b9-7cc9a125ae2d",
+  "ttft_stream_ms": 1676,
+  "time_to_request_ms": 354,
+  "first_content_frame_ms": 1676,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

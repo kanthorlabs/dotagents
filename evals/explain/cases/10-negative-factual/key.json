@@ -1,0 +1,26 @@
+{
+  "measures": [
+    "MF"
+  ],
+  "correct_recommendations": [],
+  "invalid_options": [],
+  "root_cause": "Not applicable.",
+  "dependent_facts": [
+    {
+      "fact": "Production port",
+      "true_value": "8443",
+      "source": "deploy/prod.env",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [],
+  "valid_alternatives": [],
+  "closing_decision": "none",
+  "understanding": {
+    "problem": "n/a",
+    "breaks": "n/a",
+    "fix": "n/a",
+    "cost": "n/a"
+  },
+  "factual_pattern": "\\b8443\\b"
+}

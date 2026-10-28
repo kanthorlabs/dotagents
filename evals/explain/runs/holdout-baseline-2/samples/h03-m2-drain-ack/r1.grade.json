@@ -1,0 +1,184 @@
+{
+  "key": "f6a0c4af0e783a6a49476db7a296217ffc1e6adf11173021bb6810247fd50a76",
+  "cost_usd": 0.034004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends manual acks plus the longer grace period.\" Matches correct recommendation: late ack with grace 90s, drain 75s shorter than grace.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"no file in this repository says whether it dedupes on `ref`\" marks the unverifiable fact unknown; 20s grace, 60s drain, 70s videos, u-88217.. all match.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Answers why jobs vanish (auto_ack, SIGKILL at 20s), no error (\"died with no exception\", placeholder), and late-ack risk (record_usage twice, dedupe unknown). Reader's follow-ups are Billing detail beyond ruling.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"auto_ack=True... SIGKILL at 14:02:30\"; fix: manual acks plus 90s grace; cost: \"record_usage twice\". Matches key problem, breaks, fix, cost.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve manual acks plus the longer grace period, or should Aelita ship only the grace and drain change?\" One decision; reader gave a real answer.",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: raise only the grace period and drain... still loses jobs on a crash or OOM kill. It becomes the primary if Billing confirms...\" Trade-off and condition stated; valid alternative.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 4364,
+    "stop_reason": "tool_use",
+    "session_id": "4bfdebe5-0177-46a6-8310-f0408b0b0ad0",
+    "total_cost_usd": 0.034004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6896,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 623,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6896,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 623,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6896,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6896
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 623,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6896,
+        "webSearchRequests": 0,
+        "costUSD": 0.034004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6896,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends manual acks plus the longer grace period.\\\" Matches correct recommendation: late ack with grace 90s, drain 75s shorter than grace.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"no file in this repository says whether it dedupes on `ref`\\\" marks the unverifiable fact unknown; 20s grace, 60s drain, 70s videos, u-88217.. all match.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Answers why jobs vanish (auto_ack, SIGKILL at 20s), no error (\\\"died with no exception\\\", placeholder), and late-ack risk (record_usage twice, dedupe unknown). Reader's follow-ups are Billing detail beyond ruling.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"auto_ack=True... SIGKILL at 14:02:30\\\"; fix: manual acks plus 90s grace; cost: \\\"record_usage twice\\\". Matches key problem, breaks, fix, cost.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve manual acks plus the longer grace period, or should Aelita ship only the grace and drain change?\\\" One decision; reader gave a real answer.\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: raise only the grace period and drain... still loses jobs on a crash or OOM kill. It becomes the primary if Billing confirms...\\\" Trade-off and condition stated; valid alternative.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends manual acks plus the longer grace period.\" Matches correct recommendation: late ack with grace 90s, drain 75s shorter than grace.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"no file in this repository says whether it dedupes on `ref`\" marks the unverifiable fact unknown; 20s grace, 60s drain, 70s videos, u-88217.. all match.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Answers why jobs vanish (auto_ack, SIGKILL at 20s), no error (\"died with no exception\", placeholder), and late-ack risk (record_usage twice, dedupe unknown). Reader's follow-ups are Billing detail beyond ruling.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"auto_ack=True... SIGKILL at 14:02:30\"; fix: manual acks plus 90s grace; cost: \"record_usage twice\". Matches key problem, breaks, fix, cost.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve manual acks plus the longer grace period, or should Aelita ship only the grace and drain change?\" One decision; reader gave a real answer.",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: raise only the grace period and drain... still loses jobs on a crash or OOM kill. It becomes the primary if Billing confirms...\" Trade-off and condition stated; valid alternative.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 4695,
+    "type": "result",
+    "duration_ms": 4710,
+    "uuid": "2d63c454-8a71-49a8-8560-010ecfa5a932",
+    "ttft_stream_ms": 1213,
+    "time_to_request_ms": 350,
+    "first_content_frame_ms": 1213,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

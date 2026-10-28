@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 14856,
+  "stop_reason": "end_turn",
+  "session_id": "b55e515a-5cfc-4561-b382-5cc427b2a581",
+  "total_cost_usd": 0.030864299999999997,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 2151,
+    "cache_read_input_tokens": 33443,
+    "output_tokens": 1890,
+    "output_tokens_details": {
+      "thinking_tokens": 210
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2151,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1004,
+        "cache_read_input_tokens": 9394,
+        "cache_creation_input_tokens": 377,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 377
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 1890,
+      "cacheReadInputTokens": 33443,
+      "cacheCreationInputTokens": 2151,
+      "webSearchRequests": 0,
+      "costUSD": 0.030864299999999997,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 210,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2151,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 9,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`purge-worker` deletes in-progress uploads for `acme-labs` because `TenantConfig.validate` accepts `retention_days: 0`, which `docs/retention.md` does not support. Aelita recommends rejecting 0 in `validate`, as the docs already say.\n\n**Existing behaviour**\n\n1. `config/schema.py:10` rejects only values below 0, so 0 passes.\n2. `purge/worker.py:5` sets `cutoff` to now minus `retention_days` days.\n3. `purge/worker.py:7` deletes every upload with `created_at < cutoff`.\n4. `purge/worker.py` never checks whether an upload is still in progress.\n\n**Timeline without the fix**\n\n1. `acme-labs` sets `retention_days: 0` in `tenants/acme-labs.yaml`.\n2. `validate` accepts the value, because 0 is not below 0.\n3. A user starts a multipart upload at 10:00. It can run for up to 6 hours.\n4. `purge-worker` runs at 10:15 and computes `cutoff` as 10:15.\n5. The upload has `created_at` 10:00, which is below `cutoff`, so `store.delete` removes it mid-transfer.\n6. The user loses an upload that was still in progress.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `validate` raises `retention_days must be >= 1` for `acme-labs`.\n3. The tenant config is rejected before `purge-worker` ever uses it.\n4. The tenant sets a value from 1 to 3650, or deletes uploads through the API, as the docs describe.\n\n**What changes**\n\n- `config/schema.py` old behaviour: `validate` raises when `retention_days < 0`. New behaviour: it raises when `retention_days < 1` or `retention_days > 3650`, with the message `retention_days must be between 1 and 3650`.\n- `tenants/acme-labs.yaml` old value: `retention_days: 0`. New value: `1`, or the tenant's chosen value.\n\n**Recommendation.** Aelita recommends forbidding 0 in `validate`. The root cause is a schema that is looser than the documented range. This fix adds no mechanism. It costs one config edit for `acme-labs`. Two things can break it:\n- Nothing calls `validate` today. A grep finds only its definition. The fix does nothing until the config loader calls it.\n- Even at 1 day, `purge-worker` could delete an upload that has been in progress for more than 24 hours. The 6-hour limit makes that case impossible.\n\n**Alternative: skip in-progress uploads in `purge-worker`.** The worker checks an upload status before `store.delete`. It would make a 0 value safe, and it protects any future bad config. It costs a status field. A grep finds no such field in this repository. It becomes the primary if tenants must be allowed zero retention.\n\n**Question.** Should Aelita reject 0 in `validate` and wire `validate` into config loading, or add the in-progress check to `purge-worker`?",
+  "ttft_ms": 1673,
+  "type": "result",
+  "duration_ms": 15429,
+  "uuid": "baa904fe-3b97-4d24-ac50-618e28d40174",
+  "ttft_stream_ms": 1319,
+  "time_to_request_ms": 533,
+  "first_content_frame_ms": 1319,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

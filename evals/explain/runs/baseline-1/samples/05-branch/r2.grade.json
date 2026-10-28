@@ -1,0 +1,172 @@
+{
+  "key": "e5fa9ca14991c6b194613538ebdd4807441bad669e942285a46c7bf0d2a0104e",
+  "cost_usd": 0.040676000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends a 600-second lock TTL in `eu-west` and a Redis lock in `us-east`.\" Matches the fix-both-regions recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"This fixes the duplicate whichever region it came from.\" Lock backends, 60 s TTL, 4-minute runtime, 01:00/01:02 timings and max replicas 3 all match the key. Region is not stated as known."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"Both regions fail the same way, so the fix must cover both.\" The reader's Redis-reachability question goes beyond the ruling and is not a required question."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"In eu-west the Redis lock has a 60s TTL... In us-east lock_backend is none\"; fix covers both regions or idempotent key. Matches key problem, breaks, fix and cost."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the 600-second TTL and the `us-east` Redis lock, or do you want the idempotent purchase order key instead?\" This is one decision, which fix to apply; the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"It becomes the primary if you can change `purchasing` or if jobs may exceed 10 minutes.\" The idempotent-key alternative matches a valid entry, with its trade-off and primary condition stated."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10591,
+    "stop_reason": "tool_use",
+    "session_id": "67676da2-f7b6-4f70-957e-082da2d5cd2b",
+    "total_cost_usd": 0.040676000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6414,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1483,
+      "output_tokens_details": {
+        "thinking_tokens": 911
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6414,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1483,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6414,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6414
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1483,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6414,
+        "webSearchRequests": 0,
+        "costUSD": 0.040676000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 911,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6414,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends a 600-second lock TTL in `eu-west` and a Redis lock in `us-east`.\\\" Matches the fix-both-regions recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"This fixes the duplicate whichever region it came from.\\\" Lock backends, 60 s TTL, 4-minute runtime, 01:00/01:02 timings and max replicas 3 all match the key. Region is not stated as known.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"Both regions fail the same way, so the fix must cover both.\\\" The reader's Redis-reachability question goes beyond the ruling and is not a required question.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"In eu-west the Redis lock has a 60s TTL... In us-east lock_backend is none\\\"; fix covers both regions or idempotent key. Matches key problem, breaks, fix and cost.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the 600-second TTL and the `us-east` Redis lock, or do you want the idempotent purchase order key instead?\\\" This is one decision, which fix to apply; the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"It becomes the primary if you can change `purchasing` or if jobs may exceed 10 minutes.\\\" The idempotent-key alternative matches a valid entry, with its trade-off and primary condition stated.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends a 600-second lock TTL in `eu-west` and a Redis lock in `us-east`.\" Matches the fix-both-regions recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"This fixes the duplicate whichever region it came from.\" Lock backends, 60 s TTL, 4-minute runtime, 01:00/01:02 timings and max replicas 3 all match the key. Region is not stated as known."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"Both regions fail the same way, so the fix must cover both.\" The reader's Redis-reachability question goes beyond the ruling and is not a required question."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"In eu-west the Redis lock has a 60s TTL... In us-east lock_backend is none\"; fix covers both regions or idempotent key. Matches key problem, breaks, fix and cost."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the 600-second TTL and the `us-east` Redis lock, or do you want the idempotent purchase order key instead?\" This is one decision, which fix to apply; the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"It becomes the primary if you can change `purchasing` or if jobs may exceed 10 minutes.\" The idempotent-key alternative matches a valid entry, with its trade-off and primary condition stated."
+        }
+      ]
+    },
+    "ttft_ms": 7863,
+    "type": "result",
+    "duration_ms": 10956,
+    "uuid": "e67dd1ba-e839-4bac-9bf4-608107ea04b0",
+    "ttft_stream_ms": 1240,
+    "time_to_request_ms": 366,
+    "first_content_frame_ms": 1240,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

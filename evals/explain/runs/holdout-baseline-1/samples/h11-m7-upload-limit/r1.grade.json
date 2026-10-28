@@ -1,0 +1,172 @@
+{
+  "key": "f887dd43e4476f67e0b99dac4698d9bc7803c9000c385eedf0174a611cf97b02",
+  "cost_usd": 0.03157,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends raising both to 200 MB for `/api/files`.\" Matches raising both limits to ~200 MB; buffering stays on (gunicorn unchanged, nginx buffers)."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`storage.put` sends it to `pinewood-files` at about 60 MB/s, which takes about 3 s for 180 MB. That is under the 30 s gunicorn `timeout`\" matches key; 20 GB, 4 workers, 25/day, 9 Nov all correct."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Answers 413 cause (both 10 MB), timeout (nginx buffers, ~3 s vs 30 s), presigned (\"cannot ship before 9 November\"). Reader's follow-ups are beyond-ruling detail."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"nginx (client_max_body_size 10m) and Flask (MAX_CONTENT_LENGTH 10 MiB) both cap... Change MAX_CONTENT_LENGTH... 200\"; cost: worker ~3 s, nginx disk under 1%. Agrees with key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Does Aelita apply the 200 MB limit to `pinewood.conf` and `settings.py` now, and leave the presigned upload for after 9 November?\" Reader answered Yes."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: presigned direct upload... needs... a frontend change. That change cannot ship before 9 November. It becomes the primary if uploads grow well beyond 200 MB\" \u2013 trade-off and condition stated."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 4919,
+    "stop_reason": "tool_use",
+    "session_id": "b06b8e15-efe0-4a54-ad32-5d03818c1c9e",
+    "total_cost_usd": 0.03157,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6185,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 664,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6185,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 664,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6185,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6185
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 664,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6185,
+        "webSearchRequests": 0,
+        "costUSD": 0.03157,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6185,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends raising both to 200 MB for `/api/files`.\\\" Matches raising both limits to ~200 MB; buffering stays on (gunicorn unchanged, nginx buffers).\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`storage.put` sends it to `pinewood-files` at about 60 MB/s, which takes about 3 s for 180 MB. That is under the 30 s gunicorn `timeout`\\\" matches key; 20 GB, 4 workers, 25/day, 9 Nov all correct.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Answers 413 cause (both 10 MB), timeout (nginx buffers, ~3 s vs 30 s), presigned (\\\"cannot ship before 9 November\\\"). Reader's follow-ups are beyond-ruling detail.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"nginx (client_max_body_size 10m) and Flask (MAX_CONTENT_LENGTH 10 MiB) both cap... Change MAX_CONTENT_LENGTH... 200\\\"; cost: worker ~3 s, nginx disk under 1%. Agrees with key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Does Aelita apply the 200 MB limit to `pinewood.conf` and `settings.py` now, and leave the presigned upload for after 9 November?\\\" Reader answered Yes.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: presigned direct upload... needs... a frontend change. That change cannot ship before 9 November. It becomes the primary if uploads grow well beyond 200 MB\\\" \u2013 trade-off and condition stated.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends raising both to 200 MB for `/api/files`.\" Matches raising both limits to ~200 MB; buffering stays on (gunicorn unchanged, nginx buffers)."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`storage.put` sends it to `pinewood-files` at about 60 MB/s, which takes about 3 s for 180 MB. That is under the 30 s gunicorn `timeout`\" matches key; 20 GB, 4 workers, 25/day, 9 Nov all correct."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Answers 413 cause (both 10 MB), timeout (nginx buffers, ~3 s vs 30 s), presigned (\"cannot ship before 9 November\"). Reader's follow-ups are beyond-ruling detail."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"nginx (client_max_body_size 10m) and Flask (MAX_CONTENT_LENGTH 10 MiB) both cap... Change MAX_CONTENT_LENGTH... 200\"; cost: worker ~3 s, nginx disk under 1%. Agrees with key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Does Aelita apply the 200 MB limit to `pinewood.conf` and `settings.py` now, and leave the presigned upload for after 9 November?\" Reader answered Yes."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: presigned direct upload... needs... a frontend change. That change cannot ship before 9 November. It becomes the primary if uploads grow well beyond 200 MB\" \u2013 trade-off and condition stated."
+        }
+      ]
+    },
+    "ttft_ms": 5475,
+    "type": "result",
+    "duration_ms": 5505,
+    "uuid": "c8c5be66-0497-40bf-8af0-4e097fb618c6",
+    "ttft_stream_ms": 1457,
+    "time_to_request_ms": 585,
+    "first_content_frame_ms": 1457,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

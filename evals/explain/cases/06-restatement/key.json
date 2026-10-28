@@ -1,0 +1,59 @@
+{
+  "measures": [
+    "M2",
+    "M3",
+    "M4",
+    "M5"
+  ],
+  "correct_recommendations": [],
+  "invalid_options": [],
+  "root_cause": "edge-proxy never refreshes last_seen_at because touch_on_request is false in config/prod.yaml. There is no timezone bug.",
+  "dependent_facts": [
+    {
+      "fact": "session-gc schedule",
+      "true_value": "every 10 minutes",
+      "source": "config/prod.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Idle limit",
+      "true_value": "30 minutes, IDLE_LIMIT in auth/session_gc.py",
+      "source": "auth/session_gc.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Time handling",
+      "true_value": "session_gc uses datetime.now(timezone.utc) and last_seen_at is timestamptz, so no timezone mismatch",
+      "source": "auth/session_gc.py and auth/schema.sql",
+      "verifiable": true
+    },
+    {
+      "fact": "touch_on_request",
+      "true_value": "false in production",
+      "source": "config/prod.yaml",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Is the 10-minute schedule right?",
+      "expected_answer": "Yes."
+    },
+    {
+      "question": "Is the 30-minute idle limit right?",
+      "expected_answer": "Yes."
+    },
+    {
+      "question": "Is the cause a timezone mismatch?",
+      "expected_answer": "No. Comparisons use UTC-aware times on a timestamptz column. The cause is touch_on_request false, so last_seen_at never refreshes."
+    }
+  ],
+  "valid_alternatives": [],
+  "closing_decision": "The open ruling from the prior message: turn on touch_on_request in production, or move the touch into auth-service. A single confirmation question about the corrected understanding is also accepted.",
+  "understanding": {
+    "problem": "Active users get logged out after 30 minutes.",
+    "breaks": "last_seen_at never refreshes because touch_on_request is false, so session-gc deletes active sessions; not a timezone bug.",
+    "fix": "Turn on touch_on_request in production, or move the touch into auth-service.",
+    "cost": "n/a"
+  }
+}

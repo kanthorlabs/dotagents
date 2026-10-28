@@ -1,0 +1,172 @@
+{
+  "key": "dd1a90f906471bac8d3e97278db58f6f0af1fc9e2cd2a5cc341eb08e58813bb8",
+  "cost_usd": 0.038028,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends event-driven eviction on every pod.\" It matches the correct recommendation. The extra 300 s backstop TTL is compatible."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`/api/*` rule has `cache: false`\"; \"six `shop-api` pods\"; \"Only `search/indexer.py` subscribes.\" All match the key. No dependent fact is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message covers why the CDN change fails, why reloads mix 34.90 and 39.90, and what changes. The reader's question about where startup code lives is detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"evicts the SKU only on the pod that handled the POST... other five pods keep the old price.\" Problem, breaks, fix and cost all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Does `shop-api` subscribe every pod to `price.changed`... or do you prefer the 60-second per-pod TTL?\" Reader gave a concrete closing answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: drop the per-pod cache TTL to 60... Staleness is bounded at 60 seconds... It becomes the primary if a stale price for one minute is acceptable.\" Valid alternative with trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8276,
+    "stop_reason": "tool_use",
+    "session_id": "daeb6209-c640-470d-8d9c-e215a01b556e",
+    "total_cost_usd": 0.038028,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6602,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1143,
+      "output_tokens_details": {
+        "thinking_tokens": 585
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6602,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1143,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6602,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6602
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1143,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6602,
+        "webSearchRequests": 0,
+        "costUSD": 0.038028,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 585,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6602,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends event-driven eviction on every pod.\\\" It matches the correct recommendation. The extra 300 s backstop TTL is compatible.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`/api/*` rule has `cache: false`\\\"; \\\"six `shop-api` pods\\\"; \\\"Only `search/indexer.py` subscribes.\\\" All match the key. No dependent fact is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message covers why the CDN change fails, why reloads mix 34.90 and 39.90, and what changes. The reader's question about where startup code lives is detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"evicts the SKU only on the pod that handled the POST... other five pods keep the old price.\\\" Problem, breaks, fix and cost all agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Does `shop-api` subscribe every pod to `price.changed`... or do you prefer the 60-second per-pod TTL?\\\" Reader gave a concrete closing answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: drop the per-pod cache TTL to 60... Staleness is bounded at 60 seconds... It becomes the primary if a stale price for one minute is acceptable.\\\" Valid alternative with trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends event-driven eviction on every pod.\" It matches the correct recommendation. The extra 300 s backstop TTL is compatible."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`/api/*` rule has `cache: false`\"; \"six `shop-api` pods\"; \"Only `search/indexer.py` subscribes.\" All match the key. No dependent fact is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message covers why the CDN change fails, why reloads mix 34.90 and 39.90, and what changes. The reader's question about where startup code lives is detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"evicts the SKU only on the pod that handled the POST... other five pods keep the old price.\" Problem, breaks, fix and cost all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Does `shop-api` subscribe every pod to `price.changed`... or do you prefer the 60-second per-pod TTL?\" Reader gave a concrete closing answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: drop the per-pod cache TTL to 60... Staleness is bounded at 60 seconds... It becomes the primary if a stale price for one minute is acceptable.\" Valid alternative with trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 5463,
+    "type": "result",
+    "duration_ms": 8796,
+    "uuid": "ee398ce6-f55e-4afc-9f4e-aaec47f09be3",
+    "ttft_stream_ms": 1378,
+    "time_to_request_ms": 520,
+    "first_content_frame_ms": 1378,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

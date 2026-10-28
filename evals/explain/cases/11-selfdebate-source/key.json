@@ -1,0 +1,101 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Remove the digest_builder line from the crontab of ops-box-2 as the primary fix. A unique index on outbox(subscriber_id, digest_date) may follow as a secondary guard."
+  ],
+  "invalid_options": [
+    "Change nothing.",
+    "Remove or disable the Kubernetes CronJob digest-builder instead of the legacy crontab line.",
+    "Remove the rotate-logs line of ops-box-2 as part of this fix without a check.",
+    "The unique index or the digest-mailer dedupe as the primary fix, with the crontab removal as a secondary step or absent."
+  ],
+  "root_cause": "jobs.digest_builder runs twice every Monday at 06:00: from the Kubernetes CronJob digest-builder and from a leftover crontab line on ops-box-2. The September cutover checklist left the removal of that line open. digest_builder inserts without a check for existing rows.",
+  "dependent_facts": [
+    {
+      "fact": "Kubernetes schedule",
+      "true_value": "CronJob digest-builder, 0 6 * * 1",
+      "source": "deploy/k8s/cronjob-digest-builder.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Legacy schedule",
+      "true_value": "ops-box-2 crontab runs jobs.digest_builder at 0 6 * * 1",
+      "source": "ops/hosts/ops-box-2/crontab",
+      "verifiable": true
+    },
+    {
+      "fact": "Cutover checklist",
+      "true_value": "the item to remove the digest_builder line from ops-box-2 is still open since the 21 September cutover",
+      "source": "docs/migrations/2026-09-k8s-cutover.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Double run",
+      "true_value": "two runs on 26 October, from ops-box-2 and from a pod, each enqueuing 18412 rows",
+      "source": "logs/digest-builder-2026-10-26.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Insert logic",
+      "true_value": "digest_builder inserts one outbox row per active subscriber with no check for existing rows",
+      "source": "jobs/digest_builder.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Outbox schema",
+      "true_value": "no unique constraint on outbox(subscriber_id, digest_date)",
+      "source": "db/schema.sql",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why are digests sent twice?",
+      "expected_answer": "digest_builder runs twice, from Kubernetes and from the ops-box-2 crontab."
+    },
+    {
+      "question": "Why does the second run exist?",
+      "expected_answer": "The September cutover left the crontab line on ops-box-2; the checklist item is open."
+    },
+    {
+      "question": "What is removed and what stays?",
+      "expected_answer": "The digest_builder crontab line on ops-box-2 is removed; the Kubernetes CronJob digest-builder stays."
+    },
+    {
+      "question": "Why not the two fixes I proposed?",
+      "expected_answer": "Both treat the symptom; the double run remains. An index can stay as a guard."
+    },
+    {
+      "question": "What can break?",
+      "expected_answer": "Nothing that depends on the ops-box-2 run; the Kubernetes job covers all subscribers."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Unique index on outbox(subscriber_id, digest_date) with insert on conflict do nothing",
+      "trade_off": "Guards against any future double schedule, but needs a migration plus cleanup of existing duplicates, and the double run still does the work.",
+      "primary_when": "The legacy crontab cannot be changed soon, or the team wants a guard against future double schedules.",
+      "must_list": false
+    },
+    {
+      "option": "Dedupe in digest-mailer",
+      "trade_off": "Code-only guard, but the double run and the duplicate rows remain.",
+      "primary_when": "Neither the crontab nor the schema can change soon.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve removal of the ops-box-2 digest_builder crontab line, or whether to add the unique index as a guard too.",
+  "understanding": {
+    "problem": "The Monday digest goes out twice to every subscriber.",
+    "breaks": "digest_builder runs twice, from Kubernetes and from the leftover ops-box-2 crontab line, so every subscriber gets two outbox rows.",
+    "fix": "Remove the digest_builder line from the ops-box-2 crontab.",
+    "cost": "One crontab line; optionally a migration for a guard index."
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 19921,
+  "stop_reason": "end_turn",
+  "session_id": "8eebe239-f8c0-4ca1-9211-32f896d31856",
+  "total_cost_usd": 0.035800200000000004,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1995,
+    "cache_read_input_tokens": 23782,
+    "output_tokens": 2543,
+    "output_tokens_details": {
+      "thinking_tokens": 660
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1995,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1889,
+        "cache_read_input_tokens": 8252,
+        "cache_creation_input_tokens": 1329,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1329
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2543,
+      "cacheReadInputTokens": 23782,
+      "cacheCreationInputTokens": 1995,
+      "webSearchRequests": 0,
+      "costUSD": 0.035800200000000004,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 660,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1995,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`export_contacts` builds the whole CSV in memory before it sends a byte, so `edge-lb` sees 30 seconds of silence on large tenants and closes the connection with a 504. Aelita recommends streaming the CSV from a generator. It adds no new component.\n\n**Timeline without the fix**\n\n1. A user at `bluefin-logistics` clicks \"Export contacts\". `edge-lb` forwards `GET /exports/contacts.csv` to `ferngrove-web`.\n2. `export_contacts` runs `db.query` and loads all 412880 rows. This takes 12 seconds, and no byte goes out.\n3. `export_contacts` writes every row into one `io.StringIO`. This takes 77 more seconds, and no byte goes out.\n4. At second 30 `edge-lb` has seen no byte, so its `idle_timeout_seconds: 30` fires. It returns 504 (`reason=edge-lb-idle-timeout`).\n5. `export_contacts` finishes at second 89 to 90 and returns the CSV. The connection is already closed, so the user gets nothing.\n\nThe log shows this twice for `bluefin-logistics`, at 09:12 and 14:02 on 2026-10-27. `harrow-dental` has 3120 rows, finishes in 1 second and returns 200.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `export_contacts` returns a streaming `Response` and yields the header row at once. `edge-lb` receives the first byte and restarts its idle timer.\n3. The generator runs the query, then yields rows in batches. Each batch restarts the idle timer.\n4. No gap reaches 30 seconds, so `edge-lb` keeps the connection open.\n5. The last batch goes out at about second 90. The user downloads the full CSV.\n\n**What changes**\n\n- `app/exports.py`: `export_contacts` old behaviour is to build one string in `io.StringIO` and return it. New behaviour is a generator that yields the header, then batches of CSV lines. It returns `Response(generator, content_type=\"text/csv\")`.\n- `app/exports.py`: `db.query` stays as it is. The 12-second query finishes inside the generator after the header has gone out, so it cannot trip the timer.\n\n**Recommendation.** Aelita recommends streaming, because it removes the root cause. The root cause is that no byte goes out for the whole build, and `docs/exports.md` says each byte restarts the idle timer. It needs no queue, no email service and no new owner. Two things can break it:\n\n- **Gunicorn limit:** `gunicorn.conf.py` sets `timeout = 120` with the default sync worker, and the worker now stays busy for the full ~90 seconds. A tenant about 30% larger than `bluefin-logistics` would hit that limit and lose its worker.\n- **Unverified API:** `ferngrove.web` is not in this repository, so I could not confirm that `Response` accepts a generator.\n\n**Alternative: raise `idle_timeout_seconds` to 120.** It is a one-line change in `deploy/edge-lb.yaml`. It costs every route a longer idle window. It also fails again as tenants grow, because the buffered build keeps getting slower. It becomes the primary only if streaming is impossible in `ferngrove.web`.\n\n**Alternative: background job and emailed link.** It has no time limit. It needs a job queue and an email service, and `docs/exports.md` says the stack has neither and each needs an owner and on-call. It becomes the primary when exports exceed the 120-second gunicorn limit.\n\n**Question.** Do you approve streaming the CSV from `export_contacts`, or do you prefer one of the alternatives?",
+  "ttft_ms": 1379,
+  "type": "result",
+  "duration_ms": 20245,
+  "uuid": "78ffcc40-1c21-4ef8-b6ec-f40fd7860595",
+  "ttft_stream_ms": 986,
+  "time_to_request_ms": 306,
+  "first_content_frame_ms": 987,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 31860,
+  "stop_reason": "end_turn",
+  "session_id": "971225dd-5d1c-48b9-bba9-739d88156a3f",
+  "total_cost_usd": 0.051260799999999995,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1717,
+    "cache_read_input_tokens": 24808,
+    "output_tokens": 4190,
+    "output_tokens_details": {
+      "thinking_tokens": 2618
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1717,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3649,
+        "cache_read_input_tokens": 8523,
+        "cache_creation_input_tokens": 1157,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1157
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 4190,
+      "cacheReadInputTokens": 24808,
+      "cacheCreationInputTokens": 1717,
+      "webSearchRequests": 0,
+      "costUSD": 0.051260799999999995,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2618,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1717,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling recorded.** No decision register or handoff file exists in this project, so I quote it here: \"`invoice-mailer` sends from `invoices@mail.larkspur.io`, whose SPF record lists `smtp-mx-2`.\" I have not yet edited `FROM_ADDRESS` in `mailer/config.py`. The cutover date for `smtp-old-1` follows after this item.\n\n**Next open item: the retry limit.** `handle_bounce` retries a bounced mail 12 times, but `smtp-mx-2` blocks the sender after 5 bounces to one recipient in one hour. Aelita recommends lowering `BOUNCE_RETRY_LIMIT` to 3.\n\n**Timeline without the fix**\n\n1. `invoice-mailer` sends INV-2207 to Oskar Brandt through `smtp-mx-2`. His mailbox no longer exists, so the mail bounces once.\n2. `handle_bounce` sees attempt 0, below `BOUNCE_RETRY_LIMIT` of 12. It waits 60 seconds and resends. The second bounce arrives.\n3. The same cycle repeats every 60 seconds. The sixth bounce arrives about 5 minutes after the first.\n4. `smtp-mx-2` sees more than 5 bounces for one recipient within one hour. It blocks the sender for 24 hours.\n5. `handle_bounce` keeps retrying until attempt 12. `smtp-mx-2` refuses every retry.\n6. Every other invoice from `invoices@mail.larkspur.io` waits 24 hours. One dead mailbox delays all customers.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `handle_bounce` sees attempt 0, below the new limit of 3. It waits 60 seconds and resends. The second bounce arrives.\n3. The cycle repeats twice more. The fourth bounce arrives.\n4. `handle_bounce` sees attempt 3 and calls `message.mark_failed()`. Four bounces stay below the threshold of more than 5. Other invoices keep flowing.\n\n**What changes**\n\n- `mailer/config.py`: `BOUNCE_RETRY_LIMIT` changes from `12` to `3`.\n\n**Recommendation.** Aelita recommends the config change because it forbids the dangerous case and adds no mechanism. Four bounces leave one spare for a second mail to the same recipient within the hour. A soft bounce from a busy server now fails after about 3 minutes instead of 12. Whether `attempt` starts at 0 or 1 is unverified, because the caller of `handle_bounce` is not in these files. A limit of 3 is safe either way.\n\n**Alternative: tell hard bounces from soft bounces.** `handle_bounce` fails a hard bounce at once and retries only soft bounces. It removes the root cause, which is retrying a mailbox that does not exist. It costs code that classifies SMTP reply codes, which `docs/mail-provider.md` says does not exist today. It becomes the primary when many recipients have dead mailboxes.\n\n**Question.** Does `BOUNCE_RETRY_LIMIT` drop to 3, or does `invoice-mailer` classify hard and soft bounces?",
+  "ttft_ms": 1427,
+  "type": "result",
+  "duration_ms": 32331,
+  "uuid": "d61d2094-dbd2-48e9-8e7a-59117bfe4185",
+  "ttft_stream_ms": 1088,
+  "time_to_request_ms": 447,
+  "first_content_frame_ms": 1089,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

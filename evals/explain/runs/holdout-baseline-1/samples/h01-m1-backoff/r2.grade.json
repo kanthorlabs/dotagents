@@ -1,0 +1,172 @@
+{
+  "key": "2b93367baa2eb4595995f2d7b1f8d12db4c07fe803fbc468718ef20a0796820f",
+  "cost_usd": 0.038328,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends switching `sync/crm_client.py` to `POST /v2/contacts:batchUpsert`, which sends 100 contacts per request.\" Retry-After safety net is a compatible extra."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"11,940 upserted and 34,860 pending\"; \"1,000 requests per minute for 1,450 USD per month\"; \"3 weeks of lead time\". All match the key; unverified items are not dependent facts."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"Retries still count against the 100 limit... 12,000 per 2-hour run\"; \"468 calls... 400 calls\". Reader's follow-ups (field names, 28 Oct log) are beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"one PUT per contact... about 400 requests/min against... 100/min\"; fix \"batchUpsert\"; cost \"One new response parser\". Matches key fields."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve switching to `batchUpsert` with `WORKERS` at 4, or do you want the enterprise tier instead?\" One decision; reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: enterprise tier... Juniper quotes 3 weeks of lead time, so it misses Friday.\" valid_alternatives is empty and this option does not meet the deadline."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8754,
+    "stop_reason": "tool_use",
+    "session_id": "3f113a9d-c889-4a38-8b30-abeeae4f6c12",
+    "total_cost_usd": 0.038328,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6242,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1317,
+      "output_tokens_details": {
+        "thinking_tokens": 736
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6242,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1317,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6242,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6242
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1317,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6242,
+        "webSearchRequests": 0,
+        "costUSD": 0.038328,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 736,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6242,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends switching `sync/crm_client.py` to `POST /v2/contacts:batchUpsert`, which sends 100 contacts per request.\\\" Retry-After safety net is a compatible extra.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"11,940 upserted and 34,860 pending\\\"; \\\"1,000 requests per minute for 1,450 USD per month\\\"; \\\"3 weeks of lead time\\\". All match the key; unverified items are not dependent facts.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"Retries still count against the 100 limit... 12,000 per 2-hour run\\\"; \\\"468 calls... 400 calls\\\". Reader's follow-ups (field names, 28 Oct log) are beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"one PUT per contact... about 400 requests/min against... 100/min\\\"; fix \\\"batchUpsert\\\"; cost \\\"One new response parser\\\". Matches key fields.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve switching to `batchUpsert` with `WORKERS` at 4, or do you want the enterprise tier instead?\\\" One decision; reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: enterprise tier... Juniper quotes 3 weeks of lead time, so it misses Friday.\\\" valid_alternatives is empty and this option does not meet the deadline.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends switching `sync/crm_client.py` to `POST /v2/contacts:batchUpsert`, which sends 100 contacts per request.\" Retry-After safety net is a compatible extra."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"11,940 upserted and 34,860 pending\"; \"1,000 requests per minute for 1,450 USD per month\"; \"3 weeks of lead time\". All match the key; unverified items are not dependent facts."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"Retries still count against the 100 limit... 12,000 per 2-hour run\"; \"468 calls... 400 calls\". Reader's follow-ups (field names, 28 Oct log) are beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"one PUT per contact... about 400 requests/min against... 100/min\"; fix \"batchUpsert\"; cost \"One new response parser\". Matches key fields."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve switching to `batchUpsert` with `WORKERS` at 4, or do you want the enterprise tier instead?\" One decision; reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: enterprise tier... Juniper quotes 3 weeks of lead time, so it misses Friday.\" valid_alternatives is empty and this option does not meet the deadline."
+        }
+      ]
+    },
+    "ttft_ms": 6108,
+    "type": "result",
+    "duration_ms": 9267,
+    "uuid": "59ddb136-252e-4e07-8789-54130821c37c",
+    "ttft_stream_ms": 1394,
+    "time_to_request_ms": 513,
+    "first_content_frame_ms": 1394,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

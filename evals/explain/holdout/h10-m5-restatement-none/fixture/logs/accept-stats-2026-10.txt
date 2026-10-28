@@ -1,0 +1,5 @@
+img-edge, requests under /img/, 1 to 27 October 2026
+
+- Distinct Accept header values: 1,912.
+- The three most common values cover 71 % of requests.
+- Negotiated formats: avif 58 %, webp 31 %, orig 11 %.

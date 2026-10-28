@@ -1,0 +1,142 @@
+{
+  "key": "0d732005e908726fb92cb7773c292a1f3f3c4dc3ac56864962ae646c6379bbeb",
+  "cost_usd": 0.025058,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"The key gets the negotiated format (`avif`, `webp` or `orig`), not the whole `Accept` header.\" The message also cites 1,912 distinct values, path+query key and the Safari 13 WebP failure, all matching the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Reader lists no follow-up questions (\"follow_up_questions\": []). The message answers all four required questions: URL-only key, not the whole header, Safari 13 WebP, and next step is the cache_key change."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"img-edge caches images by path plus query only... Safari 13 cannot decode WebP\" and fix \"Add the negotiated format (avif, webp or orig) to the cache key\". This matches problem, breaks and fix."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 5510,
+    "stop_reason": "tool_use",
+    "session_id": "bf84caa0-e0b0-4608-b640-6f4d47211b18",
+    "total_cost_usd": 0.025058,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4632,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 634,
+      "output_tokens_details": {
+        "thinking_tokens": 290
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4632,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 634,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4632,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4632
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 634,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4632,
+        "webSearchRequests": 0,
+        "costUSD": 0.025058,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 290,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4632,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"The key gets the negotiated format (`avif`, `webp` or `orig`), not the whole `Accept` header.\\\" The message also cites 1,912 distinct values, path+query key and the Safari 13 WebP failure, all matching the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Reader lists no follow-up questions (\\\"follow_up_questions\\\": []). The message answers all four required questions: URL-only key, not the whole header, Safari 13 WebP, and next step is the cache_key change.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"img-edge caches images by path plus query only... Safari 13 cannot decode WebP\\\" and fix \\\"Add the negotiated format (avif, webp or orig) to the cache key\\\". This matches problem, breaks and fix.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The key gets the negotiated format (`avif`, `webp` or `orig`), not the whole `Accept` header.\" The message also cites 1,912 distinct values, path+query key and the Safari 13 WebP failure, all matching the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Reader lists no follow-up questions (\"follow_up_questions\": []). The message answers all four required questions: URL-only key, not the whole header, Safari 13 WebP, and next step is the cache_key change."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"img-edge caches images by path plus query only... Safari 13 cannot decode WebP\" and fix \"Add the negotiated format (avif, webp or orig) to the cache key\". This matches problem, breaks and fix."
+        }
+      ]
+    },
+    "ttft_ms": 4445,
+    "type": "result",
+    "duration_ms": 5987,
+    "uuid": "46066723-22b5-40ad-98af-20b3c5d552ef",
+    "ttft_stream_ms": 1863,
+    "time_to_request_ms": 476,
+    "first_content_frame_ms": 1863,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

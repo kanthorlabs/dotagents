@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 18892,
+  "stop_reason": "end_turn",
+  "session_id": "b5217ddb-ad97-4a92-bb0b-8d46d2f57f50",
+  "total_cost_usd": 0.033894400000000005,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 1847,
+    "cache_read_input_tokens": 32104,
+    "output_tokens": 2328,
+    "output_tokens_details": {
+      "thinking_tokens": 721
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1847,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1921,
+        "cache_read_input_tokens": 8687,
+        "cache_creation_input_tokens": 428,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 428
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 2328,
+      "cacheReadInputTokens": 32104,
+      "cacheCreationInputTokens": 1847,
+      "webSearchRequests": 0,
+      "costUSD": 0.033894400000000005,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 721,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1847,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Caching the pnpm store cuts the median `Install` step from 3 min 40 s to about 35 s. That saves about 3 min 05 s per run, roughly 21 hours of waiting and 10 USD of runner time per week. Aelita recommends `cache: pnpm` on `actions/setup-node@v4`, which is a one-line change.\n\n**Timeline without the fix**\n\n1. A developer pushes a branch. `ci` starts on `ubuntu-24.04`.\n2. `actions/checkout@v4`, `pnpm/action-setup@v4` and `actions/setup-node@v4` run.\n3. `Install` runs `pnpm install --frozen-lockfile` with an empty store. It downloads 1.1 GB and takes 3 min 40 s.\n4. `Lint` and `Test` run.\n5. The run ends at a median of 11 min 05 s. The developer waits, because merges depend on `ci`.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. `setup-node` restores the pnpm store from the cache, keyed on the hash of `pnpm-lock.yaml`. `Install` links packages from the local store and takes about 35 s.\n4. `Lint` and `Test` run unchanged.\n5. The run ends at about 8 min 00 s, which is 28% shorter (665 s minus 185 s).\n\n**What it buys**\n\n- **Time.** 185 s saved per run, across 412 runs per week, is about 1,270 minutes, or 21 hours.\n- **Money.** 1,270 minutes at 0.008 USD per minute is about 10 USD per week.\n- **Merge speed.** About 60 pull requests merge per week, and each one waits roughly 3 minutes less per CI run.\n\n**What changes**\n\n- `.github/workflows/ci.yml` step `actions/setup-node@v4`: add `cache: pnpm` under `with`. The order is already correct, because `pnpm/action-setup@v4` runs before `setup-node`.\n\n**Recommendation.** Aelita recommends `cache: pnpm` because it needs no new step and no hand-written key. The cost is cache storage. The store is 1.1 GB against a 10 GB repository limit, and every lockfile change writes a new entry. Old entries are evicted least-recently-used first, so about 9 entries fit.\n\n**Caveats for the team**\n\n- **Measurement.** The 35 s figure comes from 20 manual runs with a warm store. The doc does not say whether it includes the cache restore time. A 1.1 GB restore may add some seconds, so the real saving is slightly lower.\n- **Branch scope.** `ci` runs on every branch. A feature branch can read the default branch cache but not another feature branch's cache. The cache must be saved on the default branch for most runs to hit it.\n- **Lockfile changes.** A run that changes `pnpm-lock.yaml` misses the cache once and pays the full 3 min 40 s.\n- **Missing files.** The snapshot here has no `package.json` or `pnpm-lock.yaml`. `cache: pnpm` needs the lockfile, and `--frozen-lockfile` implies it exists in the real repository.\n\n**Alternative: `actions/cache` with an explicit store path.** It gives control over the key and `restore-keys`, so a lockfile change can still reuse a near-match cache. It costs about 6 more lines in `ci.yml`. It becomes the primary if lockfile changes are frequent and the miss cost matters.\n\n**Question.** Do you want to show the team `cache: pnpm` as the proposal, or the explicit `actions/cache` version?",
+  "ttft_ms": 1633,
+  "type": "result",
+  "duration_ms": 19559,
+  "uuid": "3410ce1d-ec39-4bef-ab9f-ecd673433fb1",
+  "ttft_stream_ms": 1382,
+  "time_to_request_ms": 627,
+  "first_content_frame_ms": 1382,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

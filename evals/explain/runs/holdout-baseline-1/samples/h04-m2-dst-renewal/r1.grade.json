@@ -1,0 +1,184 @@
+{
+  "key": "ad1ae3c7e5f0fdca8a90d6b173773530190b96ad22277b1a2fb7b416f899b8ce",
+  "cost_usd": 0.046268,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends both guards.\" Scheduler guard leads, charge guard is compatible extra; both match the correct recommendations.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`psp.charge` sends them to Payrail with no idempotency key\"; 00:30Z/01:30Z, 212 and 41 emails; \"kept no list (KB-519)\". All match the key.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Refund question unanswered: \"I will raise how to find the remaining customers next.\" No safe-refund approach is given.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"Two guards\" only, with no refund step. Reader cost omits the refund run needing the manual-refund list.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve both guards, the scheduler dedupe and the `renewal_charges` check?\" One decision; reader gave a real answer.",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "Idempotency-key alternative states a trade-off but no condition that makes it the primary. It also says \"I did not verify that Payrail supports one\".",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 13800,
+    "stop_reason": "tool_use",
+    "session_id": "f323464a-78d0-46e7-9640-b1fd1bf1f3e9",
+    "total_cost_usd": 0.046268,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 7022,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1799,
+      "output_tokens_details": {
+        "thinking_tokens": 1289
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 7022,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1799,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 7022,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 7022
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1799,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 7022,
+        "webSearchRequests": 0,
+        "costUSD": 0.046268,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1289,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 7022,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends both guards.\\\" Scheduler guard leads, charge guard is compatible extra; both match the correct recommendations.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`psp.charge` sends them to Payrail with no idempotency key\\\"; 00:30Z/01:30Z, 212 and 41 emails; \\\"kept no list (KB-519)\\\". All match the key.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Refund question unanswered: \\\"I will raise how to find the remaining customers next.\\\" No safe-refund approach is given.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"Two guards\\\" only, with no refund step. Reader cost omits the refund run needing the manual-refund list.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve both guards, the scheduler dedupe and the `renewal_charges` check?\\\" One decision; reader gave a real answer.\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"Idempotency-key alternative states a trade-off but no condition that makes it the primary. It also says \\\"I did not verify that Payrail supports one\\\".\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends both guards.\" Scheduler guard leads, charge guard is compatible extra; both match the correct recommendations.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`psp.charge` sends them to Payrail with no idempotency key\"; 00:30Z/01:30Z, 212 and 41 emails; \"kept no list (KB-519)\". All match the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Refund question unanswered: \"I will raise how to find the remaining customers next.\" No safe-refund approach is given.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"Two guards\" only, with no refund step. Reader cost omits the refund run needing the manual-refund list.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve both guards, the scheduler dedupe and the `renewal_charges` check?\" One decision; reader gave a real answer.",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "Idempotency-key alternative states a trade-off but no condition that makes it the primary. It also says \"I did not verify that Payrail supports one\".",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 11390,
+    "type": "result",
+    "duration_ms": 14325,
+    "uuid": "382b4aaa-8eee-4d94-8f2f-0d56587a2d3d",
+    "ttft_stream_ms": 1355,
+    "time_to_request_ms": 525,
+    "first_content_frame_ms": 1355,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

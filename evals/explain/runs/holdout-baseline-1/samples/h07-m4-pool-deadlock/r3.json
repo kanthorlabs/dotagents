@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 19525,
+  "stop_reason": "end_turn",
+  "session_id": "6fc5e84a-e82e-40ea-9ad5-df407cc6d6eb",
+  "total_cost_usd": 0.038692599999999994,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2626,
+    "cache_read_input_tokens": 23766,
+    "output_tokens": 2580,
+    "output_tokens_details": {
+      "thinking_tokens": 565
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2626,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1921,
+        "cache_read_input_tokens": 8134,
+        "cache_creation_input_tokens": 2129,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2129
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2580,
+      "cacheReadInputTokens": 23766,
+      "cacheCreationInputTokens": 2626,
+      "webSearchRequests": 0,
+      "costUSD": 0.038692599999999994,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 565,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2626,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`checkout` in `app/checkout.py` holds one pool connection and then calls `hold_seats`, which asks the same pool for a second one. Under load, every connection is held by a request that is waiting for another, so nothing can proceed until the 30-second timeout. Aelita recommends passing the open connection into `hold_seats`.\n\n**Existing behaviour**\n\n1. `post_checkout` in `app/api.py` is a sync handler, so requests run concurrently in worker threads.\n2. `checkout` takes connection A from `pool` at `app/checkout.py:6` and opens a transaction.\n3. `checkout` inserts the order, then calls `hold_seats` while still holding A.\n4. `hold_seats` takes connection B from the same `pool` at `app/seats.py:5`.\n5. The pool has `max_size=10` and `timeout=30` in `app/db.py`. There are 4 replicas, so at most 40 connections. That matches `active_connections=38` of 200 in the log.\n\n**Timeline without the fix**\n\n1. At 19:00:00 the Halden Arena on-sale starts. Requests per replica jump past 10.\n2. By 19:00:01 on `checkout-api-2`, `in_flight=14`, `pool_in_use=10` and `pool_waiting=14`.\n3. Ten requests each hold connection A inside `checkout`. Each one waits in `hold_seats` for connection B.\n4. The other 4 requests wait at `app/checkout.py:6` for their first connection.\n5. No connection is ever freed, because the 10 holders need a second connection before they can commit. The checkout freezes.\n6. At 19:00:31 the 10 `hold_seats` calls and the 4 `checkout` calls raise `PoolTimeout`. All 14 requests return 500.\n7. The released connections go to the 12 queued requests. They deadlock the same way and fail at 19:01:02.\n8. At normal traffic, `in_flight=3`, so fewer than 10 requests overlap and B is always free. The database never nears its limit, because the pool caps each replica at 10 connections.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. `checkout` passes `conn` to `hold_seats`. The seat update runs on connection A, inside the same transaction.\n4. Each request uses exactly one connection. Requests beyond 10 queue briefly at `app/checkout.py:6`.\n5. Each request commits and releases its connection within milliseconds. The next waiting request takes it.\n6. The pool drains in a steady stream. No request waits 30 seconds, and none fail.\n\n**What changes**\n\n- `app/seats.py` old behaviour: `hold_seats(event_id, seat_ids)` opens `pool.connection()`. New behaviour: `hold_seats(conn, event_id, seat_ids)` runs the `UPDATE` on the given `conn`. Delete the `from app.db import pool` import.\n- `app/checkout.py` old behaviour: `hold_seats(order.event_id, order.seat_ids)`. New behaviour: `hold_seats(conn, order.event_id, order.seat_ids)`.\n\n**Recommendation.** Aelita recommends passing `conn`, because it removes the cause: one request needing two connections. It costs nothing at runtime.\n\nIt also fixes a second bug. Today the seat hold commits on its own connection. If the order transaction rolls back, the seats stay held for 10 minutes. After the fix, both roll back together. The risk is that the seat `UPDATE` now runs inside the order transaction. Row locks on `seats` last slightly longer, but the transaction is short.\n\n**Alternative: raise `max_size`.** This is a one-line change to `app/db.py`. It only moves the threshold. The deadlock returns once concurrent requests per replica exceed the new size. Four replicas at size 50 would also use 200 connections, which is the whole `max_connections`. It becomes the primary only if the code cannot change before the next on-sale.\n\n**Question.** Should `hold_seats` take the open `conn` and run inside the order transaction?",
+  "ttft_ms": 1537,
+  "type": "result",
+  "duration_ms": 20042,
+  "uuid": "379dc7e6-2ab8-4fe1-b065-382afb54dc26",
+  "ttft_stream_ms": 1406,
+  "time_to_request_ms": 484,
+  "first_content_frame_ms": 1406,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

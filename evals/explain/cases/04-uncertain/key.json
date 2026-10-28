@@ -1,0 +1,103 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Settle the hide_archived value for northwind first, from the flagd value or audit log or the report-builder flag cache, before a fix.",
+    "Restore the wrongly archived invoices: set status back to paid for invoices younger than 90 days that migration 0042 archived, and add the 90-day filter, then rebuild the northwind report."
+  ],
+  "invalid_options": [
+    "Change report-builder to ignore hide_archived.",
+    "Treat the flag value as known without evidence.",
+    "Blame flagd being unreachable as the root cause."
+  ],
+  "root_cause": "Migration 0042 archived every paid invoice because it lacks the 90-day date filter that its README states. If hide_archived is on for northwind, report-builder excludes all 188 archived October invoices and the report is empty.",
+  "dependent_facts": [
+    {
+      "fact": "Migration 0042",
+      "true_value": "UPDATE invoices SET status = 'archived' WHERE status = 'paid', applied 25 October 22:10 UTC, no date filter",
+      "source": "migrations/0042_archive_paid_invoices.sql",
+      "verifiable": true
+    },
+    {
+      "fact": "Intent of 0042",
+      "true_value": "archive paid invoices older than 90 days",
+      "source": "migrations/README.md",
+      "verifiable": true
+    },
+    {
+      "fact": "northwind October invoices",
+      "true_value": "188 issued, 188 archived, 0 paid",
+      "source": "logs/invoice-counts-2026-10-26.txt",
+      "verifiable": true
+    },
+    {
+      "fact": "Filter in report-builder",
+      "true_value": "excludes archived invoices only when hide_archived is on for the tenant",
+      "source": "jobs/report_builder.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Flags on 26 October",
+      "true_value": "flagd unreachable, cached flags 3 days old",
+      "source": "logs/report-builder-2026-10-26.log",
+      "verifiable": true
+    },
+    {
+      "fact": "hide_archived for northwind",
+      "true_value": "unknown; no file holds it",
+      "source": "none",
+      "verifiable": false
+    },
+    {
+      "fact": "acme and globex",
+      "true_value": "also have archived October invoices but full reports, so hide_archived is likely off for them",
+      "source": "logs/invoice-counts-2026-10-26.txt",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why is the report empty?",
+      "expected_answer": "All northwind October invoices are archived by 0042, and the report excludes archived invoices when hide_archived is on."
+    },
+    {
+      "question": "Why only northwind?",
+      "expected_answer": "acme and globex keep full reports with archived invoices, which points to hide_archived being on only for northwind; unverified."
+    },
+    {
+      "question": "What is unknown and what settles it?",
+      "expected_answer": "The hide_archived value for northwind; the flagd value or audit log, or the report-builder flag cache."
+    },
+    {
+      "question": "Is migration 0042 wrong?",
+      "expected_answer": "Yes. It lacks the 90-day filter."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Restore the invoices archived by 0042 now",
+      "trade_off": "Fixes the data regardless of the flag value, but changes production data before the diagnosis is complete.",
+      "primary_when": "The team wants the data fixed before the flag evidence arrives.",
+      "must_list": false
+    },
+    {
+      "option": "Get the flag evidence first",
+      "trade_off": "Completes the diagnosis before any change, but leaves the wrong data in place longer.",
+      "primary_when": "The team wants the diagnosis settled before it touches data.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One item: obtain the hide_archived evidence for northwind, or decide whether to restore the invoices that 0042 archived.",
+  "understanding": {
+    "problem": "The northwind October report is empty because all its October invoices became archived and the report likely hides archived invoices.",
+    "breaks": "Migration 0042 archived all paid invoices without the 90-day filter; the northwind report is empty.",
+    "fix": "No fix is chosen yet. The fix waits for the hide_archived value for northwind. The migration 0042 data needs a correction in any case.",
+    "cost": "n/a"
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "key": "ceba72f10c18dd21b9c3318c1d11d88631c2555c7aa29c539e53ac6b41d6e73c",
+  "cost_usd": 0.035592,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends passing the open `conn` into `hold_seats`.\" Matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"pool_in_use=10\", \"10 `PoolTimeout` errors in `hold_seats` and 4 in `checkout`\", \"38 of 200\", \"in_flight=3\": all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The message never addresses \"Why not a bigger pool?\" It does not say the deadlock returns once concurrent checkouts reach the new size."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"each request needs exactly one connection\"; problem, breaks and fix match the key. The two edits cover the signature change."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve passing `conn` into `hold_seats`, with the seat hold moving inside the order transaction?\" This is one question and one decision. The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"A semaphore of 5 per replica... beats the recommendation only if `hold_seats` must stay on a separate connection. It wastes half the pool\" matches the valid alternative."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8164,
+    "stop_reason": "tool_use",
+    "session_id": "49bdde20-774b-44a6-8764-82dbaf1e11e5",
+    "total_cost_usd": 0.035592,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6023,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1131,
+      "output_tokens_details": {
+        "thinking_tokens": 637
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6023,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1131,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6023,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6023
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1131,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6023,
+        "webSearchRequests": 0,
+        "costUSD": 0.035592,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 637,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6023,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends passing the open `conn` into `hold_seats`.\\\" Matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"pool_in_use=10\\\", \\\"10 `PoolTimeout` errors in `hold_seats` and 4 in `checkout`\\\", \\\"38 of 200\\\", \\\"in_flight=3\\\": all match the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The message never addresses \\\"Why not a bigger pool?\\\" It does not say the deadlock returns once concurrent checkouts reach the new size.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"each request needs exactly one connection\\\"; problem, breaks and fix match the key. The two edits cover the signature change.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve passing `conn` into `hold_seats`, with the seat hold moving inside the order transaction?\\\" This is one question and one decision. The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"A semaphore of 5 per replica... beats the recommendation only if `hold_seats` must stay on a separate connection. It wastes half the pool\\\" matches the valid alternative.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends passing the open `conn` into `hold_seats`.\" Matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"pool_in_use=10\", \"10 `PoolTimeout` errors in `hold_seats` and 4 in `checkout`\", \"38 of 200\", \"in_flight=3\": all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The message never addresses \"Why not a bigger pool?\" It does not say the deadlock returns once concurrent checkouts reach the new size."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"each request needs exactly one connection\"; problem, breaks and fix match the key. The two edits cover the signature change."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve passing `conn` into `hold_seats`, with the seat hold moving inside the order transaction?\" This is one question and one decision. The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"A semaphore of 5 per replica... beats the recommendation only if `hold_seats` must stay on a separate connection. It wastes half the pool\" matches the valid alternative."
+        }
+      ]
+    },
+    "ttft_ms": 5960,
+    "type": "result",
+    "duration_ms": 8518,
+    "uuid": "a4db8448-285b-4987-b0da-c68ef7f470e5",
+    "ttft_stream_ms": 1197,
+    "time_to_request_ms": 353,
+    "first_content_frame_ms": 1197,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

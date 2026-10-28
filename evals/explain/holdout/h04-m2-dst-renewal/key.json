@@ -1,0 +1,103 @@
+{
+  "measures": ["M1", "M2", "M3", "M4", "M5", "M7"],
+  "correct_recommendations": [
+    "Fix the scheduler so that a schedule fires once per local wall-clock slot, for example dedupe on the local date and time instead of a 60-second gap, and refund the duplicate charges after support's manual refunds are identified.",
+    "Make charge_renewals idempotent per subscription and renewal period, for example skip a subscription that already has a renewal_charges row for that date or send a Payrail idempotency key built from subscription id and renews_on, together with the scheduler fix for send_dunning, and refund the duplicates after the manual refunds are identified."
+  ],
+  "invalid_options": [
+    "Change nothing, or only refund the 212 customers.",
+    "Move only charge_renewals to 03:30 and leave the scheduler unchanged, because send_dunning still fires twice.",
+    "Refund all 212 duplicate charges at once without checking which ones support already refunded by hand.",
+    "Treat the duplicate as a Payrail fault."
+  ],
+  "root_cause": "On 25 October, when summer time ended in Europe/Berlin, the local time 02:30 occurred twice, at 00:30 UTC and 01:30 UTC. due_jobs blocks a second firing only within 60 seconds, so charge_renewals fired twice. renews_on advances only in settle_renewals at 05:00, and psp.charge sends no idempotency key, so the second run charged the same 212 subscriptions again. send_dunning fired twice as well.",
+  "dependent_facts": [
+    {
+      "fact": "Schedule of charge_renewals",
+      "true_value": "cron 30 2 * * * in Europe/Berlin",
+      "source": "schedules/charge_renewals.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Double firing",
+      "true_value": "charge_renewals fired at 00:30Z and 01:30Z, both local 02:30, each charging 212",
+      "source": "logs/scheduler-2026-10-25.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Scheduler dedupe",
+      "true_value": "due_jobs skips a job only when the last firing is less than 60 seconds ago",
+      "source": "scheduler/clock.py",
+      "verifiable": true
+    },
+    {
+      "fact": "When renews_on advances",
+      "true_value": "only in settle_renewals, scheduled 05:00 local, so the second run at 01:30Z selected the same subscriptions",
+      "source": "billing/settle.py and schedules/settle_renewals.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Payrail charge",
+      "true_value": "psp.charge sends no idempotency key",
+      "source": "billing/psp.py",
+      "verifiable": true
+    },
+    {
+      "fact": "send_dunning",
+      "true_value": "also fired twice, 41 emails each time",
+      "source": "logs/scheduler-2026-10-25.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Manual refunds",
+      "true_value": "unknown which of the 212 customers support already refunded by hand; no list exists",
+      "source": "none; tickets/KB-519.md states that nobody kept a list",
+      "verifiable": false
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why did it fire twice?",
+      "expected_answer": "02:30 local occurred twice when summer time ended, and the scheduler only blocks a second firing within 60 seconds."
+    },
+    {
+      "question": "Why did the second run charge again?",
+      "expected_answer": "renews_on advances only at 05:00 in settle_renewals, and the Payrail charge has no idempotency key."
+    },
+    {
+      "question": "Is anything else affected?",
+      "expected_answer": "send_dunning fired twice and sent 41 reminders twice."
+    },
+    {
+      "question": "How do we refund safely?",
+      "expected_answer": "Find which customers support already refunded, which no file lists, for example from Payrail refund records, then refund the rest."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Idempotent charge_renewals per subscription and period",
+      "trade_off": "Protects against any double run, not only the clock change, but does not stop the second send_dunning.",
+      "primary_when": "The team wants a guard at the charge itself, or other double runs are possible.",
+      "must_list": false
+    },
+    {
+      "option": "Scheduler fix that fires once per local slot",
+      "trade_off": "Fixes every job at the source, but a later double run from another cause still double charges.",
+      "primary_when": "The team wants one fix for all schedules.",
+      "must_list": false
+    },
+    {
+      "option": "Run the schedules in UTC",
+      "trade_off": "No repeated or skipped local hour, but the local run time shifts by one hour twice a year.",
+      "primary_when": "The team accepts the seasonal shift of local run times.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve the scheduler fix, with or without the idempotent charge guard, or a single follow-up such as how to find the manual refunds before the refund run.",
+  "understanding": {
+    "problem": "At the end of summer time the 02:30 local slot occurred twice and the scheduler fired charge_renewals twice.",
+    "breaks": "212 subscribers were charged twice and dunning reminders went out twice.",
+    "fix": "Fire each local slot once in the scheduler, optionally make the charge idempotent, and refund the duplicates that support did not refund.",
+    "cost": "A small scheduler change, an optional guard in charge_renewals, and a refund run that needs the list of manual refunds."
+  }
+}

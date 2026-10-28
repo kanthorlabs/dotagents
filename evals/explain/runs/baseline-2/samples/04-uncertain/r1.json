@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 19949,
+  "stop_reason": "end_turn",
+  "session_id": "77683820-24f9-431b-98ab-3bd585c4021e",
+  "total_cost_usd": 0.0363348,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2217,
+    "cache_read_input_tokens": 23348,
+    "output_tokens": 2512,
+    "output_tokens_details": {
+      "thinking_tokens": 767
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2217,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1917,
+        "cache_read_input_tokens": 8119,
+        "cache_creation_input_tokens": 1366,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1366
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2512,
+      "cacheReadInputTokens": 23348,
+      "cacheCreationInputTokens": 2217,
+      "webSearchRequests": 0,
+      "costUSD": 0.0363348,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 767,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2217,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 7,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`report-builder` returned an empty October report for `northwind` because migration 0042 archived every paid invoice, and `northwind` had `hide_archived` on in the cached flags. Aelita recommends fixing the migration's missing 90-day filter and restoring the wrongly archived rows.\n\n**Timeline without the fix**\n\n1. Migration 0042 runs on 25 October at 22:10 UTC. The README says it archives paid invoices older than 90 days. `migrations/0042_archive_paid_invoices.sql:2-4` has no age condition, so it archives every paid invoice.\n2. All 188 October invoices of `northwind` were paid, and all 188 are now `archived`. `invoice-counts-2026-10-26.txt` shows 0 paid and 188 archived.\n3. `report-builder` starts on 26 October at 02:00 UTC. `flagd` is unreachable, so `ledgerly.flags` serves cached flags that are 3 days old (log line 2).\n4. `build_monthly_report` calls `flags.is_on(\"hide_archived\", tenant=\"northwind\")`. The result must be on, though I cannot see the cache. `jobs/report_builder.py:10-11` then adds `AND status <> 'archived'`.\n5. The query for `northwind` matches 0 of its 188 October invoices. The log records `invoices=0 report=ok`, so the job reports success.\n\n**Evidence for step 4.** `acme` has 301 archived invoices out of 412 and `globex` has 64 out of 97. Their reports still show 412 and 97 invoices, so `hide_archived` was off for them. Only `northwind` shows a count that matches the filter being on.\n\n**Unverified.** The cache content and the live `flagd` value for `northwind` are not in the repository. The cache file or the `flagd` audit log would settle them. Neither changes the fix, because the migration is the root cause.\n\n**Timeline with the fix**, diverges at step 1.\n\n1. Migration 0042 adds `AND issued_at < now() - interval '90 days'`. October invoices stay `paid`.\n2. `northwind` keeps 188 paid invoices.\n3. The cached flags are still stale.\n4. `hide_archived` is on, but the filter only excludes `archived` rows.\n5. The query returns 188 invoices. The October report is complete.\n\n**What changes**\n\n- `migrations/0042_archive_paid_invoices.sql`: add the 90-day condition on `issued_at`.\n- New repair migration: set `status = 'paid'` for rows that 0042 archived with `issued_at` newer than 90 days before 25 October.\n- `jobs/report_builder.py`: no change. The filter works as written.\n\n**Recommendation.** Aelita recommends the migration fix plus the repair. It removes the root cause, which is the overbroad `UPDATE`. The cost is a repair query that cannot tell 0042 archives from earlier archives. Any invoice archived on purpose before 25 October and issued in the last 90 days would be wrongly restored.\n\n**Alternative: stop `hide_archived` from hiding invoices in reports.** Remove the flag from `build_monthly_report`. It is the fastest fix and needs no data repair. It becomes the primary if the product rules out hiding archived invoices from monthly reports. It leaves 0042's bad data in place.\n\n**Question.** Should Aelita draft the 0042 fix and the repair migration, or remove the `hide_archived` filter from the report?",
+  "ttft_ms": 1785,
+  "type": "result",
+  "duration_ms": 20587,
+  "uuid": "ef7b2c4b-645d-4fcd-a31c-b912c17f251a",
+  "ttft_stream_ms": 1366,
+  "time_to_request_ms": 618,
+  "first_content_frame_ms": 1366,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

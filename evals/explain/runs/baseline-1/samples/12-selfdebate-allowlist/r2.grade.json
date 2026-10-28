@@ -1,0 +1,172 @@
+{
+  "key": "5869fcef9d91d82845b2b0318d8b2713fd7ea2778d9c8ca508d165d28932fed1",
+  "cost_usd": 0.038926,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the allowlist.\" Allowlist of PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_* matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`plugin_env` starts from `dict(os.environ)`\"; feed-fetch prints env, BILLING_WEBHOOK_SECRET leaks; HTTPS_PROXY, HOME, TINKERBOX_CSV_DELIMITER consumers all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message answers all four: full env copy, \"a new secret leaks until someone remembers to denylist it\", variable list with consumers, future plugin breaks. Reader's follow-up (outside plugins) is beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Change plugin_env to copy only PATH, HOME, LANG, HTTPS_PROXY and names starting with TINKERBOX_\"; cost: future plugin breaks until allowlisted. Matches key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve the allowlist in `plugin_env`, or do you want the denylist edit...?\" Reader gave a real answer: approve allowlist."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: your denylist edit plus `BILLING_WEBHOOK_SECRET`.\" This is a denylist extension, in invalid_options, not the valid per-plugin declared environment."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9473,
+    "stop_reason": "tool_use",
+    "session_id": "fb8eaf4c-2e71-4781-b16f-da02b2970d99",
+    "total_cost_usd": 0.038926,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6379,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1322,
+      "output_tokens_details": {
+        "thinking_tokens": 707
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6379,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1322,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6379,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6379
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1322,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6379,
+        "webSearchRequests": 0,
+        "costUSD": 0.038926,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 707,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6379,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the allowlist.\\\" Allowlist of PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_* matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`plugin_env` starts from `dict(os.environ)`\\\"; feed-fetch prints env, BILLING_WEBHOOK_SECRET leaks; HTTPS_PROXY, HOME, TINKERBOX_CSV_DELIMITER consumers all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message answers all four: full env copy, \\\"a new secret leaks until someone remembers to denylist it\\\", variable list with consumers, future plugin breaks. Reader's follow-up (outside plugins) is beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Change plugin_env to copy only PATH, HOME, LANG, HTTPS_PROXY and names starting with TINKERBOX_\\\"; cost: future plugin breaks until allowlisted. Matches key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve the allowlist in `plugin_env`, or do you want the denylist edit...?\\\" Reader gave a real answer: approve allowlist.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: your denylist edit plus `BILLING_WEBHOOK_SECRET`.\\\" This is a denylist extension, in invalid_options, not the valid per-plugin declared environment.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the allowlist.\" Allowlist of PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_* matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`plugin_env` starts from `dict(os.environ)`\"; feed-fetch prints env, BILLING_WEBHOOK_SECRET leaks; HTTPS_PROXY, HOME, TINKERBOX_CSV_DELIMITER consumers all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message answers all four: full env copy, \"a new secret leaks until someone remembers to denylist it\", variable list with consumers, future plugin breaks. Reader's follow-up (outside plugins) is beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Change plugin_env to copy only PATH, HOME, LANG, HTTPS_PROXY and names starting with TINKERBOX_\"; cost: future plugin breaks until allowlisted. Matches key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve the allowlist in `plugin_env`, or do you want the denylist edit...?\" Reader gave a real answer: approve allowlist."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: your denylist edit plus `BILLING_WEBHOOK_SECRET`.\" This is a denylist extension, in invalid_options, not the valid per-plugin declared environment."
+        }
+      ]
+    },
+    "ttft_ms": 6293,
+    "type": "result",
+    "duration_ms": 9821,
+    "uuid": "aa7d0d55-4e55-4719-9287-42a8f2508845",
+    "ttft_stream_ms": 1318,
+    "time_to_request_ms": 350,
+    "first_content_frame_ms": 1318,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

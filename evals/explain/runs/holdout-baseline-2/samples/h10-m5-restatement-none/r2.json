@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 9041,
+  "stop_reason": "end_turn",
+  "session_id": "4047470d-ef84-40c7-911a-d6ea2896f07d",
+  "total_cost_usd": 0.020999999999999998,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1684,
+    "cache_read_input_tokens": 25520,
+    "output_tokens": 1170,
+    "output_tokens_details": {
+      "thinking_tokens": 54
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1684,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 658,
+        "cache_read_input_tokens": 9003,
+        "cache_creation_input_tokens": 761,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 761
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1170,
+      "cacheReadInputTokens": 25520,
+      "cacheCreationInputTokens": 1684,
+      "webSearchRequests": 0,
+      "costUSD": 0.020999999999999998,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 54,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1684,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "- **Cache key today: correct.** `cache_key` in `edge/cache.py:5` returns `request.path` plus `request.query_string`. Nothing else goes into it.\n- **Cause of the broken images: correct.** Safari 13 cannot decode WebP. The cache serves it the WebP bytes that Chrome requested first.\n- **The fix: not correct.** The key gets the negotiated format (`avif`, `webp` or `orig`), not the whole `Accept` header. The case is not \"append `Accept`\".\n\n**Why the whole header is wrong.** The logs show 1,912 distinct `Accept` values in October. Keying on the raw header would split the cache into 1,912 variants per image. The hit rate would collapse. The negotiated format has only 3 values.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `img-edge` runs `negotiate` on the `Accept` header of Jonas Ek. It gets `webp` and caches under `/img/tr-1180.jpg?w=800` plus `webp`.\n3. Hanna Lind opens the same page in Safari 13 at 08:05.\n4. `img-edge` negotiates `orig` for Hanna. It finds no entry under the `orig` key, so it renders and caches the original.\n5. Safari 13 decodes the original. Hanna sees the image.\n\n**What changes**\n\n- `edge/cache.py` old behaviour: `cache_key(request)` returns `path?query_string`. New behaviour: it also adds `negotiate(request.headers.get(\"Accept\", \"\"))`.\n- `edge/handler.py` `serve_image` calls `lookup` before `negotiate`. The lookup now needs the format first, so `negotiate` runs before `lookup`. Petra must change this too, or the key cannot be built correctly.\n\n**Question.** Do you want me to record the corrected wording for Petra: \"key = path, query and negotiated format, with `negotiate` moved before `lookup` in `serve_image`\"?",
+  "ttft_ms": 1429,
+  "type": "result",
+  "duration_ms": 9367,
+  "uuid": "333428e6-2838-4600-b380-a168a15a325e",
+  "ttft_stream_ms": 990,
+  "time_to_request_ms": 308,
+  "first_content_frame_ms": 991,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

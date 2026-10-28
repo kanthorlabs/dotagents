@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 23523,
+  "stop_reason": "end_turn",
+  "session_id": "576cfc83-0cc2-46ba-a781-2293acd23c73",
+  "total_cost_usd": 0.0392862,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 1852,
+    "cache_read_input_tokens": 32122,
+    "output_tokens": 2865,
+    "output_tokens_details": {
+      "thinking_tokens": 1247
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1852,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2445,
+        "cache_read_input_tokens": 8695,
+        "cache_creation_input_tokens": 425,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 425
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 2865,
+      "cacheReadInputTokens": 32122,
+      "cacheCreationInputTokens": 1852,
+      "webSearchRequests": 0,
+      "costUSD": 0.0392862,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1247,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1852,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Caching the pnpm store should cut the median `ci` run in `fernway-web` from 11 min 05 s to about 8 min 00 s, a saving of 28%. Aelita recommends `cache: pnpm` on `actions/setup-node`. It is a one-line change.\n\n**Timeline without the fix**\n\n1. A developer pushes a branch. Workflow `ci` starts, because `on.push.branches` is `[\"**\"]`.\n2. `actions/setup-node@v4` installs Node 22 and restores nothing.\n3. Step `Install` runs `pnpm install --frozen-lockfile` and downloads the full 1.1 GB store. The median is 3 min 40 s.\n4. Steps `Lint` and `Test` run.\n5. The run ends after 11 min 05 s. All 412 runs of week 43 repeated the same download, and developers waited each time before merging.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `actions/setup-node@v4` installs Node 22 and restores the pnpm store. The key comes from the hash of the lockfile.\n3. Step `Install` finds a warm store. The median is 0 min 35 s, which is 3 min 05 s less.\n4. Steps `Lint` and `Test` run unchanged.\n5. The run ends after about 8 min 00 s.\n\n**What it buys, from `docs/ci-metrics.md`**\n\n- **Developer wait:** 3 min 05 s less on every push, 28% of the median run.\n- **Runner time:** 412 runs \u00d7 3.08 min is about 1,270 minutes, or 21 hours per week.\n- **Money:** 1,270 min \u00d7 0.008 USD is about 10 USD per week. The money is small. The wait time is the real gain.\n\n**What changes**\n\n- `.github/workflows/ci.yml`, step `actions/setup-node@v4`. Old: `with: node-version: 22`. New: add `cache: pnpm` under `with`. `pnpm/action-setup@v4` already runs before it, which this option requires.\n\n**Recommendation.** Aelita recommends `cache: pnpm` because it is one line and the action manages the key and the store path. It has these costs and risks:\n\n- **Cache misses:** The first run after each lockfile change is a miss. That run still takes 3 min 40 s and adds a save step.\n- **Eviction:** The store is 1.1 GB and the repository limit is 10 GB. About 9 full entries fit before eviction. Many branches with changed lockfiles can evict the entry of `main`. The cache is compressed, so the real entry is likely smaller. That size is unverified.\n- **Measurement:** The 0 min 35 s figure comes from 20 manual runs with a warm store. It excludes restore time, so the real saving is slightly lower.\n- **Lockfile:** This directory holds only `ci.yml` and `docs/ci-metrics.md`. I could not check the lockfile. `setup-node` fails if it finds no `pnpm-lock.yaml`. `--frozen-lockfile` suggests the file exists in the real repository.\n\n**Alternative: `actions/cache` with an explicit key.** It uses the store path from `pnpm store path` and a key from `hashFiles('pnpm-lock.yaml')`. It beats the recommendation when you need `restore-keys` fallbacks or a custom lockfile path. It costs about ten more lines to maintain. It becomes the primary if eviction of the `main` entry shows up in practice.\n\n**Question.** Do you approve `cache: pnpm` on `setup-node`, or do you want the explicit `actions/cache` version?",
+  "ttft_ms": 1241,
+  "type": "result",
+  "duration_ms": 23827,
+  "uuid": "2cb83cc7-977e-4321-bd1b-4df71cc77f3e",
+  "ttft_stream_ms": 990,
+  "time_to_request_ms": 273,
+  "first_content_frame_ms": 990,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

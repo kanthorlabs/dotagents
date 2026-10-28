@@ -1,0 +1,172 @@
+{
+  "key": "a5d5f406a32748db57621a6e3bb998cc88406f093ad886a0165134283bf3dcea",
+  "cost_usd": 0.041972,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends ack-after-completion plus the longer grace period.\" This matches the first correct recommendation: late ack plus a longer grace period (90s)."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`terminationGracePeriodSeconds: 20`\", \"25 to 70s video renders\", \"`meter.internal` belongs to Billing... I could not verify that.\" These match the key, and the dedup fact is correctly named as unverified."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"RabbitMQ holds no copy of these jobs\"; \"No exception and no log line\"; \"`record_usage` could bill twice\". All three required questions are answered. The reader's follow-ups don't block the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Set auto_ack=False... Raise terminationGracePeriodSeconds to 90\"; \"record_usage could bill twice\". Problem, breaks, fix and cost all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve ack-after-completion with the 90s grace period, or the grace-period-only change?\" It is one question with one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: raise only the grace period... still loses jobs on an OOM kill, a node loss... It becomes the primary if Billing cannot confirm that `ref` dedupes.\" This gives a valid alternative with its trade-off and primary condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10152,
+    "stop_reason": "tool_use",
+    "session_id": "002c0777-3f95-4b56-b5d7-b9aba87ae8fa",
+    "total_cost_usd": 0.041972,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6778,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1467,
+      "output_tokens_details": {
+        "thinking_tokens": 868
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6778,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1467,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6778,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6778
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1467,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6778,
+        "webSearchRequests": 0,
+        "costUSD": 0.041972,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 868,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6778,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends ack-after-completion plus the longer grace period.\\\" This matches the first correct recommendation: late ack plus a longer grace period (90s).\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`terminationGracePeriodSeconds: 20`\\\", \\\"25 to 70s video renders\\\", \\\"`meter.internal` belongs to Billing... I could not verify that.\\\" These match the key, and the dedup fact is correctly named as unverified.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"RabbitMQ holds no copy of these jobs\\\"; \\\"No exception and no log line\\\"; \\\"`record_usage` could bill twice\\\". All three required questions are answered. The reader's follow-ups don't block the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Set auto_ack=False... Raise terminationGracePeriodSeconds to 90\\\"; \\\"record_usage could bill twice\\\". Problem, breaks, fix and cost all agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve ack-after-completion with the 90s grace period, or the grace-period-only change?\\\" It is one question with one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: raise only the grace period... still loses jobs on an OOM kill, a node loss... It becomes the primary if Billing cannot confirm that `ref` dedupes.\\\" This gives a valid alternative with its trade-off and primary condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends ack-after-completion plus the longer grace period.\" This matches the first correct recommendation: late ack plus a longer grace period (90s)."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`terminationGracePeriodSeconds: 20`\", \"25 to 70s video renders\", \"`meter.internal` belongs to Billing... I could not verify that.\" These match the key, and the dedup fact is correctly named as unverified."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"RabbitMQ holds no copy of these jobs\"; \"No exception and no log line\"; \"`record_usage` could bill twice\". All three required questions are answered. The reader's follow-ups don't block the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Set auto_ack=False... Raise terminationGracePeriodSeconds to 90\"; \"record_usage could bill twice\". Problem, breaks, fix and cost all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve ack-after-completion with the 90s grace period, or the grace-period-only change?\" It is one question with one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: raise only the grace period... still loses jobs on an OOM kill, a node loss... It becomes the primary if Billing cannot confirm that `ref` dedupes.\" This gives a valid alternative with its trade-off and primary condition."
+        }
+      ]
+    },
+    "ttft_ms": 7412,
+    "type": "result",
+    "duration_ms": 10511,
+    "uuid": "76c7e40b-bb0c-4192-9b49-dc7f3f49bd29",
+    "ttft_stream_ms": 1686,
+    "time_to_request_ms": 359,
+    "first_content_frame_ms": 1686,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

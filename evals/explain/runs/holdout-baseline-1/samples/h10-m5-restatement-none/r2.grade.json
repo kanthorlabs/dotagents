@@ -1,0 +1,148 @@
+{
+  "key": "874f2aadd91b36be206ef59c582067a710055399790d8f0b4a0b27f3c5db4c91",
+  "cost_usd": 0.022244,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"counts 1,912 distinct `Accept` values in October\"; \"Safari 13 decodes neither WebP nor AVIF\" \u2014 all match the key; nothing deferred or marked unverified.",
+      "pass_note": "matches"
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Answers all four: key today is path+query; not whole Accept header (1,912 values); Safari 13 can't decode WebP. Nothing open is implied; reader lists no follow-ups.",
+      "pass_note": "ok"
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader fix: \"Add the negotiated format (avif, webp or orig)... to the cache key\"; problem and breaks match the key. Cost is n/a and skipped.",
+      "pass_note": "ok"
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 2952,
+    "stop_reason": "tool_use",
+    "session_id": "724aeb1b-a170-4dfd-b367-52e273defdc9",
+    "total_cost_usd": 0.022244,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4691,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 329,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4691,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 329,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4691,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4691
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 329,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4691,
+        "webSearchRequests": 0,
+        "costUSD": 0.022244,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4691,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"counts 1,912 distinct `Accept` values in October\\\"; \\\"Safari 13 decodes neither WebP nor AVIF\\\" \u2014 all match the key; nothing deferred or marked unverified.\",\"pass_note\":\"matches\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Answers all four: key today is path+query; not whole Accept header (1,912 values); Safari 13 can't decode WebP. Nothing open is implied; reader lists no follow-ups.\",\"pass_note\":\"ok\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader fix: \\\"Add the negotiated format (avif, webp or orig)... to the cache key\\\"; problem and breaks match the key. Cost is n/a and skipped.\",\"pass_note\":\"ok\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"counts 1,912 distinct `Accept` values in October\"; \"Safari 13 decodes neither WebP nor AVIF\" \u2014 all match the key; nothing deferred or marked unverified.",
+          "pass_note": "matches"
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Answers all four: key today is path+query; not whole Accept header (1,912 values); Safari 13 can't decode WebP. Nothing open is implied; reader lists no follow-ups.",
+          "pass_note": "ok"
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader fix: \"Add the negotiated format (avif, webp or orig)... to the cache key\"; problem and breaks match the key. Cost is n/a and skipped.",
+          "pass_note": "ok"
+        }
+      ]
+    },
+    "ttft_ms": 3509,
+    "type": "result",
+    "duration_ms": 3534,
+    "uuid": "969cbdd6-a1ab-4891-8703-1934b66418f9",
+    "ttft_stream_ms": 1418,
+    "time_to_request_ms": 579,
+    "first_content_frame_ms": 1418,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

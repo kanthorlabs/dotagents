@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "decision": {"type": "string"},
+    "decision_reason": {"type": "string"},
+    "reconstruction": {
+      "type": "object",
+      "properties": {
+        "problem": {"type": "string"},
+        "what_breaks": {"type": "string"},
+        "fix": {"type": "string"},
+        "cost": {"type": "string"}
+      },
+      "required": ["problem", "what_breaks", "fix", "cost"]
+    },
+    "follow_up_questions": {"type": "array", "items": {"type": "string"}},
+    "closing_answer": {"type": "string"}
+  },
+  "required": ["decision", "decision_reason", "reconstruction", "follow_up_questions", "closing_answer"]
+}

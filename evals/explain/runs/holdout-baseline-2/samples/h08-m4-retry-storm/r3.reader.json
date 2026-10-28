@@ -1,0 +1,135 @@
+{
+  "key": "58308122a667e3e31833964c1949d2ae5cebb0db25c87ccb85ea61fdca767a40",
+  "cost_usd": 0.0205753,
+  "reader": {
+    "decision": "Approve the recommended change to all three files: web MAX_ATTEMPTS=1, query-gw retries 1 on 5xx only, and the ranker in-flight cap.",
+    "decision_reason": "The message names retry multiplication across two layers as the root cause and an unbounded queue as what kept the overload going. Fixing only the ranker cap would still allow 9x retry traffic to hit it, and the message gives no sign that web or query-gw belong to other teams.",
+    "reconstruction": {
+      "problem": "On 22 October the index merge slowed ranker for about 4 minutes, but search stayed down for 37 minutes. Retries in query-gw (retries: 2) and web (MAX_ATTEMPTS = 3) turned 400 searches/s into up to 3,600 ranker requests/s, three times the 1,200/s fleet capacity. The ranker queue was unbounded and still scored abandoned requests, so it reached about 180,000 deep, or about 150 s of waiting, far above the 600 ms timeout. Every request timed out and triggered more retries, so the overload sustained itself.",
+      "what_breaks": "Error rate was 97% from about 14:04 until 14:39. Search did not recover after the merge ended at 14:06. It came back at 14:41 only after Tomasz Wierzbicki turned on the maintenance page, which stopped user traffic and let the queue drain.",
+      "fix": "Set web MAX_ATTEMPTS to 1. In query-gw, set retries to 1 and retry_on to [5xx] only, so timeouts are not retried. In ranker/server.py, cap in-flight requests at about 256 and return 503 immediately above the cap. Worst case is then about 800 requests/s, below capacity, and the queue stays short and drains within seconds after the merge ends.",
+      "cost": "Some searches fail fast during a slowdown. If the cap is too low, it sheds load the fleet could have served."
+    },
+    "follow_up_questions": [
+      "Do other teams own web or query-gw, so that the change needs their approval?",
+      "Is a cap of about 256 in-flight requests justified by ranker's worker count and normal latency, or is it only a rough guess?"
+    ],
+    "closing_answer": "Yes, I approve the recommended change to all three files. Do not limit it to the ranker cap."
+  },
+  "raw": {
+    "duration_api_ms": 6553,
+    "stop_reason": "tool_use",
+    "session_id": "761a8419-b7d0-45d9-ad83-22b1e7aa6668",
+    "total_cost_usd": 0.0205753,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2926,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 867,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2926,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 867,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2926,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2926
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 867,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2926,
+        "webSearchRequests": 0,
+        "costUSD": 0.0205753,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2926,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve the recommended change to all three files: web MAX_ATTEMPTS=1, query-gw retries 1 on 5xx only, and the ranker in-flight cap.\",\"decision_reason\":\"The message names retry multiplication across two layers as the root cause and an unbounded queue as what kept the overload going. Fixing only the ranker cap would still allow 9x retry traffic to hit it, and the message gives no sign that web or query-gw belong to other teams.\",\"reconstruction\":{\"problem\":\"On 22 October the index merge slowed ranker for about 4 minutes, but search stayed down for 37 minutes. Retries in query-gw (retries: 2) and web (MAX_ATTEMPTS = 3) turned 400 searches/s into up to 3,600 ranker requests/s, three times the 1,200/s fleet capacity. The ranker queue was unbounded and still scored abandoned requests, so it reached about 180,000 deep, or about 150 s of waiting, far above the 600 ms timeout. Every request timed out and triggered more retries, so the overload sustained itself.\",\"what_breaks\":\"Error rate was 97% from about 14:04 until 14:39. Search did not recover after the merge ended at 14:06. It came back at 14:41 only after Tomasz Wierzbicki turned on the maintenance page, which stopped user traffic and let the queue drain.\",\"fix\":\"Set web MAX_ATTEMPTS to 1. In query-gw, set retries to 1 and retry_on to [5xx] only, so timeouts are not retried. In ranker/server.py, cap in-flight requests at about 256 and return 503 immediately above the cap. Worst case is then about 800 requests/s, below capacity, and the queue stays short and drains within seconds after the merge ends.\",\"cost\":\"Some searches fail fast during a slowdown. If the cap is too low, it sheds load the fleet could have served.\"},\"follow_up_questions\":[\"Do other teams own web or query-gw, so that the change needs their approval?\",\"Is a cap of about 256 in-flight requests justified by ranker's worker count and normal latency, or is it only a rough guess?\"],\"closing_answer\":\"Yes, I approve the recommended change to all three files. Do not limit it to the ranker cap.\"}",
+    "structured_output": {
+      "decision": "Approve the recommended change to all three files: web MAX_ATTEMPTS=1, query-gw retries 1 on 5xx only, and the ranker in-flight cap.",
+      "decision_reason": "The message names retry multiplication across two layers as the root cause and an unbounded queue as what kept the overload going. Fixing only the ranker cap would still allow 9x retry traffic to hit it, and the message gives no sign that web or query-gw belong to other teams.",
+      "reconstruction": {
+        "problem": "On 22 October the index merge slowed ranker for about 4 minutes, but search stayed down for 37 minutes. Retries in query-gw (retries: 2) and web (MAX_ATTEMPTS = 3) turned 400 searches/s into up to 3,600 ranker requests/s, three times the 1,200/s fleet capacity. The ranker queue was unbounded and still scored abandoned requests, so it reached about 180,000 deep, or about 150 s of waiting, far above the 600 ms timeout. Every request timed out and triggered more retries, so the overload sustained itself.",
+        "what_breaks": "Error rate was 97% from about 14:04 until 14:39. Search did not recover after the merge ended at 14:06. It came back at 14:41 only after Tomasz Wierzbicki turned on the maintenance page, which stopped user traffic and let the queue drain.",
+        "fix": "Set web MAX_ATTEMPTS to 1. In query-gw, set retries to 1 and retry_on to [5xx] only, so timeouts are not retried. In ranker/server.py, cap in-flight requests at about 256 and return 503 immediately above the cap. Worst case is then about 800 requests/s, below capacity, and the queue stays short and drains within seconds after the merge ends.",
+        "cost": "Some searches fail fast during a slowdown. If the cap is too low, it sheds load the fleet could have served."
+      },
+      "follow_up_questions": [
+        "Do other teams own web or query-gw, so that the change needs their approval?",
+        "Is a cap of about 256 in-flight requests justified by ranker's worker count and normal latency, or is it only a rough guess?"
+      ],
+      "closing_answer": "Yes, I approve the recommended change to all three files. Do not limit it to the ranker cap."
+    },
+    "ttft_ms": 6895,
+    "type": "result",
+    "duration_ms": 6909,
+    "uuid": "322dbeb2-c38d-4077-9745-e17c32e3861b",
+    "ttft_stream_ms": 1748,
+    "time_to_request_ms": 366,
+    "first_content_frame_ms": 1748,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

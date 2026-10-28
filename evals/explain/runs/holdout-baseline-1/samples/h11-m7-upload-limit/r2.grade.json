@@ -1,0 +1,172 @@
+{
+  "key": "6a7df87e9775e561277274f37c1842e89dbc5a59259d56835b4516460834cd1c",
+  "cost_usd": 0.036802,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends raising both limits to 200 MB for `/api/files` only.\" Matches raising both limits with nginx buffering kept."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`client_max_body_size 10m`\", \"`timeout = 30`\", \"about 60 MB/s... about 3 seconds\", \"20 GB buffer volume\", \"frontend team is away until 9 November\" all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message answers the 413 cause, the timeout (\"`nginx` absorbs this time. The gunicorn `timeout = 30` does not apply\"), and why presign is not now. Reader's follow-ups are beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"nginx has `client_max_body_size 10m`... Flask has `MAX_CONTENT_LENGTH` of 10 MiB\"; fix raises both limits; cost covers buffering and the worker's 3 seconds. Agrees with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with \"Does Aelita apply the 200 MB limits... or do you want a different cap?\" This is one decision, and the reader answered \"Yes, apply the 200 MB limits\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"direct upload with `presign_post`... needs a new endpoint and a web client change... It becomes the primary if uploads grow to many users or files over 200 MB.\" Trade-off and condition are stated."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8559,
+    "stop_reason": "tool_use",
+    "session_id": "09c1b85f-cbf0-4fea-9081-d129f0bc6283",
+    "total_cost_usd": 0.036802,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6208,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1178,
+      "output_tokens_details": {
+        "thinking_tokens": 574
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6208,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1178,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6208,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6208
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1178,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6208,
+        "webSearchRequests": 0,
+        "costUSD": 0.036802,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 574,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6208,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends raising both limits to 200 MB for `/api/files` only.\\\" Matches raising both limits with nginx buffering kept.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`client_max_body_size 10m`\\\", \\\"`timeout = 30`\\\", \\\"about 60 MB/s... about 3 seconds\\\", \\\"20 GB buffer volume\\\", \\\"frontend team is away until 9 November\\\" all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message answers the 413 cause, the timeout (\\\"`nginx` absorbs this time. The gunicorn `timeout = 30` does not apply\\\"), and why presign is not now. Reader's follow-ups are beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"nginx has `client_max_body_size 10m`... Flask has `MAX_CONTENT_LENGTH` of 10 MiB\\\"; fix raises both limits; cost covers buffering and the worker's 3 seconds. Agrees with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with \\\"Does Aelita apply the 200 MB limits... or do you want a different cap?\\\" This is one decision, and the reader answered \\\"Yes, apply the 200 MB limits\\\".\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"direct upload with `presign_post`... needs a new endpoint and a web client change... It becomes the primary if uploads grow to many users or files over 200 MB.\\\" Trade-off and condition are stated.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends raising both limits to 200 MB for `/api/files` only.\" Matches raising both limits with nginx buffering kept."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`client_max_body_size 10m`\", \"`timeout = 30`\", \"about 60 MB/s... about 3 seconds\", \"20 GB buffer volume\", \"frontend team is away until 9 November\" all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message answers the 413 cause, the timeout (\"`nginx` absorbs this time. The gunicorn `timeout = 30` does not apply\"), and why presign is not now. Reader's follow-ups are beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"nginx has `client_max_body_size 10m`... Flask has `MAX_CONTENT_LENGTH` of 10 MiB\"; fix raises both limits; cost covers buffering and the worker's 3 seconds. Agrees with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with \"Does Aelita apply the 200 MB limits... or do you want a different cap?\" This is one decision, and the reader answered \"Yes, apply the 200 MB limits\"."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"direct upload with `presign_post`... needs a new endpoint and a web client change... It becomes the primary if uploads grow to many users or files over 200 MB.\" Trade-off and condition are stated."
+        }
+      ]
+    },
+    "ttft_ms": 5923,
+    "type": "result",
+    "duration_ms": 9092,
+    "uuid": "104482b5-a60b-416c-9d08-e3d2366c712b",
+    "ttft_stream_ms": 1429,
+    "time_to_request_ms": 539,
+    "first_content_frame_ms": 1429,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "key": "476fc8972f471a0e0b1b560c480ec8ab5ea9867b0e1fc2c72dd80c81498c2e02",
+  "cost_usd": 0.0338,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends deleting all of the user's refresh tokens inside `change_password` before it issues the new pair.\" Matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`ACCESS_TTL` is already 15 minutes\"; \"2,500 requests per second\"; SIGNING_KEY rotation \"logs out every user\". All match the key; the transaction doubt is not a dependent fact."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message covers the 30-day refresh renewal, \"logged out within 15 minutes, as SR-12 requires\", and \"The laptop keeps its new pair.\" The reader listed no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"One `DELETE` per password change... Logout takes up to 15 minutes\". The problem, breakage, fix and cost all match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Should I implement the delete in `change_password`, inside a transaction if `api.db` supports one?\" This is the approve-the-delete decision, and the reader answered it."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"`token_version` claim checked in the middleware... costs a Redis read on every request... It becomes the primary if the requirement changes to immediate logout.\" This matches the valid alternative."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 7783,
+    "stop_reason": "tool_use",
+    "session_id": "b4085f9a-c95b-49ae-aeac-5d6f9a972e44",
+    "total_cost_usd": 0.0338,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5790,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1045,
+      "output_tokens_details": {
+        "thinking_tokens": 495
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5790,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1045,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5790,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5790
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1045,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5790,
+        "webSearchRequests": 0,
+        "costUSD": 0.0338,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 495,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5790,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends deleting all of the user's refresh tokens inside `change_password` before it issues the new pair.\\\" Matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`ACCESS_TTL` is already 15 minutes\\\"; \\\"2,500 requests per second\\\"; SIGNING_KEY rotation \\\"logs out every user\\\". All match the key; the transaction doubt is not a dependent fact.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message covers the 30-day refresh renewal, \\\"logged out within 15 minutes, as SR-12 requires\\\", and \\\"The laptop keeps its new pair.\\\" The reader listed no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"One `DELETE` per password change... Logout takes up to 15 minutes\\\". The problem, breakage, fix and cost all match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Should I implement the delete in `change_password`, inside a transaction if `api.db` supports one?\\\" This is the approve-the-delete decision, and the reader answered it.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"`token_version` claim checked in the middleware... costs a Redis read on every request... It becomes the primary if the requirement changes to immediate logout.\\\" This matches the valid alternative.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends deleting all of the user's refresh tokens inside `change_password` before it issues the new pair.\" Matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`ACCESS_TTL` is already 15 minutes\"; \"2,500 requests per second\"; SIGNING_KEY rotation \"logs out every user\". All match the key; the transaction doubt is not a dependent fact."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message covers the 30-day refresh renewal, \"logged out within 15 minutes, as SR-12 requires\", and \"The laptop keeps its new pair.\" The reader listed no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"One `DELETE` per password change... Logout takes up to 15 minutes\". The problem, breakage, fix and cost all match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Should I implement the delete in `change_password`, inside a transaction if `api.db` supports one?\" This is the approve-the-delete decision, and the reader answered it."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"`token_version` claim checked in the middleware... costs a Redis read on every request... It becomes the primary if the requirement changes to immediate logout.\" This matches the valid alternative."
+        }
+      ]
+    },
+    "ttft_ms": 5832,
+    "type": "result",
+    "duration_ms": 8137,
+    "uuid": "8f4a84bd-9d3d-4b5b-aeaf-aa0cd1405745",
+    "ttft_stream_ms": 1850,
+    "time_to_request_ms": 365,
+    "first_content_frame_ms": 1850,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

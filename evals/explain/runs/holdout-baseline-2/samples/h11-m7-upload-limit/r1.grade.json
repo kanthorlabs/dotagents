@@ -1,0 +1,184 @@
+{
+  "key": "0432b0845d3dd519bce8f8b129908398643929ad6a1b9cb6a5e3827910da0fb5",
+  "cost_usd": 0.037568000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"raising the limit to 200 MB in `nginx` and in Flask\" with buffering kept; matches the correct recommendation of raising both limits and keeping buffering.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"buffers the body first, so the gunicorn worker is busy for about 3 seconds, not 72. The 30-second timeout is safe.\" Other stated facts match the key.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message answers the 413 cause, the 72 s vs 3 s timeout question, and why presigned is out (\"frontend team is away until 9 November\"). Reader lists no follow-ups.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"`nginx` has `client_max_body_size 10m`, and Flask has a matching hidden `MAX_CONTENT_LENGTH` of 10 MB\"; the fix and cost agree with the key.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the 200 MB limit on `/api/files` only, in `nginx` and `MAX_CONTENT_LENGTH`?\" is one question with one decision. Reader answered \"Yes, I approve\".",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"I dropped the presigned upload. `storage.presign_post` exists but nothing calls it\" gives no trade-off and does not say it becomes primary after 9 November or at larger scale.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9520,
+    "stop_reason": "tool_use",
+    "session_id": "9545e5a8-13db-4c5d-9afc-9ad8458c4b1b",
+    "total_cost_usd": 0.037568000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6207,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1255,
+      "output_tokens_details": {
+        "thinking_tokens": 650
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6207,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1255,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6207,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6207
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1255,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6207,
+        "webSearchRequests": 0,
+        "costUSD": 0.037568000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 650,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6207,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"raising the limit to 200 MB in `nginx` and in Flask\\\" with buffering kept; matches the correct recommendation of raising both limits and keeping buffering.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"buffers the body first, so the gunicorn worker is busy for about 3 seconds, not 72. The 30-second timeout is safe.\\\" Other stated facts match the key.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message answers the 413 cause, the 72 s vs 3 s timeout question, and why presigned is out (\\\"frontend team is away until 9 November\\\"). Reader lists no follow-ups.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"`nginx` has `client_max_body_size 10m`, and Flask has a matching hidden `MAX_CONTENT_LENGTH` of 10 MB\\\"; the fix and cost agree with the key.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the 200 MB limit on `/api/files` only, in `nginx` and `MAX_CONTENT_LENGTH`?\\\" is one question with one decision. Reader answered \\\"Yes, I approve\\\".\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"I dropped the presigned upload. `storage.presign_post` exists but nothing calls it\\\" gives no trade-off and does not say it becomes primary after 9 November or at larger scale.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"raising the limit to 200 MB in `nginx` and in Flask\" with buffering kept; matches the correct recommendation of raising both limits and keeping buffering.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"buffers the body first, so the gunicorn worker is busy for about 3 seconds, not 72. The 30-second timeout is safe.\" Other stated facts match the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message answers the 413 cause, the 72 s vs 3 s timeout question, and why presigned is out (\"frontend team is away until 9 November\"). Reader lists no follow-ups.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"`nginx` has `client_max_body_size 10m`, and Flask has a matching hidden `MAX_CONTENT_LENGTH` of 10 MB\"; the fix and cost agree with the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the 200 MB limit on `/api/files` only, in `nginx` and `MAX_CONTENT_LENGTH`?\" is one question with one decision. Reader answered \"Yes, I approve\".",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"I dropped the presigned upload. `storage.presign_post` exists but nothing calls it\" gives no trade-off and does not say it becomes primary after 9 November or at larger scale.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 6843,
+    "type": "result",
+    "duration_ms": 9991,
+    "uuid": "5fc044c7-1e11-4558-bd8e-8e5a6c156c81",
+    "ttft_stream_ms": 2003,
+    "time_to_request_ms": 469,
+    "first_content_frame_ms": 2003,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

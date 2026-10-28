@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 12221,
+  "stop_reason": "end_turn",
+  "session_id": "f278c7f6-e747-4157-ac25-aba2d30bd54f",
+  "total_cost_usd": 0.0256619,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2061,
+    "cache_read_input_tokens": 23259,
+    "output_tokens": 1508,
+    "output_tokens_details": {
+      "thinking_tokens": 334
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2061,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1053,
+        "cache_read_input_tokens": 8057,
+        "cache_creation_input_tokens": 1272,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1272
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1508,
+      "cacheReadInputTokens": 23259,
+      "cacheCreationInputTokens": 2061,
+      "webSearchRequests": 0,
+      "costUSD": 0.0256619,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 334,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2061,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`mintctl deploy staging` builds the current commit of `mint-shop` as an image, pushes it, rolls it out to the staging cluster and posts to Slack. All of this runs from Ines Albrecht's machine, in the directory where they run the command.\n\n**Timeline**\n\n1. **Entry.** `mintctl` calls `deploy(\"staging\")` in `mintctl/deploy.py:7`. The code that parses the command line is not in this directory, so I could not check this step.\n2. **Config.** `deploy` opens `mint.toml` in the current directory. It reads `env.staging`: cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`. An unknown env name raises `KeyError`.\n3. **Version.** `git rev-parse --short HEAD` gives the short commit hash. Call it `sha`. Uncommitted changes are not part of `sha`, but `docker build` still includes them.\n4. **Build.** The tag is `registry.mint.internal/mint-shop:<sha>`. `docker build -t <tag> .` runs in the current directory.\n5. **Push.** `docker push <tag>` sends the image to `registry.mint.internal`. It uses the Docker login of Ines Albrecht.\n6. **Release.** `kubectl --context gke-mint-staging -n shop set image deployment/mint-shop web=<tag>` points the `web` container at the new image.\n7. **Wait.** `kubectl ... rollout status deployment/mint-shop --timeout=300s` blocks until the rollout finishes or 300 seconds pass. A failure at any of steps 4 to 7 raises an error, because of `check=True`. The Slack post is then skipped.\n8. **Notify.** `slack.post` sends `mint-shop <sha> is live on staging` to `#deploys-staging`. It uses the webhook in the `MINT_SLACK_WEBHOOK` environment variable. The `channel` field in the payload may be ignored, because many Slack webhooks are bound to one channel.\n\n**Next step.** I can trace the command-line entry point once you tell me where it lives, since step 1 is the only part I could not check.",
+  "ttft_ms": 1329,
+  "type": "result",
+  "duration_ms": 12603,
+  "uuid": "6854bcac-3b1e-4698-b190-5e2c326f2b56",
+  "ttft_stream_ms": 1060,
+  "time_to_request_ms": 354,
+  "first_content_frame_ms": 1061,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

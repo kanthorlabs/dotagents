@@ -1,0 +1,184 @@
+{
+  "key": "40311849b58903b193c868548aa53f006668a812eaa74ec8fa530f42187a357f",
+  "cost_usd": 0.031976,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the two-step move.\" Move codes to a table, then drop; matches the key's second correct recommendation (mapping table that v_partner_feed reads).",
+      "pass_comment": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`db/views.sql:4` defines `v_partner_feed` with `COALESCE(p.legacy_sku, p.sku) AS partner_ref`\"; importer ran 12 March 2024 for 6,140 products; Postgres refuses or CASCADE drops view. All match.",
+      "pass_comment": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message covers use (v_partner_feed, Oakline feed), why (Oakline keys on Brightstock code), breakage (refuse/CASCADE/6,140 products), safe path (partner_refs). Reader lists no follow-up questions.",
+      "pass_comment": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"A plain drop is refused by Postgres because the view depends on the column... Oakline Supply stops recognising 6,140 products.\" Fix: partner_refs migration, then drop. Matches key.",
+      "pass_comment": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "\"Should Aelita draft the `partner_refs` migrations and view change, or keep `legacy_sku` as it is?\" It is one question with one decision, matching the closing decision, but the reader answered \"do not keep it as it is\", so it works. However it adds drafting scope; still, it is the one decision.",
+      "pass_comment": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: keep the column... It needs no migration and carries no risk. It becomes the primary if Oakline Supply is expected to move to the new SKUs soon.\"",
+      "pass_comment": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 5064,
+    "stop_reason": "tool_use",
+    "session_id": "a56146d7-8153-4a87-8fce-4d25604f6f0d",
+    "total_cost_usd": 0.031976,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6239,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 683,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6239,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 683,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6239,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6239
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 683,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6239,
+        "webSearchRequests": 0,
+        "costUSD": 0.031976,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6239,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the two-step move.\\\" Move codes to a table, then drop; matches the key's second correct recommendation (mapping table that v_partner_feed reads).\",\"pass_comment\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`db/views.sql:4` defines `v_partner_feed` with `COALESCE(p.legacy_sku, p.sku) AS partner_ref`\\\"; importer ran 12 March 2024 for 6,140 products; Postgres refuses or CASCADE drops view. All match.\",\"pass_comment\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message covers use (v_partner_feed, Oakline feed), why (Oakline keys on Brightstock code), breakage (refuse/CASCADE/6,140 products), safe path (partner_refs). Reader lists no follow-up questions.\",\"pass_comment\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"A plain drop is refused by Postgres because the view depends on the column... Oakline Supply stops recognising 6,140 products.\\\" Fix: partner_refs migration, then drop. Matches key.\",\"pass_comment\":\"\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"\\\"Should Aelita draft the `partner_refs` migrations and view change, or keep `legacy_sku` as it is?\\\" It is one question with one decision, matching the closing decision, but the reader answered \\\"do not keep it as it is\\\", so it works. However it adds drafting scope; still, it is the one decision.\",\"pass_comment\":\"\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: keep the column... It needs no migration and carries no risk. It becomes the primary if Oakline Supply is expected to move to the new SKUs soon.\\\"\",\"pass_comment\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the two-step move.\" Move codes to a table, then drop; matches the key's second correct recommendation (mapping table that v_partner_feed reads).",
+          "pass_comment": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`db/views.sql:4` defines `v_partner_feed` with `COALESCE(p.legacy_sku, p.sku) AS partner_ref`\"; importer ran 12 March 2024 for 6,140 products; Postgres refuses or CASCADE drops view. All match.",
+          "pass_comment": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message covers use (v_partner_feed, Oakline feed), why (Oakline keys on Brightstock code), breakage (refuse/CASCADE/6,140 products), safe path (partner_refs). Reader lists no follow-up questions.",
+          "pass_comment": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"A plain drop is refused by Postgres because the view depends on the column... Oakline Supply stops recognising 6,140 products.\" Fix: partner_refs migration, then drop. Matches key.",
+          "pass_comment": ""
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "\"Should Aelita draft the `partner_refs` migrations and view change, or keep `legacy_sku` as it is?\" It is one question with one decision, matching the closing decision, but the reader answered \"do not keep it as it is\", so it works. However it adds drafting scope; still, it is the one decision.",
+          "pass_comment": ""
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: keep the column... It needs no migration and carries no risk. It becomes the primary if Oakline Supply is expected to move to the new SKUs soon.\"",
+          "pass_comment": ""
+        }
+      ]
+    },
+    "ttft_ms": 5472,
+    "type": "result",
+    "duration_ms": 5496,
+    "uuid": "72764ee7-cbe0-4d5a-a2a0-2668b8ec708b",
+    "ttft_stream_ms": 1338,
+    "time_to_request_ms": 442,
+    "first_content_frame_ms": 1339,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

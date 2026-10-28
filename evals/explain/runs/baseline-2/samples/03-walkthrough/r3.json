@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 11621,
+  "stop_reason": "end_turn",
+  "session_id": "c97a569b-731f-4a5e-877b-93a262fed41f",
+  "total_cost_usd": 0.024238600000000003,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1750,
+    "cache_read_input_tokens": 23566,
+    "output_tokens": 1487,
+    "output_tokens_details": {
+      "thinking_tokens": 361
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1750,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1028,
+        "cache_read_input_tokens": 8054,
+        "cache_creation_input_tokens": 1273,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1273
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1487,
+      "cacheReadInputTokens": 23566,
+      "cacheCreationInputTokens": 1750,
+      "webSearchRequests": 0,
+      "costUSD": 0.024238600000000003,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 361,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1750,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`mintctl deploy staging` builds the current `HEAD` of `mint-shop`, pushes it, rolls it out to `gke-mint-staging` and posts to `#deploys-staging`. The code only shows `deploy(env_name)` in `mintctl/deploy.py`. No file here parses the command line, so the call `deploy(\"staging\")` is assumed.\n\n**Timeline**\n\n1. **Config.** `deploy` opens `mint.toml` in the current directory. Ines Albrecht must run it from the `mint-shop` root. It reads `env.staging`: cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`.\n2. **Version.** `git rev-parse --short HEAD` gives the short sha. Uncommitted changes are not part of the sha, but `docker build` still includes them.\n3. **Tag.** The image tag is `registry.mint.internal/mint-shop:<sha>`. `HOST` comes from `mintctl/registry.py`.\n4. **Build and push.** `docker build -t <tag> .` runs, then `docker push <tag>`. Both use `check=True`, so a failure stops the deploy with an exception.\n5. **Release.** `kubectl --context gke-mint-staging -n shop set image deployment/mint-shop web=<tag>` points the `web` container at the new image.\n6. **Wait.** `kubectl rollout status deployment/mint-shop --timeout=300s` blocks for up to 300 seconds. A timeout or failed rollout stops the deploy before Slack.\n7. **Notify.** `slack.post` sends `mint-shop <sha> is live on staging` to `#deploys-staging`. It uses the webhook in `MINT_SLACK_WEBHOOK`, with a 10 second timeout. A missing variable raises `KeyError` after the rollout has already succeeded.\n\n**Next step.** Find the file that maps the `deploy` subcommand to `deploy()`. This directory does not contain it.",
+  "ttft_ms": 1569,
+  "type": "result",
+  "duration_ms": 12141,
+  "uuid": "a5884748-7fe5-4459-ab2d-cc4f73355b03",
+  "ttft_stream_ms": 1265,
+  "time_to_request_ms": 494,
+  "first_content_frame_ms": 1265,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

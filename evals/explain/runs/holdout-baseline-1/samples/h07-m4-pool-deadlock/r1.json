@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 18995,
+  "stop_reason": "end_turn",
+  "session_id": "c99dd1ff-b70e-4539-9096-88ef4b01db4f",
+  "total_cost_usd": 0.0386214,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2990,
+    "cache_read_input_tokens": 23394,
+    "output_tokens": 2431,
+    "output_tokens_details": {
+      "thinking_tokens": 497
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2990,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1778,
+        "cache_read_input_tokens": 8132,
+        "cache_creation_input_tokens": 2126,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2126
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2431,
+      "cacheReadInputTokens": 23394,
+      "cacheCreationInputTokens": 2990,
+      "webSearchRequests": 0,
+      "costUSD": 0.0386214,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 497,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2990,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`checkout` holds one pool connection and then asks the same pool for a second one inside `hold_seats`. Under load, every connection is held by a request that waits for a second one, so the pool deadlocks until the 30-second timeout. Aelita recommends passing the open connection into `hold_seats`.\n\n**Timeline without the fix**\n\nEach `checkout-api` replica has its own pool of `max_size=10` (`app/db.py:5-10`). `post_checkout` is a sync handler, so many requests run at once in the threadpool.\n\n1. At 19:00:00 the Halden Arena on-sale starts. Each `checkout-api` replica receives more concurrent requests than its pool has connections. Log line 3 shows `checkout-api-2` with `in_flight=14`.\n2. Ten requests on `checkout-api-2` each take a connection at `app/checkout.py:6`. The pool is full with `pool_in_use=10`.\n3. Each of the ten inserts the order, then calls `hold_seats`. It requests a second connection at `app/seats.py:5`, while still holding the first.\n4. The pool has none free, so all ten wait. The other four requests wait at `app/checkout.py:6`. Log line 3 shows `pool_waiting=14`.\n5. No holder can finish without a second connection, so nobody releases one. `pg-copperline` shows `active_connections=38` of 200 (log line 4), so the database is idle. The limit is the per-replica pool.\n6. At 19:00:31 the timeouts fire together. Ten fail in `hold_seats`, four fail in `checkout`, and all 14 requests return 500 (log lines 5-7). The next 12 requests take the freed connections and repeat this at 19:01:02 (log lines 9-11).\n\nAt normal traffic, log line 1 shows `in_flight=3`. The pool never fills, so the second request for a connection always succeeds.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. Each of the ten requests passes its own `conn` to `hold_seats`. The seat update runs on the connection it already holds.\n4. Each request commits and releases its connection within milliseconds.\n5. Waiting requests take the freed connections. The queue drains at database speed.\n6. Under a surge, requests may wait briefly for a connection, but none deadlock.\n\n**What changes**\n\n- `app/seats.py`: old behaviour is `hold_seats(event_id, seat_ids)` opens `pool.connection()`. New behaviour is `hold_seats(conn, event_id, seat_ids)` uses the given `conn`. Delete the `pool` import.\n- `app/checkout.py`: old call at line 12 is `hold_seats(order.event_id, order.seat_ids)`. New call is `hold_seats(conn, order.event_id, order.seat_ids)`.\n\n**Recommendation.** Aelita recommends one connection per request. It removes the root cause, which is a nested checkout from the same pool. It also puts the order insert, the seat hold and the status update in one transaction. Today the seat hold commits on its own connection. If the order transaction rolls back, the seats stay held for 10 minutes. The cost is a small signature change. Nothing else calls `hold_seats` in this repository.\n\n**Alternative: raise `max_size`.** It is a one-line change in `app/db.py`. It only moves the deadlock threshold. A surge of more than `max_size` concurrent requests still hangs, and 4 replicas \u00d7 a larger pool pushes toward the database limit of 200. It becomes the primary only if a hotfix must ship without touching the code path.\n\n**Alternative: shorten `timeout`.** This makes failures faster, but the deadlock stays. Pair it with the fix if you want load shedding under a surge.\n\n**Question.** Does Aelita pass `conn` into `hold_seats` and apply the change to both files?",
+  "ttft_ms": 1757,
+  "type": "result",
+  "duration_ms": 19548,
+  "uuid": "9a202631-3412-4d01-989b-9fb9c89fe217",
+  "ttft_stream_ms": 1594,
+  "time_to_request_ms": 519,
+  "first_content_frame_ms": 1595,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

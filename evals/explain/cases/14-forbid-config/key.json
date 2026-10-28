@@ -1,0 +1,86 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Forbid retention_days below 1 in TenantConfig.validate, matching the documented range of 1 to 3650, and correct tenants/acme-labs.yaml."
+  ],
+  "invalid_options": [
+    "Change nothing.",
+    "Only fix tenants/acme-labs.yaml, which lets any tenant set 0 again.",
+    "Only add a purge-worker check for in-progress uploads while 0 stays valid, without a stated need for 0."
+  ],
+  "root_cause": "TenantConfig.validate accepts retention_days 0 although docs/retention.md supports 1 to 3650. With 0, purge_tenant computes a cutoff of now and deletes uploads still in progress.",
+  "dependent_facts": [
+    {
+      "fact": "Purge rule",
+      "true_value": "purge_tenant deletes uploads with created_at older than now minus retention_days",
+      "source": "purge/worker.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Validation",
+      "true_value": "validate rejects only retention_days < 0",
+      "source": "config/schema.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Documented range",
+      "true_value": "1 to 3650 days",
+      "source": "docs/retention.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Purge cadence",
+      "true_value": "every 15 minutes",
+      "source": "docs/retention.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Upload duration",
+      "true_value": "a multipart upload can stay in progress up to 6 hours",
+      "source": "docs/retention.md",
+      "verifiable": true
+    },
+    {
+      "fact": "acme-labs config",
+      "true_value": "retention_days 0",
+      "source": "tenants/acme-labs.yaml",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why did in-progress uploads vanish?",
+      "expected_answer": "With retention 0 the cutoff is now, so the next 15-minute purge deletes everything, including uploads in progress."
+    },
+    {
+      "question": "Is 0 a supported value?",
+      "expected_answer": "No. The documentation supports 1 to 3650."
+    },
+    {
+      "question": "What happens to acme-labs after the fix?",
+      "expected_answer": "Its config fails validation until it sets a value of 1 or more, so it must change."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "purge-worker skips uploads that are still in progress",
+      "trade_off": "Keeps 0 usable and also protects in-progress uploads at short retentions, but adds a mechanism and an upload-state dependency.",
+      "primary_when": "Product decides that retention 0 must stay supported.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve the validation change, or decide what acme-labs gets instead of 0.",
+  "understanding": {
+    "problem": "retention_days 0 makes purge-worker delete uploads that are still in progress.",
+    "breaks": "Validation accepts 0, so the purge cutoff becomes now.",
+    "fix": "Reject retention_days below 1 in validation and fix the acme-labs config.",
+    "cost": "acme-labs must pick a value of 1 or more; a one-line validation change."
+  }
+}

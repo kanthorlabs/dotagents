@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 29751,
+  "stop_reason": "end_turn",
+  "session_id": "37573802-3a57-4745-85f6-77a8e09b67a4",
+  "total_cost_usd": 0.0626631,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 4817,
+    "cache_read_input_tokens": 34691,
+    "output_tokens": 3991,
+    "output_tokens_details": {
+      "thinking_tokens": 1362
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4817,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2619,
+        "cache_read_input_tokens": 11281,
+        "cache_creation_input_tokens": 804,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 804
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 3991,
+      "cacheReadInputTokens": 34691,
+      "cacheCreationInputTokens": 4817,
+      "webSearchRequests": 0,
+      "costUSD": 0.0626631,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1362,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4817,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 13,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`kestrel-billing` charged 212 subscribers twice because the clocks went back in Europe/Berlin and the scheduler fired `charge_renewals` for 02:30 twice. Aelita recommends two small guards: one in the scheduler and one in `charge_renewals`.\n\n**Timeline without the fix**\n\n1. `kestrel-scheduler` fires `charge_renewals` at 00:30Z, which is 02:30+0200. It charges 212 subscriptions and inserts 212 `renewal_charges` rows (`logs/scheduler-2026-10-25.log:1-2`).\n2. `send_dunning` fires at 00:45Z and sends 41 emails.\n3. At 01:00Z Berlin moves from CEST to CET. Local time goes from 03:00 back to 02:00, so 02:30 happens a second time.\n4. At 01:30:02Z the local time is 02:30+0100. `matches` in `scheduler/cron.py` sees only the wall clock. `due_jobs` in `scheduler/clock.py` sees a gap of 60 minutes, which exceeds `MIN_GAP_SECONDS = 60`, so `charge_renewals` fires again.\n5. `charge_renewals` selects `renews_on <= today`. `renews_on` has not moved, because only `settle_renewals` advances it. The same 212 subscriptions come back. `psp.charge` sends them to Payrail with no idempotency key, and Payrail charges each one again.\n6. `send_dunning` fires again and sends the same 41 emails.\n7. `settle_renewals` runs at 04:00Z and reports `settled=424`. It advances `renews_on` only after both runs, so it is too late.\n\nThe result is 212 subscribers with two identical charges on 25 October, and 41 duplicate dunning emails.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. At 01:30:02Z `due_jobs` finds that `charge_renewals` already fired for local date 2026-10-25. It skips the job.\n5. No second charge runs. `send_dunning` skips for the same reason, and `settle_renewals` settles 212 rows.\n\n**What changes**\n\n- `scheduler/clock.py`: `due_jobs` today compares the time since the last fire against `MIN_GAP_SECONDS`. The new version skips a job when its last fire has the same local date and the same cron match. `scheduler/loop.py` would store `(local.date())` in `last_fired`.\n- `billing/renewals.py`: add `AND NOT EXISTS (SELECT 1 FROM renewal_charges rc WHERE rc.subscription_id = subscriptions.id AND rc.charged_on = %s)` to the `charge_renewals` query. A repeated run then skips subscriptions that were already charged today.\n\n**Recommendation.** Aelita recommends both guards.\n- **Scheduler guard.** It removes the cause, a wall-clock hour that repeats. It also stops the duplicate dunning emails, which the charge guard cannot do.\n- **Charge guard.** It protects money if the scheduler ever runs a job twice again, for example after a restart.\n- **Cost.** Both changes are small.\n- **What can break.** `last_fired` lives in memory, so a restart loses the guard, and only the charge guard covers that case. On the spring-forward night 02:30 does not exist, so the job is skipped that day. The job still runs the next day because it selects `renews_on <= today`.\n\n**Alternative: move `charge_renewals` to UTC.** Set `timezone: UTC` in `schedules/charge_renewals.yaml`. It needs no code change, because UTC never repeats an hour. It does not protect `send_dunning` or any job that stays on local time. It becomes the primary if you want a one-line hotfix before the next clock change.\n\n**Alternative: send a Payrail idempotency key from `psp.charge`.** I did not verify that Payrail supports one, because no file settles it. It would also catch a crash between `psp.charge` and the `renewal_charges` insert, which neither guard covers.\n\n**Open item for after your ruling.** Support refunded some of the double charges by hand on 26 October and kept no list (KB-519). I will raise how to find the remaining customers next.\n\n**Question.** Do you approve both guards, the scheduler dedupe and the `renewal_charges` check?",
+  "ttft_ms": 1169,
+  "type": "result",
+  "duration_ms": 30079,
+  "uuid": "f69cb240-7fd4-44a0-86a7-90780be053fd",
+  "ttft_stream_ms": 886,
+  "time_to_request_ms": 282,
+  "first_content_frame_ms": 886,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

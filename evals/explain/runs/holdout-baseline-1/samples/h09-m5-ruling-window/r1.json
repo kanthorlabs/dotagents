@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 17589,
+  "stop_reason": "end_turn",
+  "session_id": "4412266e-dd68-4bc5-98d3-26e13839577e",
+  "total_cost_usd": 0.035610100000000006,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2384,
+    "cache_read_input_tokens": 24021,
+    "output_tokens": 2366,
+    "output_tokens_details": {
+      "thinking_tokens": 971
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2384,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1924,
+        "cache_read_input_tokens": 8474,
+        "cache_creation_input_tokens": 1178,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1178
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2366,
+      "cacheReadInputTokens": 24021,
+      "cacheCreationInputTokens": 2384,
+      "webSearchRequests": 0,
+      "costUSD": 0.035610100000000006,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 971,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2384,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling recorded:** \"Upgrade `pg_partman` to 5.1 on PostgreSQL 14 first.\" This matches step 1 of `docs/upgrade-plan.md`. I have no write tool in this session, so I did not edit the file. Please add this line to the plan.\n\nThe next open item is the date of step 3. Aelita recommends Sunday 8 November 2026, starting at 02:00 UTC.\n\n**Timeline**\n\n1. Wednesday 4 November, 10:00 UTC: Signe Aaberg upgrades `pg_partman` to 5.1 on PostgreSQL 14. The change freeze ended at 09:00 UTC.\n2. Thursday 5 November, 03:30 UTC: the first nightly partition run of `pg_partman` 5.1 completes.\n3. Friday 6 November, 03:30 UTC: the second run completes. The precondition in step 2 of the plan is met.\n4. Saturday 7 November: a spare day to fix a failed run.\n5. Sunday 8 November, 02:00 UTC: `pg_upgrade --link` starts on `pg-thornbury-1`. Writes run at about 40 per second.\n6. Sunday 8 November, about 02:15 UTC: downtime ends after 14 min 10 s. `vacuumdb --analyze-in-stages` starts.\n7. Sunday 8 November, about 02:55 UTC: `vacuumdb` ends after 38 minutes. This is before the 03:30 run of `pg_partman`.\n8. Thursday 12 November: PostgreSQL 14 reaches end of life. The upgrade finished 4 days earlier.\n\n**What changes**\n\n- `docs/upgrade-plan.md`: under Schedule, replace \"The date of step 3 is open.\" with \"Step 3 runs on Sunday 8 November 2026, 02:00 UTC.\"\n\n**Recommendation.** Aelita recommends Sunday 8 November. It is the only Sunday before 12 November, and Sunday has the lowest write load of the week. The upgrade and `vacuumdb` both finish before the 03:30 run. The cost is a thin buffer. If step 1 slips or a nightly run fails, no Sunday remains before the deadline.\n\n**Alternative: Saturday 7 November, 02:00 UTC.** This gives one more day of buffer before 12 November. Writes run at about 95 per second, which is 2.4 times the Sunday load. It becomes the primary if the first two nightly runs finish early and you want a spare slot.\n\n**Alternative: a weekday from Monday 9 to Wednesday 11 November.** This is the fallback if Sunday is missed. Writes run at about 130 per second, the highest of the week. It becomes the primary only if the precondition in step 2 is not met by Sunday.\n\n**Question.** Do we fix step 3 on Sunday 8 November, 02:00 UTC, or on Saturday 7 November? The Sunday plan keeps the weekday slots from 9 to 11 November as the fallback.",
+  "ttft_ms": 1270,
+  "type": "result",
+  "duration_ms": 17921,
+  "uuid": "2e077b02-13d4-4b42-815a-2ae47f6e4add",
+  "ttft_stream_ms": 920,
+  "time_to_request_ms": 289,
+  "first_content_frame_ms": 920,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

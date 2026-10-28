@@ -1,0 +1,95 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Move the export to an asynchronous taskq job on the documents queue that stores the CSV and mails a signed link, like invoice PDFs."
+  ],
+  "invalid_options": [
+    "Change nothing.",
+    "Add web workers as the fix."
+  ],
+  "root_cause": "export_invoices builds the whole CSV in memory and sends nothing until it is done. Large exports take 120 to 240 s, and gw-billing closes a connection after 30 s without a byte.",
+  "dependent_facts": [
+    {
+      "fact": "Export code",
+      "true_value": "export_invoices builds the full CSV in a StringIO and returns it at the end",
+      "source": "app/exports.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Gateway timeouts",
+      "true_value": "idle 30 s and total 300 s",
+      "source": "deploy/gateway.yaml and docs/exports.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Export duration",
+      "true_value": "up to 240 s for northfield-accounting with 1,840,211 rows",
+      "source": "logs/month-end-2026-09-30.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Worker load",
+      "true_value": "12 web workers; at month end 11 to 12 busy and /invoices p99 at 8 to 9 s, against 0.4 s on a normal day",
+      "source": "logs/month-end-2026-09-30.log and deploy/gunicorn.conf.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Volume",
+      "true_value": "about 900 exports in two days at month end",
+      "source": "docs/exports.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Existing infrastructure",
+      "true_value": "taskq queue documents and mailer, already used by jobs/invoice_pdf.py with storage signed URLs",
+      "source": "jobs/invoice_pdf.py and docs/exports.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why the 504?",
+      "expected_answer": "No byte reaches gw-billing for more than 30 s while the CSV builds in memory."
+    },
+    {
+      "question": "Why a background job and not streaming?",
+      "expected_answer": "Exports up to 240 s at 900 per month end hold the 12 web workers and slow /invoices; taskq and mailer already exist; 240 s is close to the 300 s total limit."
+    },
+    {
+      "question": "What changes for the accountant?",
+      "expected_answer": "The export arrives as an emailed download link instead of a direct download."
+    },
+    {
+      "question": "What can break?",
+      "expected_answer": "Mail delivery delays; link expiry; the documents queue gets month-end load."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Stream the CSV response",
+      "trade_off": "Keeps the direct download and needs no job, but holds a web worker for up to 240 s and stays close to the 300 s total gateway limit.",
+      "primary_when": "Exports stay rare and short, or the direct download is a hard requirement.",
+      "must_list": true
+    },
+    {
+      "option": "Raise the gw-billing idle timeout above the longest export of 240 s",
+      "trade_off": "One config line and no code change, but it weakens slow-client protection on every route and breaks again when exports grow.",
+      "primary_when": "The export code cannot change soon.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve the asynchronous export job, or a single follow-up on it such as the link expiry.",
+  "understanding": {
+    "problem": "Large invoice exports return 504 and month-end exports slow the whole app.",
+    "breaks": "The CSV builds in memory for up to 240 s with no byte sent, gw-billing closes idle connections after 30 s, and exports occupy the web workers.",
+    "fix": "Run the export as a taskq job that mails a download link.",
+    "cost": "A new task and a changed user flow from download to email link."
+  }
+}

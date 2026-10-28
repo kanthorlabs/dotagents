@@ -1,0 +1,129 @@
+{
+  "key": "1c31fa7d22349b212fd72115def409b3e87f88cdc20f15e7c5b30f489db35aee",
+  "cost_usd": 0.021543299999999998,
+  "reader": {
+    "decision": "Approve the proposal with the amendment: add the conditional `WHERE latest_reading.read_at < EXCLUDED.read_at` to `UPSERT_LATEST` in `ingest/store.py`. The `INSERT_HISTORY` duplicate-row risk is handled as a separate follow-up item.",
+    "decision_reason": "The message shows that JetStream redelivery removes the 62 s consumer stall (17 stalls on 26 October). The one ordering hazard it creates, a stale reading overwriting `latest_reading`, is removed by a one-comparison conditional upsert that breaks no first insert. Serial processing is only the fallback if `latest_reading` can't take a conditional write, and the message doesn't say it can't.",
+    "reconstruction": {
+      "problem": "`max_ack_pending: 1` plus the hand-written `with_retries` blocks the whole consumer for 62 s per failing reading, with 17 such stalls on 26 October.",
+      "what_breaks": "The proposal itself keeps the same delays (2, 4, 8, 16, 32 s) and six attempts, but it lets redelivery run in parallel. A late redelivery can then overwrite a newer row. In the example, A (10:14:03) succeeds at 10:15:05 after C (10:15:03) and overwrites it, because `UPSERT_LATEST` sets `value` and `read_at` unconditionally. `latest_reading` then holds a 62 s old value until 10:15:33 and the live map shows it. The `readings` history table is not affected. The `freezer-temp-high` alert is probably not affected, but the rule's definition was not found.",
+      "fix": "Approve the proposal as in `docs/proposals/redelivery.md` (changes to `ingest/handler.py`, `ingest/retry.py` and `deploy/consumer.yaml`). Also add `WHERE latest_reading.read_at < EXCLUDED.read_at` after the `DO UPDATE SET` clause of `UPSERT_LATEST` in `ingest/store.py`, so it overwrites only when the incoming reading is newer.",
+      "cost": "One extra comparison per upsert, and nothing breaks, because a first insert for a device still succeeds. Separate known risk: with `max_deliver: 6`, an ack lost past `ack_wait: 90s` can insert a duplicate row via `INSERT_HISTORY`, which has no conflict guard. The message lists this as the next item."
+    },
+    "follow_up_questions": [],
+    "closing_answer": "I approve the proposal with the conditional `UPSERT_LATEST` added. I'll take up the `INSERT_HISTORY` duplicate-row risk as the next item before or alongside rollout."
+  },
+  "raw": {
+    "duration_api_ms": 6943,
+    "stop_reason": "tool_use",
+    "session_id": "6a4ae5d9-95f2-45fb-b0f2-3daf15d5d884",
+    "total_cost_usd": 0.021543299999999998,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2813,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 1009,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2813,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1009,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2813,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2813
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1009,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2813,
+        "webSearchRequests": 0,
+        "costUSD": 0.021543299999999998,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2813,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve the proposal with the amendment: add the conditional `WHERE latest_reading.read_at < EXCLUDED.read_at` to `UPSERT_LATEST` in `ingest/store.py`. The `INSERT_HISTORY` duplicate-row risk is handled as a separate follow-up item.\",\"decision_reason\":\"The message shows that JetStream redelivery removes the 62 s consumer stall (17 stalls on 26 October). The one ordering hazard it creates, a stale reading overwriting `latest_reading`, is removed by a one-comparison conditional upsert that breaks no first insert. Serial processing is only the fallback if `latest_reading` can't take a conditional write, and the message doesn't say it can't.\",\"reconstruction\":{\"problem\":\"`max_ack_pending: 1` plus the hand-written `with_retries` blocks the whole consumer for 62 s per failing reading, with 17 such stalls on 26 October.\",\"what_breaks\":\"The proposal itself keeps the same delays (2, 4, 8, 16, 32 s) and six attempts, but it lets redelivery run in parallel. A late redelivery can then overwrite a newer row. In the example, A (10:14:03) succeeds at 10:15:05 after C (10:15:03) and overwrites it, because `UPSERT_LATEST` sets `value` and `read_at` unconditionally. `latest_reading` then holds a 62 s old value until 10:15:33 and the live map shows it. The `readings` history table is not affected. The `freezer-temp-high` alert is probably not affected, but the rule's definition was not found.\",\"fix\":\"Approve the proposal as in `docs/proposals/redelivery.md` (changes to `ingest/handler.py`, `ingest/retry.py` and `deploy/consumer.yaml`). Also add `WHERE latest_reading.read_at < EXCLUDED.read_at` after the `DO UPDATE SET` clause of `UPSERT_LATEST` in `ingest/store.py`, so it overwrites only when the incoming reading is newer.\",\"cost\":\"One extra comparison per upsert, and nothing breaks, because a first insert for a device still succeeds. Separate known risk: with `max_deliver: 6`, an ack lost past `ack_wait: 90s` can insert a duplicate row via `INSERT_HISTORY`, which has no conflict guard. The message lists this as the next item.\"},\"follow_up_questions\":[],\"closing_answer\":\"I approve the proposal with the conditional `UPSERT_LATEST` added. I'll take up the `INSERT_HISTORY` duplicate-row risk as the next item before or alongside rollout.\"}",
+    "structured_output": {
+      "decision": "Approve the proposal with the amendment: add the conditional `WHERE latest_reading.read_at < EXCLUDED.read_at` to `UPSERT_LATEST` in `ingest/store.py`. The `INSERT_HISTORY` duplicate-row risk is handled as a separate follow-up item.",
+      "decision_reason": "The message shows that JetStream redelivery removes the 62 s consumer stall (17 stalls on 26 October). The one ordering hazard it creates, a stale reading overwriting `latest_reading`, is removed by a one-comparison conditional upsert that breaks no first insert. Serial processing is only the fallback if `latest_reading` can't take a conditional write, and the message doesn't say it can't.",
+      "reconstruction": {
+        "problem": "`max_ack_pending: 1` plus the hand-written `with_retries` blocks the whole consumer for 62 s per failing reading, with 17 such stalls on 26 October.",
+        "what_breaks": "The proposal itself keeps the same delays (2, 4, 8, 16, 32 s) and six attempts, but it lets redelivery run in parallel. A late redelivery can then overwrite a newer row. In the example, A (10:14:03) succeeds at 10:15:05 after C (10:15:03) and overwrites it, because `UPSERT_LATEST` sets `value` and `read_at` unconditionally. `latest_reading` then holds a 62 s old value until 10:15:33 and the live map shows it. The `readings` history table is not affected. The `freezer-temp-high` alert is probably not affected, but the rule's definition was not found.",
+        "fix": "Approve the proposal as in `docs/proposals/redelivery.md` (changes to `ingest/handler.py`, `ingest/retry.py` and `deploy/consumer.yaml`). Also add `WHERE latest_reading.read_at < EXCLUDED.read_at` after the `DO UPDATE SET` clause of `UPSERT_LATEST` in `ingest/store.py`, so it overwrites only when the incoming reading is newer.",
+        "cost": "One extra comparison per upsert, and nothing breaks, because a first insert for a device still succeeds. Separate known risk: with `max_deliver: 6`, an ack lost past `ack_wait: 90s` can insert a duplicate row via `INSERT_HISTORY`, which has no conflict guard. The message lists this as the next item."
+      },
+      "follow_up_questions": [],
+      "closing_answer": "I approve the proposal with the conditional `UPSERT_LATEST` added. I'll take up the `INSERT_HISTORY` duplicate-row risk as the next item before or alongside rollout."
+    },
+    "ttft_ms": 7398,
+    "type": "result",
+    "duration_ms": 7411,
+    "uuid": "edb4bcff-a184-449b-a786-52a918f021bd",
+    "ttft_stream_ms": 1377,
+    "time_to_request_ms": 468,
+    "first_content_frame_ms": 1377,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

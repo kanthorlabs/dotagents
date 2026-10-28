@@ -1,0 +1,129 @@
+{
+  "key": "26c6be1fbc631c46fc5389b88d612e9b0432c54ed6340570b3188b3c8168bec7",
+  "cost_usd": 0.0197993,
+  "reader": {
+    "decision": "Approve the replica for reads with a separate primary connection for the report_runs insert. Do not reschedule.",
+    "decision_reason": "Changing only the secret makes the job fail every night at the churn temp table, because the hot standby rejects writes. The split fixes that and keeps the heavy reads off the primary, which the log shows suffers an 88% CPU spike and a checkout p95 of 1,900 ms. Rescheduling keeps the same spike and only helps if some hour has near-zero checkout traffic.",
+    "reconstruction": {
+      "problem": "The nightly report job runs heavy reads on the primary (pg-osprey-1). From 01:00 to 01:22 this drives CPU to 88% and raises checkout API p95 from 340 ms to 1,900 ms. The goal is to move the job to the read replica (pg-osprey-2).",
+      "what_breaks": "If only the secret is switched to the replica, the connection and revenue_by_region work. churn_by_plan then runs CREATE TEMP TABLE, which the hot standby rejects. The job exits with an error, no PDF is written, and record_run never runs. It fails every night, and restartPolicy: Never means no retry.",
+      "fix": "Keep DATABASE_URL on osprey-primary and add REPLICA_DATABASE_URL from osprey-replica, key url. Replace the temp table with a CTE (WITH churn_window AS (...)) in CHURN_BY_PLAN, so churn_by_plan runs one execute. Open the read connection with REPLICA_DATABASE_URL. Open a short second connection to the primary only for the report_runs insert in record_run.",
+      "cost": "One extra connection and one extra secret. Replication-conflict cancellation of long queries on the standby is unchecked, because no file shows the standby settings, so the first run will show it. Lag (p99 2 s) does not matter for yesterday's data at 01:00. The reschedule alternative needs no code change but still has the 88% CPU spike, only at another hour."
+    },
+    "follow_up_questions": [],
+    "closing_answer": "Yes, I approve the replica for reads with a primary connection for the report_runs insert. I do not choose the reschedule. I will watch the first run for replication-conflict cancellations on the standby."
+  },
+  "raw": {
+    "duration_api_ms": 5874,
+    "stop_reason": "tool_use",
+    "session_id": "ff5c9529-e37c-4932-bcf8-b268ccd8e161",
+    "total_cost_usd": 0.0197993,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2757,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 857,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2757,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 857,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2757,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2757
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 857,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2757,
+        "webSearchRequests": 0,
+        "costUSD": 0.0197993,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2757,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve the replica for reads with a separate primary connection for the report_runs insert. Do not reschedule.\",\"decision_reason\":\"Changing only the secret makes the job fail every night at the churn temp table, because the hot standby rejects writes. The split fixes that and keeps the heavy reads off the primary, which the log shows suffers an 88% CPU spike and a checkout p95 of 1,900 ms. Rescheduling keeps the same spike and only helps if some hour has near-zero checkout traffic.\",\"reconstruction\":{\"problem\":\"The nightly report job runs heavy reads on the primary (pg-osprey-1). From 01:00 to 01:22 this drives CPU to 88% and raises checkout API p95 from 340 ms to 1,900 ms. The goal is to move the job to the read replica (pg-osprey-2).\",\"what_breaks\":\"If only the secret is switched to the replica, the connection and revenue_by_region work. churn_by_plan then runs CREATE TEMP TABLE, which the hot standby rejects. The job exits with an error, no PDF is written, and record_run never runs. It fails every night, and restartPolicy: Never means no retry.\",\"fix\":\"Keep DATABASE_URL on osprey-primary and add REPLICA_DATABASE_URL from osprey-replica, key url. Replace the temp table with a CTE (WITH churn_window AS (...)) in CHURN_BY_PLAN, so churn_by_plan runs one execute. Open the read connection with REPLICA_DATABASE_URL. Open a short second connection to the primary only for the report_runs insert in record_run.\",\"cost\":\"One extra connection and one extra secret. Replication-conflict cancellation of long queries on the standby is unchecked, because no file shows the standby settings, so the first run will show it. Lag (p99 2 s) does not matter for yesterday's data at 01:00. The reschedule alternative needs no code change but still has the 88% CPU spike, only at another hour.\"},\"follow_up_questions\":[],\"closing_answer\":\"Yes, I approve the replica for reads with a primary connection for the report_runs insert. I do not choose the reschedule. I will watch the first run for replication-conflict cancellations on the standby.\"}",
+    "structured_output": {
+      "decision": "Approve the replica for reads with a separate primary connection for the report_runs insert. Do not reschedule.",
+      "decision_reason": "Changing only the secret makes the job fail every night at the churn temp table, because the hot standby rejects writes. The split fixes that and keeps the heavy reads off the primary, which the log shows suffers an 88% CPU spike and a checkout p95 of 1,900 ms. Rescheduling keeps the same spike and only helps if some hour has near-zero checkout traffic.",
+      "reconstruction": {
+        "problem": "The nightly report job runs heavy reads on the primary (pg-osprey-1). From 01:00 to 01:22 this drives CPU to 88% and raises checkout API p95 from 340 ms to 1,900 ms. The goal is to move the job to the read replica (pg-osprey-2).",
+        "what_breaks": "If only the secret is switched to the replica, the connection and revenue_by_region work. churn_by_plan then runs CREATE TEMP TABLE, which the hot standby rejects. The job exits with an error, no PDF is written, and record_run never runs. It fails every night, and restartPolicy: Never means no retry.",
+        "fix": "Keep DATABASE_URL on osprey-primary and add REPLICA_DATABASE_URL from osprey-replica, key url. Replace the temp table with a CTE (WITH churn_window AS (...)) in CHURN_BY_PLAN, so churn_by_plan runs one execute. Open the read connection with REPLICA_DATABASE_URL. Open a short second connection to the primary only for the report_runs insert in record_run.",
+        "cost": "One extra connection and one extra secret. Replication-conflict cancellation of long queries on the standby is unchecked, because no file shows the standby settings, so the first run will show it. Lag (p99 2 s) does not matter for yesterday's data at 01:00. The reschedule alternative needs no code change but still has the 88% CPU spike, only at another hour."
+      },
+      "follow_up_questions": [],
+      "closing_answer": "Yes, I approve the replica for reads with a primary connection for the report_runs insert. I do not choose the reschedule. I will watch the first run for replication-conflict cancellations on the standby."
+    },
+    "ttft_ms": 6343,
+    "type": "result",
+    "duration_ms": 6362,
+    "uuid": "45ed6dd6-37bb-46d7-a752-5763255d3b1b",
+    "ttft_stream_ms": 1327,
+    "time_to_request_ms": 487,
+    "first_content_frame_ms": 1327,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

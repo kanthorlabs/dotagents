@@ -1,0 +1,133 @@
+{
+  "key": "82a12f6b5602e4834a46f8857010d21809966bda85fc45cd8a073e4369d85685",
+  "cost_usd": 0.0378484,
+  "reader": {
+    "decision": "Yes. Implement the bounded queue with load shedding in `ranker/server.py` first and leave the retry settings for the next item. Treat the cap value (700) as a starting point and tune it from real data.",
+    "decision_reason": "The message says unbounded dead work in `ranker` is what made the overload permanent, and a cap removes it within one service. The retry cuts are a separate second step. The numbers don't fully reconcile, so the cap needs tuning.",
+    "reconstruction": {
+      "problem": "On 22 October a 4-minute slowdown in `ranker` during an index merge became a 37-minute search outage. Each user search turned into about 9 `ranker` requests (3 `web` attempts x 3 `query-gw` tries), which put load at about 3x the 1,200 per second capacity. `ranker` has an unbounded queue and keeps scoring requests whose clients already gave up. After the merge ended, the backlog kept every new request waiting past its timeout, and the retries refilled the queue.",
+      "what_breaks": "Search stayed down with a 97% error rate and a queue of about 180,000 until the maintenance page stopped user traffic at 14:39. The system could not recover by itself. Search worked again at 14:41.",
+      "fix": "Cap the `ranker` queue (for example MAX_QUEUED = 700, about 600 ms of work) and return 429 immediately beyond it. `query-gw` does not retry 429 because `retry_on` lists only timeout and 5xx. A second step cuts `web` MAX_ATTEMPTS from 3 to 1 and `query-gw` retries from 2 to 0 or 1. Alternatives: remove retries only, or drop expired requests using a client deadline.",
+      "cost": "A few rejected searches during a real overload. A cap set too low sheds healthy traffic, so it needs tuning. Until the retry cuts land, `web` still retries 429s at 3x. The deadline alternative needs a new header and changes in all three layers. The load numbers do not fully reconcile."
+    },
+    "follow_up_questions": [
+      "Does `web`'s `fetchJson` retry on a 429? The message says it could not read `./http`, and if `web` retries 429s at 3x, shedding alone may not bring load down fast enough."
+    ],
+    "closing_answer": "Yes, implement the bounded queue in `ranker/server.py` first and leave the retry settings for the next item. Make the cap configurable and tune it from real data."
+  },
+  "raw": {
+    "duration_api_ms": 13644,
+    "stop_reason": "tool_use",
+    "session_id": "afe0022b-ebdc-4520-b52f-102d3e74f9d8",
+    "total_cost_usd": 0.0378484,
+    "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 4313,
+      "cache_read_input_tokens": 7184,
+      "output_tokens": 1987,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4313,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 913,
+          "cache_read_input_tokens": 5211,
+          "cache_creation_input_tokens": 1075,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1075
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 4,
+        "outputTokens": 1987,
+        "cacheReadInputTokens": 7184,
+        "cacheCreationInputTokens": 4313,
+        "webSearchRequests": 0,
+        "costUSD": 0.0378484,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4313,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 3,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Yes. Implement the bounded queue with load shedding in `ranker/server.py` first and leave the retry settings for the next item. Treat the cap value (700) as a starting point and tune it from real data.\",\"decision_reason\":\"The message says unbounded dead work in `ranker` is what made the overload permanent, and a cap removes it within one service. The retry cuts are a separate second step. The numbers don't fully reconcile, so the cap needs tuning.\",\"reconstruction\":{\"problem\":\"On 22 October a 4-minute slowdown in `ranker` during an index merge became a 37-minute search outage. Each user search turned into about 9 `ranker` requests (3 `web` attempts x 3 `query-gw` tries), which put load at about 3x the 1,200 per second capacity. `ranker` has an unbounded queue and keeps scoring requests whose clients already gave up. After the merge ended, the backlog kept every new request waiting past its timeout, and the retries refilled the queue.\",\"what_breaks\":\"Search stayed down with a 97% error rate and a queue of about 180,000 until the maintenance page stopped user traffic at 14:39. The system could not recover by itself. Search worked again at 14:41.\",\"fix\":\"Cap the `ranker` queue (for example MAX_QUEUED = 700, about 600 ms of work) and return 429 immediately beyond it. `query-gw` does not retry 429 because `retry_on` lists only timeout and 5xx. A second step cuts `web` MAX_ATTEMPTS from 3 to 1 and `query-gw` retries from 2 to 0 or 1. Alternatives: remove retries only, or drop expired requests using a client deadline.\",\"cost\":\"A few rejected searches during a real overload. A cap set too low sheds healthy traffic, so it needs tuning. Until the retry cuts land, `web` still retries 429s at 3x. The deadline alternative needs a new header and changes in all three layers. The load numbers do not fully reconcile.\"},\"follow_up_questions\":[\"Does `web`'s `fetchJson` retry on a 429? The message says it could not read `./http`, and if `web` retries 429s at 3x, shedding alone may not bring load down fast enough.\"],\"closing_answer\":\"Yes, implement the bounded queue in `ranker/server.py` first and leave the retry settings for the next item. Make the cap configurable and tune it from real data.\"}",
+    "structured_output": {
+      "decision": "Yes. Implement the bounded queue with load shedding in `ranker/server.py` first and leave the retry settings for the next item. Treat the cap value (700) as a starting point and tune it from real data.",
+      "decision_reason": "The message says unbounded dead work in `ranker` is what made the overload permanent, and a cap removes it within one service. The retry cuts are a separate second step. The numbers don't fully reconcile, so the cap needs tuning.",
+      "reconstruction": {
+        "problem": "On 22 October a 4-minute slowdown in `ranker` during an index merge became a 37-minute search outage. Each user search turned into about 9 `ranker` requests (3 `web` attempts x 3 `query-gw` tries), which put load at about 3x the 1,200 per second capacity. `ranker` has an unbounded queue and keeps scoring requests whose clients already gave up. After the merge ended, the backlog kept every new request waiting past its timeout, and the retries refilled the queue.",
+        "what_breaks": "Search stayed down with a 97% error rate and a queue of about 180,000 until the maintenance page stopped user traffic at 14:39. The system could not recover by itself. Search worked again at 14:41.",
+        "fix": "Cap the `ranker` queue (for example MAX_QUEUED = 700, about 600 ms of work) and return 429 immediately beyond it. `query-gw` does not retry 429 because `retry_on` lists only timeout and 5xx. A second step cuts `web` MAX_ATTEMPTS from 3 to 1 and `query-gw` retries from 2 to 0 or 1. Alternatives: remove retries only, or drop expired requests using a client deadline.",
+        "cost": "A few rejected searches during a real overload. A cap set too low sheds healthy traffic, so it needs tuning. Until the retry cuts land, `web` still retries 429s at 3x. The deadline alternative needs a new header and changes in all three layers. The load numbers do not fully reconcile."
+      },
+      "follow_up_questions": [
+        "Does `web`'s `fetchJson` retry on a 429? The message says it could not read `./http`, and if `web` retries 429s at 3x, shedding alone may not bring load down fast enough."
+      ],
+      "closing_answer": "Yes, implement the bounded queue in `ranker/server.py` first and leave the retry settings for the next item. Make the cap configurable and tune it from real data."
+    },
+    "ttft_ms": 7914,
+    "type": "result",
+    "duration_ms": 14016,
+    "uuid": "60d586be-1b28-430b-8d63-e60ae1752f33",
+    "ttft_stream_ms": 1812,
+    "time_to_request_ms": 361,
+    "first_content_frame_ms": 1812,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

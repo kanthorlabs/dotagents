@@ -1,0 +1,184 @@
+{
+  "key": "6820a86d097bf022cbbb3ae9052b4e7268321c266af257822880713dd85398c6",
+  "cost_usd": 0.037088,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Once the cache or audit log confirms step 4, restore the wrongly archived rows to `paid` and fix the migration condition.\" Matches the key: settle the flag value, then restore and add the filter.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Step 4 is not confirmed.\" The message marks the hide_archived value as unverified. Its statements on 0042, the README, 188 archived, the filter and the 3d-old cache all match the key.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message answers all four required questions. The reader's open questions are the cache value, which the message names as its next step, and the under-90-day row detail, which goes beyond the ruling.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Once the cache or audit log confirms the flag was on, restore the wrongly archived rows to paid and fix the migration condition.\" Problem and breaks also agree with the key.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "The message ends: \"Next step: read the cached flag value... After that, I can propose the exact migration fix and a restore query.\" That is a statement, not a question.",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "The only other option, \"Turning the flag off would only hide the problem,\" is rejected, not offered. No alternative is listed and no must_list entry exists.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10887,
+    "stop_reason": "tool_use",
+    "session_id": "ae315c97-6297-4b19-be32-c4a643783051",
+    "total_cost_usd": 0.037088,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5707,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1407,
+      "output_tokens_details": {
+        "thinking_tokens": 837
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5707,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1407,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5707,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5707
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1407,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5707,
+        "webSearchRequests": 0,
+        "costUSD": 0.037088,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 837,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5707,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Once the cache or audit log confirms step 4, restore the wrongly archived rows to `paid` and fix the migration condition.\\\" Matches the key: settle the flag value, then restore and add the filter.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Step 4 is not confirmed.\\\" The message marks the hide_archived value as unverified. Its statements on 0042, the README, 188 archived, the filter and the 3d-old cache all match the key.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message answers all four required questions. The reader's open questions are the cache value, which the message names as its next step, and the under-90-day row detail, which goes beyond the ruling.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Once the cache or audit log confirms the flag was on, restore the wrongly archived rows to paid and fix the migration condition.\\\" Problem and breaks also agree with the key.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"The message ends: \\\"Next step: read the cached flag value... After that, I can propose the exact migration fix and a restore query.\\\" That is a statement, not a question.\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"The only other option, \\\"Turning the flag off would only hide the problem,\\\" is rejected, not offered. No alternative is listed and no must_list entry exists.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Once the cache or audit log confirms step 4, restore the wrongly archived rows to `paid` and fix the migration condition.\" Matches the key: settle the flag value, then restore and add the filter.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Step 4 is not confirmed.\" The message marks the hide_archived value as unverified. Its statements on 0042, the README, 188 archived, the filter and the 3d-old cache all match the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message answers all four required questions. The reader's open questions are the cache value, which the message names as its next step, and the under-90-day row detail, which goes beyond the ruling.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Once the cache or audit log confirms the flag was on, restore the wrongly archived rows to paid and fix the migration condition.\" Problem and breaks also agree with the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "The message ends: \"Next step: read the cached flag value... After that, I can propose the exact migration fix and a restore query.\" That is a statement, not a question.",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "The only other option, \"Turning the flag off would only hide the problem,\" is rejected, not offered. No alternative is listed and no must_list entry exists.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 8372,
+    "type": "result",
+    "duration_ms": 11373,
+    "uuid": "2fd86338-ea7a-472b-8778-113d2c26f13e",
+    "ttft_stream_ms": 1829,
+    "time_to_request_ms": 485,
+    "first_content_frame_ms": 1829,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

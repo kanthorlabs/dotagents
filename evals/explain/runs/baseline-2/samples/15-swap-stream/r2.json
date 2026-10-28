@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 21288,
+  "stop_reason": "end_turn",
+  "session_id": "3cc69d24-da52-458a-ac11-f6d2742c3b0a",
+  "total_cost_usd": 0.0376502,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1995,
+    "cache_read_input_tokens": 23782,
+    "output_tokens": 2728,
+    "output_tokens_details": {
+      "thinking_tokens": 931
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1995,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2074,
+        "cache_read_input_tokens": 8252,
+        "cache_creation_input_tokens": 1329,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1329
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2728,
+      "cacheReadInputTokens": 23782,
+      "cacheCreationInputTokens": 1995,
+      "webSearchRequests": 0,
+      "costUSD": 0.0376502,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 931,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1995,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`export_contacts` in `app/exports.py` sends no byte until the whole CSV is built, so `edge-lb` closes the connection after 30 seconds of silence. Aelita recommends streaming the CSV in batches so bytes flow from the first second.\n\n**Existing behaviour**\n\n1. `export_contacts` runs `db.query` and loads every row for the tenant.\n2. It writes all rows into an `io.StringIO` buffer.\n3. It returns `Response(buffer.getvalue())` only after the buffer is complete.\n4. `edge-lb` has `idle_timeout_seconds: 30`, and the timer restarts on every upstream byte.\n\n**Timeline without the fix**\n\n1. A user at `bluefin-logistics` clicks Export. `db.query` loads 412880 rows in 12 seconds.\n2. `export_contacts` builds the buffer for 77 more seconds. No byte reaches `edge-lb`.\n3. At 30 seconds `edge-lb` closes the idle connection and returns 504.\n4. The gunicorn worker keeps building until 89 seconds, then writes to a closed connection.\n5. The user gets no file. The log shows the same failure at 09:12 and 14:02 on 2026-10-27.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `export_contacts` returns a streaming `Response` and sends the header row at once.\n3. It reads rows in batches of 1000 and yields CSV text per batch. Each batch resets the idle timer.\n4. The export ends at about 90 seconds. No silent gap passes 30 seconds, so the browser receives the full file with status 200.\n\n**What changes**\n\n- `app/exports.py`: `export_contacts` old behaviour is one `db.query` plus a `StringIO` buffer. New behaviour is a generator that yields the header, then CSV rows per batch from a cursor. `tenant_id` filtering stays the same.\n- `deploy/edge-lb.yaml`: no change.\n\n**Recommendation.** Aelita recommends streaming, because it removes the cause, which is the silent gap. It also drops memory use from the full 412880 rows to one batch. It costs a rewrite of one function.\n\n- **Can break:** `ferngrove.web` and `ferngrove.db` are not in this repository. I could not confirm that `Response` accepts a generator or that `db` offers a cursor. If either is missing, the fix needs a small helper in that package.\n- **Residual risk:** gunicorn `timeout = 120` still applies to the worker. A tenant that needs more than about 120 seconds would be killed mid-stream. Streaming also shortens the run, because the 77 second build step is mostly gone.\n\n**Alternative: raise `idle_timeout_seconds` in `edge-lb.yaml` to 120.** This is one line. It costs a longer idle window for every route, and it fails again when a tenant grows past the new limit. It becomes the primary only if streaming cannot be shipped soon.\n\n**Alternative: background job plus emailed link.** This has no timeout limit at any size. The stack has no job queue and no email service, and `docs/exports.md` says each new component needs an owner and on-call. It becomes the primary only if exports grow far beyond what one request can serve.\n\n**Question.** Should I implement streaming in `export_contacts` and check the `ferngrove.web` and `ferngrove.db` APIs first, or do you prefer one of the alternatives?",
+  "ttft_ms": 1589,
+  "type": "result",
+  "duration_ms": 21769,
+  "uuid": "a810008d-cf3b-4e34-be70-adaaa270bde5",
+  "ttft_stream_ms": 1186,
+  "time_to_request_ms": 474,
+  "first_content_frame_ms": 1186,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

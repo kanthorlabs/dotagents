@@ -1,0 +1,129 @@
+{
+  "key": "f0c0a8b8315b369a6a3e1eceb6545661f7269ba1641f7bee697b81df55c9131c",
+  "cost_usd": 0.0175273,
+  "reader": {
+    "decision": "Yes, record the corrected wording for Petra: key = path, query and negotiated format, with `negotiate` moved before `lookup` in `serve_image`.",
+    "decision_reason": "My summary was wrong on the fix: the key gets the negotiated format (avif/webp/orig), not the whole Accept header, which has 1,912 distinct values and would wreck the hit rate. Petra also needs the `serve_image` reorder, or the key cannot be built.",
+    "reconstruction": {
+      "problem": "The `img-edge` cache key is path plus query string only, so a WebP variant cached for Chrome is served to Safari 13, which cannot decode WebP.",
+      "what_breaks": "Safari 13 users see broken product images, for example Hanna Lind after Jonas Ek's Chrome request cached WebP for TR-1180.",
+      "fix": "Add the negotiated format (avif, webp or orig) to the key in `cache_key` in `edge/cache.py`, using `negotiate(request.headers.get(\"Accept\", \"\"))`. Move `negotiate` before `lookup` in `serve_image` in `edge/handler.py`.",
+      "cost": "Only 3 key variants per image, versus 1,912 if keyed on the raw Accept header. Safari 13 gets a cache miss on first request and renders and caches the original. The `serve_image` reorder is a required extra change for Petra."
+    },
+    "follow_up_questions": [],
+    "closing_answer": "Yes. Record the corrected wording for Petra: \"key = path, query and negotiated format, with `negotiate` moved before `lookup` in `serve_image`\"."
+  },
+  "raw": {
+    "duration_api_ms": 6204,
+    "stop_reason": "tool_use",
+    "session_id": "40609244-90b0-4eb6-ae59-ec8889aef0cd",
+    "total_cost_usd": 0.0175273,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2714,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 647,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2714,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 647,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2714,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2714
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 647,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2714,
+        "webSearchRequests": 0,
+        "costUSD": 0.0175273,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2714,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Yes, record the corrected wording for Petra: key = path, query and negotiated format, with `negotiate` moved before `lookup` in `serve_image`.\",\"decision_reason\":\"My summary was wrong on the fix: the key gets the negotiated format (avif/webp/orig), not the whole Accept header, which has 1,912 distinct values and would wreck the hit rate. Petra also needs the `serve_image` reorder, or the key cannot be built.\",\"reconstruction\":{\"problem\":\"The `img-edge` cache key is path plus query string only, so a WebP variant cached for Chrome is served to Safari 13, which cannot decode WebP.\",\"what_breaks\":\"Safari 13 users see broken product images, for example Hanna Lind after Jonas Ek's Chrome request cached WebP for TR-1180.\",\"fix\":\"Add the negotiated format (avif, webp or orig) to the key in `cache_key` in `edge/cache.py`, using `negotiate(request.headers.get(\\\"Accept\\\", \\\"\\\"))`. Move `negotiate` before `lookup` in `serve_image` in `edge/handler.py`.\",\"cost\":\"Only 3 key variants per image, versus 1,912 if keyed on the raw Accept header. Safari 13 gets a cache miss on first request and renders and caches the original. The `serve_image` reorder is a required extra change for Petra.\"},\"follow_up_questions\":[],\"closing_answer\":\"Yes. Record the corrected wording for Petra: \\\"key = path, query and negotiated format, with `negotiate` moved before `lookup` in `serve_image`\\\".\"}",
+    "structured_output": {
+      "decision": "Yes, record the corrected wording for Petra: key = path, query and negotiated format, with `negotiate` moved before `lookup` in `serve_image`.",
+      "decision_reason": "My summary was wrong on the fix: the key gets the negotiated format (avif/webp/orig), not the whole Accept header, which has 1,912 distinct values and would wreck the hit rate. Petra also needs the `serve_image` reorder, or the key cannot be built.",
+      "reconstruction": {
+        "problem": "The `img-edge` cache key is path plus query string only, so a WebP variant cached for Chrome is served to Safari 13, which cannot decode WebP.",
+        "what_breaks": "Safari 13 users see broken product images, for example Hanna Lind after Jonas Ek's Chrome request cached WebP for TR-1180.",
+        "fix": "Add the negotiated format (avif, webp or orig) to the key in `cache_key` in `edge/cache.py`, using `negotiate(request.headers.get(\"Accept\", \"\"))`. Move `negotiate` before `lookup` in `serve_image` in `edge/handler.py`.",
+        "cost": "Only 3 key variants per image, versus 1,912 if keyed on the raw Accept header. Safari 13 gets a cache miss on first request and renders and caches the original. The `serve_image` reorder is a required extra change for Petra."
+      },
+      "follow_up_questions": [],
+      "closing_answer": "Yes. Record the corrected wording for Petra: \"key = path, query and negotiated format, with `negotiate` moved before `lookup` in `serve_image`\"."
+    },
+    "ttft_ms": 6551,
+    "type": "result",
+    "duration_ms": 6567,
+    "uuid": "1a411d38-e8f1-4e11-b558-c53be8546aa8",
+    "ttft_stream_ms": 3093,
+    "time_to_request_ms": 364,
+    "first_content_frame_ms": 3093,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

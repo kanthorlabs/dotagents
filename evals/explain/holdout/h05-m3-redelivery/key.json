@@ -1,0 +1,94 @@
+{
+  "measures": ["M1", "M2", "M3", "M4", "M5", "M7"],
+  "correct_recommendations": [
+    "Approve the proposal with one addition: guard the latest_reading upsert so that it only overwrites an older row, for example WHERE latest_reading.read_at < EXCLUDED.read_at, because redelivery lets readings of one device complete out of order."
+  ],
+  "invalid_options": [
+    "Approve the proposal unchanged.",
+    "Keep the hand-written retry loop unchanged.",
+    "Keep with_retries and only raise max_ack_pending.",
+    "Reject the proposal because redelivery loses messages."
+  ],
+  "root_cause": "Not a bug. with_retries sleeps inside the handler, and max_ack_pending 1 lets only one message be in flight, so one transient failure blocks the whole consumer for up to 62 s. The proposal removes the block, but it also removes the strict order that max_ack_pending 1 gave, and the latest_reading upsert has no guard against an older reading.",
+  "dependent_facts": [
+    {
+      "fact": "Current retry",
+      "true_value": "with_retries tries 6 times with sleeps of 2, 4, 8, 16 and 32 s, 62 s in total, inside the handler; after the last failure the handler publishes to ingest.dlq and acks",
+      "source": "ingest/retry.py and ingest/handler.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Current consumer settings",
+      "true_value": "max_ack_pending 1, max_deliver 1, ack_wait 90s",
+      "source": "deploy/consumer.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Cost of the stalls",
+      "true_value": "17 stalls of 62 s on 26 October; lag peak 41,200 messages during the failover",
+      "source": "logs/lag-2026-10-26.txt",
+      "verifiable": true
+    },
+    {
+      "fact": "Proposed settings",
+      "true_value": "nak with delays 2 to 32 s, DLQ at the 6th delivery, max_ack_pending 256, max_deliver 6",
+      "source": "docs/proposals/redelivery.md",
+      "verifiable": true
+    },
+    {
+      "fact": "latest_reading upsert",
+      "true_value": "ON CONFLICT DO UPDATE sets value and read_at with no read_at comparison",
+      "source": "ingest/store.py",
+      "verifiable": true
+    },
+    {
+      "fact": "History insert",
+      "true_value": "the readings insert and the latest_reading upsert run in one transaction",
+      "source": "ingest/store.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Readers of latest_reading",
+      "true_value": "the live map and the alert rule freezer-temp-high",
+      "source": "docs/consumers.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why change it?",
+      "expected_answer": "One transient error blocks the whole consumer for up to 62 s because max_ack_pending is 1; 17 stalls and a lag peak of 41,200 on 26 October."
+    },
+    {
+      "question": "How does it work now?",
+      "expected_answer": "with_retries sleeps 2, 4, 8, 16, 32 s inside the handler, then the handler sends the reading to ingest.dlq and acks."
+    },
+    {
+      "question": "What is removed?",
+      "expected_answer": "ingest/retry.py and the with_retries call; max_ack_pending 1 and max_deliver 1 change to 256 and 6."
+    },
+    {
+      "question": "What stays?",
+      "expected_answer": "The same delays, the dead-letter subject ingest.dlq after the 6th attempt, explicit ack, and the history insert in one transaction with the upsert."
+    },
+    {
+      "question": "What can break?",
+      "expected_answer": "Readings of one device can complete out of order; without a read_at guard an older redelivered reading overwrites a newer latest_reading row that the live map and freezer-temp-high read."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Keep strict per-device order with one consumer per device partition and max_ack_pending 1 each",
+      "trade_off": "Keeps the order without a guard, but needs partitioned subjects and many consumers, and a stall still blocks its partition.",
+      "primary_when": "Consumers other than latest_reading need strict order per device.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve the proposal with the read_at guard, or reject it.",
+  "understanding": {
+    "problem": "The in-handler retry loop blocks the single in-flight slot of the consumer for up to 62 s per transient error.",
+    "breaks": "Today: consumer lag and stalls. With the proposal unchanged: an older reading can overwrite a newer latest_reading row.",
+    "fix": "JetStream redelivery with nak delays and max_ack_pending 256, plus a read_at guard on the latest_reading upsert.",
+    "cost": "Delete retry.py, change the handler and consumer.yaml, add one WHERE clause to the upsert."
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 5989,
+  "stop_reason": "end_turn",
+  "session_id": "9cd56c74-14b2-4bde-b04d-fa1b991488c2",
+  "total_cost_usd": 0.0150245,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1334,
+    "cache_read_input_tokens": 23665,
+    "output_tokens": 731,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1334,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 176,
+        "cache_read_input_tokens": 8194,
+        "cache_creation_input_tokens": 696,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 696
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 731,
+      "cacheReadInputTokens": 23665,
+      "cacheCreationInputTokens": 1334,
+      "webSearchRequests": 0,
+      "costUSD": 0.0150245,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 0,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1334,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "CI runs Node.js 22.11.0. The workflow `.github/workflows/ci.yml:13` sets `node-version-file: .nvmrc`, and `.nvmrc:1` contains `22.11.0`.\n\n**Other constraint.** `package.json:6` declares `\"engines\": {\"node\": \">=20\"}`. That only states the supported range. CI does not use it.\n\n**Matrix.** The workflow has a single `test` job on `ubuntu-24.04` with no version matrix. Node 20 is never tested in CI.",
+  "ttft_ms": 1169,
+  "type": "result",
+  "duration_ms": 6300,
+  "uuid": "dee232df-2fba-4676-91f4-c4d050f8eddb",
+  "ttft_stream_ms": 923,
+  "time_to_request_ms": 276,
+  "first_content_frame_ms": 923,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

@@ -1,0 +1,172 @@
+{
+  "key": "1620f8402a75f8436c9d90fb986df3220a5939c4299e77ac2af928c5443d8bb9",
+  "cost_usd": 0.0551118,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends `cache: pnpm` on `setup-node`\" matches the correct recommendation: cache the pnpm store via setup-node."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"3 min 40 s\", \"35 s\" from \"20 manual runs\", \"412 runs\", \"21 runner hours and about 10 USD\", and 1.1 GB vs 10 GB all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Reader: \"Does the repository have a lockfile that `cache: pnpm` can key on?\" The message says \"I found no lockfile\" and leaves it open. The ruling depends on it."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"CI ... has no pnpm store cache. Every run downloads 1.1 GB\"; nothing broken; fix is `cache: pnpm`; cost is one line plus cache use. This matches the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you want the team pitch built on `cache: pnpm`, with a hit-rate check one week after merge?\" The reader answered \"Yes\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"explicit `actions/cache` on the store path... control over the key... about 10 more lines... primary if the hit rate turns out low.\" It matches the valid alternative and states a trade-off and a condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 17863,
+    "stop_reason": "tool_use",
+    "session_id": "874c0293-d881-4164-b3f5-4c0c552b1282",
+    "total_cost_usd": 0.0551118,
+    "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 7835,
+      "cache_read_input_tokens": 9438,
+      "output_tokens": 2282,
+      "output_tokens_details": {
+        "thinking_tokens": 1155
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 7835,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 561,
+          "cache_read_input_tokens": 7578,
+          "cache_creation_input_tokens": 2117,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2117
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 4,
+        "outputTokens": 2282,
+        "cacheReadInputTokens": 9438,
+        "cacheCreationInputTokens": 7835,
+        "webSearchRequests": 0,
+        "costUSD": 0.0551118,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1155,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 7835,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 3,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends `cache: pnpm` on `setup-node`\\\" matches the correct recommendation: cache the pnpm store via setup-node.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"3 min 40 s\\\", \\\"35 s\\\" from \\\"20 manual runs\\\", \\\"412 runs\\\", \\\"21 runner hours and about 10 USD\\\", and 1.1 GB vs 10 GB all match the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Reader: \\\"Does the repository have a lockfile that `cache: pnpm` can key on?\\\" The message says \\\"I found no lockfile\\\" and leaves it open. The ruling depends on it.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"CI ... has no pnpm store cache. Every run downloads 1.1 GB\\\"; nothing broken; fix is `cache: pnpm`; cost is one line plus cache use. This matches the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you want the team pitch built on `cache: pnpm`, with a hit-rate check one week after merge?\\\" The reader answered \\\"Yes\\\".\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"explicit `actions/cache` on the store path... control over the key... about 10 more lines... primary if the hit rate turns out low.\\\" It matches the valid alternative and states a trade-off and a condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends `cache: pnpm` on `setup-node`\" matches the correct recommendation: cache the pnpm store via setup-node."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"3 min 40 s\", \"35 s\" from \"20 manual runs\", \"412 runs\", \"21 runner hours and about 10 USD\", and 1.1 GB vs 10 GB all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Reader: \"Does the repository have a lockfile that `cache: pnpm` can key on?\" The message says \"I found no lockfile\" and leaves it open. The ruling depends on it."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"CI ... has no pnpm store cache. Every run downloads 1.1 GB\"; nothing broken; fix is `cache: pnpm`; cost is one line plus cache use. This matches the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you want the team pitch built on `cache: pnpm`, with a hit-rate check one week after merge?\" The reader answered \"Yes\"."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"explicit `actions/cache` on the store path... control over the key... about 10 more lines... primary if the hit rate turns out low.\" It matches the valid alternative and states a trade-off and a condition."
+        }
+      ]
+    },
+    "ttft_ms": 11520,
+    "type": "result",
+    "duration_ms": 18383,
+    "uuid": "33ce22aa-4047-44c5-be66-509e993b3531",
+    "ttft_stream_ms": 1870,
+    "time_to_request_ms": 496,
+    "first_content_frame_ms": 1870,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

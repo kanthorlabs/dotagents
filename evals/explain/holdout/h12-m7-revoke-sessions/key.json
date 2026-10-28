@@ -1,0 +1,88 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "In change_password, delete every refresh_tokens row of the user before it issues the new tokens for the current device. Other devices fail their next refresh, and their access tokens expire within 15 minutes."
+  ],
+  "invalid_options": [
+    "Rotate SIGNING_KEY on a password change, because it logs out every user.",
+    "Shorten REFRESH_TTL, because other devices stay logged in until their refresh token expires.",
+    "Shorten ACCESS_TTL only, because the refresh tokens keep working.",
+    "Delete every session of the user including the current device, because the requirement keeps that device logged in.",
+    "Change nothing."
+  ],
+  "root_cause": "change_password updates the password hash and issues new tokens, but it leaves the user's other rows in refresh_tokens in place. Those refresh tokens stay valid for up to 30 days, so other devices keep getting new 15-minute access tokens.",
+  "dependent_facts": [
+    {
+      "fact": "Token lifetimes",
+      "true_value": "access token JWT 15 minutes; refresh token 30 days, stored hashed in refresh_tokens",
+      "source": "api/auth/tokens.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Password change",
+      "true_value": "change_password updates password_hash and issues new tokens; it does not touch refresh_tokens",
+      "source": "api/auth/password.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Access token check",
+      "true_value": "the middleware checks signature and expiry only, with no database or Redis read",
+      "source": "api/auth/middleware.py and docs/architecture.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Requirement",
+      "true_value": "other sessions end within 15 minutes of a password change; the current device stays logged in",
+      "source": "docs/security/SR-12.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Load and Redis",
+      "true_value": "about 2,500 requests per second at peak; Redis quayside-cache is available",
+      "source": "docs/architecture.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Signing key",
+      "true_value": "one HS256 key for all users; a rotation logs out every user",
+      "source": "deploy/secrets.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why do other devices stay logged in?",
+      "expected_answer": "Their refresh tokens stay valid for up to 30 days, and each refresh issues a new access token."
+    },
+    {
+      "question": "Does the fix meet the 15-minute requirement?",
+      "expected_answer": "Yes. Other devices keep their current access token for at most 15 minutes and then fail to refresh."
+    },
+    {
+      "question": "Does the device that changed the password stay logged in?",
+      "expected_answer": "Yes. change_password issues new tokens for it after the delete."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Per-request revocation check: store a token version or password_changed_at per user, put it in the access token, and check it in the middleware through Redis",
+      "trade_off": "Ends other sessions at once instead of within 15 minutes, but adds a Redis read to every request at about 2,500 per second and a new failure mode when Redis is down.",
+      "primary_when": "The requirement tightens to immediate logout.",
+      "must_list": true
+    }
+  ],
+  "closing_decision": "One decision: approve the refresh token deletion in change_password, choose the per-request revocation check, or a single follow-up on the chosen fix.",
+  "understanding": {
+    "problem": "A password change leaves the other refresh tokens of the user valid.",
+    "breaks": "Other devices, for example a stolen phone, stay logged in for up to 30 days.",
+    "fix": "Delete the other refresh tokens of the user in change_password.",
+    "cost": "One DELETE statement in change_password; other devices keep access for up to 15 minutes."
+  }
+}

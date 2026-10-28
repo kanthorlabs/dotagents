@@ -1,0 +1,184 @@
+{
+  "key": "765f16cfde780963ae6059005d456041a17cd1ae3b2cc6ccd3470ddaab763f15",
+  "cost_usd": 0.036256000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the migration fix plus the repair.\" This matches the key's restore-and-add-90-day-filter recommendation.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"`northwind` had `hide_archived` on in the cached flags\" is stated as fact in the opening, but the key says the value is unknown. It also says \"so `hide_archived` was off for them\" for acme and globex.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message answers all four required questions: why the report is empty, why only northwind, what is unknown (cache or flagd audit log), and that 0042 lacks the 90-day filter. The reader's one question, about an archived_at timestamp, is detail beyond the ruling.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "The reader fix is \"Add AND issued_at < now() - interval '90 days' to migration 0042. Add a repair migration\". The key says no fix is chosen yet and waits on the hide_archived value.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "\"Should Aelita draft the 0042 fix and the repair migration, or remove the `hide_archived` filter from the report?\" The key's closing decision is to get the hide_archived evidence or restore the invoices.",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: stop `hide_archived` from hiding invoices in reports. Remove the flag from `build_monthly_report`.\" This is the invalid option 'Change report-builder to ignore hide_archived'.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8402,
+    "stop_reason": "tool_use",
+    "session_id": "e2166860-0945-44a0-892e-604cd29336e2",
+    "total_cost_usd": 0.036256000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6084,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1173,
+      "output_tokens_details": {
+        "thinking_tokens": 543
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6084,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1173,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6084,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6084
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1173,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6084,
+        "webSearchRequests": 0,
+        "costUSD": 0.036256000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 543,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6084,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the migration fix plus the repair.\\\" This matches the key's restore-and-add-90-day-filter recommendation.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"`northwind` had `hide_archived` on in the cached flags\\\" is stated as fact in the opening, but the key says the value is unknown. It also says \\\"so `hide_archived` was off for them\\\" for acme and globex.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message answers all four required questions: why the report is empty, why only northwind, what is unknown (cache or flagd audit log), and that 0042 lacks the 90-day filter. The reader's one question, about an archived_at timestamp, is detail beyond the ruling.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"The reader fix is \\\"Add AND issued_at < now() - interval '90 days' to migration 0042. Add a repair migration\\\". The key says no fix is chosen yet and waits on the hide_archived value.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"\\\"Should Aelita draft the 0042 fix and the repair migration, or remove the `hide_archived` filter from the report?\\\" The key's closing decision is to get the hide_archived evidence or restore the invoices.\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: stop `hide_archived` from hiding invoices in reports. Remove the flag from `build_monthly_report`.\\\" This is the invalid option 'Change report-builder to ignore hide_archived'.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the migration fix plus the repair.\" This matches the key's restore-and-add-90-day-filter recommendation.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"`northwind` had `hide_archived` on in the cached flags\" is stated as fact in the opening, but the key says the value is unknown. It also says \"so `hide_archived` was off for them\" for acme and globex.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message answers all four required questions: why the report is empty, why only northwind, what is unknown (cache or flagd audit log), and that 0042 lacks the 90-day filter. The reader's one question, about an archived_at timestamp, is detail beyond the ruling.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "The reader fix is \"Add AND issued_at < now() - interval '90 days' to migration 0042. Add a repair migration\". The key says no fix is chosen yet and waits on the hide_archived value.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "\"Should Aelita draft the 0042 fix and the repair migration, or remove the `hide_archived` filter from the report?\" The key's closing decision is to get the hide_archived evidence or restore the invoices.",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: stop `hide_archived` from hiding invoices in reports. Remove the flag from `build_monthly_report`.\" This is the invalid option 'Change report-builder to ignore hide_archived'.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 5423,
+    "type": "result",
+    "duration_ms": 8828,
+    "uuid": "6308b880-18f2-4343-8eac-e97a248bcb56",
+    "ttft_stream_ms": 1234,
+    "time_to_request_ms": 428,
+    "first_content_frame_ms": 1235,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

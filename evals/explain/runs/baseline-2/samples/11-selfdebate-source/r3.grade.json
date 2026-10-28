@@ -1,0 +1,172 @@
+{
+  "key": "2cd7bf51a6a5412d9b5a689d968f2970cc4947ba2db06039809651bc27eec48f",
+  "cost_usd": 0.035744,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends removing the crontab line. It fixes the cause with no code change\" matches the key's primary fix."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"enqueued=18412\" from both runs; checklist line \"was never ticked\"; insert \"does no check for an existing row\". All match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Answers cause, checklist origin, removal with only the Kubernetes CronJob staying, and why the two fixes fail. With the fix \"The pod enqueues 18412 rows, one per subscriber\" covers what can break."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Delete line 3... from ops-box-2/crontab\"; cause is the same job scheduled twice; cost is one edit. All agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve deleting the `digest_builder` line... or do you want the unique index instead?\" The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "Unique index offered with trade-off \"costs a migration... delete the existing duplicate rows\" and condition \"primary if more than one scheduler may legitimately exist\"."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8749,
+    "stop_reason": "tool_use",
+    "session_id": "003b4174-d954-4fe8-86c8-0ddd2258b8a8",
+    "total_cost_usd": 0.035744,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6221,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1067,
+      "output_tokens_details": {
+        "thinking_tokens": 567
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6221,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1067,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6221,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6221
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1067,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6221,
+        "webSearchRequests": 0,
+        "costUSD": 0.035744,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 567,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6221,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends removing the crontab line. It fixes the cause with no code change\\\" matches the key's primary fix.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"enqueued=18412\\\" from both runs; checklist line \\\"was never ticked\\\"; insert \\\"does no check for an existing row\\\". All match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Answers cause, checklist origin, removal with only the Kubernetes CronJob staying, and why the two fixes fail. With the fix \\\"The pod enqueues 18412 rows, one per subscriber\\\" covers what can break.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Delete line 3... from ops-box-2/crontab\\\"; cause is the same job scheduled twice; cost is one edit. All agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve deleting the `digest_builder` line... or do you want the unique index instead?\\\" The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"Unique index offered with trade-off \\\"costs a migration... delete the existing duplicate rows\\\" and condition \\\"primary if more than one scheduler may legitimately exist\\\".\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends removing the crontab line. It fixes the cause with no code change\" matches the key's primary fix."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"enqueued=18412\" from both runs; checklist line \"was never ticked\"; insert \"does no check for an existing row\". All match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Answers cause, checklist origin, removal with only the Kubernetes CronJob staying, and why the two fixes fail. With the fix \"The pod enqueues 18412 rows, one per subscriber\" covers what can break."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Delete line 3... from ops-box-2/crontab\"; cause is the same job scheduled twice; cost is one edit. All agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve deleting the `digest_builder` line... or do you want the unique index instead?\" The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "Unique index offered with trade-off \"costs a migration... delete the existing duplicate rows\" and condition \"primary if more than one scheduler may legitimately exist\"."
+        }
+      ]
+    },
+    "ttft_ms": 6710,
+    "type": "result",
+    "duration_ms": 9217,
+    "uuid": "f278c238-a02b-4206-b967-0a996d2e7133",
+    "ttft_stream_ms": 1851,
+    "time_to_request_ms": 467,
+    "first_content_frame_ms": 1851,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

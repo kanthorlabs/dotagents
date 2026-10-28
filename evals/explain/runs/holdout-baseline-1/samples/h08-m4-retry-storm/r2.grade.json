@@ -1,0 +1,172 @@
+{
+  "key": "7bbec4ac3a9ff776922a80aa924529a32cc616c8a4bff1265c7a8bc853c76a22",
+  "cost_usd": 0.044719999999999996,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends a bounded queue with load shedding in `ranker/server.py`, plus fewer retry layers.\" Matches the bounded-queue and one-retry-layer recommendations."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"3 `web` attempts \u00d7 3 `query-gw` tries = 9\"; 1,200 capacity, 400 searches/s, 180,000 queue, 14:41 recovery all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Answers all three: retries plus abandoned backlog keep overload; 3\u00d73=9; \"maintenance page stops user traffic... queue drains in about 2 minutes.\" The reader's 429-retry question is not needed to rule."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Each user search turned into about 9 `ranker` requests... `ranker` has an unbounded queue\"; fix: cap queue and cut retries. This agrees with the key in substance."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should I implement the bounded queue in `ranker/server.py` first and leave the retry settings for the next item?\" There is one question and one decision, and the reader answered \"Yes\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: drop expired requests... needs a new header and changes in all three layers.\" It states a cost but no condition under which it would become the primary."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 13345,
+    "stop_reason": "tool_use",
+    "session_id": "40687fd0-7184-4fef-9b00-dca0faa0fedf",
+    "total_cost_usd": 0.044719999999999996,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6750,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1753,
+      "output_tokens_details": {
+        "thinking_tokens": 1194
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6750,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1753,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6750,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6750
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1753,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6750,
+        "webSearchRequests": 0,
+        "costUSD": 0.044719999999999996,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1194,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6750,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends a bounded queue with load shedding in `ranker/server.py`, plus fewer retry layers.\\\" Matches the bounded-queue and one-retry-layer recommendations.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"3 `web` attempts \u00d7 3 `query-gw` tries = 9\\\"; 1,200 capacity, 400 searches/s, 180,000 queue, 14:41 recovery all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Answers all three: retries plus abandoned backlog keep overload; 3\u00d73=9; \\\"maintenance page stops user traffic... queue drains in about 2 minutes.\\\" The reader's 429-retry question is not needed to rule.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Each user search turned into about 9 `ranker` requests... `ranker` has an unbounded queue\\\"; fix: cap queue and cut retries. This agrees with the key in substance.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should I implement the bounded queue in `ranker/server.py` first and leave the retry settings for the next item?\\\" There is one question and one decision, and the reader answered \\\"Yes\\\".\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: drop expired requests... needs a new header and changes in all three layers.\\\" It states a cost but no condition under which it would become the primary.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends a bounded queue with load shedding in `ranker/server.py`, plus fewer retry layers.\" Matches the bounded-queue and one-retry-layer recommendations."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"3 `web` attempts \u00d7 3 `query-gw` tries = 9\"; 1,200 capacity, 400 searches/s, 180,000 queue, 14:41 recovery all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Answers all three: retries plus abandoned backlog keep overload; 3\u00d73=9; \"maintenance page stops user traffic... queue drains in about 2 minutes.\" The reader's 429-retry question is not needed to rule."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Each user search turned into about 9 `ranker` requests... `ranker` has an unbounded queue\"; fix: cap queue and cut retries. This agrees with the key in substance."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should I implement the bounded queue in `ranker/server.py` first and leave the retry settings for the next item?\" There is one question and one decision, and the reader answered \"Yes\"."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: drop expired requests... needs a new header and changes in all three layers.\" It states a cost but no condition under which it would become the primary."
+        }
+      ]
+    },
+    "ttft_ms": 10797,
+    "type": "result",
+    "duration_ms": 13907,
+    "uuid": "de70e71f-6da8-4153-bfe7-3fde0a8b29a2",
+    "ttft_stream_ms": 1706,
+    "time_to_request_ms": 561,
+    "first_content_frame_ms": 1706,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

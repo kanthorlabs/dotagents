@@ -1,0 +1,152 @@
+{
+  "key": "e09cc4086429b573404c3e0bd2d0d1ff1732d4784d7a2360fd2e9f544195a517",
+  "cost_usd": 0.030536,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends blocking the merge until B1 to B4 are fixed.\" This matches the key: block, verify before the ledger, and dedupe on event id."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"A forged request changes the ledger and then gets a 400\"; \"handle never records the event id\"; the dev-secret default, the == comparison, the payload log, _unused_helper and the ValueError all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Reader: \"Block the merge. B1 to B4 must be fixed in this PR.\" All three required questions are answered. The reader's follow-ups (production exposure, transaction mechanism) go beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"writes to the ledger (credit/debit) before it verifies the signature\"; fix \"call verify first... store the event id... skip already-processed events\". This matches the key's problem, breaks and fix. Cost is n/a."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 6425,
+    "stop_reason": "tool_use",
+    "session_id": "24587d65-1884-4b17-aee0-b9d0651d8b8f",
+    "total_cost_usd": 0.030536,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5474,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 845,
+      "output_tokens_details": {
+        "thinking_tokens": 435
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5474,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 845,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5474,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5474
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 845,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5474,
+        "webSearchRequests": 0,
+        "costUSD": 0.030536,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 435,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5474,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends blocking the merge until B1 to B4 are fixed.\\\" This matches the key: block, verify before the ledger, and dedupe on event id.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"A forged request changes the ledger and then gets a 400\\\"; \\\"handle never records the event id\\\"; the dev-secret default, the == comparison, the payload log, _unused_helper and the ValueError all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Reader: \\\"Block the merge. B1 to B4 must be fixed in this PR.\\\" All three required questions are answered. The reader's follow-ups (production exposure, transaction mechanism) go beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"writes to the ledger (credit/debit) before it verifies the signature\\\"; fix \\\"call verify first... store the event id... skip already-processed events\\\". This matches the key's problem, breaks and fix. Cost is n/a.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends blocking the merge until B1 to B4 are fixed.\" This matches the key: block, verify before the ledger, and dedupe on event id."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"A forged request changes the ledger and then gets a 400\"; \"handle never records the event id\"; the dev-secret default, the == comparison, the payload log, _unused_helper and the ValueError all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Reader: \"Block the merge. B1 to B4 must be fixed in this PR.\" All three required questions are answered. The reader's follow-ups (production exposure, transaction mechanism) go beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"writes to the ledger (credit/debit) before it verifies the signature\"; fix \"call verify first... store the event id... skip already-processed events\". This matches the key's problem, breaks and fix. Cost is n/a."
+        }
+      ]
+    },
+    "ttft_ms": 4710,
+    "type": "result",
+    "duration_ms": 6820,
+    "uuid": "e8bebff6-e2ca-4bb6-b831-4c17d1c51ed4",
+    "ttft_stream_ms": 1670,
+    "time_to_request_ms": 393,
+    "first_content_frame_ms": 1670,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

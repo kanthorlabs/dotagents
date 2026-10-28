@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 16919,
+  "stop_reason": "end_turn",
+  "session_id": "a6384dd6-1887-4479-9c3c-b10bb3c51191",
+  "total_cost_usd": 0.0355147,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 2573,
+    "cache_read_input_tokens": 34367,
+    "output_tokens": 2177,
+    "output_tokens_details": {
+      "thinking_tokens": 574
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2573,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 977,
+        "cache_read_input_tokens": 9672,
+        "cache_creation_input_tokens": 821,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 821
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 2177,
+      "cacheReadInputTokens": 34367,
+      "cacheCreationInputTokens": 2573,
+      "webSearchRequests": 0,
+      "costUSD": 0.0355147,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 574,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2573,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling recorded.** I could not write it to `docs/upgrade-plan.md` because editing is disabled in this session. I quote it back instead: \"Upgrade `pg_partman` to 5.1 on 14 first. Rejected: drop `pg_partman`.\"\n\nThe second open item is the date of step 3, the `pg_upgrade --link` window on `pg-thornbury-1`. Aelita recommends **Sunday 8 November 2026, 02:00 UTC**.\n\n**Timeline without a fixed date**\n\n1. Step 1 runs on Wednesday 4 November at 10:00 UTC, the first slot after the freeze.\n2. The `pg_partman` 5.1 job runs on Thursday 5 November at 03:30 UTC. This is nightly run 1.\n3. The job runs on Friday 6 November at 03:30 UTC. This is nightly run 2, and the plan can now proceed.\n4. The date of step 3 is still open. Saturday 7 November is the next night, and the deadline is 12 November.\n5. The window slips to a weekday at about 130 writes per second. Any further slip reaches 12 November.\n6. PostgreSQL 14 reaches end of life and audit requirement AR-7 fails.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. `pg-thornbury-1` is scheduled for Sunday 8 November at 02:00 UTC. Traffic is about 40 writes per second, the lowest of the week.\n5. `pg_upgrade --link` takes 14 min 10 s, so downtime ends at about 02:15. `vacuumdb --analyze-in-stages` runs about 38 minutes and ends at about 02:55. This is before the 03:30 `pg_partman` job.\n6. The cluster runs PostgreSQL 16 four days before 12 November. Those four days are the buffer for a rerun.\n\n**What changes**\n\n- `docs/upgrade-plan.md`: Schedule line \"The date of step 3 is open\" becomes \"Step 3 runs on Sunday 8 November 2026, 02:00 UTC\".\n\n**Recommendation.** Aelita recommends Sunday 8 November. It has the lowest write load, and both steps finish before the 03:30 job. It leaves Monday 9 to Wednesday 11 November as retry nights. The cost is that a failed step 2 pushes the window to a weekday at 130 writes per second. Signe Aaberg also needs to work on a Sunday night.\n\n**Alternative: Saturday 7 November, 02:00 UTC.** It leaves one more retry night, but it carries about 95 writes per second and comes only one night after nightly run 2. It becomes the primary if Signe Aaberg cannot work on Sunday.\n\n**Question.** Do we book step 3 for Sunday 8 November 2026 at 02:00 UTC, or for another night?",
+  "ttft_ms": 1588,
+  "type": "result",
+  "duration_ms": 17478,
+  "uuid": "69838a98-0fe7-4e9b-a259-ea34e67a12ab",
+  "ttft_stream_ms": 1108,
+  "time_to_request_ms": 522,
+  "first_content_frame_ms": 1108,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

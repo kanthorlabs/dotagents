@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 23964,
+  "stop_reason": "end_turn",
+  "session_id": "7672cf88-7063-405c-8dc9-80fbe55b5538",
+  "total_cost_usd": 0.048687499999999995,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 3373,
+    "cache_read_input_tokens": 23735,
+    "output_tokens": 3281,
+    "output_tokens_details": {
+      "thinking_tokens": 1192
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3373,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2360,
+        "cache_read_input_tokens": 8468,
+        "cache_creation_input_tokens": 2173,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2173
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 3281,
+      "cacheReadInputTokens": 23735,
+      "cacheCreationInputTokens": 3373,
+      "webSearchRequests": 0,
+      "costUSD": 0.048687499999999995,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1192,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 3373,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 10,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "The Monday digest goes out twice because the `digest-builder` job runs on two schedulers: the Kubernetes CronJob and the old crontab on `ops-box-2`. Aelita recommends deleting the crontab line, which removes the cause. Neither of your two fixes does that.\n\n**Existing behaviour**\n\n1. `jobs/digest_builder.py` inserts one `pending` row per active subscriber into `outbox`.\n2. `outbox` has no unique constraint in `db/schema.sql`.\n3. `mailer/digest_mailer.py` sends every `pending` row and then marks it `sent`.\n\n**Timeline without the fix**\n\n1. At 06:00:02 on 26 October, cron on `ops-box-2` starts `jobs.digest_builder`. The cutover checklist in `docs/migrations/2026-09-k8s-cutover.md` never ticked \"remove the `digest_builder` line\".\n2. At 06:00:04, pod `digest-builder-29353080-k7x2q` starts the same job. `concurrencyPolicy: Forbid` only covers Kubernetes, so it cannot see `ops-box-2`.\n3. Both runs log `enqueued=18412`. `outbox` now holds two `pending` rows per subscriber.\n4. `digest-mailer` reads all 36824 pending rows.\n5. `digest-mailer` sends one email per row. Every subscriber gets the digest twice.\n\n**Timeline with the fix**, diverges at step 1.\n\n1. `ops-box-2` has no digest line, so nothing starts there.\n3. Only the pod inserts rows, so `outbox` holds 18412 `pending` rows.\n4. `digest-mailer` reads 18412 rows.\n5. Each subscriber gets one email.\n\n**What changes**\n\n- `ops/hosts/ops-box-2/crontab` deletes line 3, the `jobs.digest_builder` entry.\n- `docs/migrations/2026-09-k8s-cutover.md` ticks line 8, the item that removes the `digest_builder` crontab line.\n\n**Recommendation.** Aelita recommends deleting the crontab line. It removes the second scheduler and costs one edit on `ops-box-2`. Nothing else can break, because the pod already runs the job alone. The `rotate-logs` line on line 2 stays until its own checklist item.\n\n**Why not your two options.**\n- **Dedupe by email in `digest-mailer`.** This guards against the symptom and can still fail. If the mailer runs between the two builds, it sends once. The second build then adds new `pending` rows, and those get sent again. It also drops a legitimate row when two subscribers share an email.\n- **Unique index on `outbox(subscriber_id, digest_date)`.** This is the better of your two, but `digest_builder.py:8` uses a plain `INSERT`. The losing run would crash on the first conflict. You would need `ON CONFLICT DO NOTHING` in that statement. You would also have to delete the existing duplicate rows before creating the index.\n\n**Alternative: unique index plus `ON CONFLICT DO NOTHING`.** It makes the build idempotent however many schedulers fire. It costs a migration, a duplicate cleanup and a code change. It becomes the primary if you cannot edit `ops-box-2` soon. It also works as a second layer after the crontab fix.\n\n**Question.** Do you approve deleting the `digest_builder` crontab line on `ops-box-2` as the fix, or do you want the unique index instead?",
+  "ttft_ms": 1783,
+  "type": "result",
+  "duration_ms": 24544,
+  "uuid": "16b8e01e-40d5-4db4-b4f9-b6ce4e484df8",
+  "ttft_stream_ms": 1267,
+  "time_to_request_ms": 551,
+  "first_content_frame_ms": 1267,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

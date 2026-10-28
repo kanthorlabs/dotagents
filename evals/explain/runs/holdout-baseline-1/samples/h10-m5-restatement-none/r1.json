@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 12573,
+  "stop_reason": "end_turn",
+  "session_id": "99253cc8-33a6-4c7c-ba35-635ae8711f3e",
+  "total_cost_usd": 0.0261249,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2409,
+    "cache_read_input_tokens": 24569,
+    "output_tokens": 1402,
+    "output_tokens_details": {
+      "thinking_tokens": 376
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2409,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 906,
+        "cache_read_input_tokens": 8864,
+        "cache_creation_input_tokens": 813,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 813
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1402,
+      "cacheReadInputTokens": 24569,
+      "cacheCreationInputTokens": 2409,
+      "webSearchRequests": 0,
+      "costUSD": 0.0261249,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 376,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2409,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "- **Today's key is right.** `cache_key` in `edge/cache.py:5` returns the path and query string only.\n- **The cause is right.** Safari 13 cannot decode WebP, and it receives WebP bytes that Chrome's request cached.\n- **The fix is wrong.** The key gets the negotiated format (`avif`, `webp` or `orig`), not the whole `Accept` header.\n\nThe case is not a key built from the raw header. `logs/accept-stats-2026-10.txt` counts 1,912 distinct `Accept` values in October. A raw-header key would split the cache into 1,912 variants, and the hit rate would drop. The negotiated format has three values.\n\n**Existing behaviour**\n\n1. `serve_image` in `edge/handler.py:7` calls `lookup(request)` first.\n2. `lookup` builds the key from the path and query only.\n3. On a miss, `serve_image` calls `negotiate` at line 10, then `render`, then `save`.\n\nNegotiation runs after the lookup, so `cache_key` cannot see the format today. Petra needs to know this.\n\n**What changes**\n\n- `edge/handler.py`: old behaviour is `lookup(request)` before `negotiate`. New behaviour is that `serve_image` calls `negotiate` first and passes `image_format` to `lookup` and `save`.\n- `edge/cache.py`: old behaviour is `cache_key(request)` returns `f\"{request.path}?{request.query_string}\"`. New behaviour is that `cache_key(request, image_format)` appends the format to that string. `lookup` and `save` take `image_format` and pass it on.\n\n**Next step.** Hand Petra the two edits above. `negotiate` must run before `lookup`, and the key carries the format and not the header.",
+  "ttft_ms": 2977,
+  "type": "result",
+  "duration_ms": 13212,
+  "uuid": "c62662e4-0fdc-4c16-98f3-f553c6700e47",
+  "ttft_stream_ms": 2360,
+  "time_to_request_ms": 607,
+  "first_content_frame_ms": 2360,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

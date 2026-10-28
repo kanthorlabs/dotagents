@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 17666,
+  "stop_reason": "end_turn",
+  "session_id": "df1fd285-99c2-4a07-9789-cca7304437dc",
+  "total_cost_usd": 0.0443457,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 3992,
+    "cache_read_input_tokens": 35117,
+    "output_tokens": 2485,
+    "output_tokens_details": {
+      "thinking_tokens": 105
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3992,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1207,
+        "cache_read_input_tokens": 11083,
+        "cache_creation_input_tokens": 530,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 530
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 2485,
+      "cacheReadInputTokens": 35117,
+      "cacheCreationInputTokens": 3992,
+      "webSearchRequests": 0,
+      "costUSD": 0.0443457,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 105,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 3992,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 13,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "The stale price comes from the per-pod `price_cache` in `shop-api`, not from the CDN. Lowering the CDN TTL would change nothing. Aelita recommends that every `shop-api` pod subscribe to `price.changed` and drop its own cached SKU.\n\n**Timeline without the fix**\n\n1. Tove Lindqvist changes KET-2210 from 39.90 to 34.90 in the admin at 10:02. The load balancer sends the POST to one of the 6 `shop-api` pods, for example pod A.\n2. `update_price` in `admin/prices.py` writes the database. It runs `price_cache.pop(sku)` in pod A only, because `price_cache` is a per-process `TTLCache`.\n3. `update_price` publishes `price.changed`. Only `search/indexer.py` subscribes. No `shop-api` pod listens.\n4. Pods B to F still hold 39.90 for KET-2210 in `price_cache`, with `ttl=3600`.\n5. A product page calls `/api/prices?sku=KET-2210`. The CDN rule for `/api/*` has `cache: false`, so the request reaches a random pod. Pod A returns 34.90. Pods B to F return 39.90. This is the mix Tove saw on reload.\n6. Each stale pod expires its entry up to 3600 seconds after it cached it. The last old price appeared at 10:57. Customers see 39.90 at checkout for up to an hour.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. `update_price` publishes `price.changed`. Each `shop-api` pod runs a handler that calls `price_cache.pop(sku, None)`.\n4. Pods B to F drop KET-2210 within about 0.5 seconds. That is the `sleep_time` in `shared/events.py`.\n5. The next `/api/prices` call on any pod misses the cache and reads 34.90 from the database.\n6. Every customer sees 34.90 within about a second.\n\n**What changes**\n\n- `pricing/service.py` add `start_invalidation()`. It calls `subscribe(\"price.changed\", lambda e: price_cache.pop(e[\"sku\"], None))`.\n- `shop/app.py` add a startup call to `start_invalidation()`. I did not find this file in the repository. The deployment runs `shop.app:app`, so the call belongs there.\n- `admin/prices.py` keep the local `pop`. It is harmless and makes pod A instant.\n- `cdn/rules.yaml` no change. The proposed TTL edit would touch `/product/*`, which holds no price (`docs/frontend.md`), or have no target at all.\n\n**Recommendation.** Aelita recommends the pub/sub invalidation. It reuses the `price.changed` event that already exists and removes the cause, which is that 6 caches have no shared signal. It costs one Redis subscription per pod. A pod that misses a message while Redis is down keeps the old price until its TTL runs out.\n\n**Alternative: lower `ttl` on `price_cache` from 3600 to 60.** This is one line and needs no Redis. It caps the stale window at 60 seconds, but customers still see mixed prices for up to a minute. It becomes the primary if the team will not add a subscriber to the API pods.\n\n**Alternative: remove `price_cache` and read the database each time.** This gives exact prices with no invalidation logic. It costs a database read per price call. It becomes the primary if the price table is small and the read load is low.\n\n**Question.** Do you approve the `price.changed` subscriber in every `shop-api` pod, or do you prefer the 60-second `price_cache` TTL?",
+  "ttft_ms": 1859,
+  "type": "result",
+  "duration_ms": 36402,
+  "uuid": "bb44f3df-ab75-4a4d-9390-e3b079c7daaa",
+  "ttft_stream_ms": 1179,
+  "time_to_request_ms": 426,
+  "first_content_frame_ms": 1179,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

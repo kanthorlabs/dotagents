@@ -1,0 +1,172 @@
+{
+  "key": "1bc223896b44ed01c0b10f260455f0b074c827277d58d1604b767c06c27da770",
+  "cost_usd": 0.037514,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends passing `conn`, because it removes the cause: one request needing two connections.\" Matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`in_flight=14`, `pool_in_use=10` and `pool_waiting=14`\"; \"`active_connections=38` of 200\"; \"in_flight=3\". All match the key, and none is left unstated or deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"fewer than 10 requests overlap and B is always free\"; the 30 s timeout fails all 14 together; \"returns once concurrent requests per replica exceed the new size\". The reader lists no follow-ups."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"`hold_seats` to take `conn`... Each request then uses one connection\". Problem, breaks, fix and the signature-change cost all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should `hold_seats` take the open `conn` and run inside the order transaction?\" This is one decision matching closing_decision, and the reader answered \"Yes\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"**Alternative: raise `max_size`.**\" The message offers it as a fallback primary, but raising max_size is in invalid_options and does not fix the deadlock."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9921,
+    "stop_reason": "tool_use",
+    "session_id": "c6363e78-dc0f-4080-8359-6707b591817c",
+    "total_cost_usd": 0.037514,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6216,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1246,
+      "output_tokens_details": {
+        "thinking_tokens": 706
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6216,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1246,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6216,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6216
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1246,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6216,
+        "webSearchRequests": 0,
+        "costUSD": 0.037514,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 706,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6216,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends passing `conn`, because it removes the cause: one request needing two connections.\\\" Matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`in_flight=14`, `pool_in_use=10` and `pool_waiting=14`\\\"; \\\"`active_connections=38` of 200\\\"; \\\"in_flight=3\\\". All match the key, and none is left unstated or deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"fewer than 10 requests overlap and B is always free\\\"; the 30 s timeout fails all 14 together; \\\"returns once concurrent requests per replica exceed the new size\\\". The reader lists no follow-ups.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"`hold_seats` to take `conn`... Each request then uses one connection\\\". Problem, breaks, fix and the signature-change cost all agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should `hold_seats` take the open `conn` and run inside the order transaction?\\\" This is one decision matching closing_decision, and the reader answered \\\"Yes\\\".\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"**Alternative: raise `max_size`.**\\\" The message offers it as a fallback primary, but raising max_size is in invalid_options and does not fix the deadlock.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends passing `conn`, because it removes the cause: one request needing two connections.\" Matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`in_flight=14`, `pool_in_use=10` and `pool_waiting=14`\"; \"`active_connections=38` of 200\"; \"in_flight=3\". All match the key, and none is left unstated or deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"fewer than 10 requests overlap and B is always free\"; the 30 s timeout fails all 14 together; \"returns once concurrent requests per replica exceed the new size\". The reader lists no follow-ups."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"`hold_seats` to take `conn`... Each request then uses one connection\". Problem, breaks, fix and the signature-change cost all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should `hold_seats` take the open `conn` and run inside the order transaction?\" This is one decision matching closing_decision, and the reader answered \"Yes\"."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"**Alternative: raise `max_size`.**\" The message offers it as a fallback primary, but raising max_size is in invalid_options and does not fix the deadlock."
+        }
+      ]
+    },
+    "ttft_ms": 7884,
+    "type": "result",
+    "duration_ms": 10327,
+    "uuid": "9f220eda-a83b-44ef-a8c9-387a16c2ff91",
+    "ttft_stream_ms": 2507,
+    "time_to_request_ms": 408,
+    "first_content_frame_ms": 2507,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

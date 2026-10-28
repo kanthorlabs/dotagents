@@ -1,0 +1,160 @@
+{
+  "key": "47d5dbddfef2e4c1de1819ad27895c65a18f79c1d6fd9e5f78b0dd655a67758a",
+  "cost_usd": 0.02733,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends blocking PR 311 until B1 to B3 are fixed\"; B1 verify first, B3 dedupe on event id. Matches the correct recommendation.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"handle calls ledger.credit and ledger.debit before verify\"; \"verify uses ==\"; \"falls back to \\\"dev-secret\\\"\"; S1 header raises; no event id record. All match the key.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message says block, lists verify-first, dedupe, drop default secret; S1-S5 as suggestions (logging, dead code, header, compare). Reader's follow-up on staging deployments is beyond the ruling.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"anyone on the internet can forge a credit... Provider retries or replays... credit twice\"; fix: verify first, dedupe on event id. Matches key problem, breaks, fix.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3550,
+    "stop_reason": "tool_use",
+    "session_id": "9a6729a1-fbc0-4602-ba14-f63a35ff6798",
+    "total_cost_usd": 0.02733,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5700,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 434,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5700,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 434,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5700,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5700
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 434,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5700,
+        "webSearchRequests": 0,
+        "costUSD": 0.02733,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5700,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends blocking PR 311 until B1 to B3 are fixed\\\"; B1 verify first, B3 dedupe on event id. Matches the correct recommendation.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"handle calls ledger.credit and ledger.debit before verify\\\"; \\\"verify uses ==\\\"; \\\"falls back to \\\\\\\"dev-secret\\\\\\\"\\\"; S1 header raises; no event id record. All match the key.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message says block, lists verify-first, dedupe, drop default secret; S1-S5 as suggestions (logging, dead code, header, compare). Reader's follow-up on staging deployments is beyond the ruling.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"anyone on the internet can forge a credit... Provider retries or replays... credit twice\\\"; fix: verify first, dedupe on event id. Matches key problem, breaks, fix.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends blocking PR 311 until B1 to B3 are fixed\"; B1 verify first, B3 dedupe on event id. Matches the correct recommendation.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"handle calls ledger.credit and ledger.debit before verify\"; \"verify uses ==\"; \"falls back to \\\"dev-secret\\\"\"; S1 header raises; no event id record. All match the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message says block, lists verify-first, dedupe, drop default secret; S1-S5 as suggestions (logging, dead code, header, compare). Reader's follow-up on staging deployments is beyond the ruling.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"anyone on the internet can forge a credit... Provider retries or replays... credit twice\"; fix: verify first, dedupe on event id. Matches key problem, breaks, fix.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 4106,
+    "type": "result",
+    "duration_ms": 4124,
+    "uuid": "31f38709-5f09-4bac-b9b9-89419346da1c",
+    "ttft_stream_ms": 1452,
+    "time_to_request_ms": 574,
+    "first_content_frame_ms": 1452,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

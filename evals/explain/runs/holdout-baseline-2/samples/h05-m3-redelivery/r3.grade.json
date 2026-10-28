@@ -1,0 +1,172 @@
+{
+  "key": "a775d1cc28b9fe423e303796cfd4b61e6c00f64406204b81f38319c4836cf1aa",
+  "cost_usd": 0.044942,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends approval with the guard.\" Matches the key: approve with a read_at guard on the upsert."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"17 stalls each held the consumer for 62 s... lag to 41,200\"; \"UPSERT_LATEST has no read_at check\". Every dependent fact it mentions matches the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The message never says how retry works now: with_retries sleeping 2\u201332 s inside the handler, then the handler sends to ingest.dlq and acks. Reader also asks about a unique key."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Add WHERE latest_reading.read_at < EXCLUDED.read_at\"; problem, breaks, fix and cost all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve the proposal with the `read_at` guard... or do you prefer the per-device consumers?\" Reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"keep the loop, split consumers by device... one stalled slice still blocks its own devices. It becomes the primary if `latest_reading` cannot take the `read_at` guard.\""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 12489,
+    "stop_reason": "tool_use",
+    "session_id": "e2fdedbb-10ef-4449-aede-d85c068a0e3d",
+    "total_cost_usd": 0.044942,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6943,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1698,
+      "output_tokens_details": {
+        "thinking_tokens": 1189
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6943,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1698,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6943,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6943
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1698,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6943,
+        "webSearchRequests": 0,
+        "costUSD": 0.044942,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1189,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6943,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends approval with the guard.\\\" Matches the key: approve with a read_at guard on the upsert.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"17 stalls each held the consumer for 62 s... lag to 41,200\\\"; \\\"UPSERT_LATEST has no read_at check\\\". Every dependent fact it mentions matches the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The message never says how retry works now: with_retries sleeping 2\u201332 s inside the handler, then the handler sends to ingest.dlq and acks. Reader also asks about a unique key.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Add WHERE latest_reading.read_at < EXCLUDED.read_at\\\"; problem, breaks, fix and cost all agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve the proposal with the `read_at` guard... or do you prefer the per-device consumers?\\\" Reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"keep the loop, split consumers by device... one stalled slice still blocks its own devices. It becomes the primary if `latest_reading` cannot take the `read_at` guard.\\\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends approval with the guard.\" Matches the key: approve with a read_at guard on the upsert."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"17 stalls each held the consumer for 62 s... lag to 41,200\"; \"UPSERT_LATEST has no read_at check\". Every dependent fact it mentions matches the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The message never says how retry works now: with_retries sleeping 2\u201332 s inside the handler, then the handler sends to ingest.dlq and acks. Reader also asks about a unique key."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Add WHERE latest_reading.read_at < EXCLUDED.read_at\"; problem, breaks, fix and cost all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve the proposal with the `read_at` guard... or do you prefer the per-device consumers?\" Reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"keep the loop, split consumers by device... one stalled slice still blocks its own devices. It becomes the primary if `latest_reading` cannot take the `read_at` guard.\""
+        }
+      ]
+    },
+    "ttft_ms": 10451,
+    "type": "result",
+    "duration_ms": 12864,
+    "uuid": "7eec3d44-7545-4bdd-b3af-01cf2d84b9b7",
+    "ttft_stream_ms": 1899,
+    "time_to_request_ms": 374,
+    "first_content_frame_ms": 1899,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

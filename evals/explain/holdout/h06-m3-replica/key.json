@@ -1,0 +1,106 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Approve the move with a split: run the report queries on the replica through the osprey-replica secret, replace the CREATE TEMP TABLE in churn_by_plan with a CTE or a subquery, and keep record_run on the primary through a second connection."
+  ],
+  "invalid_options": [
+    "Point DATABASE_URL of the whole job at the replica with no code change, because CREATE TEMP TABLE and INSERT INTO report_runs fail on the hot standby.",
+    "Change nothing.",
+    "Reject the move because replication lag corrupts the report."
+  ],
+  "root_cause": "Not a bug. The nightly report runs every query on the primary from 01:00 to 01:22 and slows the checkout API. The job also writes: churn_by_plan creates a temp table and record_run inserts into report_runs, and the hot standby rejects both.",
+  "dependent_facts": [
+    {
+      "fact": "Current connection",
+      "true_value": "one connection from DATABASE_URL, which the CronJob reads from the osprey-primary secret",
+      "source": "jobs/nightly_report.py and deploy/cronjob.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Temp table",
+      "true_value": "churn_by_plan runs CREATE TEMP TABLE churn_window",
+      "source": "reports/queries.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Write at the end",
+      "true_value": "record_run inserts a row into report_runs",
+      "source": "reports/runs.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Replica behaviour",
+      "true_value": "pg-osprey-2 is a hot standby that rejects every write, CREATE TEMP TABLE and INSERT included",
+      "source": "docs/database.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Replication lag",
+      "true_value": "p99 2 seconds; the job reports the previous day at 01:00, so lag does not change the report",
+      "source": "docs/database.md and jobs/nightly_report.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Load on the primary",
+      "true_value": "CPU 88 % and checkout p95 1,900 ms from 01:00 to 01:22, against 340 ms before",
+      "source": "logs/primary-load-2026-10-26.txt",
+      "verifiable": true
+    },
+    {
+      "fact": "Replica secret",
+      "true_value": "osprey-replica exists and the dashboards service already reads from the replica",
+      "source": "docs/database.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why move it?",
+      "expected_answer": "The job drives the primary to 88 % CPU and checkout p95 from 340 ms to 1,900 ms from 01:00 to 01:22."
+    },
+    {
+      "question": "How does it work now?",
+      "expected_answer": "One primary connection runs revenue_by_region, creates the churn_window temp table, writes the PDF and inserts a report_runs row."
+    },
+    {
+      "question": "What breaks if only DATABASE_URL changes?",
+      "expected_answer": "CREATE TEMP TABLE and the report_runs INSERT fail on the hot standby, so the job fails."
+    },
+    {
+      "question": "What stays the same?",
+      "expected_answer": "The report content: lag p99 2 s does not affect the previous day's data. The schedule and the PDF stay."
+    },
+    {
+      "question": "What exactly changes?",
+      "expected_answer": "A replica connection for the queries, the temp table becomes a CTE or subquery, and record_run keeps a primary connection."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Keep the job on the primary and move it to a lower-traffic hour",
+      "trade_off": "No code change, but the primary still carries the 22-minute load and the checkout still slows, only for fewer users.",
+      "primary_when": "No code change is possible now.",
+      "must_list": false
+    },
+    {
+      "option": "Write the report_runs row through a separate primary connection from a wrapper step instead of inside the job",
+      "trade_off": "Keeps the job read-only, but splits one job into two steps.",
+      "primary_when": "The team wants the report job to hold only a replica connection.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve the split change with reads on the replica, the temp table rewritten and record_run on the primary, reject it, or decide a single part of it such as where the report_runs write goes.",
+  "understanding": {
+    "problem": "The nightly report loads the primary and slows the checkout API from 01:00 to 01:22.",
+    "breaks": "A plain switch to the replica fails, because the job creates a temp table and inserts into report_runs and the hot standby rejects writes.",
+    "fix": "Reads on the replica, temp table rewritten as a CTE, record_run on the primary.",
+    "cost": "A second connection, one query rewrite and one secret reference in the CronJob."
+  }
+}

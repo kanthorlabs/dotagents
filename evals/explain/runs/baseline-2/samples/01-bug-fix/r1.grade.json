@@ -1,0 +1,172 @@
+{
+  "key": "522efa83c7c6183ae692809deb07260fa3010758341d3226736a75f427e4958d",
+  "cost_usd": 0.027530000000000002,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends adding `id DESC` as a tiebreaker in `ORDER BY`.\" Matches the first correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"~200 rows\", \"9 ids appear twice and 9 are missing\", \"`id` is the primary key\", \"none were created during this export\" all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Reader lists no follow-up questions. The message explains the cause, the ORDER BY change, and that the tiebreaker keeps the API while keyset changes the contract."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Change `ORDER BY created_at DESC` to `ORDER BY created_at DESC, id DESC`\"; the problem, the breakage, and the cost all match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Does Aelita add the `id DESC` tiebreaker to `list_orders`, or do you want keyset pagination instead?\" One question, one decision. The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: unique `created_at` in `bulk_import.py`... It is not a standalone fix.\" This is in invalid_options. It is offered as an alternative."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3639,
+    "stop_reason": "tool_use",
+    "session_id": "a0babb3a-a905-4e12-8648-a804dac02955",
+    "total_cost_usd": 0.027530000000000002,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5550,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 514,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5550,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 514,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5550,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5550
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 514,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5550,
+        "webSearchRequests": 0,
+        "costUSD": 0.027530000000000002,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5550,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends adding `id DESC` as a tiebreaker in `ORDER BY`.\\\" Matches the first correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"~200 rows\\\", \\\"9 ids appear twice and 9 are missing\\\", \\\"`id` is the primary key\\\", \\\"none were created during this export\\\" all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Reader lists no follow-up questions. The message explains the cause, the ORDER BY change, and that the tiebreaker keeps the API while keyset changes the contract.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Change `ORDER BY created_at DESC` to `ORDER BY created_at DESC, id DESC`\\\"; the problem, the breakage, and the cost all match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Does Aelita add the `id DESC` tiebreaker to `list_orders`, or do you want keyset pagination instead?\\\" One question, one decision. The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: unique `created_at` in `bulk_import.py`... It is not a standalone fix.\\\" This is in invalid_options. It is offered as an alternative.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends adding `id DESC` as a tiebreaker in `ORDER BY`.\" Matches the first correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"~200 rows\", \"9 ids appear twice and 9 are missing\", \"`id` is the primary key\", \"none were created during this export\" all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Reader lists no follow-up questions. The message explains the cause, the ORDER BY change, and that the tiebreaker keeps the API while keyset changes the contract."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Change `ORDER BY created_at DESC` to `ORDER BY created_at DESC, id DESC`\"; the problem, the breakage, and the cost all match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Does Aelita add the `id DESC` tiebreaker to `list_orders`, or do you want keyset pagination instead?\" One question, one decision. The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: unique `created_at` in `bulk_import.py`... It is not a standalone fix.\" This is in invalid_options. It is offered as an alternative."
+        }
+      ]
+    },
+    "ttft_ms": 4004,
+    "type": "result",
+    "duration_ms": 4033,
+    "uuid": "0b52ed90-e664-425d-b7c4-54395978601e",
+    "ttft_stream_ms": 1335,
+    "time_to_request_ms": 392,
+    "first_content_frame_ms": 1335,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 20637,
+  "stop_reason": "end_turn",
+  "session_id": "356051bd-ec30-4678-bda6-7f1331edaf23",
+  "total_cost_usd": 0.043972899999999995,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 3493,
+    "cache_read_input_tokens": 32949,
+    "output_tokens": 2669,
+    "output_tokens_details": {
+      "thinking_tokens": 658
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3493,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1695,
+        "cache_read_input_tokens": 9143,
+        "cache_creation_input_tokens": 1939,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1939
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 2669,
+      "cacheReadInputTokens": 32949,
+      "cacheCreationInputTokens": 3493,
+      "webSearchRequests": 0,
+      "costUSD": 0.043972899999999995,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 658,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 3493,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 11,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Pointing `osprey-nightly-report` at `pg-osprey-2` breaks the job today, because the job writes twice and the hot standby rejects every write. Aelita recommends a read-only churn query plus a separate primary connection for `record_run`. That moves the heavy reads to the replica and keeps one small insert on the primary.\n\n**Timeline without the fix**\n\n1. `osprey-nightly-report` starts at 01:00 UTC. `DATABASE_URL` now comes from secret `osprey-replica`, so it connects to `pg-osprey-2`.\n2. `revenue_by_region` runs a plain `SELECT`. The replica serves it.\n3. `churn_by_plan` runs `CREATE TEMP TABLE churn_window` in `reports/queries.py`. The hot standby rejects it.\n4. `main` in `jobs/nightly_report.py` raises. `write_pdf` and `record_run` never run. No PDF exists and `report_runs` has no row for the day.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. `churn_by_plan` runs one `SELECT` with a CTE in place of the temp table. The replica serves it.\n4. `write_pdf` writes `nightly-<day>.pdf`.\n5. `record_run` opens a second connection to `pg-osprey-1` and inserts into `report_runs`. The insert takes milliseconds.\n6. The primary sees one insert at 01:00 instead of 22 minutes of reporting reads. The CPU spike in `logs/primary-load-2026-10-26.txt` should go away.\n\n**What changes**\n\n- `deploy/cronjob.yaml`: `DATABASE_URL` switches from `osprey-primary` to `osprey-replica`. Add `PRIMARY_DATABASE_URL` from `osprey-primary`, key `url`.\n- `reports/queries.py`: `CHURN_WINDOW` and `CHURN_BY_PLAN` merge into one `WITH churn_window AS (...) SELECT ...`. `churn_by_plan` runs one statement.\n- `jobs/nightly_report.py`: `main` opens the replica connection for the two queries. It opens a primary connection only for `record_run`.\n\n**Recommendation.** Aelita recommends the split, because the replica must stay read-only and `report_runs` lives on the primary. It costs one extra secret and one extra connection. Two things can break it. A missing `PRIMARY_DATABASE_URL` fails the job after the PDF exists. A failed insert leaves a PDF with no run row.\n\nReplica lag is not a risk here. The p99 is 2 seconds, and the job reads yesterday's data at 01:00 UTC.\n\n**Alternative: keep the job on the primary and tune the queries.** It needs no new secret and no code split. It costs the same primary load, since the 88% CPU spike stays. It becomes the primary if the team will not give the job write access through a second secret.\n\n**Question.** Do you approve the split: reads on `pg-osprey-2` with the churn CTE, and `record_run` on `pg-osprey-1`?",
+  "ttft_ms": 2327,
+  "type": "result",
+  "duration_ms": 21251,
+  "uuid": "a1c806d8-0196-403a-8831-55648b12eb8c",
+  "ttft_stream_ms": 1609,
+  "time_to_request_ms": 580,
+  "first_content_frame_ms": 1609,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

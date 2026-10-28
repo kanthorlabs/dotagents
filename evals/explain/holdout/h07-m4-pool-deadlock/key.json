@@ -1,0 +1,86 @@
+{
+  "measures": ["M1", "M2", "M3", "M4", "M5", "M7"],
+  "correct_recommendations": [
+    "Pass the checkout connection into hold_seats, so that one checkout uses one connection and the seat hold runs inside the order transaction."
+  ],
+  "invalid_options": [
+    "Raise max_size of the pool as the fix, because the same deadlock returns when concurrent checkouts per pod reach the new max_size.",
+    "Raise the pool timeout.",
+    "Raise max_connections on Postgres, because the database was at 38 of 200.",
+    "Add more checkout-api pods as the fix."
+  ],
+  "root_cause": "checkout holds one pool connection for its transaction and then calls hold_seats, which asks the same pool for a second connection. The pool holds 10 connections per pod. When 10 or more checkouts run at once on one pod, all 10 connections belong to checkouts that each wait for a second one, nobody releases, and every waiter fails with PoolTimeout after 30 s.",
+  "dependent_facts": [
+    {
+      "fact": "Pool settings",
+      "true_value": "psycopg_pool ConnectionPool max_size 10, timeout 30 s, per process",
+      "source": "app/db.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Nested connection",
+      "true_value": "checkout holds a connection inside a transaction while hold_seats takes a second connection from the same pool",
+      "source": "app/checkout.py and app/seats.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Processes",
+      "true_value": "4 checkout-api pods with one uvicorn process each, so one pool of 10 per pod",
+      "source": "deploy/app.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Log on 24 October",
+      "true_value": "in_flight 14, pool_in_use 10, pool_waiting 14 on checkout-api-2; PoolTimeout after 30 s, 10 in hold_seats and 4 in checkout; all 14 return 500",
+      "source": "logs/checkout-2026-10-24.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Database load",
+      "true_value": "38 active connections of max_connections 200",
+      "source": "logs/checkout-2026-10-24.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Normal traffic",
+      "true_value": "about 3 checkouts in flight per pod, below the pool size",
+      "source": "logs/checkout-2026-10-24.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Seat hold transaction",
+      "true_value": "hold_seats commits on its own connection, outside the order transaction",
+      "source": "app/seats.py",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why does it only fail under load?",
+      "expected_answer": "Each checkout needs two connections at once. Below 10 concurrent checkouts per pod a second connection is free; at 10 or more, all are held by checkouts that wait for a second one."
+    },
+    {
+      "question": "Why does everything fail at once after 30 s?",
+      "expected_answer": "The pool timeout is 30 s; every waiter times out together and the transactions roll back."
+    },
+    {
+      "question": "Why not a bigger pool?",
+      "expected_answer": "The deadlock returns when concurrent checkouts reach the new size; on-sale traffic has no upper bound."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Cap concurrent checkouts per pod below half the pool size, for example a semaphore of 5",
+      "trade_off": "No change to the seat code, but it halves checkout throughput per pod and keeps the seat hold outside the order transaction.",
+      "primary_when": "The seat code cannot change before the next on-sale.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve passing the checkout connection into hold_seats, or a single follow-up on it.",
+  "understanding": {
+    "problem": "Each checkout holds one pool connection and waits for a second one from the same pool of 10.",
+    "breaks": "With 10 or more concurrent checkouts on a pod, every connection is held by a waiter, so all checkouts stall for 30 s and fail together with PoolTimeout.",
+    "fix": "Reuse the checkout connection in hold_seats.",
+    "cost": "A signature change of hold_seats and its call site."
+  }
+}

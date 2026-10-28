@@ -1,0 +1,94 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Fix both readings because the region is unknown: set lock_backend redis in us-east, and make the eu-west lock outlive the run with a TTL above the 4-minute runtime or a renewed lock.",
+    "Make purchase order creation idempotent per SKU and run date, so a second reorder run cannot create a duplicate in either region.",
+    "Forbid more than one reorder runner in us-east and fix the eu-west TTL."
+  ],
+  "invalid_options": [
+    "Fix only the eu-west TTL, which leaves us-east without a lock.",
+    "Fix only the us-east lock backend, which leaves the 60 s TTL in eu-west.",
+    "Change nothing."
+  ],
+  "root_cause": "Two readings, both consistent with the ticket. us-east: lock_backend none, so locks.acquire always returns True, and the second pod at 01:02 runs reorder while the first still runs. eu-west: lock_backend redis with a 60 s TTL; the lock of the first pod expires at 01:01 while its 4-minute run continues, so the second pod acquires the lock at 01:02.",
+  "dependent_facts": [
+    {
+      "fact": "us-east lock backend",
+      "true_value": "none, so acquire returns True",
+      "source": "config/us-east.yaml and planner/locks.py",
+      "verifiable": true
+    },
+    {
+      "fact": "us-east replicas",
+      "true_value": "replicas 1, autoscale_max_replicas 3",
+      "source": "config/us-east.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "eu-west lock",
+      "true_value": "redis SET NX with ttl_seconds 60, 2 replicas",
+      "source": "config/eu-west.yaml and planner/reorder.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Job runtime",
+      "true_value": "about 4 minutes",
+      "source": "tickets/SP-88.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Start time",
+      "true_value": "first pod at 01:00, second pod at 01:02 after a node restart; the first run lasts until about 01:04",
+      "source": "tickets/SP-88.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Region of SP-88",
+      "true_value": "unknown; no file names it",
+      "source": "tickets/SP-88.md",
+      "verifiable": false
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Which region was it?",
+      "expected_answer": "Unknown; both readings are possible, so both need a fix or a fix that covers both."
+    },
+    {
+      "question": "Why did the lock not stop the second run in each region?",
+      "expected_answer": "us-east has no lock; eu-west's 60 s TTL expires during a 4-minute run."
+    },
+    {
+      "question": "Does the fix cover the reading that did not happen?",
+      "expected_answer": "It must, since the region is unknown."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Idempotent purchase orders per SKU and date",
+      "trade_off": "Covers both regions and any future double run, but needs a schema change and does not stop the double work.",
+      "primary_when": "The team wants one guard that covers every cause of a double run.",
+      "must_list": false
+    },
+    {
+      "option": "Per-region lock fixes",
+      "trade_off": "Small config and TTL changes, but each region needs its own fix and a future lock gap repeats the bug.",
+      "primary_when": "The team wants the smallest change now.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: which fix to apply, given that it must cover both regions.",
+  "understanding": {
+    "problem": "Two restock-planner pods ran reorder at once and created duplicate purchase orders for HT-4410; the region is unknown.",
+    "breaks": "us-east has no lock at all; in eu-west the 60 s lock expires at 01:01, before the second pod starts at 01:02, while the first run lasts about 4 minutes.",
+    "fix": "Fix both regions, or make purchase orders idempotent.",
+    "cost": "Config and TTL changes, or a schema change for idempotency."
+  }
+}

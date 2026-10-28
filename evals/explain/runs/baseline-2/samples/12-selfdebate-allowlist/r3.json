@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 19334,
+  "stop_reason": "end_turn",
+  "session_id": "98fa4578-7ab5-4a96-9296-319896886e33",
+  "total_cost_usd": 0.0433445,
+  "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 3556,
+    "cache_read_input_tokens": 42905,
+    "output_tokens": 2481,
+    "output_tokens_details": {
+      "thinking_tokens": 248
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3556,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1552,
+        "cache_read_input_tokens": 9902,
+        "cache_creation_input_tokens": 1299,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1299
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 10,
+      "outputTokens": 2481,
+      "cacheReadInputTokens": 42905,
+      "cacheCreationInputTokens": 3556,
+      "webSearchRequests": 0,
+      "costUSD": 0.0433445,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 248,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 3556,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 10,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`plugin_env` copies the whole runner environment and removes only three named secrets. Any secret added later reaches every plugin. Aelita recommends an allowlist in `runner/spawn.py` instead of your two-name denylist, because the denylist still leaves `BILLING_WEBHOOK_SECRET` exposed.\n\n**Timeline without the fix**\n\n1. Ops adds `STRIPE_API_KEY` to `deploy/runner.env` on 2 October. The file already holds `SENTRY_DSN` and `BILLING_WEBHOOK_SECRET`.\n2. `run_plugin` calls `plugin_env`. It copies `os.environ` and pops only `AWS_SECRET_ACCESS_KEY`, `DATABASE_URL` and `GITHUB_TOKEN`.\n3. The `feed-fetch` plugin starts with `STRIPE_API_KEY`, `SENTRY_DSN` and `BILLING_WEBHOOK_SECRET` in its environment.\n4. A customer sends a `feed-fetch` request with `debug` set. `plugins/feed-fetch/main.py:14` prints `dict(os.environ)` to stderr.\n5. The customer pastes that stderr into a public support ticket on 24 October. Selin Aydin reports it as INC-57.\n6. The key is rotated on 24 October. Your two-name fix would stop this repeat, but `BILLING_WEBHOOK_SECRET` would still leak the same way.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `plugin_env` builds a new dict. It keeps only `PATH`, `HOME`, `LANG`, `HTTPS_PROXY` and every `TINKERBOX_*` variable.\n3. The `feed-fetch` plugin starts with no secrets in its environment.\n4. The `debug` request still prints the environment. The output holds only the allowed variables.\n5. The customer has nothing sensitive to paste.\n6. A secret added to `deploy/runner.env` next month stays hidden by default.\n\n**What changes**\n\n- `runner/spawn.py`: delete `DENYLIST` and the pop loop. Add `ALLOWED = {\"PATH\", \"HOME\", \"LANG\", \"HTTPS_PROXY\"}`. `plugin_env` returns `{k: v for k, v in os.environ.items() if k in ALLOWED or k.startswith(\"TINKERBOX_\")}`. The `TINKERBOX_PLUGIN_DIR` assignment stays.\n- `plugins/feed-fetch/main.py`: no change is required. Line 14 is harmless once the environment is clean.\n\n**Recommendation.** Aelita recommends the allowlist. It removes the root cause, which is inheriting everything by default. The contract in `docs/plugin-contract.md` says plugins read `TINKERBOX_*`. The existing plugins need only `HOME` (`pdf-stamp`), `HTTPS_PROXY` (`feed-fetch`) and `PATH` (`qpdf`). The cost is that a plugin needing another variable fails until someone adds it to `ALLOWED`. I checked the three plugins in the repo. I have not checked any plugin outside it.\n\n**Alternative: extend the denylist.** Add `STRIPE_API_KEY`, `SENTRY_DSN` and `BILLING_WEBHOOK_SECRET` to `DENYLIST`. It is a one-line change and cannot break a plugin. It becomes the primary if third-party plugins in `/srv/tinkerbox/plugins` are known to rely on unlisted variables. It leaves this class of leak open.\n\n**Alternative: remove the debug dump.** Delete `plugins/feed-fetch/main.py:14`. It closes this one path. Other plugins can still print their environment.\n\n**Question.** Do you approve the allowlist in `plugin_env`, or do you want the extended denylist because plugins outside this repo need other variables?",
+  "ttft_ms": 1597,
+  "type": "result",
+  "duration_ms": 19683,
+  "uuid": "2e7cc607-6eb5-4425-bb76-361db2939dcf",
+  "ttft_stream_ms": 1254,
+  "time_to_request_ms": 290,
+  "first_content_frame_ms": 1254,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

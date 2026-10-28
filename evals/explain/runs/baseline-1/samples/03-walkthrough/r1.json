@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 11868,
+  "stop_reason": "end_turn",
+  "session_id": "3e53c947-ca16-48c1-9238-02cc4c415c21",
+  "total_cost_usd": 0.0259039,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2064,
+    "cache_read_input_tokens": 23259,
+    "output_tokens": 1531,
+    "output_tokens_details": {
+      "thinking_tokens": 307
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2064,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1068,
+        "cache_read_input_tokens": 8055,
+        "cache_creation_input_tokens": 1277,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1277
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1531,
+      "cacheReadInputTokens": 23259,
+      "cacheCreationInputTokens": 2064,
+      "webSearchRequests": 0,
+      "costUSD": 0.0259039,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 307,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2064,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`mintctl deploy staging` builds the current checkout of `mint-shop`, pushes it to `registry.mint.internal`, rolls it out to `gke-mint-staging`, then posts to Slack. No CLI entry point exists in this directory, so I assume it calls `deploy(\"staging\")` in `mintctl/deploy.py:7`.\n\n**Timeline**\n\n1. **Config.** `deploy` opens `mint.toml` from the working directory, so Ines Albrecht must run it at the `mint-shop` repo root. It reads `env.staging`: cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`.\n2. **Version.** `git rev-parse --short HEAD` returns the short commit hash, `sha`. The image tag becomes `registry.mint.internal/mint-shop:<sha>`.\n3. **Build.** `docker build -t <tag> .` builds from the repo root. `check=True` aborts the command on any failure.\n4. **Push.** `docker push <tag>` uploads the image to `registry.mint.internal`.\n5. **Release.** `kubectl --context gke-mint-staging -n shop set image deployment/mint-shop web=<tag>` points the `web` container at the new image.\n6. **Wait.** `kubectl rollout status deployment/mint-shop --timeout=300s` blocks until the rollout finishes. It fails after 300 seconds.\n7. **Notify.** `slack.post` sends `mint-shop <sha> is live on staging` to `#deploys-staging`. It uses the webhook in `MINT_SLACK_WEBHOOK` with a 10-second timeout.\n\n**Behaviours to know**\n\n- **Dirty tree.** The tag uses `HEAD`, so uncommitted changes are built into the image under a hash that does not describe them.\n- **No rollback.** A failed or timed-out rollout in step 6 stops the command with no Slack message and no undo.\n- **Late Slack failure.** If `MINT_SLACK_WEBHOOK` is unset, step 7 raises `KeyError` after the deploy has already succeeded.\n\nNext step: I can find the CLI entry point if it lives outside this directory, or trace the `production` path, which differs only in its `mint.toml` values.",
+  "ttft_ms": 1424,
+  "type": "result",
+  "duration_ms": 12213,
+  "uuid": "6e02dbcb-df30-43bf-85bb-095051306388",
+  "ttft_stream_ms": 1014,
+  "time_to_request_ms": 320,
+  "first_content_frame_ms": 1014,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

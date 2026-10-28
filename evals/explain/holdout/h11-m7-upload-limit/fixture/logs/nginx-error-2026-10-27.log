@@ -1,0 +1,2 @@
+2026/10/27 09:14:02 [error] 31#31: *88213 client intended to send too large body: 94371840 bytes, client: 185.41.20.7, server: docs.pinewood.example, request: "POST /api/files HTTP/1.1"
+2026/10/27 09:31:47 [error] 31#31: *88402 client intended to send too large body: 167772160 bytes, client: 185.41.20.7, server: docs.pinewood.example, request: "POST /api/files HTTP/1.1"

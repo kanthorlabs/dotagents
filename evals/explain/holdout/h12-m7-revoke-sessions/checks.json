@@ -1,0 +1,14 @@
+{
+  "mode": "Explanation of a design gap with a fix proposal. Two correct options with trade-offs, and tempting options that fail.",
+  "common": ["style", "explanation", "fix"],
+  "checks": [
+    {
+      "name": "names-self",
+      "kind": "mechanical",
+      "rule": "R22",
+      "fn": "regex_present",
+      "args": {"pattern": "\\bAelita (recommends|proposes|prefers|suggests)"},
+      "criterion": "The recommendation names Aelita as the recommender."
+    }
+  ]
+}

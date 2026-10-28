@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 28598,
+  "stop_reason": "end_turn",
+  "session_id": "f10c739d-cf62-4673-a84a-9ba01ab15a06",
+  "total_cost_usd": 0.062117,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 4821,
+    "cache_read_input_tokens": 34970,
+    "output_tokens": 3932,
+    "output_tokens_details": {
+      "thinking_tokens": 1403
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4821,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2238,
+        "cache_read_input_tokens": 11263,
+        "cache_creation_input_tokens": 1161,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1161
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 3932,
+      "cacheReadInputTokens": 34970,
+      "cacheCreationInputTokens": 4821,
+      "webSearchRequests": 0,
+      "costUSD": 0.062117,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1403,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4821,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 12,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`lantern-worker` loses these uploads because it acks each message on delivery and then gets SIGKILLed mid-render. The broker has already deleted the job, so nothing retries it and nothing logs an error. Aelita recommends acking after the job finishes and raising the grace period above the drain time.\n\n**Timeline without the fix**\n\n1. At 14:02:05 to 14:02:07, `lantern-worker-7f9c-2` takes the video jobs u-88217, u-88218 and u-88219. `consume.py:22` uses `auto_ack=True`, so RabbitMQ deletes each message on delivery.\n2. At 14:02:10, SIGTERM arrives. `stop_consuming` runs and `drain` starts with a 60s budget (`LANTERN_DRAIN_SECONDS` default).\n3. At 14:02:21, u-88213 finishes. `pool.shutdown(wait=False)` does not cancel queued work, so the pool starts u-88220 and u-88221 anyway.\n4. At 14:02:30, kubelet sends SIGKILL. `values-prod.yaml` sets `terminationGracePeriodSeconds: 20`, which is shorter than the 60s drain and the 25 to 70s video renders.\n5. The threads for u-88217, u-88218, u-88219 and u-88221 die mid-render. No exception and no log line is written. The last log line is the kubelet kill.\n6. RabbitMQ holds no copy of these jobs, so nothing retries them. `thumbs/<upload_id>.webp` never appears and the upload page shows its placeholder forever.\n\n**Timeline with the fix**, diverges at step 1.\n\n1. `lantern-worker-7f9c-2` takes u-88217, u-88218 and u-88219 without acking. A prefetch limit of `CONCURRENCY` caps unacked jobs at 4.\n4. Kubelet sends SIGKILL at 14:02:30, as before. The grace period is now 90s, so most videos finish before this point.\n5. The AMQP connection drops. RabbitMQ requeues every unacked job.\n6. Another worker renders each requeued job and writes the thumbnail. The uploads get their thumbnails.\n\n**What changes**\n\n- `worker/consume.py` old behaviour: `auto_ack=True` and unlimited prefetch. New behaviour: `basic_qos(prefetch_count=settings.CONCURRENCY)` and `auto_ack=False`. `on_message` passes `method.delivery_tag` to `handle`. The ack goes through `connection.add_callback_threadsafe`, because pika channels are not thread-safe.\n- `worker/handler.py` old behaviour: `handle` has no error handling, and `pool.submit` hides exceptions in the future. New behaviour: `handle` logs any exception with the `upload_id` and nacks with requeue, and acks only after `record_usage` returns.\n- `deploy/helm/values-prod.yaml` old value: `terminationGracePeriodSeconds: 20`. New value: `90`, so it exceeds `LANTERN_DRAIN_SECONDS` (60) and the longest video render (70s). Set `LANTERN_DRAIN_SECONDS` to 80 to match.\n\n**Recommendation.** Aelita recommends ack-after-completion plus the longer grace period. Ack-after-completion removes the cause, because a killed job is redelivered instead of lost. The grace period only cuts how often kills happen. The cost is possible duplicate work. `put_thumbnail` writes a fixed key, so a repeat is harmless. `record_usage` could bill twice if a kill lands between the upload and the ack. The `ref` field may already dedupe, but `meter.internal` belongs to Billing and is not in this repository, so I could not verify that. `worker/render.py` is also missing from the repository, so I did not check it.\n\n**Alternative: raise only the grace period.** Set `terminationGracePeriodSeconds` to 90 and change no code. It beats the recommendation on size, because it is a one-line change. It still loses jobs on an OOM kill, a node loss or any kill past 90s. It becomes the primary if Billing cannot confirm that `ref` dedupes and a double bill is worse than a missing thumbnail.\n\n**Question.** Do you approve ack-after-completion with the 90s grace period, or the grace-period-only change?",
+  "ttft_ms": 1413,
+  "type": "result",
+  "duration_ms": 28947,
+  "uuid": "028404e6-a598-4596-a933-30764d5d8269",
+  "ttft_stream_ms": 1264,
+  "time_to_request_ms": 313,
+  "first_content_frame_ms": 1264,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

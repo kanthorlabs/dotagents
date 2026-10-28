@@ -1,0 +1,172 @@
+{
+  "key": "6f17ddbe570fc2cca007524e8e90746718f7b0b17a2ec13d8af21c7c07843111",
+  "cost_usd": 0.03479,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends passing `conn`, because it removes the cause.\" Matches the correct recommendation of passing the checkout connection into hold_seats."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`pool_in_use=10`... `pool_waiting=14`... 38 of 200 connections\"; \"At normal traffic `in_flight=3`\". All match the key, and the seat hold is correctly stated to commit on its own connection."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"it fails the same way at a bigger on-sale\"; \"At normal traffic... second `pool.connection()` always succeeds\"; the 30 s timeout fires for all 14 requests at once. Reader lists no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"`checkout` holds a pooled connection and calls `hold_seats`, which requests a second connection\"; fix and cost (signature change) also agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Shall I apply the `conn` change to `app/seats.py` and `app/checkout.py`?\" This is one question with one decision. The reader answered \"Yes.\""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: raise `max_size` or lower `timeout`.\" Raising max_size and raising the pool timeout are in invalid_options, and the message calls this a stopgap primary."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 7515,
+    "stop_reason": "tool_use",
+    "session_id": "28e58a16-b62f-47d3-bfe8-85e33e3a2f2d",
+    "total_cost_usd": 0.03479,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6015,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1054,
+      "output_tokens_details": {
+        "thinking_tokens": 490
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6015,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1054,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6015,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6015
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1054,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6015,
+        "webSearchRequests": 0,
+        "costUSD": 0.03479,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 490,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6015,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends passing `conn`, because it removes the cause.\\\" Matches the correct recommendation of passing the checkout connection into hold_seats.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`pool_in_use=10`... `pool_waiting=14`... 38 of 200 connections\\\"; \\\"At normal traffic `in_flight=3`\\\". All match the key, and the seat hold is correctly stated to commit on its own connection.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"it fails the same way at a bigger on-sale\\\"; \\\"At normal traffic... second `pool.connection()` always succeeds\\\"; the 30 s timeout fires for all 14 requests at once. Reader lists no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"`checkout` holds a pooled connection and calls `hold_seats`, which requests a second connection\\\"; fix and cost (signature change) also agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Shall I apply the `conn` change to `app/seats.py` and `app/checkout.py`?\\\" This is one question with one decision. The reader answered \\\"Yes.\\\"\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: raise `max_size` or lower `timeout`.\\\" Raising max_size and raising the pool timeout are in invalid_options, and the message calls this a stopgap primary.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends passing `conn`, because it removes the cause.\" Matches the correct recommendation of passing the checkout connection into hold_seats."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`pool_in_use=10`... `pool_waiting=14`... 38 of 200 connections\"; \"At normal traffic `in_flight=3`\". All match the key, and the seat hold is correctly stated to commit on its own connection."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"it fails the same way at a bigger on-sale\"; \"At normal traffic... second `pool.connection()` always succeeds\"; the 30 s timeout fires for all 14 requests at once. Reader lists no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"`checkout` holds a pooled connection and calls `hold_seats`, which requests a second connection\"; fix and cost (signature change) also agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Shall I apply the `conn` change to `app/seats.py` and `app/checkout.py`?\" This is one question with one decision. The reader answered \"Yes.\""
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: raise `max_size` or lower `timeout`.\" Raising max_size and raising the pool timeout are in invalid_options, and the message calls this a stopgap primary."
+        }
+      ]
+    },
+    "ttft_ms": 4911,
+    "type": "result",
+    "duration_ms": 7909,
+    "uuid": "2370cc69-b582-4d0e-8429-8ff006cde4f7",
+    "ttft_stream_ms": 1422,
+    "time_to_request_ms": 392,
+    "first_content_frame_ms": 1422,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

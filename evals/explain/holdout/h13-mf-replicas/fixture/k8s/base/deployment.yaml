@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ashgrove-portal
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ashgrove-portal
+  template:
+    metadata:
+      labels:
+        app: ashgrove-portal
+    spec:
+      containers:
+        - name: portal
+          image: registry.ashgrove.example/portal:2026.10.8
+          ports:
+            - containerPort: 8080

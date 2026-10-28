@@ -1,0 +1,142 @@
+{
+  "key": "1ff8f6891261e529dedab116b7efabfc47c48c0a6c79ae65f49c60ebb13a1a31",
+  "cost_usd": 0.021660000000000002,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"1,912 distinct `Accept` values in October\"; \"path and query string only\"; \"negotiated format (`avif`, `webp` or `orig`)\" \u2014 all match the key; no deferrals."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Answers all four: key is path+query; not whole Accept (1,912 variants); Safari 13 cannot decode WebP; next step is the two edits, nothing open. Reader lists no follow-ups."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader fix: \"cache_key(request, image_format) appends the format\"; problem: \"caches images under path and query string only\"; matches key. Cost is n/a."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 2573,
+    "stop_reason": "tool_use",
+    "session_id": "bfc32c02-2283-4196-badf-cf6cd21ca6d7",
+    "total_cost_usd": 0.021660000000000002,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4610,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 303,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4610,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 303,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4610,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4610
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 303,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4610,
+        "webSearchRequests": 0,
+        "costUSD": 0.021660000000000002,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4610,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"1,912 distinct `Accept` values in October\\\"; \\\"path and query string only\\\"; \\\"negotiated format (`avif`, `webp` or `orig`)\\\" \u2014 all match the key; no deferrals.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Answers all four: key is path+query; not whole Accept (1,912 variants); Safari 13 cannot decode WebP; next step is the two edits, nothing open. Reader lists no follow-ups.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader fix: \\\"cache_key(request, image_format) appends the format\\\"; problem: \\\"caches images under path and query string only\\\"; matches key. Cost is n/a.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"1,912 distinct `Accept` values in October\"; \"path and query string only\"; \"negotiated format (`avif`, `webp` or `orig`)\" \u2014 all match the key; no deferrals."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Answers all four: key is path+query; not whole Accept (1,912 variants); Safari 13 cannot decode WebP; next step is the two edits, nothing open. Reader lists no follow-ups."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader fix: \"cache_key(request, image_format) appends the format\"; problem: \"caches images under path and query string only\"; matches key. Cost is n/a."
+        }
+      ]
+    },
+    "ttft_ms": 2921,
+    "type": "result",
+    "duration_ms": 2934,
+    "uuid": "fed21367-ada6-41c0-a65c-ca678e375642",
+    "ttft_stream_ms": 1224,
+    "time_to_request_ms": 362,
+    "first_content_frame_ms": 1224,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

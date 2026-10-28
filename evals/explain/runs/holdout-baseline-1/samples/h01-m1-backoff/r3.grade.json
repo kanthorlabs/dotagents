@@ -1,0 +1,172 @@
+{
+  "key": "341d65251a6239370564bdd196f5e75beb8cdba842531cd76f7e6e56d46f40f8",
+  "cost_usd": 0.03965,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends switching `sync/run_sync.py` to `POST /v2/contacts:batchUpsert` and keeping a small `Retry-After` retry as a safety net.\" Matches the key plus a compatible guard."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"468 batches of 100\"; \"11,940 upserted and 34,860 pending\"; \"1,450 USD per month and has a 3 week lead time\". All match the key, and nothing is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "All three required questions are answered: backoff caps at about 12,000, batches of 100 via batchUpsert, and \"about 400 calls\" fits. The reader's batch-counting question is detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"8 workers send about 400 requests per minute\"; \"Add upsert_batch... split contacts into chunks of 100\"; \"One new client function and a change to the loop\". Matches the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve batch upsert with `WORKERS = 6` and a `Retry-After` retry as the safety net, instead of backoff alone?\" This is one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: enterprise tier... It becomes the primary if `batchUpsert` proves unreliable.\" valid_alternatives is empty and the enterprise tier is in invalid_options, so this listed alternative fails."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10055,
+    "stop_reason": "tool_use",
+    "session_id": "58116143-32c7-4029-8889-305d962a0bca",
+    "total_cost_usd": 0.03965,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6410,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1382,
+      "output_tokens_details": {
+        "thinking_tokens": 778
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6410,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1382,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6410,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6410
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1382,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6410,
+        "webSearchRequests": 0,
+        "costUSD": 0.03965,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 778,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6410,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends switching `sync/run_sync.py` to `POST /v2/contacts:batchUpsert` and keeping a small `Retry-After` retry as a safety net.\\\" Matches the key plus a compatible guard.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"468 batches of 100\\\"; \\\"11,940 upserted and 34,860 pending\\\"; \\\"1,450 USD per month and has a 3 week lead time\\\". All match the key, and nothing is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"All three required questions are answered: backoff caps at about 12,000, batches of 100 via batchUpsert, and \\\"about 400 calls\\\" fits. The reader's batch-counting question is detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"8 workers send about 400 requests per minute\\\"; \\\"Add upsert_batch... split contacts into chunks of 100\\\"; \\\"One new client function and a change to the loop\\\". Matches the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve batch upsert with `WORKERS = 6` and a `Retry-After` retry as the safety net, instead of backoff alone?\\\" This is one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: enterprise tier... It becomes the primary if `batchUpsert` proves unreliable.\\\" valid_alternatives is empty and the enterprise tier is in invalid_options, so this listed alternative fails.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends switching `sync/run_sync.py` to `POST /v2/contacts:batchUpsert` and keeping a small `Retry-After` retry as a safety net.\" Matches the key plus a compatible guard."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"468 batches of 100\"; \"11,940 upserted and 34,860 pending\"; \"1,450 USD per month and has a 3 week lead time\". All match the key, and nothing is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "All three required questions are answered: backoff caps at about 12,000, batches of 100 via batchUpsert, and \"about 400 calls\" fits. The reader's batch-counting question is detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"8 workers send about 400 requests per minute\"; \"Add upsert_batch... split contacts into chunks of 100\"; \"One new client function and a change to the loop\". Matches the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve batch upsert with `WORKERS = 6` and a `Retry-After` retry as the safety net, instead of backoff alone?\" This is one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: enterprise tier... It becomes the primary if `batchUpsert` proves unreliable.\" valid_alternatives is empty and the enterprise tier is in invalid_options, so this listed alternative fails."
+        }
+      ]
+    },
+    "ttft_ms": 7418,
+    "type": "result",
+    "duration_ms": 10576,
+    "uuid": "727eab69-0dfc-498a-bf3c-dfdf2d9a8a2b",
+    "ttft_stream_ms": 1652,
+    "time_to_request_ms": 521,
+    "first_content_frame_ms": 1652,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

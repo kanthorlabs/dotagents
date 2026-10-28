@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 17941,
+  "stop_reason": "end_turn",
+  "session_id": "38a4c793-8738-4f20-9078-bdbf3a7a439d",
+  "total_cost_usd": 0.0344343,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2065,
+    "cache_read_input_tokens": 25423,
+    "output_tokens": 2362,
+    "output_tokens_details": {
+      "thinking_tokens": 1039
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2065,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1662,
+        "cache_read_input_tokens": 8905,
+        "cache_creation_input_tokens": 1240,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1240
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2362,
+      "cacheReadInputTokens": 25423,
+      "cacheCreationInputTokens": 2065,
+      "webSearchRequests": 0,
+      "costUSD": 0.0344343,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1039,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2065,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "- **Today's key is the URL only: correct.** `cache_key` in `edge/cache.py:5` returns `request.path` plus `request.query_string`.\n- **The fix appends the whole `Accept` header: wrong.** The ruling appends the negotiated format: `avif`, `webp` or `orig`.\n- **Safari 13 cannot decode WebP: correct.** `docs/browser-support.md` adds that Safari 13 cannot decode AVIF either.\n\nThe case is not a key built from the raw header. The key gets one of three short values.\n\n**Why not the whole header.** `logs/accept-stats-2026-10.txt` counts 1,912 distinct `Accept` values in October. Each value would get its own cache entry for the same image. The three formats are 58 %, 31 % and 11 % of requests.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. `img-edge` negotiates `orig` for Hanna Lind's Safari 13 header. It builds the key `/img/tr-1180.jpg?w=800` plus `orig`. Jonas Ek's entry sits under the `webp` key, so this is a miss. `img-edge` renders the original.\n5. Safari 13 receives the original JPEG. Hanna sees the image.\n\n**What changes**\n\n- `edge/cache.py` old behaviour: `cache_key(request)` returns path and query string. New behaviour: `cache_key(request, image_format)` appends the format. `lookup` and `save` take `image_format` and pass it on.\n- `edge/handler.py` old behaviour: `serve_image` calls `lookup` at line 7, before `negotiate` at line 10. New behaviour: `serve_image` calls `negotiate` first, then `lookup` with the format. Without this move the key cannot hold the format.\n\n**Side effect.** Old entries use keys without a format. They never match again and expire after the 86400 second TTL.\n\n**Next step.** Aelita hands Petra these two edits: `edge/cache.py` and `edge/handler.py`. No open item remains.",
+  "ttft_ms": 1329,
+  "type": "result",
+  "duration_ms": 18251,
+  "uuid": "973e4527-a070-4d50-82b4-4ef5f1eba9b0",
+  "ttft_stream_ms": 942,
+  "time_to_request_ms": 291,
+  "first_content_frame_ms": 942,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

@@ -1,0 +1,172 @@
+{
+  "key": "74b4a900446cdfa7d2f3b6979e167c90ecfa1d9d8250045753f8384dd2d04082",
+  "cost_usd": 0.03975,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends reading from the replica and keeping the single write on the primary.\" Matches the split with CTE/subquery rewrite and record_run on primary."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"p99 lag is 2 seconds. The job reports on yesterday\" and \"31 % to 88 % CPU... 340 ms to 1,900 ms\" match the key; no contradictions or deferred facts."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "All five required questions are answered. Reader's follow-up on standby conflict settings goes beyond the ruling and is not in the key's required set."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"reads from REPLICA_DATABASE_URL... keeps DATABASE_URL (primary) for record_run\"; temp table becomes a single SELECT; cost is the secret and query edit. Matches key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve the split, with reads on pg-osprey-2 and the report_runs insert on pg-osprey-1?\" Reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: keep the temp table and run everything on the primary. Nothing changes\" is the invalid 'Change nothing' option and does not take load off the primary."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9144,
+    "stop_reason": "tool_use",
+    "session_id": "699031b0-f2da-443a-8eb4-1dc8abe0e377",
+    "total_cost_usd": 0.03975,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6830,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1224,
+      "output_tokens_details": {
+        "thinking_tokens": 689
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6830,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1224,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6830,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6830
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1224,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6830,
+        "webSearchRequests": 0,
+        "costUSD": 0.03975,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 689,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6830,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends reading from the replica and keeping the single write on the primary.\\\" Matches the split with CTE/subquery rewrite and record_run on primary.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"p99 lag is 2 seconds. The job reports on yesterday\\\" and \\\"31 % to 88 % CPU... 340 ms to 1,900 ms\\\" match the key; no contradictions or deferred facts.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"All five required questions are answered. Reader's follow-up on standby conflict settings goes beyond the ruling and is not in the key's required set.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"reads from REPLICA_DATABASE_URL... keeps DATABASE_URL (primary) for record_run\\\"; temp table becomes a single SELECT; cost is the secret and query edit. Matches key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve the split, with reads on pg-osprey-2 and the report_runs insert on pg-osprey-1?\\\" Reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: keep the temp table and run everything on the primary. Nothing changes\\\" is the invalid 'Change nothing' option and does not take load off the primary.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends reading from the replica and keeping the single write on the primary.\" Matches the split with CTE/subquery rewrite and record_run on primary."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"p99 lag is 2 seconds. The job reports on yesterday\" and \"31 % to 88 % CPU... 340 ms to 1,900 ms\" match the key; no contradictions or deferred facts."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "All five required questions are answered. Reader's follow-up on standby conflict settings goes beyond the ruling and is not in the key's required set."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"reads from REPLICA_DATABASE_URL... keeps DATABASE_URL (primary) for record_run\"; temp table becomes a single SELECT; cost is the secret and query edit. Matches key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve the split, with reads on pg-osprey-2 and the report_runs insert on pg-osprey-1?\" Reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: keep the temp table and run everything on the primary. Nothing changes\" is the invalid 'Change nothing' option and does not take load off the primary."
+        }
+      ]
+    },
+    "ttft_ms": 6518,
+    "type": "result",
+    "duration_ms": 9502,
+    "uuid": "6cf23fb1-55de-477e-9d35-e618fdafbeb0",
+    "ttft_stream_ms": 1155,
+    "time_to_request_ms": 353,
+    "first_content_frame_ms": 1155,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

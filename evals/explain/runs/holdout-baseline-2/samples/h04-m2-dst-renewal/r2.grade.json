@@ -1,0 +1,172 @@
+{
+  "key": "fafa6f89e3f2dda8d8e595b62b4796911d2e5d077ecfefe4653960e754807332",
+  "cost_usd": 0.038468,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"Aelita recommends moving the three schedules to UTC.\" UTC is only a valid alternative in the key. It is not a correct_recommendations entry (fire once per local slot, or idempotent charge)."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`due_jobs` ... only checks a 60-second gap\"; \"`psp.charge` ... sends no idempotency key\"; \"support kept no record\". These match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"The next item is the refund list\". The message never says how to refund safely, such as finding manual refunds from Payrail records."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"Switch the three schedules to UTC\". The key fix is to fire each local slot once in the scheduler and refund the duplicates. The reader also omits the refund."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "\"Do you approve moving the three schedules to UTC?\" This is a single question, but the decision is UTC, which does not match the closing_decision (scheduler fix)."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: idempotency key in `psp.charge`... protects against any double fire... becomes the primary if the restart risk matters more\". It is valid, with a trade-off and a condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9703,
+    "stop_reason": "tool_use",
+    "session_id": "c55eaed9-5cce-4f52-8e24-d05667a35dd7",
+    "total_cost_usd": 0.038468,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6552,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1207,
+      "output_tokens_details": {
+        "thinking_tokens": 686
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6552,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1207,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6552,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6552
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1207,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6552,
+        "webSearchRequests": 0,
+        "costUSD": 0.038468,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 686,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6552,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"Aelita recommends moving the three schedules to UTC.\\\" UTC is only a valid alternative in the key. It is not a correct_recommendations entry (fire once per local slot, or idempotent charge).\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`due_jobs` ... only checks a 60-second gap\\\"; \\\"`psp.charge` ... sends no idempotency key\\\"; \\\"support kept no record\\\". These match the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"The next item is the refund list\\\". The message never says how to refund safely, such as finding manual refunds from Payrail records.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"Switch the three schedules to UTC\\\". The key fix is to fire each local slot once in the scheduler and refund the duplicates. The reader also omits the refund.\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"\\\"Do you approve moving the three schedules to UTC?\\\" This is a single question, but the decision is UTC, which does not match the closing_decision (scheduler fix).\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: idempotency key in `psp.charge`... protects against any double fire... becomes the primary if the restart risk matters more\\\". It is valid, with a trade-off and a condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Aelita recommends moving the three schedules to UTC.\" UTC is only a valid alternative in the key. It is not a correct_recommendations entry (fire once per local slot, or idempotent charge)."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`due_jobs` ... only checks a 60-second gap\"; \"`psp.charge` ... sends no idempotency key\"; \"support kept no record\". These match the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"The next item is the refund list\". The message never says how to refund safely, such as finding manual refunds from Payrail records."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"Switch the three schedules to UTC\". The key fix is to fire each local slot once in the scheduler and refund the duplicates. The reader also omits the refund."
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "\"Do you approve moving the three schedules to UTC?\" This is a single question, but the decision is UTC, which does not match the closing_decision (scheduler fix)."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: idempotency key in `psp.charge`... protects against any double fire... becomes the primary if the restart risk matters more\". It is valid, with a trade-off and a condition."
+        }
+      ]
+    },
+    "ttft_ms": 7593,
+    "type": "result",
+    "duration_ms": 10060,
+    "uuid": "c138fccc-8617-4679-a9e1-beb70545a8e5",
+    "ttft_stream_ms": 1792,
+    "time_to_request_ms": 357,
+    "first_content_frame_ms": 1792,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

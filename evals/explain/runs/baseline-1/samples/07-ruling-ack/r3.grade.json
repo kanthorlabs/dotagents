@@ -1,0 +1,172 @@
+{
+  "key": "16a9f59ebecc381becbfad8cb030b8f072812c88b15298a583988908de00fbdc",
+  "cost_usd": 0.03726,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the limit of 4.\" A lower BOUNCE_RETRY_LIMIT keeping retries at 5 or fewer per hour matches the first correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"BOUNCE_RETRY_LIMIT = 12 allows more than 5 bounces to one recipient within an hour\"; \"docs/mail-provider.md says none exists today\". Values match the key; no fact is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"Ruling recorded: ... invoices@mail.larkspur.io\"; the 24-hour block is explained; \"cutover date for smtp-old-1 follows\". The reader's only question, the counter base, is not a real gap."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"12 retries at 60-second intervals exceed smtp-mx-2's 5-bounces... cap\"; fix is a limit of 4; cost is a config change or new bounce parsing. All match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Does BOUNCE_RETRY_LIMIT change to 4, or do you want hard and soft bounce handling built as well?\" One question and one decision (the retry policy); the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: tell hard bounces from soft bounces... costs new bounce parsing... becomes the primary when dead mailboxes cause most of the bounces.\" Valid alternative with its trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9271,
+    "stop_reason": "tool_use",
+    "session_id": "b1c379c9-be7a-44f4-b565-4953667daa9b",
+    "total_cost_usd": 0.03726,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6085,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1273,
+      "output_tokens_details": {
+        "thinking_tokens": 664
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6085,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1273,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6085,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6085
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1273,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6085,
+        "webSearchRequests": 0,
+        "costUSD": 0.03726,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 664,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6085,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the limit of 4.\\\" A lower BOUNCE_RETRY_LIMIT keeping retries at 5 or fewer per hour matches the first correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"BOUNCE_RETRY_LIMIT = 12 allows more than 5 bounces to one recipient within an hour\\\"; \\\"docs/mail-provider.md says none exists today\\\". Values match the key; no fact is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"Ruling recorded: ... invoices@mail.larkspur.io\\\"; the 24-hour block is explained; \\\"cutover date for smtp-old-1 follows\\\". The reader's only question, the counter base, is not a real gap.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"12 retries at 60-second intervals exceed smtp-mx-2's 5-bounces... cap\\\"; fix is a limit of 4; cost is a config change or new bounce parsing. All match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Does BOUNCE_RETRY_LIMIT change to 4, or do you want hard and soft bounce handling built as well?\\\" One question and one decision (the retry policy); the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: tell hard bounces from soft bounces... costs new bounce parsing... becomes the primary when dead mailboxes cause most of the bounces.\\\" Valid alternative with its trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the limit of 4.\" A lower BOUNCE_RETRY_LIMIT keeping retries at 5 or fewer per hour matches the first correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"BOUNCE_RETRY_LIMIT = 12 allows more than 5 bounces to one recipient within an hour\"; \"docs/mail-provider.md says none exists today\". Values match the key; no fact is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"Ruling recorded: ... invoices@mail.larkspur.io\"; the 24-hour block is explained; \"cutover date for smtp-old-1 follows\". The reader's only question, the counter base, is not a real gap."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"12 retries at 60-second intervals exceed smtp-mx-2's 5-bounces... cap\"; fix is a limit of 4; cost is a config change or new bounce parsing. All match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Does BOUNCE_RETRY_LIMIT change to 4, or do you want hard and soft bounce handling built as well?\" One question and one decision (the retry policy); the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: tell hard bounces from soft bounces... costs new bounce parsing... becomes the primary when dead mailboxes cause most of the bounces.\" Valid alternative with its trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 6119,
+    "type": "result",
+    "duration_ms": 9741,
+    "uuid": "226a32d3-be9e-4e15-a4dd-1866836be338",
+    "ttft_stream_ms": 1334,
+    "time_to_request_ms": 469,
+    "first_content_frame_ms": 1334,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

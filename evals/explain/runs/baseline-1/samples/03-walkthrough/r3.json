@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 11936,
+  "stop_reason": "end_turn",
+  "session_id": "76509ac1-9a88-411b-80ad-0be3bedec50b",
+  "total_cost_usd": 0.0240384,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1745,
+    "cache_read_input_tokens": 23564,
+    "output_tokens": 1469,
+    "output_tokens_details": {
+      "thinking_tokens": 249
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1745,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1014,
+        "cache_read_input_tokens": 8053,
+        "cache_creation_input_tokens": 1269,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1269
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1469,
+      "cacheReadInputTokens": 23564,
+      "cacheCreationInputTokens": 1745,
+      "webSearchRequests": 0,
+      "costUSD": 0.0240384,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 249,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1745,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`mintctl deploy staging` builds the current commit as a Docker image and pushes it to `registry.mint.internal`. It then points the `mint-shop` deployment on `gke-mint-staging` at that image, waits for the rollout, and posts to Slack.\n\n**Timeline**\n\n1. **Entry.** Ines Albrecht runs the command inside `mint-shop`. This directory has no CLI entry point, so I could not see how `deploy(\"staging\")` gets called. I assume something outside these files does it.\n2. **Config.** `deploy()` in `mintctl/deploy.py` opens `mint.toml` from the current directory. It reads `env.staging`: cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`.\n3. **Tag.** `git rev-parse --short HEAD` gives the commit sha. The tag becomes `registry.mint.internal/mint-shop:<sha>`. The working tree is not checked, so uncommitted changes go into the image under the sha of the last commit.\n4. **Build.** `docker build -t <tag> .` runs in the repository root.\n5. **Push.** `docker push <tag>` uploads the image to `registry.mint.internal`.\n6. **Release.** `kubectl --context gke-mint-staging -n shop set image deployment/mint-shop web=<tag>` updates the `web` container.\n7. **Wait.** `kubectl rollout status deployment/mint-shop --timeout=300s` blocks until the rollout finishes or 300 seconds pass.\n8. **Notify.** `slack.post` sends \"mint-shop <sha> is live on staging\" to `#deploys-staging`. It uses the webhook in `MINT_SLACK_WEBHOOK` with a 10-second timeout.\n\n**Failure behaviour.** Steps 4 to 7 use `check=True`, so the first failing command raises and stops everything after it. A failed build sends no Slack message. A failed rollout leaves the new image set on the deployment, and no rollback runs. If `MINT_SLACK_WEBHOOK` is unset, step 8 raises `KeyError` after the deploy has already succeeded.\n\n**Next step.** If you want, I can trace the entry point once you tell me where `mintctl` is wired to `deploy`.",
+  "ttft_ms": 1662,
+  "type": "result",
+  "duration_ms": 12470,
+  "uuid": "7b44c580-5c6f-459b-870a-274af95bbb2d",
+  "ttft_stream_ms": 1522,
+  "time_to_request_ms": 504,
+  "first_content_frame_ms": 1522,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

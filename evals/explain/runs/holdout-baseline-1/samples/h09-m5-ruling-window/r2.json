@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 26637,
+  "stop_reason": "end_turn",
+  "session_id": "d8212e8d-c7ad-475c-8f89-0bf96c2f7953",
+  "total_cost_usd": 0.0434314,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1728,
+    "cache_read_input_tokens": 24674,
+    "output_tokens": 3404,
+    "output_tokens_details": {
+      "thinking_tokens": 1956
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1728,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2961,
+        "cache_read_input_tokens": 8476,
+        "cache_creation_input_tokens": 1172,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1172
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 3404,
+      "cacheReadInputTokens": 24674,
+      "cacheCreationInputTokens": 1728,
+      "webSearchRequests": 0,
+      "costUSD": 0.0434314,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1956,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1728,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling recorded.** The project holds no decision register or handoff file, so I quote it here: \"Upgrade `pg_partman` to 5.1 on 14 first.\" This matches step 1 of `docs/upgrade-plan.md`, so that file needs no edit.\n\nAelita recommends booking step 3 for Sunday 8 November 2026, 02:00 UTC. It is the first low-traffic night after the two nightly runs of step 2. It is the last open item.\n\n**Timeline without the fix**\n\n1. Wednesday 4 November, 10:00 UTC: step 1 upgrades `pg_partman` to 5.1 on PostgreSQL 14. The change freeze ends at 09:00 UTC that day.\n2. Thursday 5 November, 03:30 UTC: the first nightly run of `pg_partman` 5.1 completes.\n3. Friday 6 November, 03:30 UTC: the second nightly run completes. Step 3 may start.\n4. `upgrade-plan.md` still says \"The date of step 3 is open.\" No window is booked.\n5. Any weekday night after step 3 opens runs at about 130 writes per second. Every night lost to a slip uses up the days left before 12 November.\n6. A slip past Wednesday 11 November leaves `thornbury-ledger` on PostgreSQL 14 after end of life. It breaks audit requirement AR-7.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. `upgrade-plan.md` books step 3 for Sunday 8 November, 02:00 UTC.\n5. `pg_upgrade --link` runs at about 40 writes per second. Measured downtime is 14 min 10 s.\n6. `vacuumdb --analyze-in-stages` runs for 38 minutes. The whole job ends before 03:00 UTC, inside the quiet 02:00 to 05:00 band. The upgrade finishes 4 days before the deadline.\n\n**What changes**\n\n- `docs/upgrade-plan.md`: old sentence \"The date of step 3 is open.\" New sentence \"Step 3 is booked for Sunday 8 November 2026, 02:00 UTC, after the two nightly runs of step 2 on 5 and 6 November.\"\n\n**Recommendation.** Aelita recommends Sunday 8 November. Sunday 02:00 to 05:00 UTC has the lowest write load of the week, about 40 writes per second. That also keeps the slow reports during `vacuumdb` to a minimum. Monday 9 to Wednesday 11 November stay free as retry nights. The cost is that a retry on those nights runs at about 130 writes per second. A slip of step 1 beyond 4 November, or a failed second run on 6 November, breaks this plan.\n\n**Alternative: Saturday 7 November, 02:00 UTC.** The load is about 95 writes per second. It beats Sunday because a failed window can retry on Sunday at 40 writes per second. It costs more load during the first attempt. It becomes the primary when a retry on a quiet night matters more than the first attempt.\n\n**Question.** Do we book step 3 for Sunday 8 November, 02:00 UTC, or for Saturday 7 November?",
+  "ttft_ms": 1517,
+  "type": "result",
+  "duration_ms": 27181,
+  "uuid": "a39929e0-b16f-4a33-8d2b-b36f3710d405",
+  "ttft_stream_ms": 1197,
+  "time_to_request_ms": 516,
+  "first_content_frame_ms": 1197,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

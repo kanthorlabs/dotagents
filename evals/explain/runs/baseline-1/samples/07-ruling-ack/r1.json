@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 31195,
+  "stop_reason": "end_turn",
+  "session_id": "2e3df341-eb30-49c9-b38e-0809e0dc9d2d",
+  "total_cost_usd": 0.0536382,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2399,
+    "cache_read_input_tokens": 24102,
+    "output_tokens": 4162,
+    "output_tokens_details": {
+      "thinking_tokens": 2446
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2399,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3628,
+        "cache_read_input_tokens": 8512,
+        "cache_creation_input_tokens": 1155,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1155
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 4162,
+      "cacheReadInputTokens": 24102,
+      "cacheCreationInputTokens": 2399,
+      "webSearchRequests": 0,
+      "costUSD": 0.0536382,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2446,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2399,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling recorded.** `invoice-mailer` sends from `invoices@mail.larkspur.io`, replacing `billing@larkspur.io`. No decision register exists in the project, so I'm quoting it here. I haven't edited `mailer/config.py` yet.\n\nThe next open item is the retry limit for bounced mails. `BOUNCE_RETRY_LIMIT = 12` with a 60 second interval gets the new sender blocked by `smtp-mx-2`. Aelita recommends 3 retries at 900 seconds.\n\n**Existing behaviour**\n\n1. `handle_bounce` in `mailer/bounces.py` receives each bounce with its `attempt` number.\n2. It marks the message failed when `attempt >= config.BOUNCE_RETRY_LIMIT`.\n3. Otherwise it sleeps `BOUNCE_RETRY_INTERVAL_SECONDS` and resends through `config.SMTP_RELAY`.\n4. `docs/mail-provider.md` says `smtp-mx-2` blocks a sender for 24 hours when one recipient bounces more than 5 times in one hour.\n\n**Timeline without the fix**\n\n1. `invoice-mailer` sends INV-2207 to Oskar Brandt through `smtp-mx-2`. His mailbox is full, so it soft bounces.\n2. `handle_bounce` waits 60 seconds and resends.\n3. The mailbox stays full. The bounce repeats every minute, and the sixth bounce lands at about minute 5.\n4. `smtp-mx-2` sees more than 5 bounces for one recipient in one hour. It blocks `invoices@mail.larkspur.io` for 24 hours.\n5. Every invoice to every customer is refused for 24 hours because of one full mailbox.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `handle_bounce` waits 900 seconds and resends.\n3. Retries go out at minutes 15, 30 and 45. The fourth bounce lands at about minute 45.\n4. `attempt` reaches 3, so `handle_bounce` calls `mark_failed`. The recipient bounced 4 times, which is under the limit of 5, so there is no block.\n\n**What changes**\n\n- `mailer/config.py`: `BOUNCE_RETRY_LIMIT` changes from `12` to `3`.\n- `mailer/config.py`: `BOUNCE_RETRY_INTERVAL_SECONDS` changes from `60` to `900`.\n- `mailer/config.py`: `FROM_ADDRESS` changes to `invoices@mail.larkspur.io`, as ruled. `SMTP_RELAY` changes to `smtp-mx-2.larkspur.internal` as part of the move.\n\n**Recommendation.** Aelita recommends the two config values. They forbid the retry pattern that triggers the block and add no new code. The cost is slower delivery to a mailbox that frees up quickly. Only one bounce of margin remains, so other mail to the same recipient in the same hour can still tip it over.\n\n**Alternative: tell hard bounces from soft bounces.** `handle_bounce` would read the SMTP status and never retry a hard bounce. It beats the config change when many invoices go to dead mailboxes, because those use zero retries. It costs new parsing code in `mailer/bounces.py`. It becomes the primary when hard bounces are common.\n\n**Question.** Do we set the limit to 3 and the interval to 900 seconds, or build hard and soft bounce detection first? The cutover date follows after your answer. `docs/mail-provider.md` already says `smtp-old-1` goes offline on 30 November.",
+  "ttft_ms": 1413,
+  "type": "result",
+  "duration_ms": 31701,
+  "uuid": "ca41cd54-f2a7-4de1-bf19-a5d5b1bb1f6f",
+  "ttft_stream_ms": 1138,
+  "time_to_request_ms": 484,
+  "first_content_frame_ms": 1138,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

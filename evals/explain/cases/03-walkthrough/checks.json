@@ -1,0 +1,37 @@
+{
+  "mode": "Walk-through that names no failure.",
+  "common": [
+    "style",
+    "explanation"
+  ],
+  "checks": [
+    {
+      "name": "single-timeline",
+      "kind": "mechanical",
+      "rule": "R19",
+      "fn": "label_count_exact",
+      "args": {
+        "pattern": "^timeline$",
+        "n": 1
+      },
+      "criterion": "Exactly one section is labeled Timeline."
+    },
+    {
+      "name": "no-fix-sections",
+      "kind": "mechanical",
+      "rule": "R19",
+      "fn": "label_absent",
+      "args": {
+        "pattern": "^(timeline with|timeline without|what changes|recommend|alternative)"
+      },
+      "criterion": "No fix, change or recommendation section exists."
+    },
+    {
+      "name": "no-question",
+      "kind": "mechanical",
+      "rule": "R41",
+      "fn": "no_question",
+      "criterion": "The message asks no question because no ruling is open."
+    }
+  ]
+}

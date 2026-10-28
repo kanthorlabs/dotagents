@@ -1,0 +1,19 @@
+{
+  "measures": ["MF"],
+  "correct_recommendations": [],
+  "invalid_options": [],
+  "root_cause": "Not applicable.",
+  "dependent_facts": [
+    {
+      "fact": "CI Node.js version",
+      "true_value": "22.11.0, read by actions/setup-node from .nvmrc",
+      "source": ".github/workflows/ci.yml and .nvmrc",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [],
+  "valid_alternatives": [],
+  "closing_decision": "none",
+  "understanding": {"problem": "n/a", "breaks": "n/a", "fix": "n/a", "cost": "n/a"},
+  "factual_pattern": "22\\.11\\.0"
+}

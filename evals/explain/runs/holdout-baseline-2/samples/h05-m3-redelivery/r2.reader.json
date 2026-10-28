@@ -1,0 +1,135 @@
+{
+  "key": "115be875b099ce65170fbc2f1f84f5b8b4bcc4847f7ed8d71db67dc26eee0e40",
+  "cost_usd": 0.0232513,
+  "reader": {
+    "decision": "Approve the proposal with the `read_at` guard on `UPSERT_LATEST`, conditional on non-transient errors being acked or sent to the DLQ immediately in the handler. The unique key on `readings (device_id, read_at)` is a separate ruling that I make after the question is raised.",
+    "decision_reason": "The message shows that raising `max_ack_pending` to 256 lets an old reading overwrite a newer one and breaks `freezer-temp-high`. The one-predicate guard removes that cause, and it avoids the 62 s all-device block that caused the 41,200-message lag peak. The non-transient error gap is open, so I attach that condition to the approval.",
+    "reconstruction": {
+      "problem": "Replacing the hand-written retry loop with JetStream redelivery needs `max_ack_pending: 256` so that one failing message does not block every device. With that setting, a retried older reading (R1, -20 \u00b0C) can succeed after a newer one (R2, -12 \u00b0C), and `UPSERT_LATEST` has no `read_at` guard, so it overwrites `latest_reading` with the stale value.",
+      "what_breaks": "The live map and the `freezer-temp-high` alert read the older -20 \u00b0C value. The 'above -15 \u00b0C for 10 minutes' condition can reset or be delayed until the next reading. Separately, `max_deliver: 6` means a crash after commit but before ack redelivers the message and `INSERT_HISTORY` can add a duplicate row, because no unique key on `readings` was found. Non-transient errors such as parse failures would also redeliver unless the handler acks them or sends them to the DLQ.",
+      "fix": "Add `WHERE latest_reading.read_at < EXCLUDED.read_at` after the `DO UPDATE SET` clause in `UPSERT_LATEST` in `ingest/store.py`. The other changes to `ingest/handler.py`, `ingest/retry.py` and `deploy/consumer.yaml` stay as Ulrich wrote them. The fallback is to keep `with_retries` and run several consumers.",
+      "cost": "The guard costs one predicate on a row that is already locked. The fallback costs a larger lag during a failover, and its ordering still depends on how messages are spread across workers. The cost of a unique key on `readings` is not stated. The cost of handling non-transient errors is not stated."
+    },
+    "follow_up_questions": [
+      "Does the handler in the proposal ack or DLQ non-transient errors (parse failures, bad rows) immediately, or do they redeliver up to 6 times?",
+      "Can the guarded upsert ship today, so the fallback is not needed?"
+    ],
+    "closing_answer": "Yes, I approve the proposal with the `read_at` guard on `UPSERT_LATEST`. I attach one condition: non-transient errors must be acked or sent to the DLQ at once, and the handler must show that before it ships. Raise the unique key on `readings (device_id, read_at)` as a separate ruling afterwards. If the guard cannot ship today, use the fallback of `with_retries` with several consumers."
+  },
+  "raw": {
+    "duration_api_ms": 7703,
+    "stop_reason": "tool_use",
+    "session_id": "104a3c9a-d304-4012-a190-5544d9169601",
+    "total_cost_usd": 0.0232513,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2950,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 1125,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2950,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1125,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2950,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2950
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1125,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2950,
+        "webSearchRequests": 0,
+        "costUSD": 0.0232513,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2950,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve the proposal with the `read_at` guard on `UPSERT_LATEST`, conditional on non-transient errors being acked or sent to the DLQ immediately in the handler. The unique key on `readings (device_id, read_at)` is a separate ruling that I make after the question is raised.\",\"decision_reason\":\"The message shows that raising `max_ack_pending` to 256 lets an old reading overwrite a newer one and breaks `freezer-temp-high`. The one-predicate guard removes that cause, and it avoids the 62 s all-device block that caused the 41,200-message lag peak. The non-transient error gap is open, so I attach that condition to the approval.\",\"reconstruction\":{\"problem\":\"Replacing the hand-written retry loop with JetStream redelivery needs `max_ack_pending: 256` so that one failing message does not block every device. With that setting, a retried older reading (R1, -20 \u00b0C) can succeed after a newer one (R2, -12 \u00b0C), and `UPSERT_LATEST` has no `read_at` guard, so it overwrites `latest_reading` with the stale value.\",\"what_breaks\":\"The live map and the `freezer-temp-high` alert read the older -20 \u00b0C value. The 'above -15 \u00b0C for 10 minutes' condition can reset or be delayed until the next reading. Separately, `max_deliver: 6` means a crash after commit but before ack redelivers the message and `INSERT_HISTORY` can add a duplicate row, because no unique key on `readings` was found. Non-transient errors such as parse failures would also redeliver unless the handler acks them or sends them to the DLQ.\",\"fix\":\"Add `WHERE latest_reading.read_at < EXCLUDED.read_at` after the `DO UPDATE SET` clause in `UPSERT_LATEST` in `ingest/store.py`. The other changes to `ingest/handler.py`, `ingest/retry.py` and `deploy/consumer.yaml` stay as Ulrich wrote them. The fallback is to keep `with_retries` and run several consumers.\",\"cost\":\"The guard costs one predicate on a row that is already locked. The fallback costs a larger lag during a failover, and its ordering still depends on how messages are spread across workers. The cost of a unique key on `readings` is not stated. The cost of handling non-transient errors is not stated.\"},\"follow_up_questions\":[\"Does the handler in the proposal ack or DLQ non-transient errors (parse failures, bad rows) immediately, or do they redeliver up to 6 times?\",\"Can the guarded upsert ship today, so the fallback is not needed?\"],\"closing_answer\":\"Yes, I approve the proposal with the `read_at` guard on `UPSERT_LATEST`. I attach one condition: non-transient errors must be acked or sent to the DLQ at once, and the handler must show that before it ships. Raise the unique key on `readings (device_id, read_at)` as a separate ruling afterwards. If the guard cannot ship today, use the fallback of `with_retries` with several consumers.\"}",
+    "structured_output": {
+      "decision": "Approve the proposal with the `read_at` guard on `UPSERT_LATEST`, conditional on non-transient errors being acked or sent to the DLQ immediately in the handler. The unique key on `readings (device_id, read_at)` is a separate ruling that I make after the question is raised.",
+      "decision_reason": "The message shows that raising `max_ack_pending` to 256 lets an old reading overwrite a newer one and breaks `freezer-temp-high`. The one-predicate guard removes that cause, and it avoids the 62 s all-device block that caused the 41,200-message lag peak. The non-transient error gap is open, so I attach that condition to the approval.",
+      "reconstruction": {
+        "problem": "Replacing the hand-written retry loop with JetStream redelivery needs `max_ack_pending: 256` so that one failing message does not block every device. With that setting, a retried older reading (R1, -20 \u00b0C) can succeed after a newer one (R2, -12 \u00b0C), and `UPSERT_LATEST` has no `read_at` guard, so it overwrites `latest_reading` with the stale value.",
+        "what_breaks": "The live map and the `freezer-temp-high` alert read the older -20 \u00b0C value. The 'above -15 \u00b0C for 10 minutes' condition can reset or be delayed until the next reading. Separately, `max_deliver: 6` means a crash after commit but before ack redelivers the message and `INSERT_HISTORY` can add a duplicate row, because no unique key on `readings` was found. Non-transient errors such as parse failures would also redeliver unless the handler acks them or sends them to the DLQ.",
+        "fix": "Add `WHERE latest_reading.read_at < EXCLUDED.read_at` after the `DO UPDATE SET` clause in `UPSERT_LATEST` in `ingest/store.py`. The other changes to `ingest/handler.py`, `ingest/retry.py` and `deploy/consumer.yaml` stay as Ulrich wrote them. The fallback is to keep `with_retries` and run several consumers.",
+        "cost": "The guard costs one predicate on a row that is already locked. The fallback costs a larger lag during a failover, and its ordering still depends on how messages are spread across workers. The cost of a unique key on `readings` is not stated. The cost of handling non-transient errors is not stated."
+      },
+      "follow_up_questions": [
+        "Does the handler in the proposal ack or DLQ non-transient errors (parse failures, bad rows) immediately, or do they redeliver up to 6 times?",
+        "Can the guarded upsert ship today, so the fallback is not needed?"
+      ],
+      "closing_answer": "Yes, I approve the proposal with the `read_at` guard on `UPSERT_LATEST`. I attach one condition: non-transient errors must be acked or sent to the DLQ at once, and the handler must show that before it ships. Raise the unique key on `readings (device_id, read_at)` as a separate ruling afterwards. If the guard cannot ship today, use the fallback of `with_retries` with several consumers."
+    },
+    "ttft_ms": 8087,
+    "type": "result",
+    "duration_ms": 8099,
+    "uuid": "77e9a5c5-9284-4093-b146-8d52b52c5f4d",
+    "ttft_stream_ms": 1356,
+    "time_to_request_ms": 396,
+    "first_content_frame_ms": 1356,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

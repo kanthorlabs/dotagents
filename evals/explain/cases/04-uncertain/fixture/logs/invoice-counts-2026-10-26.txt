@@ -1,0 +1,6 @@
+Query run by Priya Raman on 2026-10-26 09:00 UTC against the ledgerly replica.
+
+tenant     issued in October   status paid   status archived
+acme       412                 0             301
+northwind  188                 0             188
+globex     97                  0             64

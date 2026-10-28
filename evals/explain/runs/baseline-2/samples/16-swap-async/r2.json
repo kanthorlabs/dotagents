@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 20886,
+  "stop_reason": "end_turn",
+  "session_id": "890c0f00-5c2c-4b18-b823-cb8a3f8dc560",
+  "total_cost_usd": 0.0386356,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2461,
+    "cache_read_input_tokens": 23796,
+    "output_tokens": 2640,
+    "output_tokens_details": {
+      "thinking_tokens": 806
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2461,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1886,
+        "cache_read_input_tokens": 8267,
+        "cache_creation_input_tokens": 1780,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1780
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2640,
+      "cacheReadInputTokens": 23796,
+      "cacheCreationInputTokens": 2461,
+      "webSearchRequests": 0,
+      "costUSD": 0.0386356,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 806,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2461,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 9,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`export_invoices` in `app/exports.py` sends no byte until it has built the whole CSV, so `gw-billing` closes the connection at its 30-second idle limit. Aelita recommends moving the export to a `taskq` job that emails a signed link, the way invoice PDFs already work.\n\n**Timeline without the fix**\n\n1. An accountant at `northfield-accounting` requests `/exports/invoices.csv` at month end.\n2. `export_invoices` runs `db.query` for 1,840,211 rows. It takes 18 seconds and sends no byte.\n3. The handler writes every row into `io.StringIO`. This takes 222 more seconds and sends no byte.\n4. At 30 seconds `gw-billing` hits `idle_timeout_seconds: 30` and returns 504 to the accountant.\n5. The gunicorn worker keeps building until 240 seconds. The log shows `web_workers_busy=12/12`, and each abandoned export holds one of the 12 workers.\n6. `/invoices` p99 reaches 9.4 seconds, against 0.4 on a quiet day. The export fails and slows the rest of the app.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `export_invoices` enqueues `render_invoice_csv` on queue `documents`. It returns 202 within milliseconds.\n3. A `taskq` worker runs the query, builds the CSV and calls `storage.put`. The 300-second gateway limit no longer applies.\n4. The job calls `mailer.send` with a `storage.signed_url`. The accountant gets the link.\n5. The gunicorn worker was free at step 2. `/invoices` latency stays flat.\n6. The accountant downloads the file from storage. No gateway timeout applies.\n\n**What changes**\n\n- `app/exports.py`: `export_invoices` currently queries, builds the CSV and returns it. It will enqueue the job with `request.tenant_id` and the user's email, and return 202.\n- `jobs/invoice_csv.py`: add `render_invoice_csv`, modelled on `render_invoice_pdf` in `jobs/invoice_pdf.py`. It writes the file to `storage` and mails the signed URL.\n\n**Recommendation.** Aelita recommends the async job. It removes the cause, which is a long synchronous request on a gateway with a 30-second idle limit. It also frees the web workers at month end, when about 900 exports run in two days. The cost is that the user waits for an email instead of a download. The job should write rows to a file in chunks. A 1.84M-row `StringIO` is large, and I found no file that shows whether `db` supports a streaming cursor, so I have not verified that part.\n\n**Alternative: stream the response.** The handler yields CSV chunks as it builds them, so bytes flow and the idle timer never fires. It keeps the download in the browser and needs no email. It still holds a gunicorn worker for the whole export, so month-end starvation stays. It also fails at 300 seconds total, and `northfield-accounting` took 240. It becomes the primary if exports must download immediately and tenants stay under about 250 seconds.\n\n**Question.** Should `export_invoices` enqueue a `taskq` job that emails a signed link, or stream the response instead?",
+  "ttft_ms": 2077,
+  "type": "result",
+  "duration_ms": 21398,
+  "uuid": "3baf60f4-d669-4d16-b7b8-0c9b172682b7",
+  "ttft_stream_ms": 1781,
+  "time_to_request_ms": 482,
+  "first_content_frame_ms": 1781,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

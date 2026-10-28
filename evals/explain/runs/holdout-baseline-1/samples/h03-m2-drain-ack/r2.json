@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 32932,
+  "stop_reason": "end_turn",
+  "session_id": "f4b28bbd-ccb4-4aa6-a24f-6298bc0da0a8",
+  "total_cost_usd": 0.06746260000000001,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 4854,
+    "cache_read_input_tokens": 35006,
+    "output_tokens": 4453,
+    "output_tokens_details": {
+      "thinking_tokens": 1757
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4854,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2732,
+        "cache_read_input_tokens": 11293,
+        "cache_creation_input_tokens": 1164,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1164
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 4453,
+      "cacheReadInputTokens": 35006,
+      "cacheCreationInputTokens": 4854,
+      "webSearchRequests": 0,
+      "costUSD": 0.06746260000000001,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1757,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4854,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 12,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`lantern-worker` loses the jobs that are still queued or running when the pod is killed. `auto_ack=True` deletes each message from RabbitMQ on delivery. The drain window is 60s, but Kubernetes kills the pod after 20s. Aelita recommends manual acks with a prefetch limit, plus a longer grace period.\n\n**Existing behaviour**\n\n1. `worker/consume.py:22` consumes `thumbnails` with `auto_ack=True` and no prefetch limit. RabbitMQ deletes each message on delivery and pushes the backlog to the worker.\n2. `on_message` submits each job to a `ThreadPoolExecutor` with `CONCURRENCY` 4. Jobs beyond 4 wait in the pool queue in memory.\n3. On SIGTERM, `channel.stop_consuming()` runs, then `drain` waits up to `DRAIN_SECONDS`, which is 60 (`worker/settings.py:5`).\n4. `deploy/helm/values-prod.yaml` sets `terminationGracePeriodSeconds: 20`. Video jobs take 25 to 70s (`docs/thumbnails.md`).\n\n**Timeline without the fix**\n\n1. 14:02:05 to 14:02:07: `lantern-worker-7f9c-2` starts videos u-88217, u-88218 and u-88219. u-88213 is still running, so all 4 threads are busy.\n2. 14:02:10: SIGTERM arrives. Consuming stops and `drain` starts with a 60s deadline.\n3. RabbitMQ already deleted every delivered message. Jobs waiting in the pool queue exist only in worker memory.\n4. 14:02:21: u-88213 finishes. u-88220 and u-88221 start from the pool queue.\n5. 14:02:30: kubelet sends SIGKILL, because the 20s grace period expired. `drain` would have waited until 14:03:10.\n6. u-88217, u-88218, u-88219 and u-88221 never log `job done`. The broker has no copy, so they are never retried. The upload page shows the placeholder forever, with no error.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. `basic_qos(prefetch_count=CONCURRENCY)` limits the worker to 4 unacked messages. The broker keeps the rest.\n4. 14:02:21: u-88213 finishes and is acked. No new job arrives, because consuming has stopped.\n5. 14:02:30: SIGKILL closes the connection. RabbitMQ requeues the unacked u-88217, u-88218 and u-88219.\n6. Another worker pod consumes them and writes the thumbnails. No upload is lost.\n\n**What changes**\n\n- `worker/consume.py` old behaviour: `auto_ack=True`, and `on_message` calls `pool.submit(handle, body)`. New behaviour: add `channel.basic_qos(prefetch_count=settings.CONCURRENCY)` and `auto_ack=False`. After `handle` returns, the pool thread acks through `connection.add_callback_threadsafe`, because pika's `BlockingConnection` is not thread-safe.\n- `worker/lifecycle.py` old behaviour: `drain` only sleeps in its loop. New behaviour: `drain` takes the connection and calls `connection.process_data_events(time_limit=0.5)` in the loop, so acks of jobs that finish during the drain are sent.\n- `deploy/helm/values-prod.yaml` old value: `terminationGracePeriodSeconds: 20`. New value: `90`. Add `LANTERN_DRAIN_SECONDS: \"75\"` so the drain ends before SIGKILL and covers the 70s video worst case.\n\n**Recommendation.** Aelita recommends manual acks with prefetch and the longer grace period. Manual acks remove the cause, because a job leaves the broker only after it succeeds. This also covers OOM kills and node loss, which a grace period cannot. The cost is one redelivery risk. If a pod dies after `record_usage` but before the ack, the job reruns and may bill twice. `record_usage` already sends `ref=upload_id`, but `meter.internal` is outside this repository. I cannot verify that it ignores duplicate refs. Also, `worker/render.py` is imported by `handler.py` but is not in the repository, so I did not read it.\n\n**Alternative: config only.** Set the grace period to 90 and the drain to 75, with no code change. It is the smallest change. It still loses jobs on crashes and on any drain that overruns. It becomes the primary only if code changes are blocked.\n\n**Question.** Do you approve manual acks, prefetch and the 90s grace period? If yes, I will ask Billing's duplicate-ref question as the next item.",
+  "ttft_ms": 1483,
+  "type": "result",
+  "duration_ms": 33487,
+  "uuid": "c08f6221-3016-4697-865e-858d6f58801a",
+  "ttft_stream_ms": 1238,
+  "time_to_request_ms": 515,
+  "first_content_frame_ms": 1238,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

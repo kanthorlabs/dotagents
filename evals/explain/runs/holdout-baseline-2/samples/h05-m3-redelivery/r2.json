@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 37060,
+  "stop_reason": "end_turn",
+  "session_id": "71750a1a-7ad7-42b0-a98a-4d6dcc8c8a57",
+  "total_cost_usd": 0.06388849999999999,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 3274,
+    "cache_read_input_tokens": 32865,
+    "output_tokens": 4749,
+    "output_tokens_details": {
+      "thinking_tokens": 2345
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3274,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3726,
+        "cache_read_input_tokens": 9109,
+        "cache_creation_input_tokens": 1758,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1758
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 4749,
+      "cacheReadInputTokens": 32865,
+      "cacheCreationInputTokens": 3274,
+      "webSearchRequests": 0,
+      "costUSD": 0.06388849999999999,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2345,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 3274,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 12,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Aelita recommends approving Ulrich's proposal with one added change. The proposal lets an old reading overwrite a newer one in `latest_reading`, and that breaks the `freezer-temp-high` alert. Guarding the upsert in `ingest/store.py` fixes it.\n\n**Timeline without the fix**\n\nThe failover matches `logs/lag-2026-10-26.txt` (10:14:03 to 10:14:40). Freezer sensor F1 sends one reading every 30 seconds. The consumer now runs with `max_ack_pending: 256`.\n\n1. 10:14:03: R1 (-20 \u00b0C) arrives during the Timescale failover. `save_reading` raises `TransientError` and the handler naks with a 2 s delay.\n2. 10:14:05, :09, :17 and :33: R1 is redelivered four more times and fails each time. The DB is back at 10:14:40. The last nak, on delivery 5, sets a 32 s delay.\n3. 10:14:33: R2 (-12 \u00b0C) arrives while R1 is still waiting. R2 fails at :33, :35 and :39 and is redelivered at :47. Both messages are in flight at once because `max_ack_pending` is 256.\n4. 10:14:47: R2 succeeds on the redelivery. `latest_reading` holds -12 \u00b0C.\n5. 10:15:05: R1 succeeds on delivery 6. `UPSERT_LATEST` has no `read_at` guard, so it overwrites -12 \u00b0C with -20 \u00b0C.\n6. The live map and `freezer-temp-high` read a value older than the newest one. The -20 \u00b0C value breaks the \"stays above -15 \u00b0C for 10 minutes\" condition, so the alert can reset or be delayed. The wrong value stays until the next reading.\n\nToday `max_ack_pending: 1` serializes every message. A stale write cannot happen, but one failure blocks all devices for 62 s. That caused the 41,200-message lag peak.\n\n**Timeline with the fix**, diverges at step 5.\n\n5. 10:15:05: R1 succeeds on delivery 6. The guarded upsert sees that R2's `read_at` is newer and leaves `latest_reading` unchanged. The `readings` history still gets R1.\n6. The live map and the alert keep -12 \u00b0C. Reports read `readings` by `read_at`, so late inserts do not hurt them.\n\n**What changes**\n\n- `ingest/store.py`: `UPSERT_LATEST` gets `WHERE latest_reading.read_at < EXCLUDED.read_at` after the `DO UPDATE SET` clause. Old behaviour: it always overwrites. New behaviour: it overwrites only with a newer reading.\n- `ingest/handler.py`, `ingest/retry.py` and `deploy/consumer.yaml`: change as Ulrich wrote them.\n\n**Recommendation.** Aelita recommends approving with the guard. It removes the root cause, which is that `latest_reading` trusts arrival order. The guard also covers any future out-of-order delivery. It costs one predicate on a row that is already locked. Two things can break:\n\n- **Duplicates after a crash.** `max_deliver: 6` means a crash after commit but before ack now causes a redelivery. `INSERT_HISTORY` would then add a duplicate row. I found no unique key on `readings` in this repository, so I could not check the schema.\n- **Non-transient errors.** The proposal says nothing about them. A parse failure or a bad row would also redeliver unless the handler acks it or sends it to the DLQ at once.\n\n**Alternative: keep `with_retries` and run several consumers.** Each message still blocks its own worker for up to 62 s. It needs no guard and keeps ordering per worker. It becomes the primary if the guard cannot ship today. It costs a larger lag during a failover, and ordering would still depend on how messages are spread across workers.\n\n**Question.** Do you approve the proposal with the `read_at` guard on `UPSERT_LATEST`? Whether to add a unique key on `readings (device_id, read_at)` for the crash case is a separate ruling, and I will raise it after your answer.",
+  "ttft_ms": 1384,
+  "type": "result",
+  "duration_ms": 37387,
+  "uuid": "a6a70192-44db-4019-9a21-88baed1f4dad",
+  "ttft_stream_ms": 954,
+  "time_to_request_ms": 304,
+  "first_content_frame_ms": 954,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

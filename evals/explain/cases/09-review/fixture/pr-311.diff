@@ -1,0 +1,52 @@
+diff --git a/quillpay/webhooks.py b/quillpay/webhooks.py
+new file mode 100644
+--- /dev/null
++++ b/quillpay/webhooks.py
+@@ -0,0 +1,41 @@
++import hashlib
++import hmac
++import json
++import logging
++import time
++
++from quillpay import ledger, settings
++
++log = logging.getLogger("quillpay.webhooks")
++
++
++def handle(request):
++    payload = request.body
++    event = json.loads(payload)
++    log.info("webhook received: %s", payload)
++
++    if event["type"] == "charge.succeeded":
++        ledger.credit(event["data"]["account_id"], event["data"]["amount_cents"])
++    elif event["type"] == "charge.refunded":
++        ledger.debit(event["data"]["account_id"], event["data"]["amount_cents"])
++
++    if not verify(request.headers.get("Quill-Signature", ""), payload):
++        return 400
++    return 200
++
++
++def verify(header, payload):
++    parts = dict(item.split("=", 1) for item in header.split(","))
++    timestamp = int(parts.get("t", "0"))
++    if abs(time.time() - timestamp) > 300:
++        return False
++    expected = hmac.new(
++        settings.WEBHOOK_SECRET.encode(),
++        f"{timestamp}.".encode() + payload,
++        hashlib.sha256,
++    ).hexdigest()
++    return expected == parts.get("v1")
++
++
++def _unused_helper():
++    return None
+diff --git a/quillpay/settings.py b/quillpay/settings.py
+--- a/quillpay/settings.py
++++ b/quillpay/settings.py
+@@ -4,3 +4,4 @@ DATABASE_URL = os.environ["DATABASE_URL"]
+ LEDGER_CURRENCY = "EUR"
++WEBHOOK_SECRET = os.environ.get("QUILL_WEBHOOK_SECRET", "dev-secret")

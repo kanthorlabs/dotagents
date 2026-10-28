@@ -1,0 +1,153 @@
+{
+  "style": [
+    {
+      "name": "no-em-dash",
+      "kind": "mechanical",
+      "rule": "R45",
+      "fn": "no_em_dash",
+      "criterion": "The message holds no em-dash outside code."
+    },
+    {
+      "name": "no-paren-aside",
+      "kind": "mechanical",
+      "rule": "R45",
+      "fn": "no_paren_aside",
+      "criterion": "The message holds no parenthetical aside outside code."
+    },
+    {
+      "name": "headers",
+      "kind": "mechanical",
+      "rule": "R48",
+      "fn": "headers_ok",
+      "criterion": "The message holds no header under 500 words and at most three headers above 500 words."
+    },
+    {
+      "name": "sentence-length",
+      "kind": "mechanical",
+      "rule": "R44",
+      "fn": "sentence_length",
+      "criterion": "At most 10 percent of sentences exceed 25 words and no sentence exceeds 40 words."
+    },
+    {
+      "name": "bold-leadins",
+      "kind": "mechanical",
+      "rule": "R46",
+      "fn": "bold_leadins",
+      "criterion": "Every paragraph after the first and every top-level bullet opens with a bold lead-in or a backticked name."
+    },
+    {
+      "name": "no-flattery",
+      "kind": "mechanical",
+      "rule": "R49",
+      "fn": "no_flattery",
+      "criterion": "The message holds no flattery or filler phrase from a fixed list."
+    }
+  ],
+  "explanation": [
+    {
+      "name": "conclusion-first",
+      "kind": "mechanical",
+      "rule": "R11",
+      "fn": "conclusion_first",
+      "criterion": "The first block is an unlabeled prose conclusion of at most three sentences with no preamble."
+    },
+    {
+      "name": "section-order",
+      "kind": "mechanical",
+      "rule": "R10",
+      "fn": "section_order",
+      "criterion": "Labeled sections appear in template order."
+    },
+    {
+      "name": "sections-labeled",
+      "kind": "mechanical",
+      "rule": "R47",
+      "fn": "sections_labeled",
+      "criterion": "Every numbered list sits under a bold or header label."
+    },
+    {
+      "name": "close-last",
+      "kind": "mechanical",
+      "rule": "R17",
+      "fn": "close_last",
+      "criterion": "The last block is a labeled close and nothing follows it."
+    },
+    {
+      "name": "timeline-bounds",
+      "kind": "mechanical",
+      "rule": "R24",
+      "fn": "full_timelines_bounded",
+      "criterion": "Every full timeline holds 4 to 8 steps and at least one full timeline exists."
+    },
+    {
+      "name": "step-sentences",
+      "kind": "mechanical",
+      "rule": "R23",
+      "fn": "step_sentences_max",
+      "criterion": "Every timeline step holds at most two sentences."
+    }
+  ],
+  "fix": [
+    {
+      "name": "has-failing-timeline",
+      "kind": "mechanical",
+      "rule": "R13",
+      "fn": "label_present",
+      "args": {
+        "pattern": "^timeline without"
+      },
+      "criterion": "A section labeled Timeline without the fix exists."
+    },
+    {
+      "name": "has-fixed-timeline",
+      "kind": "mechanical",
+      "rule": "R14",
+      "fn": "label_present",
+      "args": {
+        "pattern": "^timeline with (the )?fix"
+      },
+      "criterion": "A section labeled Timeline with the fix exists."
+    },
+    {
+      "name": "fixed-starts-at-divergence",
+      "kind": "mechanical",
+      "rule": "R25",
+      "fn": "fixed_starts_at_divergence",
+      "criterion": "Each fixed timeline states diverges at step N and its first step is step N."
+    },
+    {
+      "name": "has-what-changes",
+      "kind": "mechanical",
+      "rule": "R15",
+      "fn": "label_present",
+      "args": {
+        "pattern": "^what changes"
+      },
+      "criterion": "A section labeled What changes exists."
+    },
+    {
+      "name": "change-bullets",
+      "kind": "mechanical",
+      "rule": "R46",
+      "fn": "change_bullets",
+      "criterion": "Every bullet under What changes opens with a backticked file or component name."
+    },
+    {
+      "name": "has-recommendation",
+      "kind": "mechanical",
+      "rule": "R16",
+      "fn": "label_present",
+      "args": {
+        "pattern": "^recommend"
+      },
+      "criterion": "A section labeled Recommendation exists."
+    },
+    {
+      "name": "no-alt-timeline",
+      "kind": "mechanical",
+      "rule": "R30",
+      "fn": "no_alt_timeline",
+      "criterion": "No numbered list follows an Alternative label."
+    }
+  ]
+}

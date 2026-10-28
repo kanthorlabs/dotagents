@@ -1,0 +1,172 @@
+{
+  "key": "4797ef6f6dbf60d8359048e0e442032d72ce5f38234e14e0c48daf6c942bed11",
+  "cost_usd": 0.045799999999999993,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends approving the proposal with one addition.\" This is the key's approve-with-read_at-guard recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"sleeps 2, 4, 8, 16 and 32 seconds... 62 s\"; \"17 such stalls\"; \"41,200\"; \"256\"/\"6\". These match the key, and no statement contradicts it."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The message never says the history insert shares a transaction with the upsert, or that explicit ack stays. The reader also lists an open follow-up: \"Does any consumer of `readings` need rows written in strict arrival order?\""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Replacing the loop... raising `max_ack_pending` to 256 means messages are no longer saved in arrival order\" and the guard fix. Problem, breaks, fix and cost agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "The message ends with one question: \"approve... with the `read_at` guard... or... per-device-group consumers instead?\" The reader answered: \"I approve the proposal with the `read_at` guard\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"one consumer per device group... costs more consumers to deploy and tune. It becomes the primary if `readings` must also be written in strict arrival order.\" This matches the valid alternative with its trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 13228,
+    "stop_reason": "tool_use",
+    "session_id": "23d94b3b-e646-4a26-a564-06f090a4ba8b",
+    "total_cost_usd": 0.045799999999999993,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6905,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1799,
+      "output_tokens_details": {
+        "thinking_tokens": 1227
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6905,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1799,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6905,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6905
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1799,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6905,
+        "webSearchRequests": 0,
+        "costUSD": 0.045799999999999993,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1227,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6905,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends approving the proposal with one addition.\\\" This is the key's approve-with-read_at-guard recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"sleeps 2, 4, 8, 16 and 32 seconds... 62 s\\\"; \\\"17 such stalls\\\"; \\\"41,200\\\"; \\\"256\\\"/\\\"6\\\". These match the key, and no statement contradicts it.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The message never says the history insert shares a transaction with the upsert, or that explicit ack stays. The reader also lists an open follow-up: \\\"Does any consumer of `readings` need rows written in strict arrival order?\\\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Replacing the loop... raising `max_ack_pending` to 256 means messages are no longer saved in arrival order\\\" and the guard fix. Problem, breaks, fix and cost agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"The message ends with one question: \\\"approve... with the `read_at` guard... or... per-device-group consumers instead?\\\" The reader answered: \\\"I approve the proposal with the `read_at` guard\\\".\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"one consumer per device group... costs more consumers to deploy and tune. It becomes the primary if `readings` must also be written in strict arrival order.\\\" This matches the valid alternative with its trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends approving the proposal with one addition.\" This is the key's approve-with-read_at-guard recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"sleeps 2, 4, 8, 16 and 32 seconds... 62 s\"; \"17 such stalls\"; \"41,200\"; \"256\"/\"6\". These match the key, and no statement contradicts it."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The message never says the history insert shares a transaction with the upsert, or that explicit ack stays. The reader also lists an open follow-up: \"Does any consumer of `readings` need rows written in strict arrival order?\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Replacing the loop... raising `max_ack_pending` to 256 means messages are no longer saved in arrival order\" and the guard fix. Problem, breaks, fix and cost agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "The message ends with one question: \"approve... with the `read_at` guard... or... per-device-group consumers instead?\" The reader answered: \"I approve the proposal with the `read_at` guard\"."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"one consumer per device group... costs more consumers to deploy and tune. It becomes the primary if `readings` must also be written in strict arrival order.\" This matches the valid alternative with its trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 10908,
+    "type": "result",
+    "duration_ms": 13587,
+    "uuid": "4bbf6441-0756-4552-a17b-031e946c0331",
+    "ttft_stream_ms": 2329,
+    "time_to_request_ms": 359,
+    "first_content_frame_ms": 2329,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "key": "59a984a1f2c54afa324118e17ff22ffd8503b0d178ca30b60835cd66ae5020bd",
+  "cost_usd": 0.031936,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends that you fix B1 to B4 before merge... The reorder in B1 is the smallest change that removes the root cause.\"",
+      "reason": "Primary is block merge and verify before ledger, matching the key in substance. It is not an invalid option."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`handle` runs `ledger.credit` and `ledger.debit` at lines 22-25, and only then calls `verify`\"; \"A replayed `charge.succeeded` credits twice.\"",
+      "reason": "All mentioned dependent facts match the key: order, idempotency, secret default, ==, logging, dead code, ValueError."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"S1 - ... No replay protection ... fix: store the event `id` and skip any id already seen\"; recommendation: \"S1 to S4 left as follow-ups.\"",
+      "reason": "The key says dedupe on event id must change before merge. The message demotes it to a suggestion, and it also lists compare_digest and header parsing as blockers."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"B1... B2... B3... B4\" with no dedupe; breaks omits retried event credits twice.",
+      "reason": "The reader's fix and breaks fields lack the dedupe on event id and the double credit on retry that the key requires."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8210,
+    "stop_reason": "tool_use",
+    "session_id": "bb68979b-eef2-4092-a6e2-efdf4f9b185d",
+    "total_cost_usd": 0.031936,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5294,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1057,
+      "output_tokens_details": {
+        "thinking_tokens": 529
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5294,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1057,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5294,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5294
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1057,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5294,
+        "webSearchRequests": 0,
+        "costUSD": 0.031936,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 529,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5294,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends that you fix B1 to B4 before merge... The reorder in B1 is the smallest change that removes the root cause.\\\"\",\"reason\":\"Primary is block merge and verify before ledger, matching the key in substance. It is not an invalid option.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`handle` runs `ledger.credit` and `ledger.debit` at lines 22-25, and only then calls `verify`\\\"; \\\"A replayed `charge.succeeded` credits twice.\\\"\",\"reason\":\"All mentioned dependent facts match the key: order, idempotency, secret default, ==, logging, dead code, ValueError.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"S1 - ... No replay protection ... fix: store the event `id` and skip any id already seen\\\"; recommendation: \\\"S1 to S4 left as follow-ups.\\\"\",\"reason\":\"The key says dedupe on event id must change before merge. The message demotes it to a suggestion, and it also lists compare_digest and header parsing as blockers.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"B1... B2... B3... B4\\\" with no dedupe; breaks omits retried event credits twice.\",\"reason\":\"The reader's fix and breaks fields lack the dedupe on event id and the double credit on retry that the key requires.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends that you fix B1 to B4 before merge... The reorder in B1 is the smallest change that removes the root cause.\"",
+          "reason": "Primary is block merge and verify before ledger, matching the key in substance. It is not an invalid option."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`handle` runs `ledger.credit` and `ledger.debit` at lines 22-25, and only then calls `verify`\"; \"A replayed `charge.succeeded` credits twice.\"",
+          "reason": "All mentioned dependent facts match the key: order, idempotency, secret default, ==, logging, dead code, ValueError."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"S1 - ... No replay protection ... fix: store the event `id` and skip any id already seen\"; recommendation: \"S1 to S4 left as follow-ups.\"",
+          "reason": "The key says dedupe on event id must change before merge. The message demotes it to a suggestion, and it also lists compare_digest and header parsing as blockers."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"B1... B2... B3... B4\" with no dedupe; breaks omits retried event credits twice.",
+          "reason": "The reader's fix and breaks fields lack the dedupe on event id and the double credit on retry that the key requires."
+        }
+      ]
+    },
+    "ttft_ms": 5423,
+    "type": "result",
+    "duration_ms": 8554,
+    "uuid": "7ff7c61f-f75e-4326-9358-f3e67ffe78ce",
+    "ttft_stream_ms": 1403,
+    "time_to_request_ms": 345,
+    "first_content_frame_ms": 1404,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

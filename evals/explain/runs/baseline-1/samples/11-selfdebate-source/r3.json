@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 18340,
+  "stop_reason": "end_turn",
+  "session_id": "540f442b-c9e8-4854-a943-7e5419ed9910",
+  "total_cost_usd": 0.039514099999999996,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2983,
+    "cache_read_input_tokens": 24101,
+    "output_tokens": 2516,
+    "output_tokens_details": {
+      "thinking_tokens": 481
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2983,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1609,
+        "cache_read_input_tokens": 8464,
+        "cache_creation_input_tokens": 2159,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2159
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2516,
+      "cacheReadInputTokens": 24101,
+      "cacheCreationInputTokens": 2983,
+      "webSearchRequests": 0,
+      "costUSD": 0.039514099999999996,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 481,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2983,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 10,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Both `digest-builder` schedulers still run, so every Monday enqueues each subscriber twice. Aelita recommends removing the `digest_builder` line from the `ops-box-2` crontab, which fixes the cause. Neither of your two fixes does that.\n\n**Existing behaviour**\n\n1. `jobs/digest_builder.py` inserts one `pending` outbox row per active subscriber, with no check for an existing row.\n2. `mailer/digest_mailer.py` sends every `pending` row and sets it to `sent`.\n3. `outbox` has no unique constraint. Only `id` is unique (`db/schema.sql`).\n\n**Timeline without the fix**\n\n1. On 21 September 2026, Henrik Saar cuts the jobs over to Kubernetes. The cutover note leaves the `ops-box-2` crontab line unchecked.\n2. On Monday 28 September at 06:00, `ops-box-2` cron starts `jobs.digest_builder`. The Kubernetes CronJob `digest-builder` starts the same job at the same time (schedule `0 6 * * 1`).\n3. Both runs insert one row per active subscriber with the same `digest_date`. The log of 26 October shows `enqueued=18412` from both `host=ops-box-2` and `pod=digest-builder-29353080-k7x2q`.\n4. `outbox` now holds two `pending` rows for each subscriber.\n5. `digest-mailer` sends both rows. Every subscriber receives the digest twice.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. On Monday at 06:00, only the Kubernetes CronJob starts `jobs.digest_builder`. `ops-box-2` has no digest line.\n3. The job inserts one row per active subscriber.\n4. `outbox` holds one `pending` row per subscriber.\n5. `digest-mailer` sends one digest per subscriber.\n\n**What changes**\n\n- `ops-box-2` crontab, line 3: delete `0 6 * * 1 ... jobs.digest_builder`. The copy in `ops/hosts/ops-box-2/crontab` is only a mirror, so the live crontab on the host needs the same edit.\n- `docs/migrations/2026-09-k8s-cutover.md`: tick the `digest_builder` checkbox.\n\n**Recommendation.** Aelita recommends removing the crontab line, because the duplicate comes from two schedulers and not from the data. It costs one line and one host edit. The risk is that the Kubernetes job is the only run left, so a failed pod means no digest. Your two fixes both leave the second run in place.\n\n**Alternative: unique index on `outbox(subscriber_id, digest_date)`.** It beats the crontab edit because it also guards against future double runs. It has two costs. The builder needs `ON CONFLICT DO NOTHING`, or the losing run crashes on the first insert. Existing duplicate rows must also be deleted before the index can be created. It becomes the primary if another source of double runs appears, such as manual reruns.\n\n**Dropped: dedupe by email in `digest-mailer`.** It hides the cause and leaves duplicate rows in `outbox`. It also drops a digest when two subscribers share one email address.\n\n**Question.** Should I remove the `digest_builder` line from the crontab mirror and tick the cutover checkbox, with the unique index left for a later change?",
+  "ttft_ms": 1578,
+  "type": "result",
+  "duration_ms": 18728,
+  "uuid": "780f5d8e-bce9-46d9-af26-be50ae77b677",
+  "ttft_stream_ms": 1063,
+  "time_to_request_ms": 374,
+  "first_content_frame_ms": 1063,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

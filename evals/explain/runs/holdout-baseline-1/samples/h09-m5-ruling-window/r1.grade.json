@@ -1,0 +1,172 @@
+{
+  "key": "8b5cf228ba612fd521fda698d5bd05393fc3a518d60a87dda8c198ef7d1e0c38",
+  "cost_usd": 0.042824,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends Sunday 8 November 2026, starting at 02:00 UTC.\" Matches the correct recommendation after the 5 and 6 November runs."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"downtime ends after 14 min 10 s\", \"38 minutes\", \"about 40 per second\", \"95\", \"130\", \"Thursday 12 November\", \"freeze ended at 09:00 UTC\". All match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The message never says the window is the last open item. It frames the cost as \"a thin buffer\" and never says reports are slow. First gap: \"Is any item left after this one?\""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader cost: \"The buffer before the 12 November end of life is thin.\" The key cost is about 14 minutes of downtime and 38 minutes of slow reports in a weekend slot. Downtime is not in the reader's cost."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do we fix step 3 on Sunday 8 November, 02:00 UTC, or on Saturday 7 November?\" This is one decision. The reader gave a real closing answer, Sunday 8 November 02:00 UTC."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "Saturday: \"about 95 per second... primary if the first two nightly runs finish early\". Weekday 9-11: \"primary only if the precondition in step 2 is not met by Sunday\". Both are valid and have a trade-off and a condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 12915,
+    "stop_reason": "tool_use",
+    "session_id": "c859d4a3-0a83-4ad6-b71e-5111cb52970f",
+    "total_cost_usd": 0.042824,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6366,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1717,
+      "output_tokens_details": {
+        "thinking_tokens": 1110
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6366,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1717,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6366,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6366
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1717,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6366,
+        "webSearchRequests": 0,
+        "costUSD": 0.042824,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1110,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6366,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends Sunday 8 November 2026, starting at 02:00 UTC.\\\" Matches the correct recommendation after the 5 and 6 November runs.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"downtime ends after 14 min 10 s\\\", \\\"38 minutes\\\", \\\"about 40 per second\\\", \\\"95\\\", \\\"130\\\", \\\"Thursday 12 November\\\", \\\"freeze ended at 09:00 UTC\\\". All match the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The message never says the window is the last open item. It frames the cost as \\\"a thin buffer\\\" and never says reports are slow. First gap: \\\"Is any item left after this one?\\\"\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader cost: \\\"The buffer before the 12 November end of life is thin.\\\" The key cost is about 14 minutes of downtime and 38 minutes of slow reports in a weekend slot. Downtime is not in the reader's cost.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do we fix step 3 on Sunday 8 November, 02:00 UTC, or on Saturday 7 November?\\\" This is one decision. The reader gave a real closing answer, Sunday 8 November 02:00 UTC.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"Saturday: \\\"about 95 per second... primary if the first two nightly runs finish early\\\". Weekday 9-11: \\\"primary only if the precondition in step 2 is not met by Sunday\\\". Both are valid and have a trade-off and a condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends Sunday 8 November 2026, starting at 02:00 UTC.\" Matches the correct recommendation after the 5 and 6 November runs."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"downtime ends after 14 min 10 s\", \"38 minutes\", \"about 40 per second\", \"95\", \"130\", \"Thursday 12 November\", \"freeze ended at 09:00 UTC\". All match the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The message never says the window is the last open item. It frames the cost as \"a thin buffer\" and never says reports are slow. First gap: \"Is any item left after this one?\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader cost: \"The buffer before the 12 November end of life is thin.\" The key cost is about 14 minutes of downtime and 38 minutes of slow reports in a weekend slot. Downtime is not in the reader's cost."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do we fix step 3 on Sunday 8 November, 02:00 UTC, or on Saturday 7 November?\" This is one decision. The reader gave a real closing answer, Sunday 8 November 02:00 UTC."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "Saturday: \"about 95 per second... primary if the first two nightly runs finish early\". Weekday 9-11: \"primary only if the precondition in step 2 is not met by Sunday\". Both are valid and have a trade-off and a condition."
+        }
+      ]
+    },
+    "ttft_ms": 10837,
+    "type": "result",
+    "duration_ms": 13477,
+    "uuid": "62169d37-640a-490b-beb9-e914436b37c2",
+    "ttft_stream_ms": 1988,
+    "time_to_request_ms": 562,
+    "first_content_frame_ms": 1989,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 25954,
+  "stop_reason": "end_turn",
+  "session_id": "87000cdc-be86-4d0f-bf28-cff6e8822508",
+  "total_cost_usd": 0.045672700000000004,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2998,
+    "cache_read_input_tokens": 23387,
+    "output_tokens": 3133,
+    "output_tokens_details": {
+      "thinking_tokens": 1117
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2998,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2458,
+        "cache_read_input_tokens": 8132,
+        "cache_creation_input_tokens": 2134,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2134
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 3133,
+      "cacheReadInputTokens": 23387,
+      "cacheCreationInputTokens": 2998,
+      "webSearchRequests": 0,
+      "costUSD": 0.045672700000000004,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1117,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2998,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Search stayed down because `ranker` kept scoring requests that `query-gw` had already abandoned, and retries refilled its unbounded queue as fast as it drained. Aelita recommends a bounded queue in `ranker` that rejects excess requests immediately.\n\n**Existing behaviour**\n\n1. `web` calls `/api/search` with `TIMEOUT_MS` 2000 and `MAX_ATTEMPTS` 3.\n2. `query-gw` calls `ranker` with `timeout_ms` 600 and `retries: 2`. That is 3 tries per attempt.\n3. `ranker` runs `score` on a 64-thread `ThreadPoolExecutor`. It queues the overflow with no limit and never checks whether the caller is still waiting.\n\n**Timeline without the fix**\n\n1. At 14:02 the merge pushes p99 from 400 ms to 900 ms. Some tries pass 600 ms.\n2. By 14:04 `query-gw` times out and retries. `web` retries on top of that. Each search can become 3 \u00d7 3 = 9 `ranker` requests. 400 searches per second \u00d7 9 = 3,600 per second, which matches the 3,500 in the notes.\n3. The 8 `ranker` instances serve about 1,200 per second. The extra 2,300 per second go into the queue.\n4. At 14:06 the merge ends, but the queue is already deep. It reaches about 180,000 requests, so the wait is about 150 s (180,000 \u00f7 1,200 per second). The gateway gives up after 600 ms, so every answer arrives too late.\n5. `ranker` still scores each dead request, and each timeout triggers another retry. Arrivals stay near 3,500 per second against 1,200 served. The state sustains itself with no error in `ranker`.\n6. At 14:39 the maintenance page stops new searches. The queue drains in about 2 minutes at 1,200 per second and is empty at 14:41. Search was down for 37 minutes.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. At 14:06 the queue is capped near 64 waiting requests per instance, about 400 ms of work. `ranker` rejects the rest at once with a 503.\n5. `ranker` scores only requests that can still finish inside 600 ms. It serves about 1,200 per second of fresh work, and retries are cheap rejections.\n6. Once the merge ends, p99 returns to 400 ms and the retries stop. Search recovers by about 14:07 with no manual action.\n\n**What changes**\n\n- `ranker/server.py`: `rank` currently awaits `run_in_executor` with an unlimited queue. It will count waiting requests and return 503 above a limit. Add a check that drops a request that waited longer than 500 ms before `score` starts.\n- `docs/capacity.md`: the line \"The queue has no limit\" becomes the new limit, with the 64 and 500 ms values.\n\n**Recommendation.** Aelita recommends bounding the queue in `ranker`. The root cause is that a standing queue of dead work outlives the overload. This fix removes that queue and protects `ranker` from any caller. It costs some rejected searches during a real overload. A limit set too low would reject healthy traffic.\n\n**Alternative: cut the retry amplification.** Set `retries: 0` in `query-gw/config.yaml`, and reduce `MAX_ATTEMPTS` in `web/src/searchClient.ts`. This lowers the load to about 400 per second, with no `ranker` change. It leaves the queue unbounded, so any other overload can fill it again. It becomes the primary if `ranker` cannot be changed this quarter.\n\n**Open item.** The files do not explain why the queue stopped near 180,000 instead of growing for the full 33 minutes. The cause may be dropped connections, but I could not verify that. It does not change the recommendation.\n\n**Question.** Should I implement the bounded queue and the 500 ms stale check in `ranker/server.py`, or the retry cut in `query-gw` and `web`?",
+  "ttft_ms": 1444,
+  "type": "result",
+  "duration_ms": 26303,
+  "uuid": "b332743d-0d37-44af-a29d-5d45fa90497b",
+  "ttft_stream_ms": 1293,
+  "time_to_request_ms": 310,
+  "first_content_frame_ms": 1293,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

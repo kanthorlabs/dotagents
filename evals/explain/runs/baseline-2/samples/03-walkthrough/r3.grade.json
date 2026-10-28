@@ -1,0 +1,148 @@
+{
+  "key": "e74b65ba7083529c8e4f53883db9dc1b00f06f3b1c77ac8b49cfe05b5eeee7cf",
+  "cost_usd": 0.021058,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"registry.mint.internal/mint-shop:<sha>\"; \"`kubectl rollout status deployment/mint-shop --timeout=300s`\"; \"`mint-shop <sha> is live on staging`\" \u2014 all match the key; nothing verifiable is called unverified.",
+      "pass_note": "The CLI-parsing assumption is not a dependent fact."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Steps 1-7 cover config, build, push, set image, rollout wait, Slack post. Reader lists no follow-up questions: \"follow_up_questions\": [].",
+      "pass_note": "All three required questions are answered."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader problem: \"what happens when Ines Albrecht runs `mintctl deploy staging`... only shows `deploy(env_name)`\" matches the key's problem. Breaks, fix and cost are n/a in the key.",
+      "pass_note": "Only the problem field is graded."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3831,
+    "stop_reason": "tool_use",
+    "session_id": "ca5193a1-3d48-41dc-bd21-c3d0c707f323",
+    "total_cost_usd": 0.021058,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4217,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 400,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4217,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 400,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4217,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4217
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 400,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4217,
+        "webSearchRequests": 0,
+        "costUSD": 0.021058,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4217,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"registry.mint.internal/mint-shop:<sha>\\\"; \\\"`kubectl rollout status deployment/mint-shop --timeout=300s`\\\"; \\\"`mint-shop <sha> is live on staging`\\\" \u2014 all match the key; nothing verifiable is called unverified.\",\"pass_note\":\"The CLI-parsing assumption is not a dependent fact.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Steps 1-7 cover config, build, push, set image, rollout wait, Slack post. Reader lists no follow-up questions: \\\"follow_up_questions\\\": [].\",\"pass_note\":\"All three required questions are answered.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader problem: \\\"what happens when Ines Albrecht runs `mintctl deploy staging`... only shows `deploy(env_name)`\\\" matches the key's problem. Breaks, fix and cost are n/a in the key.\",\"pass_note\":\"Only the problem field is graded.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"registry.mint.internal/mint-shop:<sha>\"; \"`kubectl rollout status deployment/mint-shop --timeout=300s`\"; \"`mint-shop <sha> is live on staging`\" \u2014 all match the key; nothing verifiable is called unverified.",
+          "pass_note": "The CLI-parsing assumption is not a dependent fact."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Steps 1-7 cover config, build, push, set image, rollout wait, Slack post. Reader lists no follow-up questions: \"follow_up_questions\": [].",
+          "pass_note": "All three required questions are answered."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader problem: \"what happens when Ines Albrecht runs `mintctl deploy staging`... only shows `deploy(env_name)`\" matches the key's problem. Breaks, fix and cost are n/a in the key.",
+          "pass_note": "Only the problem field is graded."
+        }
+      ]
+    },
+    "ttft_ms": 4272,
+    "type": "result",
+    "duration_ms": 4300,
+    "uuid": "6ac209f4-d1ef-4615-81e0-58b28bf4e3d6",
+    "ttft_stream_ms": 2035,
+    "time_to_request_ms": 467,
+    "first_content_frame_ms": 2035,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

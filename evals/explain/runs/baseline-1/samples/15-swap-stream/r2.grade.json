@@ -1,0 +1,172 @@
+{
+  "key": "8378ff42263bc3b3c6b4dcd368ce1a13f068fb9cf2ff6383842af4871f6b5d49",
+  "cost_usd": 0.036316,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends streaming the CSV, so bytes flow from the first second.\" This matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`deploy/gunicorn.conf.py` sets `timeout = 120`\"; 89 s, 412880 rows, 12 s query, about 6 exports a day, and no queue or email are all stated and match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The \"what can break\" answer covers the 120 s timeout but never mentions that a stream error mid-file leaves a partial download."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"builds the whole CSV... before sending any bytes\"; \"Return a Response wrapping a generator\"; \"Small code change in one file\". This agrees with the key in substance."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Should I implement the streaming generator in `app/exports.py`, or do you prefer one of the alternatives?\" The reader gave a concrete answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "Both alternatives are listed with trade-offs and conditions: the idle timeout \"becomes the primary only if `Response` cannot stream\", the job \"if exports outgrow the worker timeout\"."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10369,
+    "stop_reason": "tool_use",
+    "session_id": "3024d79d-7827-43f9-a57c-9f9080d2bc48",
+    "total_cost_usd": 0.036316,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5859,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1269,
+      "output_tokens_details": {
+        "thinking_tokens": 748
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5859,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1269,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5859,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5859
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1269,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5859,
+        "webSearchRequests": 0,
+        "costUSD": 0.036316,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 748,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5859,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends streaming the CSV, so bytes flow from the first second.\\\" This matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`deploy/gunicorn.conf.py` sets `timeout = 120`\\\"; 89 s, 412880 rows, 12 s query, about 6 exports a day, and no queue or email are all stated and match the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The \\\"what can break\\\" answer covers the 120 s timeout but never mentions that a stream error mid-file leaves a partial download.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"builds the whole CSV... before sending any bytes\\\"; \\\"Return a Response wrapping a generator\\\"; \\\"Small code change in one file\\\". This agrees with the key in substance.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Should I implement the streaming generator in `app/exports.py`, or do you prefer one of the alternatives?\\\" The reader gave a concrete answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"Both alternatives are listed with trade-offs and conditions: the idle timeout \\\"becomes the primary only if `Response` cannot stream\\\", the job \\\"if exports outgrow the worker timeout\\\".\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends streaming the CSV, so bytes flow from the first second.\" This matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`deploy/gunicorn.conf.py` sets `timeout = 120`\"; 89 s, 412880 rows, 12 s query, about 6 exports a day, and no queue or email are all stated and match the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The \"what can break\" answer covers the 120 s timeout but never mentions that a stream error mid-file leaves a partial download."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"builds the whole CSV... before sending any bytes\"; \"Return a Response wrapping a generator\"; \"Small code change in one file\". This agrees with the key in substance."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Should I implement the streaming generator in `app/exports.py`, or do you prefer one of the alternatives?\" The reader gave a concrete answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "Both alternatives are listed with trade-offs and conditions: the idle timeout \"becomes the primary only if `Response` cannot stream\", the job \"if exports outgrow the worker timeout\"."
+        }
+      ]
+    },
+    "ttft_ms": 8292,
+    "type": "result",
+    "duration_ms": 10749,
+    "uuid": "b6fc6848-524a-4248-a07e-c8514e496a01",
+    "ttft_stream_ms": 1709,
+    "time_to_request_ms": 379,
+    "first_content_frame_ms": 1709,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 19898,
+  "stop_reason": "end_turn",
+  "session_id": "59936467-9fff-48e6-bba9-738b7461c589",
+  "total_cost_usd": 0.040194,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2786,
+    "cache_read_input_tokens": 23480,
+    "output_tokens": 2669,
+    "output_tokens_details": {
+      "thinking_tokens": 452
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2786,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1909,
+        "cache_read_input_tokens": 8268,
+        "cache_creation_input_tokens": 1786,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1786
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2669,
+      "cacheReadInputTokens": 23480,
+      "cacheCreationInputTokens": 2786,
+      "webSearchRequests": 0,
+      "costUSD": 0.040194,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 452,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2786,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 9,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`export_invoices` in `app/exports.py` sends no byte until it has built the whole CSV, so `gw-billing` closes the connection after 30 idle seconds and returns 504. Aelita recommends moving the export to a `taskq` job on the `documents` queue that emails a signed link, the way invoice PDFs already work.\n\n**Existing behaviour**\n\n1. `export_invoices` runs one `db.query` for every invoice row of the tenant.\n2. It writes all rows into an in-memory `io.StringIO` buffer.\n3. It returns the `Response` only after the buffer is complete.\n4. `gw-billing` has `idle_timeout_seconds: 30` and `request_timeout_seconds: 300`.\n5. `gunicorn.conf.py` gives 12 workers, and a worker stays busy until the response ends.\n\n**Timeline without the fix**\n\n1. An accountant at `northfield-accounting` requests `/exports/invoices.csv` at 08:05 on month end.\n2. `export_invoices` runs the query. It takes 18 seconds and returns 1,840,211 rows.\n3. The build starts. The worker sends no byte to `gw-billing`.\n4. At 30 seconds of silence, `gw-billing` closes the connection with reason `gw-idle-timeout`.\n5. The worker keeps building until second 240. The log shows `build_seconds=222`, `total_seconds=240` and `status=504`.\n6. About 900 exports arrive in two days at month end, so workers saturate. The log shows `web_workers_busy=12/12`.\n7. `/invoices` p99 rises from 0.4 s on a quiet day to 9.4 s.\n8. The largest tenants never get a file, and every other tenant slows down. `orbis-tax` fails the same way at 121 s with 920,114 rows.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `export_invoices` enqueues `render_invoice_csv` on the `documents` queue. It returns `202` in milliseconds.\n3. A `taskq` worker runs the query and writes rows to a temporary file instead of memory.\n4. The job calls `storage.put` and `storage.signed_url`, then `mailer.send` to the accountant.\n5. `northfield-accounting` gets a download link by email. No web worker was busy for more than a few milliseconds.\n6. Month-end load lands on the `documents` queue, so `/invoices` stays near its 0.4 s p99.\n\n**What changes**\n\n- `app/exports.py` old behaviour: `export_invoices` queries, builds and returns the CSV inline. New behaviour: it enqueues the job with `request.tenant_id` and the requester's address, then returns `202`.\n- `jobs/invoice_csv.py` add: `render_invoice_csv(tenant_id, recipient)` on queue `documents`. It reuses the CSV code, writes to a temp file, then calls `storage.put`, `storage.signed_url` and `mailer.send`.\n- `docs/exports.md` add one line that CSV exports are asynchronous and arrive by email.\n\n**Recommendation.** Aelita recommends the background job. It removes the cause, which is long work inside a web request. It reuses the `taskq`, storage and `mailer` path that invoice PDFs already use. It frees the web workers and has no row limit. The cost is a changed user experience, because the file arrives by email. Two things can break it. The requester's email address must be available on `request`. `storage.put` must accept a file object or a path for multi-million-row files. Both live in the `tallyhall` package, which is not in this repository, so I could not check them.\n\n**Alternative: stream the response.** `export_invoices` yields rows as it reads them, with a server-side cursor. It beats the recommendation on user experience, because the download starts at once and no email is needed. It keeps the 300 s total cap, and it still holds one web worker per export. It becomes the primary if tenants must get the file in the browser and their exports finish well under 300 s.\n\n**Alternative: raise `idle_timeout_seconds`.** This is a one-line change in `deploy/gateway.yaml`. It does not stop worker saturation, and the 300 s cap still applies. It becomes the primary only as a stopgap before month end.\n\n**Question.** Should the CSV export become a `documents` queue job that emails a signed link, or must the file download in the browser, which means streaming?",
+  "ttft_ms": 1319,
+  "type": "result",
+  "duration_ms": 20230,
+  "uuid": "f4fb6053-3f45-4aac-b97e-32da41e8bb0c",
+  "ttft_stream_ms": 928,
+  "time_to_request_ms": 302,
+  "first_content_frame_ms": 928,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

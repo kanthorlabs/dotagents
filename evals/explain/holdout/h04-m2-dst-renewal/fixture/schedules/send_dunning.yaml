@@ -1,0 +1,4 @@
+name: send_dunning
+job: billing.dunning.send_dunning
+cron: "45 2 * * *"
+timezone: Europe/Berlin

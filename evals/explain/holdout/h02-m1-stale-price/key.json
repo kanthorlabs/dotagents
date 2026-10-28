@@ -1,0 +1,105 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Evict the changed SKU from price_cache on every shop-api pod: subscribe each pod to the existing price.changed Redis channel and pop the SKU on each event."
+  ],
+  "invalid_options": [
+    "Lower the CDN TTL for the price API, because the CDN does not cache /api/* at all.",
+    "Purge the CDN on each price change.",
+    "Lower the CDN TTL of /product/*, because product HTML holds no price.",
+    "Change nothing."
+  ],
+  "root_cause": "Each of the 6 shop-api pods keeps its own in-process price_cache with a 3600 s TTL. update_price pops the SKU only from the cache of the pod that served the admin request, so the other 5 pods serve the old price until their entry expires, up to one hour. The CDN does not cache /api/*.",
+  "dependent_facts": [
+    {
+      "fact": "CDN rule for /api/*",
+      "true_value": "cache: false, the CDN does not cache the price API; CI applies cdn/rules.yaml on every merge and no manual rule exists",
+      "source": "cdn/rules.yaml and cdn/README.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Where pages get prices",
+      "true_value": "product pages hold no price in HTML; pages, cart and checkout fetch /api/prices",
+      "source": "docs/frontend.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Price cache",
+      "true_value": "in-process TTLCache with ttl 3600 s in pricing/service.py, one per pod",
+      "source": "pricing/service.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Invalidation on update",
+      "true_value": "update_price pops the SKU only from the local cache of the pod that handles the admin request",
+      "source": "admin/prices.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Number of pods",
+      "true_value": "6 shop-api replicas, one uvicorn process each",
+      "source": "deploy/api.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Existing event",
+      "true_value": "update_price publishes price.changed on Redis, and search/indexer.py already subscribes to it",
+      "source": "admin/prices.py, shared/events.py and search/indexer.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Symptom",
+      "true_value": "after the change at 10:02, reloads alternated between 34.90 and 39.90; old price until about 10:58",
+      "source": "tickets/SM-140.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why does the CDN TTL change not help?",
+      "expected_answer": "The CDN does not cache /api/*, and product HTML holds no price."
+    },
+    {
+      "question": "Why do some reloads show the new price and others the old one?",
+      "expected_answer": "Only the pod that served the admin request evicted the SKU; the other pods keep the old entry for up to 3600 s."
+    },
+    {
+      "question": "What exactly changes?",
+      "expected_answer": "Each shop-api pod subscribes to price.changed and pops the SKU from price_cache."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Lower the TTL of the in-process price_cache, for example to 30 or 60 seconds",
+      "trade_off": "A one-line change with no subscriber, but prices stay stale up to the new TTL and the database gets more price reads.",
+      "primary_when": "A delay of up to the new TTL is acceptable and the team wants no new subscriber code.",
+      "must_list": false
+    },
+    {
+      "option": "Replace the in-process cache with one shared Redis cache that update_price deletes on write",
+      "trade_off": "One cache to invalidate and no per-pod drift, but a network call per price read and a new dependency on Redis for reads.",
+      "primary_when": "More pods or more caches make per-pod eviction hard to keep correct.",
+      "must_list": false
+    },
+    {
+      "option": "Remove the in-process price_cache and read the price from the database on every request",
+      "trade_off": "Always correct and needs no subscriber, but it costs one database read per price request.",
+      "primary_when": "The database carries the price traffic easily, or the event delivery cannot be trusted.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision about the fix: approve the per-pod eviction through price.changed, choose a listed alternative instead, or settle the one requirement that picks between them, such as how much staleness is acceptable.",
+  "understanding": {
+    "problem": "A price change reaches only one of the 6 in-process caches; the others keep the old price.",
+    "breaks": "Customers see the old price, also at checkout, for up to one hour; the CDN is not involved.",
+    "fix": "Evict the SKU on every pod through the price.changed event.",
+    "cost": "A small subscriber in shop-api that pops the SKU from price_cache."
+  }
+}

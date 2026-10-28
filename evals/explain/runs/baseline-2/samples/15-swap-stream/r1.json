@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 21234,
+  "stop_reason": "end_turn",
+  "session_id": "bd2be9f5-df0d-46cc-8525-4d917ee343a6",
+  "total_cost_usd": 0.0391765,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2312,
+    "cache_read_input_tokens": 23465,
+    "output_tokens": 2757,
+    "output_tokens_details": {
+      "thinking_tokens": 591
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2312,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2108,
+        "cache_read_input_tokens": 8254,
+        "cache_creation_input_tokens": 1326,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1326
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2757,
+      "cacheReadInputTokens": 23465,
+      "cacheCreationInputTokens": 2312,
+      "webSearchRequests": 0,
+      "costUSD": 0.0391765,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 591,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2312,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`export_contacts` in `app/exports.py` sends no byte for 89 seconds, so `edge-lb` closes the connection after 30 idle seconds. Aelita recommends streaming the CSV: write the header at once, then send rows as they come. This resets the idle timer on every chunk.\n\n**Existing behaviour**\n\n1. `export_contacts` runs `db.query` and loads all rows of the tenant (`app/exports.py:10`).\n2. It writes every row into an `io.StringIO` buffer (`app/exports.py:11-14`).\n3. It returns `Response(buffer.getvalue())` only after the buffer is complete (`app/exports.py:15`).\n4. `edge-lb` has `idle_timeout_seconds: 30` and no request timeout (`deploy/edge-lb.yaml:3-4`). It resets the timer on every upstream byte (`docs/exports.md:7`).\n\n**Timeline without the fix**\n\n1. A user at `bluefin-logistics` clicks \"Export contacts\". `edge-lb` forwards the request to `ferngrove-web`.\n2. `export_contacts` queries 412880 rows. This takes 12 seconds and sends no byte.\n3. At 30 seconds, `edge-lb` sees no byte in either direction. It closes the connection and returns 504.\n4. `export_contacts` keeps building the CSV, 77 more seconds (`build_seconds=77`). Nobody receives it. The worker finishes at 89 seconds, under the gunicorn `timeout = 120`.\n5. The log records `status=504 reason=edge-lb-idle-timeout` at 09:12 and again at 14:02. `harrow-dental` with 3120 rows finishes in 1 second and works.\n\nThe 504 is not a gunicorn timeout. At 89 to 90 seconds the export is also close to the 120-second limit, so a larger tenant will hit that limit next.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `export_contacts` returns a streaming response and yields the CSV header at once. `edge-lb` receives the first byte and resets its timer.\n3. The query runs and rows are yielded in batches. Each batch resets the idle timer, so `edge-lb` never sees 30 silent seconds.\n4. The browser downloads the file as it is produced.\n5. The last batch is sent and the response ends. The log records `status=200` for `bluefin-logistics`.\n\n**What changes**\n\n- `app/exports.py` old behaviour: `export_contacts` builds a `StringIO` and returns `getvalue()`. New behaviour: it returns a generator that yields the header, then rows in batches of about 1000 from a cursor.\n- `deploy/gunicorn.conf.py`: the file sets no `worker_class`, so it uses the default sync worker. I expect `timeout = 120` to still apply to a stream that lasts longer. Moving to a gthread or gevent worker class is a separate decision.\n\n**Recommendation.** Aelita recommends streaming because it removes the root cause, which is that the first byte waits for the whole export. It adds no component, which fits `docs/exports.md:9`. What can break:\n\n- **Unverified:** `ferngrove.web.Response` may not accept an iterator, and `ferngrove.db` may not offer a cursor. The `ferngrove` package is not in this repository, so no file settles either point.\n- **Sync worker limit:** a stream that lasts over 120 seconds still gets the worker killed. Streaming also holds a worker for the full export, and there are 16 workers at about 6 exports a day.\n- **Mid-stream errors:** an error after the header can no longer return a 500. The download just truncates.\n\n**Alternative: raise `idle_timeout_seconds` to 300.** This is a one-line change in `deploy/edge-lb.yaml`. It beats streaming on effort. The cost is that every route on `ferngrove-web` gets a longer idle limit, and the gunicorn 120-second limit still caps it. It becomes the primary only if the streaming API turns out not to exist and a fix is needed today.\n\n**Alternative: background job and email link.** The export runs offline and the user gets a download link. It has no timeout limit. It needs a job queue and an email service, and `docs/exports.md:9` says each needs an owner and on-call. It becomes the primary if exports grow well beyond the gunicorn limit.\n\n**Question.** Does Aelita implement the streaming change in `app/exports.py` and adapt it to the `ferngrove.web` and `ferngrove.db` APIs?",
+  "ttft_ms": 1566,
+  "type": "result",
+  "duration_ms": 21789,
+  "uuid": "ff6cb973-bbe4-4205-a8c6-7b37428679c0",
+  "ttft_stream_ms": 1190,
+  "time_to_request_ms": 529,
+  "first_content_frame_ms": 1190,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

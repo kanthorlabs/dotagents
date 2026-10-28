@@ -1,0 +1,19 @@
+{
+  "measures": ["MF"],
+  "correct_recommendations": [],
+  "invalid_options": [],
+  "root_cause": "Not applicable.",
+  "dependent_facts": [
+    {
+      "fact": "Production replicas",
+      "true_value": "7, from the prod overlay patch that overrides 2 in the base",
+      "source": "k8s/overlays/prod/replicas.yaml",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [],
+  "valid_alternatives": [],
+  "closing_decision": "none",
+  "understanding": {"problem": "n/a", "breaks": "n/a", "fix": "n/a", "cost": "n/a"},
+  "factual_pattern": "\\b7\\b|\\bseven\\b"
+}

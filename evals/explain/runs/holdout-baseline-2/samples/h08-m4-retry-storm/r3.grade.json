@@ -1,0 +1,172 @@
+{
+  "key": "bac104bcd23cff9e2693eb44918676dd9fbcf9316ef03fa551200c96ad425bf4",
+  "cost_usd": 0.039846,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends cutting the retry layers to one and bounding the `ranker` queue.\" Matches the 'do both' recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"180,000-deep queue\", \"capacity of 1,200\", \"14:02\", \"14:41\", 3 \u00d7 3 = 9 all match the key; the 3,500 and 3,600 figures are consistent."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Steps 3-7 answer all three required questions. The reader's follow-ups, team ownership and the 256 cap, are detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"retries... turned 400 searches/s into up to 3,600 ranker requests/s... unbounded and still scored abandoned requests\". Problem, breaks and fix agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the recommended change to all three files, or should I limit it to the `ranker` cap?\" It holds one decision, and the reader answered it."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: shed load in `ranker` only... beats the recommendation when `web` and `query-gw` are owned by other teams. It still lets 9\u00d7 retries hit the cap.\""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10670,
+    "stop_reason": "tool_use",
+    "session_id": "0404d9f7-a4ec-4e3a-b1ef-9d2854422c21",
+    "total_cost_usd": 0.039846,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6394,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1408,
+      "output_tokens_details": {
+        "thinking_tokens": 885
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6394,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1408,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6394,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6394
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1408,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6394,
+        "webSearchRequests": 0,
+        "costUSD": 0.039846,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 885,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6394,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends cutting the retry layers to one and bounding the `ranker` queue.\\\" Matches the 'do both' recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"180,000-deep queue\\\", \\\"capacity of 1,200\\\", \\\"14:02\\\", \\\"14:41\\\", 3 \u00d7 3 = 9 all match the key; the 3,500 and 3,600 figures are consistent.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Steps 3-7 answer all three required questions. The reader's follow-ups, team ownership and the 256 cap, are detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"retries... turned 400 searches/s into up to 3,600 ranker requests/s... unbounded and still scored abandoned requests\\\". Problem, breaks and fix agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the recommended change to all three files, or should I limit it to the `ranker` cap?\\\" It holds one decision, and the reader answered it.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: shed load in `ranker` only... beats the recommendation when `web` and `query-gw` are owned by other teams. It still lets 9\u00d7 retries hit the cap.\\\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends cutting the retry layers to one and bounding the `ranker` queue.\" Matches the 'do both' recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"180,000-deep queue\", \"capacity of 1,200\", \"14:02\", \"14:41\", 3 \u00d7 3 = 9 all match the key; the 3,500 and 3,600 figures are consistent."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Steps 3-7 answer all three required questions. The reader's follow-ups, team ownership and the 256 cap, are detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"retries... turned 400 searches/s into up to 3,600 ranker requests/s... unbounded and still scored abandoned requests\". Problem, breaks and fix agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the recommended change to all three files, or should I limit it to the `ranker` cap?\" It holds one decision, and the reader answered it."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: shed load in `ranker` only... beats the recommendation when `web` and `query-gw` are owned by other teams. It still lets 9\u00d7 retries hit the cap.\""
+        }
+      ]
+    },
+    "ttft_ms": 8147,
+    "type": "result",
+    "duration_ms": 11019,
+    "uuid": "8bc8965c-7811-4d6b-93c9-96cb45494361",
+    "ttft_stream_ms": 1402,
+    "time_to_request_ms": 352,
+    "first_content_frame_ms": 1402,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

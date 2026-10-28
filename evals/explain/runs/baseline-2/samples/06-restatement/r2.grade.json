@@ -1,0 +1,152 @@
+{
+  "key": "06754420059067ffb025ba8c69bda6ea292d940c19bdd76fae5d852511673b59",
+  "cost_usd": 0.023168,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`config/prod.yaml:2` sets `*/10 * * * *`\"; \"IDLE_LIMIT to 30 minutes\"; \"datetime.now(timezone.utc)\"... \"timestamptz\"; touch_on_request false. All match the key; nothing deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "All three required questions answered: 10-minute confirmed, 30-minute confirmed, timezone corrected to touch_on_request false. Reader's follow-ups (load, bypass) go beyond the ruling, not real gaps."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Nothing updates `last_seen_at` after login... so there is no timezone bug.\" Fix: \"Set `touch_on_request` to true in production.\" Matches key; cost n/a skipped."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do we turn on `touch_on_request` in production, or move the touch into `auth-service`?\" Matches closing_decision; reader gave a real answer."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3196,
+    "stop_reason": "tool_use",
+    "session_id": "ddffff1b-b7d8-486a-b05a-57312da545cb",
+    "total_cost_usd": 0.023168,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4647,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 439,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4647,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 439,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4647,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4647
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 439,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4647,
+        "webSearchRequests": 0,
+        "costUSD": 0.023168,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4647,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`config/prod.yaml:2` sets `*/10 * * * *`\\\"; \\\"IDLE_LIMIT to 30 minutes\\\"; \\\"datetime.now(timezone.utc)\\\"... \\\"timestamptz\\\"; touch_on_request false. All match the key; nothing deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"All three required questions answered: 10-minute confirmed, 30-minute confirmed, timezone corrected to touch_on_request false. Reader's follow-ups (load, bypass) go beyond the ruling, not real gaps.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Nothing updates `last_seen_at` after login... so there is no timezone bug.\\\" Fix: \\\"Set `touch_on_request` to true in production.\\\" Matches key; cost n/a skipped.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do we turn on `touch_on_request` in production, or move the touch into `auth-service`?\\\" Matches closing_decision; reader gave a real answer.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`config/prod.yaml:2` sets `*/10 * * * *`\"; \"IDLE_LIMIT to 30 minutes\"; \"datetime.now(timezone.utc)\"... \"timestamptz\"; touch_on_request false. All match the key; nothing deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "All three required questions answered: 10-minute confirmed, 30-minute confirmed, timezone corrected to touch_on_request false. Reader's follow-ups (load, bypass) go beyond the ruling, not real gaps."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Nothing updates `last_seen_at` after login... so there is no timezone bug.\" Fix: \"Set `touch_on_request` to true in production.\" Matches key; cost n/a skipped."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do we turn on `touch_on_request` in production, or move the touch into `auth-service`?\" Matches closing_decision; reader gave a real answer."
+        }
+      ]
+    },
+    "ttft_ms": 3566,
+    "type": "result",
+    "duration_ms": 3578,
+    "uuid": "c4a35574-b7b5-43b7-a77a-4957838dc6a4",
+    "ttft_stream_ms": 1289,
+    "time_to_request_ms": 383,
+    "first_content_frame_ms": 1289,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

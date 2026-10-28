@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 19188,
+  "stop_reason": "end_turn",
+  "session_id": "d6831d24-91b5-46a8-99c5-8bdae46e75f2",
+  "total_cost_usd": 0.0397079,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2820,
+    "cache_read_input_tokens": 23859,
+    "output_tokens": 2603,
+    "output_tokens_details": {
+      "thinking_tokens": 675
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2820,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1840,
+        "cache_read_input_tokens": 8310,
+        "cache_creation_input_tokens": 2106,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2106
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2603,
+      "cacheReadInputTokens": 23859,
+      "cacheCreationInputTokens": 2820,
+      "webSearchRequests": 0,
+      "costUSD": 0.0397079,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 675,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2820,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 9,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`change_password` in `api/auth/password.py` never touches the other refresh tokens of the user, so a stolen phone refreshes forever. Aelita recommends deleting all `refresh_tokens` rows of the user inside `change_password`. That meets SR-12 with no change to `middleware.py`.\n\n**Existing behaviour**\n\n1. `middleware.authenticate` checks only the JWT signature and `exp`. It reads no database, by design at 2,500 requests per second.\n2. `issue_tokens` makes a 15-minute access token (`ACCESS_TTL`) and a 30-day refresh token (`REFRESH_TTL`). It stores the refresh hash with the `device_name`.\n3. `refresh_session` deletes the presented refresh row and issues a new pair. It does not look at the password.\n\n**Timeline without the fix**\n\n1. Dana's phone holds refresh token R1 in `refresh_tokens`. A thief steals the phone.\n2. Dana changes the password on the laptop. `change_password` updates `password_hash` and inserts a laptop row. The phone row stays.\n3. The phone access token expires within 15 minutes.\n4. The thief calls `POST /auth/refresh` with R1. `refresh_session` finds a valid row and issues a new pair.\n5. This repeats every 15 minutes, and each refresh token lasts another 30 days. The thief keeps access with no end date.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `change_password` verifies the old password and updates `password_hash`. It deletes every `refresh_tokens` row of Dana. Then `issue_tokens` inserts the laptop row.\n3. The phone access token stays valid for 15 minutes at most.\n4. The thief calls `POST /auth/refresh` with R1. No row matches, so `refresh_session` raises `PermissionError`. The phone session is over.\n\n**What changes**\n\n- `api/auth/password.py`: in `change_password`, add `db.execute(\"DELETE FROM refresh_tokens WHERE user_id = %s\", user.id)` after the password update and before `issue_tokens`. The laptop still gets a fresh pair, so it stays logged in.\n\n**Recommendation.** Aelita recommends the refresh-token purge. SR-12 allows 15 minutes, and `ACCESS_TTL` is exactly 15 minutes. So cutting the refresh path is enough, and the stateless `middleware.py` stays fast. It costs one `DELETE`. Two things can break it. If the update and the delete are not in one transaction, a failure between them leaves the old sessions alive. I did not find the transaction helper of `api.db`, so use it if one exists. The other risk is that if `ACCESS_TTL` is ever raised above 15 minutes, SR-12 fails silently.\n\n**Alternative: a `token_version` claim checked in middleware.** Each access token carries the user's version, and a password change bumps it. Other devices die at once, not within 15 minutes. It costs a Redis read on every request at 2,500 requests per second. It becomes the primary if the requirement tightens to immediate logout.\n\n**Alternative: rotate `SIGNING_KEY`.** `deploy/secrets.md` says one key serves all users. A rotation would log out every user, including the device that changed the password. That breaks the second SR-12 requirement, so it is not a real option.\n\n**Question.** Does Aelita apply the refresh-token purge in `change_password`, or do you want the immediate `token_version` check instead?",
+  "ttft_ms": 1556,
+  "type": "result",
+  "duration_ms": 19515,
+  "uuid": "0e7a0443-e0e8-4808-84bd-075d4f77f020",
+  "ttft_stream_ms": 1011,
+  "time_to_request_ms": 316,
+  "first_content_frame_ms": 1011,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

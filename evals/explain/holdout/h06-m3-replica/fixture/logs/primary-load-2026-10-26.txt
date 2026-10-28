@@ -1,0 +1,5 @@
+pg-osprey-1, 26 October 2026, UTC
+
+- 00:50 to 01:00: CPU 31 %. checkout API p95 latency 340 ms.
+- 01:00 to 01:22: osprey-nightly-report runs. CPU 88 %. checkout API p95 latency 1,900 ms.
+- 01:22 to 01:30: CPU 29 %. checkout API p95 latency 330 ms.

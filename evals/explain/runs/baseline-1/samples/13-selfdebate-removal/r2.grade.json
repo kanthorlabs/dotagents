@@ -1,0 +1,184 @@
+{
+  "key": "723d379dfa6463832dcce92cdf236601c79ac5c23d42f8b812181d6cc83cf2ca",
+  "cost_usd": 0.039292,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends keeping the column until Oakline Supply confirms it no longer needs the Brightstock codes.\" Matches the key's keep-for-now recommendation.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"If Oakline Supply still depends on the codes, the drop breaks their ingest.\" The key settles that Oakline keys on the code, but the message leaves it to be confirmed.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Reader lists no follow-up questions. The message covers use, breakage and safe removal via the map table or Oakline migration. Its why-it-exists answer is hedged but sufficient.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"keep the column until Oakline Supply confirms\"; breaks via view or CASCADE; cost \"one nullable column\". Agrees with the key.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you want to keep `legacy_sku` until Oakline Supply confirms, or drop it now with the `partner_ref_map` table?\" It is one decision, and the reader gave a real answer.",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Create `partner_ref_map(sku, partner_ref)`... It adds a table to maintain. It becomes the primary if you must clean up `products` now.\" Matches the mapping-table alternative with trade-off and condition.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10847,
+    "stop_reason": "tool_use",
+    "session_id": "6654f4b8-5168-4cc4-bc93-4d9b96772c0d",
+    "total_cost_usd": 0.039292,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6118,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1463,
+      "output_tokens_details": {
+        "thinking_tokens": 871
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6118,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1463,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6118,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6118
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1463,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6118,
+        "webSearchRequests": 0,
+        "costUSD": 0.039292,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 871,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6118,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends keeping the column until Oakline Supply confirms it no longer needs the Brightstock codes.\\\" Matches the key's keep-for-now recommendation.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"If Oakline Supply still depends on the codes, the drop breaks their ingest.\\\" The key settles that Oakline keys on the code, but the message leaves it to be confirmed.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Reader lists no follow-up questions. The message covers use, breakage and safe removal via the map table or Oakline migration. Its why-it-exists answer is hedged but sufficient.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"keep the column until Oakline Supply confirms\\\"; breaks via view or CASCADE; cost \\\"one nullable column\\\". Agrees with the key.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you want to keep `legacy_sku` until Oakline Supply confirms, or drop it now with the `partner_ref_map` table?\\\" It is one decision, and the reader gave a real answer.\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Create `partner_ref_map(sku, partner_ref)`... It adds a table to maintain. It becomes the primary if you must clean up `products` now.\\\" Matches the mapping-table alternative with trade-off and condition.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends keeping the column until Oakline Supply confirms it no longer needs the Brightstock codes.\" Matches the key's keep-for-now recommendation.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"If Oakline Supply still depends on the codes, the drop breaks their ingest.\" The key settles that Oakline keys on the code, but the message leaves it to be confirmed.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Reader lists no follow-up questions. The message covers use, breakage and safe removal via the map table or Oakline migration. Its why-it-exists answer is hedged but sufficient.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"keep the column until Oakline Supply confirms\"; breaks via view or CASCADE; cost \"one nullable column\". Agrees with the key.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you want to keep `legacy_sku` until Oakline Supply confirms, or drop it now with the `partner_ref_map` table?\" It is one decision, and the reader gave a real answer.",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Create `partner_ref_map(sku, partner_ref)`... It adds a table to maintain. It becomes the primary if you must clean up `products` now.\" Matches the mapping-table alternative with trade-off and condition.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 7709,
+    "type": "result",
+    "duration_ms": 11192,
+    "uuid": "af21b3cc-9a45-421c-8c40-962bcbb6adad",
+    "ttft_stream_ms": 1164,
+    "time_to_request_ms": 347,
+    "first_content_frame_ms": 1164,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

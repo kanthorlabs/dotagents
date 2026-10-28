@@ -1,0 +1,137 @@
+{
+  "key": "e7cabf08814c48d453b5ec3b444412525dcc00f6a8018e22c0f9b337b3a75a07",
+  "cost_usd": 0.0232773,
+  "reader": {
+    "decision": "Approve the bounded queue with 429 in `ranker` at about 64 queued requests per instance, and also cut the retries as a second step. Do the queue first.",
+    "decision_reason": "The message shows that the 37-minute outage came from an unbounded backlog of abandoned requests that `ranker` kept scoring. The retries only amplified it. The bounded queue removes that backlog, and 429 is not matched by `retry_on`. The 64 figure is only an example, so I will treat it as a starting value to check, not a final number.",
+    "reconstruction": {
+      "problem": "On 22 October an index merge slowed `ranker` for about 4 minutes. Retries in `query-gw` (2 retries, 3 attempts) and in `searchClient.ts` (up to 3 attempts) multiplied each search into up to 9 `ranker` requests. That took 400 searches per second to about 3,600 requests per second, against a `ranker` capacity of about 1,200 per second. The `ranker` queue has no limit, so it grew to about 180,000 requests, about 150 s of wait against a 600 ms timeout. `ranker` kept scoring abandoned requests, and each timeout caused another retry, so the overload sustained itself after the merge ended.",
+      "what_breaks": "Search was down for 37 minutes, from 14:02 to 14:39 plus the drain, until Tomasz turned on the maintenance page, which cut traffic and let the queue drain by 14:41. Without a queue bound, any overload leaves a backlog of dead work that does not clear on its own.",
+      "fix": "In `ranker/server.py`, count in-flight requests in `rank`. Above a limit, for example 64 per instance (about 0.4 s of work), return HTTP 429 without calling `score`. `query-gw` does not retry 429, because `retry_on` covers only timeouts and 5xx. Update `docs/capacity.md` to replace 'The queue has no limit.' with the new limit and its reason. The alternative is `retries: 0` in `config.yaml` and `MAX_ATTEMPTS = 1` in `searchClient.ts`. It is simpler but leaves the backlog, so it is the primary only if `ranker` cannot be changed soon.",
+      "cost": "A few lines in `server.py` plus a docs edit. Risks: a limit too low rejects real traffic at normal peaks, and a limit too high brings the backlog back. Using 503 instead of 429 would match `retry_on: 5xx` and keep the retry storm going. The retry-cut alternative would not remove the backlog."
+    },
+    "follow_up_questions": [
+      "What is `ranker`'s normal peak concurrency per instance, so I can confirm that 64 queued requests will not reject real traffic?",
+      "Does the 64 limit count in-flight requests only, or in-flight plus waiting? The 0.4 s estimate depends on which one it is.",
+      "Is the 1,200 per second capacity for one instance or for the whole fleet? The 64 per instance figure depends on this."
+    ],
+    "closing_answer": "Reject excess requests with 429 at about 64 queued requests per instance first, after checking that the limit fits normal peak load. Cut the retries as a follow-up, or first only if `ranker` cannot be changed soon."
+  },
+  "raw": {
+    "duration_api_ms": 8861,
+    "stop_reason": "tool_use",
+    "session_id": "9656a730-0cd9-45c0-a936-3374aa1152f5",
+    "total_cost_usd": 0.0232773,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2809,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 1184,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2809,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1184,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2809,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2809
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1184,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2809,
+        "webSearchRequests": 0,
+        "costUSD": 0.0232773,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2809,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve the bounded queue with 429 in `ranker` at about 64 queued requests per instance, and also cut the retries as a second step. Do the queue first.\",\"decision_reason\":\"The message shows that the 37-minute outage came from an unbounded backlog of abandoned requests that `ranker` kept scoring. The retries only amplified it. The bounded queue removes that backlog, and 429 is not matched by `retry_on`. The 64 figure is only an example, so I will treat it as a starting value to check, not a final number.\",\"reconstruction\":{\"problem\":\"On 22 October an index merge slowed `ranker` for about 4 minutes. Retries in `query-gw` (2 retries, 3 attempts) and in `searchClient.ts` (up to 3 attempts) multiplied each search into up to 9 `ranker` requests. That took 400 searches per second to about 3,600 requests per second, against a `ranker` capacity of about 1,200 per second. The `ranker` queue has no limit, so it grew to about 180,000 requests, about 150 s of wait against a 600 ms timeout. `ranker` kept scoring abandoned requests, and each timeout caused another retry, so the overload sustained itself after the merge ended.\",\"what_breaks\":\"Search was down for 37 minutes, from 14:02 to 14:39 plus the drain, until Tomasz turned on the maintenance page, which cut traffic and let the queue drain by 14:41. Without a queue bound, any overload leaves a backlog of dead work that does not clear on its own.\",\"fix\":\"In `ranker/server.py`, count in-flight requests in `rank`. Above a limit, for example 64 per instance (about 0.4 s of work), return HTTP 429 without calling `score`. `query-gw` does not retry 429, because `retry_on` covers only timeouts and 5xx. Update `docs/capacity.md` to replace 'The queue has no limit.' with the new limit and its reason. The alternative is `retries: 0` in `config.yaml` and `MAX_ATTEMPTS = 1` in `searchClient.ts`. It is simpler but leaves the backlog, so it is the primary only if `ranker` cannot be changed soon.\",\"cost\":\"A few lines in `server.py` plus a docs edit. Risks: a limit too low rejects real traffic at normal peaks, and a limit too high brings the backlog back. Using 503 instead of 429 would match `retry_on: 5xx` and keep the retry storm going. The retry-cut alternative would not remove the backlog.\"},\"follow_up_questions\":[\"What is `ranker`'s normal peak concurrency per instance, so I can confirm that 64 queued requests will not reject real traffic?\",\"Does the 64 limit count in-flight requests only, or in-flight plus waiting? The 0.4 s estimate depends on which one it is.\",\"Is the 1,200 per second capacity for one instance or for the whole fleet? The 64 per instance figure depends on this.\"],\"closing_answer\":\"Reject excess requests with 429 at about 64 queued requests per instance first, after checking that the limit fits normal peak load. Cut the retries as a follow-up, or first only if `ranker` cannot be changed soon.\"}",
+    "structured_output": {
+      "decision": "Approve the bounded queue with 429 in `ranker` at about 64 queued requests per instance, and also cut the retries as a second step. Do the queue first.",
+      "decision_reason": "The message shows that the 37-minute outage came from an unbounded backlog of abandoned requests that `ranker` kept scoring. The retries only amplified it. The bounded queue removes that backlog, and 429 is not matched by `retry_on`. The 64 figure is only an example, so I will treat it as a starting value to check, not a final number.",
+      "reconstruction": {
+        "problem": "On 22 October an index merge slowed `ranker` for about 4 minutes. Retries in `query-gw` (2 retries, 3 attempts) and in `searchClient.ts` (up to 3 attempts) multiplied each search into up to 9 `ranker` requests. That took 400 searches per second to about 3,600 requests per second, against a `ranker` capacity of about 1,200 per second. The `ranker` queue has no limit, so it grew to about 180,000 requests, about 150 s of wait against a 600 ms timeout. `ranker` kept scoring abandoned requests, and each timeout caused another retry, so the overload sustained itself after the merge ended.",
+        "what_breaks": "Search was down for 37 minutes, from 14:02 to 14:39 plus the drain, until Tomasz turned on the maintenance page, which cut traffic and let the queue drain by 14:41. Without a queue bound, any overload leaves a backlog of dead work that does not clear on its own.",
+        "fix": "In `ranker/server.py`, count in-flight requests in `rank`. Above a limit, for example 64 per instance (about 0.4 s of work), return HTTP 429 without calling `score`. `query-gw` does not retry 429, because `retry_on` covers only timeouts and 5xx. Update `docs/capacity.md` to replace 'The queue has no limit.' with the new limit and its reason. The alternative is `retries: 0` in `config.yaml` and `MAX_ATTEMPTS = 1` in `searchClient.ts`. It is simpler but leaves the backlog, so it is the primary only if `ranker` cannot be changed soon.",
+        "cost": "A few lines in `server.py` plus a docs edit. Risks: a limit too low rejects real traffic at normal peaks, and a limit too high brings the backlog back. Using 503 instead of 429 would match `retry_on: 5xx` and keep the retry storm going. The retry-cut alternative would not remove the backlog."
+      },
+      "follow_up_questions": [
+        "What is `ranker`'s normal peak concurrency per instance, so I can confirm that 64 queued requests will not reject real traffic?",
+        "Does the 64 limit count in-flight requests only, or in-flight plus waiting? The 0.4 s estimate depends on which one it is.",
+        "Is the 1,200 per second capacity for one instance or for the whole fleet? The 64 per instance figure depends on this."
+      ],
+      "closing_answer": "Reject excess requests with 429 at about 64 queued requests per instance first, after checking that the limit fits normal peak load. Cut the retries as a follow-up, or first only if `ranker` cannot be changed soon."
+    },
+    "ttft_ms": 9205,
+    "type": "result",
+    "duration_ms": 9222,
+    "uuid": "7d3e0634-63df-45e2-a29c-02937e8cd19f",
+    "ttft_stream_ms": 1338,
+    "time_to_request_ms": 361,
+    "first_content_frame_ms": 1339,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

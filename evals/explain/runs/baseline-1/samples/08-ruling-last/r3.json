@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 11258,
+  "stop_reason": "end_turn",
+  "session_id": "2b7eff10-a9a8-47ae-b241-73316e083383",
+  "total_cost_usd": 0.0234341,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1715,
+    "cache_read_input_tokens": 24821,
+    "output_tokens": 1408,
+    "output_tokens_details": {
+      "thinking_tokens": 411
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1715,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 871,
+        "cache_read_input_tokens": 8527,
+        "cache_creation_input_tokens": 1156,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1156
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1408,
+      "cacheReadInputTokens": 24821,
+      "cacheCreationInputTokens": 1715,
+      "webSearchRequests": 0,
+      "costUSD": 0.0234341,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 411,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1715,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling 3 recorded.** The project has no decision register or handoff file, so here is the ruling in one line: \"`invoice-mailer` switches `SMTP_RELAY` to `smtp-mx-2` on 14 November.\"\n\n**No open item remains.** The date falls 16 days before `smtp-old-1` goes offline on 30 November. It also leaves two weeks of margin before the month-end run at 06:00 on 30 November.\n\n**Next step.** Make the three rulings real in the code before 14 November:\n\n- `mailer/config.py`: `FROM_ADDRESS` changes from `billing@larkspur.io` to `invoices@mail.larkspur.io`. `SMTP_RELAY` changes to `smtp-mx-2.larkspur.internal` on 14 November. `BOUNCE_RETRY_LIMIT = 12` at a 60-second interval must become at most 3 soft-bounce retries per hour.\n- `mailer/bounces.py`: `handle_bounce` must tell hard bounces from soft bounces. It must call `message.mark_failed()` at once on a hard bounce.\n\n**Why the retry change cannot wait.** With the current values, `handle_bounce` can send 12 retries in 12 minutes to one recipient. `smtp-mx-2` blocks the sender for 24 hours after more than 5 bounces in one hour. Without the change, one bad mailbox could stop all invoices.\n\nThe DNS side needs no change. `mail.larkspur.io` already carries an SPF record for `smtp-mx-2`.",
+  "ttft_ms": 1425,
+  "type": "result",
+  "duration_ms": 11648,
+  "uuid": "b6c0f043-23e5-48f1-ae06-f7ac6f37dc4b",
+  "ttft_stream_ms": 1090,
+  "time_to_request_ms": 361,
+  "first_content_frame_ms": 1090,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

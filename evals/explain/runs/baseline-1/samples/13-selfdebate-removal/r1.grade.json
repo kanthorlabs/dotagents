@@ -1,0 +1,172 @@
+{
+  "key": "08156c2c156ba9ef53d093b32081a7cbacc0436b39159989964de5bbe3f865f5",
+  "cost_usd": 0.036836,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends moving the codes into `partner_refs` and then dropping the column.\" Matches the mapping-table recommendation in the key."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`COALESCE(p.legacy_sku, p.sku) AS partner_ref`\"; \"6,140 products imported on 12 March 2024\"; Postgres refuses or CASCADE drops the view. All match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Reader follow_up_questions is empty. The message covers who uses it, why it exists, what breaks and what makes removal safe."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"`v_partner_feed`... reads it... Oakline Supply, which still keys its catalog on the Brightstock codes.\" Problem, breaks, fix and cost all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Does `legacy_sku` move into `partner_refs` before the drop, or does it stay with a comment until Oakline Supply rekeys?\" One decision, matches closing_decision. The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: keep the column and mark it... becomes the primary if Oakline Supply is expected to rekey to the new `sku` soon.\" This is the keep option from the key, with trade-off and condition stated."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8154,
+    "stop_reason": "tool_use",
+    "session_id": "6b280ca7-1a25-4139-9baa-eb51ea4cec0f",
+    "total_cost_usd": 0.036836,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6369,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1117,
+      "output_tokens_details": {
+        "thinking_tokens": 564
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6369,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1117,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6369,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6369
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1117,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6369,
+        "webSearchRequests": 0,
+        "costUSD": 0.036836,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 564,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6369,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends moving the codes into `partner_refs` and then dropping the column.\\\" Matches the mapping-table recommendation in the key.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`COALESCE(p.legacy_sku, p.sku) AS partner_ref`\\\"; \\\"6,140 products imported on 12 March 2024\\\"; Postgres refuses or CASCADE drops the view. All match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Reader follow_up_questions is empty. The message covers who uses it, why it exists, what breaks and what makes removal safe.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"`v_partner_feed`... reads it... Oakline Supply, which still keys its catalog on the Brightstock codes.\\\" Problem, breaks, fix and cost all agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Does `legacy_sku` move into `partner_refs` before the drop, or does it stay with a comment until Oakline Supply rekeys?\\\" One decision, matches closing_decision. The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: keep the column and mark it... becomes the primary if Oakline Supply is expected to rekey to the new `sku` soon.\\\" This is the keep option from the key, with trade-off and condition stated.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends moving the codes into `partner_refs` and then dropping the column.\" Matches the mapping-table recommendation in the key."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`COALESCE(p.legacy_sku, p.sku) AS partner_ref`\"; \"6,140 products imported on 12 March 2024\"; Postgres refuses or CASCADE drops the view. All match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Reader follow_up_questions is empty. The message covers who uses it, why it exists, what breaks and what makes removal safe."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"`v_partner_feed`... reads it... Oakline Supply, which still keys its catalog on the Brightstock codes.\" Problem, breaks, fix and cost all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Does `legacy_sku` move into `partner_refs` before the drop, or does it stay with a comment until Oakline Supply rekeys?\" One decision, matches closing_decision. The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: keep the column and mark it... becomes the primary if Oakline Supply is expected to rekey to the new `sku` soon.\" This is the keep option from the key, with trade-off and condition stated."
+        }
+      ]
+    },
+    "ttft_ms": 5788,
+    "type": "result",
+    "duration_ms": 8623,
+    "uuid": "dafe35d7-338f-432f-b09b-cbd4829fa9a8",
+    "ttft_stream_ms": 1326,
+    "time_to_request_ms": 469,
+    "first_content_frame_ms": 1326,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

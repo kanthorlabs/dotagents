@@ -1,0 +1,172 @@
+{
+  "key": "167fb9d804486a06a417733726200b08c8ddf9a7e181c5ffde273d2addcde33e",
+  "cost_usd": 0.038348,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends moving the export to the `documents` queue of `taskq` and emailing a signed link\" matches the key's async taskq job with signed link."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"idle_timeout_seconds is 30\", \"300-second request_timeout_seconds\", \"total_seconds=240\", \"900 exports\", \"12/12\" all match the key. The unverified note covers storage and taskq source details, not a listed fact."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message answers why the 504 happens, why a job beats streaming (\"holds a worker for minutes\", 300 s limit), and the emailed link. Reader gaps (client parsing, storage.put signature) are detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"builds the full CSV... in a StringIO before sending any byte... idle_timeout_seconds=30\"; fix is a queued job with emailed signed link; cost is a changed contract. This matches the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "One closing question: \"Does `export_invoices` become a queued job with an emailed link, or does it stream...?\" Reader gave a real answer: queued export."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: stream the CSV from the handler.\" It states the trade-off (\"still holds a worker for minutes\") and the condition (\"primary if clients must get the file in the response\")."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10501,
+    "stop_reason": "tool_use",
+    "session_id": "9b2d2a54-edff-4267-af4a-13acf979e4d9",
+    "total_cost_usd": 0.038348,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6042,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1399,
+      "output_tokens_details": {
+        "thinking_tokens": 819
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6042,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1399,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6042,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6042
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1399,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6042,
+        "webSearchRequests": 0,
+        "costUSD": 0.038348,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 819,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6042,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends moving the export to the `documents` queue of `taskq` and emailing a signed link\\\" matches the key's async taskq job with signed link.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"idle_timeout_seconds is 30\\\", \\\"300-second request_timeout_seconds\\\", \\\"total_seconds=240\\\", \\\"900 exports\\\", \\\"12/12\\\" all match the key. The unverified note covers storage and taskq source details, not a listed fact.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message answers why the 504 happens, why a job beats streaming (\\\"holds a worker for minutes\\\", 300 s limit), and the emailed link. Reader gaps (client parsing, storage.put signature) are detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"builds the full CSV... in a StringIO before sending any byte... idle_timeout_seconds=30\\\"; fix is a queued job with emailed signed link; cost is a changed contract. This matches the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"One closing question: \\\"Does `export_invoices` become a queued job with an emailed link, or does it stream...?\\\" Reader gave a real answer: queued export.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: stream the CSV from the handler.\\\" It states the trade-off (\\\"still holds a worker for minutes\\\") and the condition (\\\"primary if clients must get the file in the response\\\").\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends moving the export to the `documents` queue of `taskq` and emailing a signed link\" matches the key's async taskq job with signed link."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"idle_timeout_seconds is 30\", \"300-second request_timeout_seconds\", \"total_seconds=240\", \"900 exports\", \"12/12\" all match the key. The unverified note covers storage and taskq source details, not a listed fact."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message answers why the 504 happens, why a job beats streaming (\"holds a worker for minutes\", 300 s limit), and the emailed link. Reader gaps (client parsing, storage.put signature) are detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"builds the full CSV... in a StringIO before sending any byte... idle_timeout_seconds=30\"; fix is a queued job with emailed signed link; cost is a changed contract. This matches the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "One closing question: \"Does `export_invoices` become a queued job with an emailed link, or does it stream...?\" Reader gave a real answer: queued export."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: stream the CSV from the handler.\" It states the trade-off (\"still holds a worker for minutes\") and the condition (\"primary if clients must get the file in the response\")."
+        }
+      ]
+    },
+    "ttft_ms": 7588,
+    "type": "result",
+    "duration_ms": 11020,
+    "uuid": "53cdc05e-cac1-474d-815c-a3edfb7afbeb",
+    "ttft_stream_ms": 1487,
+    "time_to_request_ms": 517,
+    "first_content_frame_ms": 1487,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

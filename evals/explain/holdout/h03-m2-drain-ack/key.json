@@ -1,0 +1,99 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Ack each message only after handle finishes (auto_ack off, basic_ack after the job ends), and raise terminationGracePeriodSeconds above the longest job, for example 90 s, with the drain shorter than the grace period.",
+    "Raise terminationGracePeriodSeconds above the longest job now, and move to late ack once the double usage risk on redelivery is settled."
+  ],
+  "invalid_options": [
+    "Change nothing, or re-run lost thumbnails by hand after each deploy.",
+    "Lower LANTERN_DRAIN_SECONDS.",
+    "Add retries inside handle."
+  ],
+  "root_cause": "consume.py uses auto_ack=True, so RabbitMQ deletes each message on delivery. On a deploy the worker drains for up to 60 s, but Kubernetes kills the pod 20 s after SIGTERM. Video jobs take 25 to 70 s, so running and queued jobs die with the pod, and the broker holds no unacked copy to redeliver.",
+  "dependent_facts": [
+    {
+      "fact": "Ack mode",
+      "true_value": "basic_consume with auto_ack=True; the message is gone at delivery",
+      "source": "worker/consume.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Drain time",
+      "true_value": "LANTERN_DRAIN_SECONDS defaults to 60 and values-prod.yaml does not set it",
+      "source": "worker/settings.py and deploy/helm/values-prod.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Grace period",
+      "true_value": "terminationGracePeriodSeconds 20",
+      "source": "deploy/helm/values-prod.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Job durations",
+      "true_value": "images 1 to 3 s, videos 25 to 70 s",
+      "source": "docs/thumbnails.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Lost jobs in the 27 October log",
+      "true_value": "SIGTERM 14:02:10, SIGKILL 14:02:30; u-88217, u-88218, u-88219 and u-88221 started and never finished on lantern-worker-7f9c-2",
+      "source": "logs/worker-2026-10-27-deploy.log",
+      "verifiable": true
+    },
+    {
+      "fact": "Side effects of a job",
+      "true_value": "put_thumbnail overwrites thumbs/<upload_id>.webp; record_usage posts one usage unit to meter.internal with no idempotency key",
+      "source": "worker/handler.py, worker/storage.py and billing/client.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Deduplication in meter.internal",
+      "true_value": "unknown; no file states whether meter.internal deduplicates usage events by ref",
+      "source": "none; docs/billing.md says its code is not in the repository",
+      "verifiable": false
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why do the jobs vanish?",
+      "expected_answer": "auto_ack removes the message at delivery, and the pod is killed 20 s after SIGTERM while video jobs take 25 to 70 s."
+    },
+    {
+      "question": "Why is there no error?",
+      "expected_answer": "SIGKILL ends the process before the job logs anything, the broker has no unacked copy, and the upload page shows only a placeholder."
+    },
+    {
+      "question": "What can break with late ack?",
+      "expected_answer": "A killed job is redelivered and runs again. The thumbnail write is safe, but record_usage posts a second usage unit; whether meter.internal deduplicates is unknown."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Only raise terminationGracePeriodSeconds above the longest job and keep auto_ack",
+      "trade_off": "A config-only change that stops the loss on deploys, but jobs still vanish on a crash, an OOM kill or a node loss.",
+      "primary_when": "The team wants a config-only change now, or until the meter deduplication is known.",
+      "must_list": false
+    },
+    {
+      "option": "A sweeper job that republishes the thumbnail job for uploads without a thumbnail after some minutes",
+      "trade_off": "Recovers every lost job whatever the cause, but the thumbnail arrives minutes late and it adds a new job; the deploy loss stays.",
+      "primary_when": "The team wants a safety net for every loss path, in addition to or before the ack change.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve late ack with the longer grace period, or a single follow-up such as how to handle the possible double usage unit.",
+  "understanding": {
+    "problem": "A deploy kills workers while thumbnail jobs run, and the jobs were already acked at delivery.",
+    "breaks": "Running and queued thumbnail jobs vanish without an error, so uploads show no thumbnail.",
+    "fix": "Ack after the job ends and give the pod a grace period longer than the longest job.",
+    "cost": "A small change in consume.py and one value in values-prod.yaml; a redelivered job can record usage twice."
+  }
+}

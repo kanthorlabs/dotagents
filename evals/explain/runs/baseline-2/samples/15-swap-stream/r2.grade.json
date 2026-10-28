@@ -1,0 +1,172 @@
+{
+  "key": "f0fdf2f3ce9d2df58786896c940993e5f375da5537d84a22169f583f37c68bd7",
+  "cost_usd": 0.035750000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends streaming the CSV in batches so bytes flow from the first second.\" This matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`idle_timeout_seconds: 30`\", \"412880 rows in 12 seconds\", \"until 89 seconds\", \"gunicorn `timeout = 120`\" all match the key. Unverified items are not dependent facts."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Explains the silent gap behind the 504, why a job needs a queue and email the stack lacks, and the 120 s risk (\"killed mid-stream\"). Reader's follow-ups are answered or are detail."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"loads all tenant rows... builds the whole CSV in a StringIO... edge-lb has idle_timeout_seconds: 30\"; fix is a streaming Response. This matches the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "One closing question: \"Should I implement streaming... or do you prefer one of the alternatives?\" Reader answered: \"Yes. Implement streaming in `export_contacts`\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "Both the idle-timeout raise and the background job are listed with trade-offs and primary conditions: \"primary only if streaming cannot be shipped soon\"."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9438,
+    "stop_reason": "tool_use",
+    "session_id": "32c23213-8253-4571-a230-27e131f6bad5",
+    "total_cost_usd": 0.035750000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5850,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1216,
+      "output_tokens_details": {
+        "thinking_tokens": 666
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5850,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1216,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5850,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5850
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1216,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5850,
+        "webSearchRequests": 0,
+        "costUSD": 0.035750000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 666,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5850,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends streaming the CSV in batches so bytes flow from the first second.\\\" This matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`idle_timeout_seconds: 30`\\\", \\\"412880 rows in 12 seconds\\\", \\\"until 89 seconds\\\", \\\"gunicorn `timeout = 120`\\\" all match the key. Unverified items are not dependent facts.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Explains the silent gap behind the 504, why a job needs a queue and email the stack lacks, and the 120 s risk (\\\"killed mid-stream\\\"). Reader's follow-ups are answered or are detail.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"loads all tenant rows... builds the whole CSV in a StringIO... edge-lb has idle_timeout_seconds: 30\\\"; fix is a streaming Response. This matches the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"One closing question: \\\"Should I implement streaming... or do you prefer one of the alternatives?\\\" Reader answered: \\\"Yes. Implement streaming in `export_contacts`\\\".\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"Both the idle-timeout raise and the background job are listed with trade-offs and primary conditions: \\\"primary only if streaming cannot be shipped soon\\\".\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends streaming the CSV in batches so bytes flow from the first second.\" This matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`idle_timeout_seconds: 30`\", \"412880 rows in 12 seconds\", \"until 89 seconds\", \"gunicorn `timeout = 120`\" all match the key. Unverified items are not dependent facts."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Explains the silent gap behind the 504, why a job needs a queue and email the stack lacks, and the 120 s risk (\"killed mid-stream\"). Reader's follow-ups are answered or are detail."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"loads all tenant rows... builds the whole CSV in a StringIO... edge-lb has idle_timeout_seconds: 30\"; fix is a streaming Response. This matches the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "One closing question: \"Should I implement streaming... or do you prefer one of the alternatives?\" Reader answered: \"Yes. Implement streaming in `export_contacts`\"."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "Both the idle-timeout raise and the background job are listed with trade-offs and primary conditions: \"primary only if streaming cannot be shipped soon\"."
+        }
+      ]
+    },
+    "ttft_ms": 6726,
+    "type": "result",
+    "duration_ms": 9997,
+    "uuid": "1dc8cd94-578a-4756-badd-05cfcc4bd589",
+    "ttft_stream_ms": 1390,
+    "time_to_request_ms": 559,
+    "first_content_frame_ms": 1390,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "mode": "Ruling acknowledgement. No open item remains after the ruling.",
+  "common": [
+    "style"
+  ],
+  "checks": [
+    {
+      "name": "ruling-first",
+      "kind": "mechanical",
+      "rule": "R07",
+      "fn": "first_block_regex",
+      "args": {
+        "pattern": "14 November"
+      },
+      "criterion": "The first block of the message names 14 November."
+    },
+    {
+      "name": "no-question",
+      "kind": "mechanical",
+      "rule": "R41",
+      "fn": "no_question",
+      "criterion": "The message asks no question."
+    },
+    {
+      "name": "short",
+      "kind": "mechanical",
+      "rule": "R09",
+      "fn": "word_max",
+      "args": {
+        "n": 150
+      },
+      "criterion": "The message holds at most 150 words, because it stops after the ruling."
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+MAILTO=ops@brightpost.io
+15 2 * * * /srv/brightpost/bin/rotate-logs
+0 6 * * 1 cd /srv/brightpost && /srv/brightpost/venv/bin/python -m jobs.digest_builder

@@ -1,0 +1,22 @@
+{
+  "mode": "Proposal explanation with no bug. The ruling needs the predictable questions answered.",
+  "common": ["style", "explanation", "fix"],
+  "checks": [
+    {
+      "name": "names-self",
+      "kind": "mechanical",
+      "rule": "R22",
+      "fn": "regex_present",
+      "args": {"pattern": "\\bAelita (recommends|proposes|prefers|suggests)"},
+      "criterion": "The recommendation names Aelita as the recommender."
+    },
+    {
+      "name": "names-writes",
+      "kind": "mechanical",
+      "rule": "R35",
+      "fn": "regex_present",
+      "args": {"pattern": "report_runs"},
+      "criterion": "The message names report_runs, the write that stays on the primary."
+    }
+  ]
+}

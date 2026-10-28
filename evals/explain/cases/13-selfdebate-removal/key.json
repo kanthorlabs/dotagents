@@ -1,0 +1,103 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Do not drop legacy_sku now. Keep it while v_partner_feed and Oakline Supply depend on the Brightstock code.",
+    "Drop legacy_sku only after the Brightstock code moves elsewhere, for example a partner mapping table that v_partner_feed reads, or after Oakline Supply moves to the new sku."
+  ],
+  "invalid_options": [
+    "Drop the column now.",
+    "Drop the column with CASCADE.",
+    "Drop the column and change v_partner_feed to p.sku without Oakline Supply."
+  ],
+  "root_cause": "legacy_sku holds the Brightstock item code for 6,140 products from the 2024 migration. v_partner_feed reads it as partner_ref, and Oakline Supply keys its catalog on that code.",
+  "dependent_facts": [
+    {
+      "fact": "Writer",
+      "true_value": "importers/brightstock_import.py wrote legacy_sku once on 12 March 2024",
+      "source": "importers/brightstock_import.py and docs/history/2024-brightstock-migration.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Reader",
+      "true_value": "v_partner_feed uses COALESCE(p.legacy_sku, p.sku) AS partner_ref",
+      "source": "db/views.sql",
+      "verifiable": true
+    },
+    {
+      "fact": "Consumer",
+      "true_value": "partner_feed_export sends v_partner_feed nightly to Oakline Supply over SFTP",
+      "source": "jobs/partner_feed_export.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Why it exists",
+      "true_value": "Oakline Supply keys its catalog on the Brightstock code",
+      "source": "docs/history/2024-brightstock-migration.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Affected rows",
+      "true_value": "6,140 migrated products; later products have no legacy_sku",
+      "source": "docs/history/2024-brightstock-migration.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Drop behaviour",
+      "true_value": "PostgreSQL refuses to drop a column that a view depends on, or CASCADE drops the view",
+      "source": "db/views.sql",
+      "verifiable": true
+    },
+    {
+      "fact": "src usage",
+      "true_value": "nothing in src/ reads legacy_sku",
+      "source": "src/catalog/product.py",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Does anything use legacy_sku?",
+      "expected_answer": "Yes: v_partner_feed, and through it the nightly feed to Oakline Supply."
+    },
+    {
+      "question": "Why does it exist?",
+      "expected_answer": "It keeps the Brightstock code that Oakline Supply keys on."
+    },
+    {
+      "question": "What breaks if we drop it?",
+      "expected_answer": "The drop fails on the view, or CASCADE drops the view and the export breaks; changing the view changes partner_ref for 6,140 products at Oakline Supply."
+    },
+    {
+      "question": "What would make the removal safe?",
+      "expected_answer": "Move the code to a mapping table, or migrate Oakline Supply to the new sku first."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Move the Brightstock code into a partner mapping table that v_partner_feed reads, then drop legacy_sku",
+      "trade_off": "Cleans the products table without breaking Oakline Supply, but adds a table and a view change.",
+      "primary_when": "The products table must lose the column soon.",
+      "must_list": false
+    },
+    {
+      "option": "Ask Oakline Supply to migrate to the new sku, then drop the column",
+      "trade_off": "Removes the legacy code entirely, but depends on the partner and a coordinated date.",
+      "primary_when": "Oakline Supply agrees to switch.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: keep legacy_sku, or choose the path that makes its removal safe.",
+  "understanding": {
+    "problem": "The removal of legacy_sku looks safe from src/, but the column still feeds the Oakline Supply partner feed.",
+    "breaks": "Dropping it fails on v_partner_feed or breaks the Oakline Supply feed for 6,140 products.",
+    "fix": "Keep the column for now, or move the code elsewhere before the drop.",
+    "cost": "Keeping costs nothing; a safe removal needs a mapping table or partner coordination."
+  }
+}

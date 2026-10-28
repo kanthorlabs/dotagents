@@ -1,0 +1,32 @@
+{
+  "mode": "Restatement check. The restatement has two correct parts and one wrong part.",
+  "common": [
+    "style"
+  ],
+  "checks": [
+    {
+      "name": "opens-with-list",
+      "kind": "mechanical",
+      "rule": "R04",
+      "fn": "first_line_bullet",
+      "criterion": "The first non-empty line of the message is a bullet."
+    },
+    {
+      "name": "list-covers-parts",
+      "kind": "mechanical",
+      "rule": "R04",
+      "fn": "first_list_min_items",
+      "args": {
+        "n": 3
+      },
+      "criterion": "The opening bulleted list holds at least three items."
+    },
+    {
+      "name": "close-last",
+      "kind": "mechanical",
+      "rule": "R17",
+      "fn": "close_last",
+      "criterion": "The last block is a labeled close and nothing follows it."
+    }
+  ]
+}

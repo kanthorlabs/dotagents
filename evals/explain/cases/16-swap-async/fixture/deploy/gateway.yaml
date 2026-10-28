@@ -1,0 +1,4 @@
+name: gw-billing
+upstream: tallyhall-web
+idle_timeout_seconds: 30
+request_timeout_seconds: 300

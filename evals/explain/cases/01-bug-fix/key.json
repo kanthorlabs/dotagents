@@ -1,0 +1,94 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Add a unique tie-breaker to the sort in list_orders: ORDER BY created_at DESC, id DESC.",
+    "Move GET /orders to keyset pagination on (created_at, id)."
+  ],
+  "invalid_options": [
+    "Change nothing.",
+    "Deduplicate rows in the client or in the export file.",
+    "Raise the page size.",
+    "Give each order of a Tidewater batch a distinct created_at, without a tie-breaker in the sort."
+  ],
+  "root_cause": "list_orders sorts only by created_at, and import_tidewater_batch gives a whole batch the same created_at. PostgreSQL returns tied rows in no stable order, so separate OFFSET queries split a tie group differently and rows repeat or vanish across pages.",
+  "dependent_facts": [
+    {
+      "fact": "Sort of list_orders",
+      "true_value": "ORDER BY created_at DESC with LIMIT 50 OFFSET (page-1)*50, no tie-breaker",
+      "source": "src/orders/list_orders.py",
+      "verifiable": true
+    },
+    {
+      "fact": "created_at of Tidewater orders",
+      "true_value": "every order of one batch gets the same batch_time",
+      "source": "src/orders/bulk_import.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Batch size",
+      "true_value": "about 200 orders per Tidewater batch",
+      "source": "tickets/HO-212.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Orders created during the export",
+      "true_value": "none, so concurrent inserts do not explain HO-212",
+      "source": "tickets/HO-212.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Unique column for a tie-breaker",
+      "true_value": "id, bigserial primary key",
+      "source": "docs/api.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Symptom",
+      "true_value": "9 duplicate ids and 9 missing ids out of 1,214",
+      "source": "tickets/HO-212.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why do rows repeat and vanish?",
+      "expected_answer": "Ties on created_at from the Tidewater batches have no stable order across page queries."
+    },
+    {
+      "question": "What exactly changes?",
+      "expected_answer": "The ORDER BY clause in list_orders gains id as a tie-breaker, or the endpoint moves to keyset pagination."
+    },
+    {
+      "question": "Does the API contract change?",
+      "expected_answer": "Not for the tie-breaker. Keyset pagination changes the page parameter to a cursor."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Keyset pagination on (created_at, id)",
+      "trade_off": "Also survives inserts during an export and avoids slow large offsets, but changes the API contract from page numbers to a cursor.",
+      "primary_when": "Exports run while orders are created, or clients can adopt a cursor.",
+      "must_list": false
+    },
+    {
+      "option": "Tie-breaker id in ORDER BY",
+      "trade_off": "One-line change that keeps the page API, but rows can still shift when orders are inserted during an export.",
+      "primary_when": "The page-number API must stay unchanged.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision about the pagination fix: approve the recommended fix, or choose between the tie-breaker and keyset pagination, or decide a single follow-up for the fix such as a re-export for Brennan Hardware.",
+  "understanding": {
+    "problem": "Paged export of orders repeats and drops orders because the sort has ties on created_at.",
+    "breaks": "Brennan Hardware export holds 9 duplicates and misses 9 orders.",
+    "fix": "Add a unique tie-breaker id to the sort, or use keyset pagination.",
+    "cost": "A one-line query change, or an API contract change for keyset."
+  }
+}

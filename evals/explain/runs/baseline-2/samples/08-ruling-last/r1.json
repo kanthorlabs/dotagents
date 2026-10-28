@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 11411,
+  "stop_reason": "end_turn",
+  "session_id": "b020bd65-617b-46bd-a1ae-973859f0ec55",
+  "total_cost_usd": 0.0267142,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2410,
+    "cache_read_input_tokens": 24122,
+    "output_tokens": 1465,
+    "output_tokens_details": {
+      "thinking_tokens": 571
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2410,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 928,
+        "cache_read_input_tokens": 8529,
+        "cache_creation_input_tokens": 1149,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1149
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1465,
+      "cacheReadInputTokens": 24122,
+      "cacheCreationInputTokens": 2410,
+      "webSearchRequests": 0,
+      "costUSD": 0.0267142,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 571,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2410,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling 3 recorded.** The project has no decision register or handoff file, so I quote it here: \"`invoice-mailer` switches `SMTP_RELAY` to `smtp-mx-2` on 14 November.\"\n\n**Check.** 14 November is 16 days before `smtp-old-1` goes offline on 30 November, so the 30 November month-end run uses `smtp-mx-2`. It is also after today, 28 October, so it is a future date.\n\n**Open items.** None remain. The three rulings are:\n\n1. Sender is `invoices@mail.larkspur.io`.\n2. A soft bounce retries at most 3 times per hour, and a hard bounce never retries.\n3. The relay switches on 14 November.\n\n**Next step.** Aelita edits `mailer/config.py` and `mailer/bounces.py` to apply all three rulings. The edits are:\n\n- Set `FROM_ADDRESS` to `invoices@mail.larkspur.io`.\n- Set `SMTP_RELAY` to `smtp-mx-2.larkspur.internal`.\n- Replace the current 12 retries per 60 seconds with the 3 per hour limit.\n- Classify hard and soft bounces in `handle_bounce`.\n\nThe relay value is deployed on 14 November.",
+  "ttft_ms": 1373,
+  "type": "result",
+  "duration_ms": 11782,
+  "uuid": "8d3299e1-76ff-4ee3-b8ab-9f7f724855f5",
+  "ttft_stream_ms": 1016,
+  "time_to_request_ms": 311,
+  "first_content_frame_ms": 1016,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

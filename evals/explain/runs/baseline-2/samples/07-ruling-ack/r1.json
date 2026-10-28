@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 29687,
+  "stop_reason": "end_turn",
+  "session_id": "a209bfb9-86ac-49b6-841d-f9351be684f7",
+  "total_cost_usd": 0.0507774,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2411,
+    "cache_read_input_tokens": 24114,
+    "output_tokens": 3871,
+    "output_tokens_details": {
+      "thinking_tokens": 2361
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2411,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3328,
+        "cache_read_input_tokens": 8524,
+        "cache_creation_input_tokens": 1155,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1155
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 3871,
+      "cacheReadInputTokens": 24114,
+      "cacheCreationInputTokens": 2411,
+      "webSearchRequests": 0,
+      "costUSD": 0.0507774,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2361,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2411,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Ruling recorded.** Project has no decision register or handoff file, so quoting it here: \"`invoice-mailer` sends from `invoices@mail.larkspur.io`, not `billing@larkspur.io`.\" `FROM_ADDRESS` in `mailer/config.py` still holds the old value. It changes when the move is implemented.\n\nThe retry limit is the next open item. `BOUNCE_RETRY_LIMIT = 12` exceeds the `smtp-mx-2` bounce limit, so one bad mailbox blocks every invoice for 24 hours. Aelita recommends failing hard bounces at once and capping soft retries at 4. The cutover date for `smtp-old-1` follows after your answer.\n\n**Timeline without the fix**\n\n1. Larkspur sends INV-2207 to a mistyped mailbox for Oskar Brandt. `smtp-mx-2` reports a hard bounce.\n2. `handle_bounce` cannot tell hard from soft. It waits 60 seconds and resends.\n3. The mailbox still does not exist. Bounces 2 to 5 arrive, one per minute.\n4. The sixth bounce arrives about 5 minutes in. `smtp-mx-2` blocks `invoices@mail.larkspur.io` for 24 hours.\n5. `handle_bounce` keeps retrying until attempt 12, then calls `mark_failed`.\n6. Larkspur cannot send any invoice to any customer for 24 hours. One bad mailbox stops all billing.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `handle_bounce` sees a hard bounce. It calls `mark_failed` at once and sends nothing more.\n3. `smtp-mx-2` counts one bounce for that mailbox. The sender stays unblocked and other invoices go out.\n\n**What changes**\n\n- `mailer/bounces.py` `handle_bounce`: add a check at the top. A hard bounce calls `message.mark_failed()` and returns. Soft bounces keep the current retry path.\n- `mailer/config.py` `BOUNCE_RETRY_LIMIT`: old value 12, new value 4. This keeps one recipient at 5 bounces or fewer per hour, whether `attempt` starts at 0 or 1.\n\n**Recommendation.** Aelita recommends both edits. The hard-bounce check removes the cause, because retrying a missing mailbox never works. The lower limit protects soft bounces from the 5-per-hour rule. The cost is that `handle_bounce` needs the bounce type. No file in this repo calls `handle_bounce`, so I cannot see where that type would come from.\n\n**Alternative: lower the limit only.** Set `BOUNCE_RETRY_LIMIT = 4` and add no classification. It needs no bounce type and is a one-line change. A missing mailbox still uses 4 or 5 bounces before it fails. It becomes the primary when the caller cannot pass the bounce type to `handle_bounce`.\n\n**Question.** Do you approve failing hard bounces at once with a soft-retry limit of 4, or only the lower limit of 4?",
+  "ttft_ms": 2690,
+  "type": "result",
+  "duration_ms": 30357,
+  "uuid": "e93a2c94-5ff3-476f-a1b2-abb647ddd7ef",
+  "ttft_stream_ms": 1970,
+  "time_to_request_ms": 604,
+  "first_content_frame_ms": 1970,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

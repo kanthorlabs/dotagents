@@ -1,0 +1,172 @@
+{
+  "key": "11c044ec246904d54f72020f3e8b5efd0c725207c7e5963603145af78d2a626a",
+  "cost_usd": 0.040372000000000005,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends limit 4.\" Lowering BOUNCE_RETRY_LIMIT so a recipient has at most 5 bounces per hour matches the key's first correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`BOUNCE_RETRY_LIMIT = 12`\", \"sleeps 60 seconds\", \"blocks the sender for 24 hours, because one recipient bounced more than 5 times in one hour\". These match the key, and none is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Reader: \"I will not rule until I know how often one recipient gets several invoices per hour.\" The message does not answer this, and the reader needs it to choose between the two options."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"BOUNCE_RETRY_LIMIT = 12... smtp-mx-2 blocks a sender for 24 hours if one recipient bounces more than 5 times in one hour.\" Fix and cost also match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "Reader closing_answer: \"I will not rule until I know how often one recipient gets several invoices per hour.\" It is a conditional hold, not a real answer, even though the question holds one decision."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: classify hard and soft bounces.\" It states the trade-off (\"needs new code\") and the primary condition (\"if recipients with dead mailboxes get several invoices per hour\"). It matches a valid alternative."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 11570,
+    "stop_reason": "tool_use",
+    "session_id": "f6ff5fe0-db37-44ff-949f-c6110171d02a",
+    "total_cost_usd": 0.040372000000000005,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6283,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1505,
+      "output_tokens_details": {
+        "thinking_tokens": 900
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6283,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1505,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6283,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6283
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1505,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6283,
+        "webSearchRequests": 0,
+        "costUSD": 0.040372000000000005,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 900,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6283,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends limit 4.\\\" Lowering BOUNCE_RETRY_LIMIT so a recipient has at most 5 bounces per hour matches the key's first correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`BOUNCE_RETRY_LIMIT = 12`\\\", \\\"sleeps 60 seconds\\\", \\\"blocks the sender for 24 hours, because one recipient bounced more than 5 times in one hour\\\". These match the key, and none is deferred.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Reader: \\\"I will not rule until I know how often one recipient gets several invoices per hour.\\\" The message does not answer this, and the reader needs it to choose between the two options.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"BOUNCE_RETRY_LIMIT = 12... smtp-mx-2 blocks a sender for 24 hours if one recipient bounces more than 5 times in one hour.\\\" Fix and cost also match the key.\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"Reader closing_answer: \\\"I will not rule until I know how often one recipient gets several invoices per hour.\\\" It is a conditional hold, not a real answer, even though the question holds one decision.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: classify hard and soft bounces.\\\" It states the trade-off (\\\"needs new code\\\") and the primary condition (\\\"if recipients with dead mailboxes get several invoices per hour\\\"). It matches a valid alternative.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends limit 4.\" Lowering BOUNCE_RETRY_LIMIT so a recipient has at most 5 bounces per hour matches the key's first correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`BOUNCE_RETRY_LIMIT = 12`\", \"sleeps 60 seconds\", \"blocks the sender for 24 hours, because one recipient bounced more than 5 times in one hour\". These match the key, and none is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Reader: \"I will not rule until I know how often one recipient gets several invoices per hour.\" The message does not answer this, and the reader needs it to choose between the two options."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"BOUNCE_RETRY_LIMIT = 12... smtp-mx-2 blocks a sender for 24 hours if one recipient bounces more than 5 times in one hour.\" Fix and cost also match the key."
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "Reader closing_answer: \"I will not rule until I know how often one recipient gets several invoices per hour.\" It is a conditional hold, not a real answer, even though the question holds one decision."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: classify hard and soft bounces.\" It states the trade-off (\"needs new code\") and the primary condition (\"if recipients with dead mailboxes get several invoices per hour\"). It matches a valid alternative."
+        }
+      ]
+    },
+    "ttft_ms": 9191,
+    "type": "result",
+    "duration_ms": 11966,
+    "uuid": "4d3c6562-b25e-4a46-9f0a-64eaeab81240",
+    "ttft_stream_ms": 1668,
+    "time_to_request_ms": 409,
+    "first_content_frame_ms": 1668,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

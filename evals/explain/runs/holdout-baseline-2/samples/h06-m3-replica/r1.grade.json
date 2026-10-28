@@ -1,0 +1,172 @@
+{
+  "key": "382ce9ec1ea0f57151a2bc2cdea3401d0ab34fea0927b96d9bcf1f6d4cdea1b6",
+  "cost_usd": 0.036452,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the split.\" Reads on the replica, one primary write for record_run, and the temp table rewritten as a CTE match the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Replication lag is p99 2 seconds... lag cannot change the report.\" Temp table, record_run insert, hot standby rejection, 88%/1,900 ms and secrets all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Why move, current flow, breakage on the replica, unchanged report content and exact changes are all answered. The reader listed no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Open a replica connection for the two queries and a primary connection only for the record_run insert.\" Problem, breaks, fix and cost all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the split... or do you prefer the off-peak schedule on the primary?\" It is one question on one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: stay on the primary and move the schedule... still loads the primary for 22 minutes... becomes the primary option if you do not want the job to depend on the replica.\" It states the trade-off and a condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8856,
+    "stop_reason": "tool_use",
+    "session_id": "675fde2c-37e1-47e8-8365-69849e02f79a",
+    "total_cost_usd": 0.036452,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6123,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1177,
+      "output_tokens_details": {
+        "thinking_tokens": 660
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6123,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1177,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6123,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6123
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1177,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6123,
+        "webSearchRequests": 0,
+        "costUSD": 0.036452,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 660,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6123,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the split.\\\" Reads on the replica, one primary write for record_run, and the temp table rewritten as a CTE match the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Replication lag is p99 2 seconds... lag cannot change the report.\\\" Temp table, record_run insert, hot standby rejection, 88%/1,900 ms and secrets all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Why move, current flow, breakage on the replica, unchanged report content and exact changes are all answered. The reader listed no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Open a replica connection for the two queries and a primary connection only for the record_run insert.\\\" Problem, breaks, fix and cost all agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the split... or do you prefer the off-peak schedule on the primary?\\\" It is one question on one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: stay on the primary and move the schedule... still loads the primary for 22 minutes... becomes the primary option if you do not want the job to depend on the replica.\\\" It states the trade-off and a condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the split.\" Reads on the replica, one primary write for record_run, and the temp table rewritten as a CTE match the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Replication lag is p99 2 seconds... lag cannot change the report.\" Temp table, record_run insert, hot standby rejection, 88%/1,900 ms and secrets all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Why move, current flow, breakage on the replica, unchanged report content and exact changes are all answered. The reader listed no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Open a replica connection for the two queries and a primary connection only for the record_run insert.\" Problem, breaks, fix and cost all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the split... or do you prefer the off-peak schedule on the primary?\" It is one question on one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: stay on the primary and move the schedule... still loads the primary for 22 minutes... becomes the primary option if you do not want the job to depend on the replica.\" It states the trade-off and a condition."
+        }
+      ]
+    },
+    "ttft_ms": 6355,
+    "type": "result",
+    "duration_ms": 9339,
+    "uuid": "99ba76d0-9d81-4d52-a662-9af6f1cad2e3",
+    "ttft_stream_ms": 1300,
+    "time_to_request_ms": 480,
+    "first_content_frame_ms": 1300,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

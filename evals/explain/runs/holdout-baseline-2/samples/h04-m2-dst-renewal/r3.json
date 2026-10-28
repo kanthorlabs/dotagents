@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 31383,
+  "stop_reason": "end_turn",
+  "session_id": "ed13046f-fd7c-4565-9fff-4b5b63a48e3b",
+  "total_cost_usd": 0.063287,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 4779,
+    "cache_read_input_tokens": 35050,
+    "output_tokens": 4065,
+    "output_tokens_details": {
+      "thinking_tokens": 1369
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4779,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2569,
+        "cache_read_input_tokens": 11301,
+        "cache_creation_input_tokens": 1078,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1078
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 4065,
+      "cacheReadInputTokens": 35050,
+      "cacheCreationInputTokens": 4779,
+      "webSearchRequests": 0,
+      "costUSD": 0.063287,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1369,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4779,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 15,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`kestrel-billing` charged 212 subscribers twice because Berlin clocks went back on 25 October, so the 02:30 cron time happened twice. `charge_renewals` has no check for a subscription it already charged that day. Aelita recommends a guard inside the job, because it stops any double fire, not only this one.\n\n**Existing behaviour**\n\n1. `scheduler/clock.py` matches the cron string against local wall-clock time in `Europe/Berlin`.\n2. `last_fired` blocks a repeat only within `MIN_GAP_SECONDS = 60`.\n3. `billing/renewals.py` selects `renews_on <= today`. It calls `psp.charge`, then inserts a `renewal_charges` row with `settled = false`.\n4. `billing/settle.py` moves `renews_on` forward one month. It runs only at 05:00 local.\n\n**Timeline without the fix**\n\n1. At 00:30Z, local time is 02:30+0200. `charge_renewals` fires and charges 212 subscribers through `psp.charge`.\n2. At 00:45Z, `send_dunning` sends 41 emails.\n3. At 01:00Z, Berlin goes from 03:00 CEST back to 02:00 CET.\n4. At 01:30Z, local time is 02:30+0100. Cron `30 2 * * *` matches again. The last fire was 60 minutes ago, so the 60-second gap check passes.\n5. `charge_renewals` still finds the same 212 rows, because `renews_on` only moves at 05:00. It does not look at `renewal_charges`, so it charges all 212 again.\n6. At 01:45Z, `send_dunning` fires again and sends the same 41 emails.\n7. At 04:00Z, `settle_renewals` settles 424 rows, which is two per subscriber.\n8. 212 subscribers carry two identical charges dated 25 October.\n\n**Timeline with the fix**, diverges at step 5.\n\n5. `charge_renewals` tries to insert `(subscription_id, today)` for each subscription. All 212 inserts conflict with the rows from step 1, so it skips every charge and returns 0.\n6. `send_dunning` still sends 41 duplicate emails.\n7. `settle_renewals` settles 212 rows.\n8. Each subscriber pays once.\n\n**What changes**\n\n- `billing/renewals.py`: old behaviour is charge first, then insert. New behaviour is `INSERT ... ON CONFLICT DO NOTHING` first, and `psp.charge` only when the insert took effect.\n- `renewal_charges` table: add a unique index on `(subscription_id, charged_on)`. Check for existing duplicates before the migration. 25 October has 212 pairs.\n\n**Recommendation.** Aelita recommends the insert-first guard in `charge_renewals`. It makes the job safe on DST changes, scheduler restarts and manual reruns. It costs one migration. If the process dies between the insert and the charge, that subscriber is skipped until the next run. Whether Payrail accepts an idempotency key on `POST /v1/charges` is unverified, and nothing in the repo settles it. The Payrail docs would settle it, and a key would close that gap. This fix leaves the duplicate dunning emails in place.\n\n**Alternative: dedupe in the scheduler.** `scheduler/clock.py` skips a job that already fired for the same local date, or the scheduler runs jobs in UTC. This also fixes the dunning emails and needs no migration. It fails after a restart, because `last_fired` lives in memory. It becomes the primary if the duplicate emails matter more than the charge risk.\n\n**Question.** Should I implement the insert-first guard in `charge_renewals` with the unique index, or the scheduler-level dedupe? The unrecorded manual refunds from Monday 26 October are the next open item.",
+  "ttft_ms": 1428,
+  "type": "result",
+  "duration_ms": 31740,
+  "uuid": "5a372199-5d74-4f32-ba47-a007a875955a",
+  "ttft_stream_ms": 1040,
+  "time_to_request_ms": 332,
+  "first_content_frame_ms": 1040,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

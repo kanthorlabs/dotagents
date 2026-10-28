@@ -1,0 +1,152 @@
+{
+  "key": "681b4ad52cd8c7afc2cf0435772f0a9d55356fc563a2ee8aeb055f9646dd990c",
+  "cost_usd": 0.022196,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Schedule runs every 10 minutes: correct.\" and \"IDLE_LIMIT to 30 minutes\"; UTC-aware, timestamptz, touch_on_request false all match the key. Nothing deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Answers all three: schedule correct, 30-minute limit correct, \"Local time against UTC: wrong.\" with touch_on_request cause. Reader's follow-ups ask about cost, beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Set touch_on_request to true in production... The alternative is to move the touch into auth-service.\" Problem and breaks match the key; cost is n/a, so skipped."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do we turn on `touch_on_request` in production, which Aelita recommends, or move the touch into `auth-service`?\" Single question, one decision; reader gave a real answer."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3057,
+    "stop_reason": "tool_use",
+    "session_id": "12e6c0dd-d120-48dd-bdfd-4bab596dc22e",
+    "total_cost_usd": 0.022196,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4494,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 403,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4494,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 403,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4494,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4494
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 403,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4494,
+        "webSearchRequests": 0,
+        "costUSD": 0.022196,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4494,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Schedule runs every 10 minutes: correct.\\\" and \\\"IDLE_LIMIT to 30 minutes\\\"; UTC-aware, timestamptz, touch_on_request false all match the key. Nothing deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Answers all three: schedule correct, 30-minute limit correct, \\\"Local time against UTC: wrong.\\\" with touch_on_request cause. Reader's follow-ups ask about cost, beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Set touch_on_request to true in production... The alternative is to move the touch into auth-service.\\\" Problem and breaks match the key; cost is n/a, so skipped.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do we turn on `touch_on_request` in production, which Aelita recommends, or move the touch into `auth-service`?\\\" Single question, one decision; reader gave a real answer.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Schedule runs every 10 minutes: correct.\" and \"IDLE_LIMIT to 30 minutes\"; UTC-aware, timestamptz, touch_on_request false all match the key. Nothing deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Answers all three: schedule correct, 30-minute limit correct, \"Local time against UTC: wrong.\" with touch_on_request cause. Reader's follow-ups ask about cost, beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Set touch_on_request to true in production... The alternative is to move the touch into auth-service.\" Problem and breaks match the key; cost is n/a, so skipped."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do we turn on `touch_on_request` in production, which Aelita recommends, or move the touch into `auth-service`?\" Single question, one decision; reader gave a real answer."
+        }
+      ]
+    },
+    "ttft_ms": 3400,
+    "type": "result",
+    "duration_ms": 3413,
+    "uuid": "25e0bed7-60ff-4c4a-968a-13540fdfb1cf",
+    "ttft_stream_ms": 1271,
+    "time_to_request_ms": 356,
+    "first_content_frame_ms": 1271,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

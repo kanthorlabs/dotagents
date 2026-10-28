@@ -1,0 +1,172 @@
+{
+  "key": "f8206638b01a2b2ae3463697851c6753ed9669568beac09833c2ae9686d7d4c7",
+  "cost_usd": 0.03666,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends moving the reads to the replica and keeping one small write on the primary.\" Matches the split, with CTE and second connection."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"p99 is 2 seconds, and the job reports on yesterday's data at 01:00\"; 88% CPU, 340 to 1,900 ms; hot standby rejects CREATE TEMP TABLE. All match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message covers why (88% CPU, 1,900 ms), how it works now, the failure on a secret-only change, lag and PDF unchanged, and the exact changes. The reader lists no follow-ups."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader fix: \"Replace the temp table with a CTE... second connection to the primary only for the report_runs insert.\" Problem, breaks and cost agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the replica for reads with a primary connection for the report_runs insert, or do you prefer the reschedule?\" It is one decision and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"leave the job on the primary and reschedule it. It needs no code change. It costs the same 88% CPU spike... becomes the primary if checkout traffic is near zero.\" Valid, with trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8380,
+    "stop_reason": "tool_use",
+    "session_id": "40fe664f-e99e-4190-9f04-cb5de8ce3ba2",
+    "total_cost_usd": 0.03666,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6235,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1153,
+      "output_tokens_details": {
+        "thinking_tokens": 602
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6235,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1153,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6235,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6235
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1153,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6235,
+        "webSearchRequests": 0,
+        "costUSD": 0.03666,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 602,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6235,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends moving the reads to the replica and keeping one small write on the primary.\\\" Matches the split, with CTE and second connection.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"p99 is 2 seconds, and the job reports on yesterday's data at 01:00\\\"; 88% CPU, 340 to 1,900 ms; hot standby rejects CREATE TEMP TABLE. All match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message covers why (88% CPU, 1,900 ms), how it works now, the failure on a secret-only change, lag and PDF unchanged, and the exact changes. The reader lists no follow-ups.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader fix: \\\"Replace the temp table with a CTE... second connection to the primary only for the report_runs insert.\\\" Problem, breaks and cost agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the replica for reads with a primary connection for the report_runs insert, or do you prefer the reschedule?\\\" It is one decision and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"leave the job on the primary and reschedule it. It needs no code change. It costs the same 88% CPU spike... becomes the primary if checkout traffic is near zero.\\\" Valid, with trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends moving the reads to the replica and keeping one small write on the primary.\" Matches the split, with CTE and second connection."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"p99 is 2 seconds, and the job reports on yesterday's data at 01:00\"; 88% CPU, 340 to 1,900 ms; hot standby rejects CREATE TEMP TABLE. All match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message covers why (88% CPU, 1,900 ms), how it works now, the failure on a secret-only change, lag and PDF unchanged, and the exact changes. The reader lists no follow-ups."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader fix: \"Replace the temp table with a CTE... second connection to the primary only for the report_runs insert.\" Problem, breaks and cost agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the replica for reads with a primary connection for the report_runs insert, or do you prefer the reschedule?\" It is one decision and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"leave the job on the primary and reschedule it. It needs no code change. It costs the same 88% CPU spike... becomes the primary if checkout traffic is near zero.\" Valid, with trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 5752,
+    "type": "result",
+    "duration_ms": 8868,
+    "uuid": "9e3e496d-8226-40f7-a9d4-d1b8e09285b3",
+    "ttft_stream_ms": 1517,
+    "time_to_request_ms": 488,
+    "first_content_frame_ms": 1517,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

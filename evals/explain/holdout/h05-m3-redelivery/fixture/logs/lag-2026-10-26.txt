@@ -1,0 +1,5 @@
+consumer ingest, 26 October 2026
+
+- TransientError stalls: 17. Each stall held the consumer for 62 s, the full with_retries sequence.
+- Timescale failover 10:14:03 to 10:14:40: consumer lag peaked at 41,200 messages at 10:15:45 and returned to 0 at 10:31:10.
+- Normal throughput: about 1,100 readings per second.

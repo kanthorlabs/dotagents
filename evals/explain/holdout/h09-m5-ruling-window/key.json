@@ -1,0 +1,97 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Run the major upgrade on Sunday 8 November 2026 in the 02:00 to 05:00 UTC window, after the pg_partman 5.1 upgrade on 4 November and its two nightly runs on 5 and 6 November."
+  ],
+  "invalid_options": [
+    "Sunday 1 November, Saturday 31 October or any slot inside the month-end freeze.",
+    "Sunday 15 November or any date after 12 November, because AR-7 requires the upgrade before PostgreSQL 14 end of life.",
+    "Any window before Saturday 7 November 02:00 UTC, because pg_partman 5.1 has not completed two nightly runs by then.",
+    "A daytime window."
+  ],
+  "root_cause": "Not applicable. The open item is the maintenance window. pg_partman 5.1 is booked for 4 November 10:00 UTC and must complete two nightly runs at 03:30 UTC, on 5 and 6 November. The upgrade must finish before 12 November. Sunday 02:00 to 05:00 UTC has the lowest write traffic, so Sunday 8 November is the only Sunday that fits.",
+  "dependent_facts": [
+    {
+      "fact": "Ruling just made",
+      "true_value": "pg_partman goes to 5.1 on PostgreSQL 14 before the major upgrade",
+      "source": "prompt",
+      "verifiable": true
+    },
+    {
+      "fact": "Deadline",
+      "true_value": "PostgreSQL 14 end of life 12 November 2026; AR-7 requires the upgrade before then",
+      "source": "docs/upgrade-plan.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Freeze",
+      "true_value": "30 October 18:00 UTC to 4 November 09:00 UTC; no production database change, extension upgrades included",
+      "source": "docs/change-freeze.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Observation before the upgrade",
+      "true_value": "pg_partman 5.1 must complete two nightly runs at 03:30 UTC in production; step 1 is booked for 4 November 10:00 UTC, so the runs are on 5 and 6 November",
+      "source": "docs/upgrade-plan.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Downtime",
+      "true_value": "about 14 minutes for pg_upgrade --link, then about 38 minutes of online analyze with slow reports",
+      "source": "docs/upgrade-plan.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Traffic",
+      "true_value": "Sunday 02:00 to 05:00 UTC about 40 writes per second, Saturday about 95, Monday to Friday about 130",
+      "source": "docs/traffic.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Was my ruling recorded?",
+      "expected_answer": "Yes: pg_partman 5.1 on PostgreSQL 14 first."
+    },
+    {
+      "question": "What limits the window?",
+      "expected_answer": "pg_partman 5.1 goes in on 4 November after the freeze and needs runs on 5 and 6 November; the upgrade must finish before 12 November."
+    },
+    {
+      "question": "What does the window cost?",
+      "expected_answer": "About 14 minutes of downtime, then about 38 minutes of slow reports."
+    },
+    {
+      "question": "Is any item left after this one?",
+      "expected_answer": "No. The window is the last open item."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Saturday 7 November, 02:00 to 05:00 UTC",
+      "trade_off": "The earliest possible slot and it leaves Sunday 8 November as a fallback, but it runs at about 95 writes per second instead of 40.",
+      "primary_when": "The team wants a fallback date inside the weekend.",
+      "must_list": false
+    },
+    {
+      "option": "A weekday night between 9 and 11 November, 02:00 to 05:00 UTC",
+      "trade_off": "Leaves a fallback before 12 November, but runs at about 130 writes per second instead of 40.",
+      "primary_when": "Sunday 8 November is not possible, for example when the pg_partman runs fail.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: the maintenance window for the major upgrade, for example approve Sunday 8 November 02:00 UTC.",
+  "understanding": {
+    "problem": "The major upgrade needs a maintenance window.",
+    "breaks": "A window inside the freeze, before the two pg_partman 5.1 runs, or after 12 November breaks the freeze, the plan or AR-7.",
+    "fix": "Sunday 8 November 2026, 02:00 to 05:00 UTC.",
+    "cost": "About 14 minutes of downtime and about 38 minutes of slow reports, in a weekend night slot. Naming the weekend shift as the cost also matches."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "mode": "Uncertain diagnosis. A key fact is not available.",
+  "common": [
+    "style",
+    "explanation"
+  ],
+  "checks": [
+    {
+      "name": "has-failing-timeline",
+      "kind": "mechanical",
+      "rule": "R13",
+      "fn": "label_present",
+      "args": {
+        "pattern": "^timeline without"
+      },
+      "criterion": "A section labeled Timeline without the fix exists."
+    },
+    {
+      "name": "no-fixed-timeline",
+      "kind": "mechanical",
+      "rule": "R20",
+      "fn": "label_absent",
+      "args": {
+        "pattern": "^timeline with (the )?fix"
+      },
+      "criterion": "No section labeled Timeline with the fix exists."
+    }
+  ]
+}

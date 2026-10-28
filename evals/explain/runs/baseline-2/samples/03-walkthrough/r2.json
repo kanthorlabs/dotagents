@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 12136,
+  "stop_reason": "end_turn",
+  "session_id": "722170c1-0f2a-4e7e-999e-0a41a887af17",
+  "total_cost_usd": 0.024768400000000003,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1745,
+    "cache_read_input_tokens": 23564,
+    "output_tokens": 1542,
+    "output_tokens_details": {
+      "thinking_tokens": 197
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1745,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1087,
+        "cache_read_input_tokens": 8053,
+        "cache_creation_input_tokens": 1269,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1269
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1542,
+      "cacheReadInputTokens": 23564,
+      "cacheCreationInputTokens": 1745,
+      "webSearchRequests": 0,
+      "costUSD": 0.024768400000000003,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 197,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1745,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`mintctl deploy staging` builds the current commit of `mint-shop`, pushes the image, rolls it out to `gke-mint-staging` and posts to `#deploys-staging`. I found no CLI entry point in the files, so the `deploy staging` argument parsing is not shown here. `deploy(env_name)` in `mintctl/deploy.py:7` is the function that runs, and I assume the dispatcher passes it `\"staging\"`.\n\n**Timeline**\n\n1. `deploy` opens `mint.toml` in the current directory. Ines Albrecht must run the command from the `mint-shop` repository root. It reads `config[\"env\"][\"staging\"]`: cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`.\n2. `deploy` runs `git rev-parse --short HEAD`. The short SHA becomes the tag `registry.mint.internal/mint-shop:<sha>`. `HOST` comes from `mintctl/registry.py`.\n3. `deploy` runs `docker build -t <tag> .` on the working tree. Uncommitted changes go into the image under the SHA of `HEAD`.\n4. `deploy` runs `docker push <tag>` to `registry.mint.internal`.\n5. `deploy` runs `kubectl --context gke-mint-staging -n shop set image deployment/mint-shop web=<tag>`. Kubernetes starts a rolling update.\n6. `deploy` runs `kubectl ... rollout status deployment/mint-shop --timeout=300s`. It blocks until the rollout completes or 300 seconds pass.\n7. `slack.post` reads `MINT_SLACK_WEBHOOK` from the environment. It sends `mint-shop <sha> is live on staging` with a 10 second timeout.\n8. The function returns. Ines Albrecht sees the Slack message in `#deploys-staging`.\n\n**Failure behaviour.** Each `subprocess.run` uses `check=True`, so the first failing command raises and stops the deploy. A failed build never pushes. A rollout timeout never posts \"is live\". The code has no rollback, so a half-finished rollout stays on the cluster.\n\n**Two things to know.**\n\n- **Dirty tree.** Step 3 builds uncommitted files, so the tag can name a SHA that does not match the image contents.\n- **Webhook.** If `MINT_SLACK_WEBHOOK` is unset, step 7 raises `KeyError` after a successful deploy. The cluster is already updated, but the command exits with an error.\n\n**Next step.** Say if you want me to trace the production path or propose guards for the dirty tree and the missing webhook.",
+  "ttft_ms": 1598,
+  "type": "result",
+  "duration_ms": 12631,
+  "uuid": "f8de6aae-d19e-4d19-938b-6443f70cf5da",
+  "ttft_stream_ms": 1182,
+  "time_to_request_ms": 468,
+  "first_content_frame_ms": 1183,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

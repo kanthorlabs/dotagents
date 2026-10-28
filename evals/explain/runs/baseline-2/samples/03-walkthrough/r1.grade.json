@@ -1,0 +1,142 @@
+{
+  "key": "820c8747e45a4a75334532a2cbcd2c3e9ca8903638cf5728c026f412576268e7",
+  "cost_usd": 0.022816000000000003,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`registry.mint.internal/mint-shop:<sha>`\", \"--timeout=300s\", \"`mint-shop <sha> is live on staging` to `#deploys-staging`\" all match the key; no verifiable fact is called unverified."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Steps 2-8 give the sequence, the registry and deployment/namespace/cluster, and \"blocks until the rollout finishes\" then the Slack post. The reader's CLI-entry follow-up is detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader problem: \"builds an image of the current commit, pushes it, rolls it out to the staging cluster and posts to Slack\" matches the key; the other fields are n/a."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 4742,
+    "stop_reason": "tool_use",
+    "session_id": "697ca10c-0c49-4c0f-8fc5-3abfa3d5b593",
+    "total_cost_usd": 0.022816000000000003,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4159,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 599,
+      "output_tokens_details": {
+        "thinking_tokens": 248
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4159,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 599,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4159,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4159
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 599,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4159,
+        "webSearchRequests": 0,
+        "costUSD": 0.022816000000000003,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 248,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4159,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`registry.mint.internal/mint-shop:<sha>`\\\", \\\"--timeout=300s\\\", \\\"`mint-shop <sha> is live on staging` to `#deploys-staging`\\\" all match the key; no verifiable fact is called unverified.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Steps 2-8 give the sequence, the registry and deployment/namespace/cluster, and \\\"blocks until the rollout finishes\\\" then the Slack post. The reader's CLI-entry follow-up is detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader problem: \\\"builds an image of the current commit, pushes it, rolls it out to the staging cluster and posts to Slack\\\" matches the key; the other fields are n/a.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`registry.mint.internal/mint-shop:<sha>`\", \"--timeout=300s\", \"`mint-shop <sha> is live on staging` to `#deploys-staging`\" all match the key; no verifiable fact is called unverified."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Steps 2-8 give the sequence, the registry and deployment/namespace/cluster, and \"blocks until the rollout finishes\" then the Slack post. The reader's CLI-entry follow-up is detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader problem: \"builds an image of the current commit, pushes it, rolls it out to the staging cluster and posts to Slack\" matches the key; the other fields are n/a."
+        }
+      ]
+    },
+    "ttft_ms": 3154,
+    "type": "result",
+    "duration_ms": 5102,
+    "uuid": "35b4f502-57f0-47cb-ba2c-8fffd19cea75",
+    "ttft_stream_ms": 1218,
+    "time_to_request_ms": 356,
+    "first_content_frame_ms": 1218,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

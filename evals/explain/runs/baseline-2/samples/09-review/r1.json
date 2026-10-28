@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 19364,
+  "stop_reason": "end_turn",
+  "session_id": "4e16f102-6aea-4c62-8ee6-82fde2486ccd",
+  "total_cost_usd": 0.0336908,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 1733,
+    "cache_read_input_tokens": 15208,
+    "output_tokens": 2523,
+    "output_tokens_details": {
+      "thinking_tokens": 781
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1733,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2371,
+        "cache_read_input_tokens": 7940,
+        "cache_creation_input_tokens": 1061,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1061
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 4,
+      "outputTokens": 2523,
+      "cacheReadInputTokens": 15208,
+      "cacheCreationInputTokens": 1733,
+      "webSearchRequests": 0,
+      "costUSD": 0.0336908,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 781,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1733,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 3,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`handle` in `quillpay/webhooks.py` credits and debits the ledger before it checks the signature, so anyone can mint money. Aelita recommends blocking the merge on B1 to B4. B1 is the first item to settle.\n\n**Timeline without the fix**\n\n1. An attacker posts `charge.succeeded` for account 77 with `amount_cents` 1000000 to the webhook URL, with the header `Quill-Signature: t=1`.\n2. `handle` runs `json.loads` on the body. It accepts the body without any check.\n3. `handle` logs the full payload at line 20.\n4. `ledger.credit` runs for account 77 at line 23. The balance rises by 10000 EUR.\n5. `verify` runs at line 27. The timestamp is stale, so it returns False.\n6. `handle` returns 400. The credit is already committed, so the attacker repeats the call. An empty header makes `verify` raise `ValueError` instead, and the credit stays.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. `handle` calls `verify` before it touches the body. The stale timestamp returns False.\n5. `handle` returns 400. No ledger call happens.\n\n**What changes**\n\n- `quillpay/webhooks.py` `handle`: old behaviour runs `verify` after the ledger calls. New behaviour runs `verify` first and returns 400 before `json.loads` and any ledger call.\n- `quillpay/webhooks.py` `verify`: old behaviour uses `expected == parts.get(\"v1\")`. New behaviour uses `hmac.compare_digest`. It also returns False on a malformed header instead of raising.\n- `quillpay/settings.py`: old line `os.environ.get(\"QUILL_WEBHOOK_SECRET\", \"dev-secret\")`. New line `os.environ[\"QUILL_WEBHOOK_SECRET\"]`.\n- `quillpay/webhooks.py` `_unused_helper`: delete.\n\n**Findings**\n\n- B1 - status:OPEN - action:YES - Ledger mutated before signature check - `handle` credits and debits at lines 22 to 25, then verifies at line 27. - fix:move the `verify` call to the top of `handle` and return 400 on failure. - why:an unsigned request moves money today.\n- B2 - status:OPEN - action:YES - Replay and redelivery double-apply - Nothing records the event id. A captured signed request is valid for 300 seconds, and provider retries repeat events. - fix:store the event id with a unique constraint and skip a known id, in the same transaction as the ledger call. - why:a duplicate `charge.succeeded` credits the account twice.\n- B3 - status:OPEN - action:YES - Default secret `dev-secret` - `settings.py` falls back to a public string when the env var is missing. - fix:read `os.environ[\"QUILL_WEBHOOK_SECRET\"]` so the app fails at start. - why:a misconfigured deploy lets anyone forge valid signatures.\n- B4 - status:OPEN - action:YES - Non-constant-time compare - `verify` compares the digests with `==` at line 42. - fix:use `hmac.compare_digest`. - why:`==` leaks timing information about the expected signature.\n- S1 - status:OPEN - action:YES - Malformed input raises 500 - A bad header, a non-integer `t`, invalid JSON or a missing `data` key raises an exception. - fix:catch `ValueError` and `KeyError` and return 400. - why:providers retry on 5xx, which floods the endpoint.\n- S2 - status:OPEN - action:YES - Full payload logged - Line 20 logs the raw body at info level. - fix:log the event id and type only. - why:the body holds account data that should stay out of logs.\n- S3 - status:OPEN - action:YES - Dead code - `_unused_helper` has no caller. - fix:delete it. - why:it adds noise to a payment module.\n- S4 - status:OPEN - action:NO - Unknown event types return 200 silently - Other types fall through without a log line. - fix:log the type at debug level. - why:it helps diagnose missing handlers, and 200 is correct for ignored events.\n\n**Recommendation.** Aelita recommends the verify-first ordering from B1. It removes the root cause, costs one reordered block, and leaves the HMAC logic unchanged. It can break a test that posts unsigned bodies, and those tests need a signing helper. The alternative is a decorator that wraps `handle` with `verify`. It is reusable across handlers, but it adds a layer for one endpoint. I ranked it lower for that reason.\n\n**Question.** Do you approve verify-first ordering in `handle` as the fix for B1? B2 follows after your answer.",
+  "ttft_ms": 1670,
+  "type": "result",
+  "duration_ms": 19702,
+  "uuid": "e0ff12da-0bf0-48c2-837e-8b7077aa6c12",
+  "ttft_stream_ms": 992,
+  "time_to_request_ms": 330,
+  "first_content_frame_ms": 992,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

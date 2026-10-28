@@ -1,0 +1,129 @@
+{
+  "key": "296ebb1add9caafd075d840b052329d467780883baced1bb774eab9c9418e78b",
+  "cost_usd": 0.0340393,
+  "reader": {
+    "decision": "Approve `cache: pnpm` on `actions/setup-node@v4` as the change to show the team, and present the 8 min 00 s figure as an estimate until a real cached run confirms it.",
+    "decision_reason": "The change is one added line in `ci.yml`, it uses the built-in lockfile-hash key, and the cost and failure modes are small and stated. The only gap is that the warm-store number is unconfirmed, which labelling it as an estimate handles.",
+    "reconstruction": {
+      "problem": "Every CI run of `fernway-web` re-downloads the whole 1.1 GB pnpm store, because `actions/setup-node@v4` caches nothing. The median `Install` step takes 3 min 40 s, so about 3 min 05 s of each run goes on re-downloading unchanged packages. The run total is 11 min 05 s, and week 43 had 412 runs.",
+      "what_breaks": "Nothing is broken. The cost is waste: about 1,270 minutes, roughly 21 runner-hours and 10 USD per week, plus developers waiting about 3 min longer per run.",
+      "fix": "Add `cache: pnpm` under `with:` of the `actions/setup-node@v4` step in `.github/workflows/ci.yml`. The step already runs after `pnpm/action-setup@v4`, which the option requires. The cache key is the `pnpm-lock.yaml` hash. The median install should drop to about 35 s and the run total to about 8 min 00 s. The alternative is `actions/cache` with an explicit key and `restore-keys`, at about six more lines.",
+      "cost": "Each lockfile change writes a new cache entry of up to 1.1 GB uncompressed, against a 10 GB repository limit, and the oldest entries are evicted first. A cold run after a lockfile change is no faster than today, and the cache adds restore and save time. The 35 s figure comes from 20 manual runs and may not include restore time. The lockfile path was not checked."
+    },
+    "follow_up_questions": [],
+    "closing_answer": "Yes, I approve `cache: pnpm` on `actions/setup-node@v4` as the change to show the team. Label 8 min 00 s as an estimate, and keep `actions/cache` with `restore-keys` as the fallback if cold runs after lockfile changes hurt."
+  },
+  "raw": {
+    "duration_api_ms": 12328,
+    "stop_reason": "tool_use",
+    "session_id": "992a5402-b0c7-4c40-a806-9324818ef1d2",
+    "total_cost_usd": 0.0340393,
+    "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 3814,
+      "cache_read_input_tokens": 6653,
+      "output_tokens": 1811,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 3814,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 874,
+          "cache_read_input_tokens": 4680,
+          "cache_creation_input_tokens": 1107,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1107
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 4,
+        "outputTokens": 1811,
+        "cacheReadInputTokens": 6653,
+        "cacheCreationInputTokens": 3814,
+        "webSearchRequests": 0,
+        "costUSD": 0.0340393,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 3814,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 3,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve `cache: pnpm` on `actions/setup-node@v4` as the change to show the team, and present the 8 min 00 s figure as an estimate until a real cached run confirms it.\",\"decision_reason\":\"The change is one added line in `ci.yml`, it uses the built-in lockfile-hash key, and the cost and failure modes are small and stated. The only gap is that the warm-store number is unconfirmed, which labelling it as an estimate handles.\",\"reconstruction\":{\"problem\":\"Every CI run of `fernway-web` re-downloads the whole 1.1 GB pnpm store, because `actions/setup-node@v4` caches nothing. The median `Install` step takes 3 min 40 s, so about 3 min 05 s of each run goes on re-downloading unchanged packages. The run total is 11 min 05 s, and week 43 had 412 runs.\",\"what_breaks\":\"Nothing is broken. The cost is waste: about 1,270 minutes, roughly 21 runner-hours and 10 USD per week, plus developers waiting about 3 min longer per run.\",\"fix\":\"Add `cache: pnpm` under `with:` of the `actions/setup-node@v4` step in `.github/workflows/ci.yml`. The step already runs after `pnpm/action-setup@v4`, which the option requires. The cache key is the `pnpm-lock.yaml` hash. The median install should drop to about 35 s and the run total to about 8 min 00 s. The alternative is `actions/cache` with an explicit key and `restore-keys`, at about six more lines.\",\"cost\":\"Each lockfile change writes a new cache entry of up to 1.1 GB uncompressed, against a 10 GB repository limit, and the oldest entries are evicted first. A cold run after a lockfile change is no faster than today, and the cache adds restore and save time. The 35 s figure comes from 20 manual runs and may not include restore time. The lockfile path was not checked.\"},\"follow_up_questions\":[],\"closing_answer\":\"Yes, I approve `cache: pnpm` on `actions/setup-node@v4` as the change to show the team. Label 8 min 00 s as an estimate, and keep `actions/cache` with `restore-keys` as the fallback if cold runs after lockfile changes hurt.\"}",
+    "structured_output": {
+      "decision": "Approve `cache: pnpm` on `actions/setup-node@v4` as the change to show the team, and present the 8 min 00 s figure as an estimate until a real cached run confirms it.",
+      "decision_reason": "The change is one added line in `ci.yml`, it uses the built-in lockfile-hash key, and the cost and failure modes are small and stated. The only gap is that the warm-store number is unconfirmed, which labelling it as an estimate handles.",
+      "reconstruction": {
+        "problem": "Every CI run of `fernway-web` re-downloads the whole 1.1 GB pnpm store, because `actions/setup-node@v4` caches nothing. The median `Install` step takes 3 min 40 s, so about 3 min 05 s of each run goes on re-downloading unchanged packages. The run total is 11 min 05 s, and week 43 had 412 runs.",
+        "what_breaks": "Nothing is broken. The cost is waste: about 1,270 minutes, roughly 21 runner-hours and 10 USD per week, plus developers waiting about 3 min longer per run.",
+        "fix": "Add `cache: pnpm` under `with:` of the `actions/setup-node@v4` step in `.github/workflows/ci.yml`. The step already runs after `pnpm/action-setup@v4`, which the option requires. The cache key is the `pnpm-lock.yaml` hash. The median install should drop to about 35 s and the run total to about 8 min 00 s. The alternative is `actions/cache` with an explicit key and `restore-keys`, at about six more lines.",
+        "cost": "Each lockfile change writes a new cache entry of up to 1.1 GB uncompressed, against a 10 GB repository limit, and the oldest entries are evicted first. A cold run after a lockfile change is no faster than today, and the cache adds restore and save time. The 35 s figure comes from 20 manual runs and may not include restore time. The lockfile path was not checked."
+      },
+      "follow_up_questions": [],
+      "closing_answer": "Yes, I approve `cache: pnpm` on `actions/setup-node@v4` as the change to show the team. Label 8 min 00 s as an estimate, and keep `actions/cache` with `restore-keys` as the fallback if cold runs after lockfile changes hurt."
+    },
+    "ttft_ms": 6958,
+    "type": "result",
+    "duration_ms": 12856,
+    "uuid": "502ac06d-6b24-4bd4-acd0-3c0f0e35e5ad",
+    "ttft_stream_ms": 1879,
+    "time_to_request_ms": 507,
+    "first_content_frame_ms": 1880,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

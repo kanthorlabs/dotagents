@@ -1,0 +1,172 @@
+{
+  "key": "7b5e986c4453d998d682f36611cfa18d51ecfe3bb7c8872fdf523cd5dad57ff9",
+  "cost_usd": 0.035774,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends `cache: pnpm` on `actions/setup-node`.\" This matches the key's correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"median is 3 min 40 s\", \"0 min 35 s\", \"412 runs\", \"0.008 USD\", \"21 hours\", \"1.1 GB\" and \"10 GB\" all match. The \"unverified\" label applies only to the compressed entry size."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message answers the buy (3 min 05 s, 21 h, 10 USD), the cost (1.1 GB of 10 GB, cold run on lockfile change) and the change (`cache: pnpm`). The reader's lockfile question is detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Nothing is broken... about 21 runner-hours (about 10 USD) per week\", fix is `cache: pnpm`, and the cost covers 1.1 GB of 10 GB and the lockfile-change miss. All agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve `cache: pnpm` on `setup-node`, or do you want the explicit `actions/cache` version?\" It is one question with one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: `actions/cache` with an explicit key... beats the recommendation when you need `restore-keys` fallbacks... costs about ten more lines.\" This matches the valid alternative, with trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 11523,
+    "stop_reason": "tool_use",
+    "session_id": "01e56c2b-4693-402f-845e-b1fd3805fdad",
+    "total_cost_usd": 0.035774,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5816,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1232,
+      "output_tokens_details": {
+        "thinking_tokens": 608
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5816,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1232,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5816,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5816
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1232,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5816,
+        "webSearchRequests": 0,
+        "costUSD": 0.035774,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 608,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5816,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends `cache: pnpm` on `actions/setup-node`.\\\" This matches the key's correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"median is 3 min 40 s\\\", \\\"0 min 35 s\\\", \\\"412 runs\\\", \\\"0.008 USD\\\", \\\"21 hours\\\", \\\"1.1 GB\\\" and \\\"10 GB\\\" all match. The \\\"unverified\\\" label applies only to the compressed entry size.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message answers the buy (3 min 05 s, 21 h, 10 USD), the cost (1.1 GB of 10 GB, cold run on lockfile change) and the change (`cache: pnpm`). The reader's lockfile question is detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Nothing is broken... about 21 runner-hours (about 10 USD) per week\\\", fix is `cache: pnpm`, and the cost covers 1.1 GB of 10 GB and the lockfile-change miss. All agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve `cache: pnpm` on `setup-node`, or do you want the explicit `actions/cache` version?\\\" It is one question with one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: `actions/cache` with an explicit key... beats the recommendation when you need `restore-keys` fallbacks... costs about ten more lines.\\\" This matches the valid alternative, with trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends `cache: pnpm` on `actions/setup-node`.\" This matches the key's correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"median is 3 min 40 s\", \"0 min 35 s\", \"412 runs\", \"0.008 USD\", \"21 hours\", \"1.1 GB\" and \"10 GB\" all match. The \"unverified\" label applies only to the compressed entry size."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message answers the buy (3 min 05 s, 21 h, 10 USD), the cost (1.1 GB of 10 GB, cold run on lockfile change) and the change (`cache: pnpm`). The reader's lockfile question is detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Nothing is broken... about 21 runner-hours (about 10 USD) per week\", fix is `cache: pnpm`, and the cost covers 1.1 GB of 10 GB and the lockfile-change miss. All agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve `cache: pnpm` on `setup-node`, or do you want the explicit `actions/cache` version?\" It is one question with one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: `actions/cache` with an explicit key... beats the recommendation when you need `restore-keys` fallbacks... costs about ten more lines.\" This matches the valid alternative, with trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 8513,
+    "type": "result",
+    "duration_ms": 12008,
+    "uuid": "1a97aeb4-996b-4dc2-b9c2-1980a860caa1",
+    "ttft_stream_ms": 3965,
+    "time_to_request_ms": 492,
+    "first_content_frame_ms": 3966,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

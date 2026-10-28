@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: digest-builder
+  namespace: brightpost
+spec:
+  schedule: "0 6 * * 1"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: digest-builder
+              image: registry.brightpost.io/brightpost:2026.10.2
+              command: ["python", "-m", "jobs.digest_builder"]

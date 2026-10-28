@@ -1,0 +1,6 @@
+2026-10-27T01:00:02Z INFO sync start: 46,800 changed contacts
+2026-10-27T01:01:02Z INFO rate: 398 requests in the last 60 s, 298 returned 429
+2026-10-27T01:02:02Z INFO rate: 402 requests in the last 60 s, 302 returned 429
+2026-10-27T01:30:02Z INFO rate: 401 requests in the last 60 s, 301 returned 429
+2026-10-27T02:00:02Z INFO rate: 397 requests in the last 60 s, 297 returned 429
+2026-10-27T02:59:58Z ERROR job deadline reached: 11,940 upserted, 34,860 pending

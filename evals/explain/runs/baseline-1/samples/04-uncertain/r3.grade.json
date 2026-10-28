@@ -1,0 +1,184 @@
+{
+  "key": "a1e7aef33baa5e8f95b1df02ffe4de43d65552378ebba436d88414f52ecc02f4",
+  "cost_usd": 0.037976,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends fixing the migration side first... The repair has to restore invoices archived by mistake\"",
+      "reason": "Primary is restoring the wrongly archived invoices, which matches the second correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"because `hide_archived` was on for that tenant\" and \"The flag was on for `northwind` only.\"",
+      "reason": "The opening states the unverifiable hide_archived value as fact. Step 5 later calls it an inference, so the message contradicts itself."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Reader follow-up: \"Does a pre-migration snapshot or backup of the invoices table exist, or do updated_at values show which rows 0042 changed?\"",
+      "reason": "The message claims a restore needs a snapshot. The key restores by the 90-day filter, so the reader's snapshot question is a real gap that blocks the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"Two options... Aelita prefers this first\"; reader decision: \"Change only `report-builder` now\"",
+      "reason": "The key says no fix is chosen until the hide_archived value is settled, and that 0042 data must be corrected. The reader chose a report-side change instead."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "\"Should I draft a corrective migration that restores the wrongly archived invoices, which needs a snapshot you can point me to, or only change `report-builder`?\"",
+      "reason": "The question does not match closing_decision (get the flag evidence or restore). The reader's answer was to change report-builder only, which is an invalid option."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: change only `report-builder`. Stop filtering archived invoices in monthly reports\"",
+      "reason": "This alternative is the invalid option 'change report-builder to ignore hide_archived'. It leaves the data wrong."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10156,
+    "stop_reason": "tool_use",
+    "session_id": "4860b0c7-cf2e-41f1-b1c4-81509622be5a",
+    "total_cost_usd": 0.037976,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5969,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1391,
+      "output_tokens_details": {
+        "thinking_tokens": 671
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5969,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1391,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5969,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5969
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1391,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5969,
+        "webSearchRequests": 0,
+        "costUSD": 0.037976,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 671,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5969,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends fixing the migration side first... The repair has to restore invoices archived by mistake\\\"\",\"reason\":\"Primary is restoring the wrongly archived invoices, which matches the second correct recommendation.\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"because `hide_archived` was on for that tenant\\\" and \\\"The flag was on for `northwind` only.\\\"\",\"reason\":\"The opening states the unverifiable hide_archived value as fact. Step 5 later calls it an inference, so the message contradicts itself.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Reader follow-up: \\\"Does a pre-migration snapshot or backup of the invoices table exist, or do updated_at values show which rows 0042 changed?\\\"\",\"reason\":\"The message claims a restore needs a snapshot. The key restores by the 90-day filter, so the reader's snapshot question is a real gap that blocks the ruling.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"Two options... Aelita prefers this first\\\"; reader decision: \\\"Change only `report-builder` now\\\"\",\"reason\":\"The key says no fix is chosen until the hide_archived value is settled, and that 0042 data must be corrected. The reader chose a report-side change instead.\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"\\\"Should I draft a corrective migration that restores the wrongly archived invoices, which needs a snapshot you can point me to, or only change `report-builder`?\\\"\",\"reason\":\"The question does not match closing_decision (get the flag evidence or restore). The reader's answer was to change report-builder only, which is an invalid option.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: change only `report-builder`. Stop filtering archived invoices in monthly reports\\\"\",\"reason\":\"This alternative is the invalid option 'change report-builder to ignore hide_archived'. It leaves the data wrong.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends fixing the migration side first... The repair has to restore invoices archived by mistake\"",
+          "reason": "Primary is restoring the wrongly archived invoices, which matches the second correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"because `hide_archived` was on for that tenant\" and \"The flag was on for `northwind` only.\"",
+          "reason": "The opening states the unverifiable hide_archived value as fact. Step 5 later calls it an inference, so the message contradicts itself."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Reader follow-up: \"Does a pre-migration snapshot or backup of the invoices table exist, or do updated_at values show which rows 0042 changed?\"",
+          "reason": "The message claims a restore needs a snapshot. The key restores by the 90-day filter, so the reader's snapshot question is a real gap that blocks the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"Two options... Aelita prefers this first\"; reader decision: \"Change only `report-builder` now\"",
+          "reason": "The key says no fix is chosen until the hide_archived value is settled, and that 0042 data must be corrected. The reader chose a report-side change instead."
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "\"Should I draft a corrective migration that restores the wrongly archived invoices, which needs a snapshot you can point me to, or only change `report-builder`?\"",
+          "reason": "The question does not match closing_decision (get the flag evidence or restore). The reader's answer was to change report-builder only, which is an invalid option."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: change only `report-builder`. Stop filtering archived invoices in monthly reports\"",
+          "reason": "This alternative is the invalid option 'change report-builder to ignore hide_archived'. It leaves the data wrong."
+        }
+      ]
+    },
+    "ttft_ms": 6537,
+    "type": "result",
+    "duration_ms": 10503,
+    "uuid": "7a01ee3e-cd10-4eef-ae54-0c16787085a2",
+    "ttft_stream_ms": 1321,
+    "time_to_request_ms": 345,
+    "first_content_frame_ms": 1321,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

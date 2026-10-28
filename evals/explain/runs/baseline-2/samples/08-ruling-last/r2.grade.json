@@ -1,0 +1,122 @@
+{
+  "key": "d6947e359a12aab1cac55b877a2511e6b514639c09febbd219c8b49281f57001",
+  "cost_usd": 0.017915999999999998,
+  "verdicts": {
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"Ruling 3 recorded... on 14 November\"; \"No open item remains.\" Next step lists SMTP_RELAY change before 14 November. Reader's follow-ups ask about threshold counting, beyond the ruling."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 1840,
+    "stop_reason": "tool_use",
+    "session_id": "6c903fce-5f38-4299-9d88-7c6094a66206",
+    "total_cost_usd": 0.017915999999999998,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4049,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 153,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4049,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 153,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4049,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4049
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 153,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4049,
+        "webSearchRequests": 0,
+        "costUSD": 0.017915999999999998,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4049,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"Ruling 3 recorded... on 14 November\\\"; \\\"No open item remains.\\\" Next step lists SMTP_RELAY change before 14 November. Reader's follow-ups ask about threshold counting, beyond the ruling.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"Ruling 3 recorded... on 14 November\"; \"No open item remains.\" Next step lists SMTP_RELAY change before 14 November. Reader's follow-ups ask about threshold counting, beyond the ruling."
+        }
+      ]
+    },
+    "ttft_ms": 2285,
+    "type": "result",
+    "duration_ms": 2317,
+    "uuid": "86c7391d-6503-420f-9164-214ae45052d9",
+    "ttft_stream_ms": 1506,
+    "time_to_request_ms": 474,
+    "first_content_frame_ms": 1506,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

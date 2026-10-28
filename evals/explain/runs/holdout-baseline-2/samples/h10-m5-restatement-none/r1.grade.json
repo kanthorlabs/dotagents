@@ -1,0 +1,148 @@
+{
+  "key": "4712126185672444dc9ab0f80a5222391eba63d29ec4d437d45c922306cfca43",
+  "cost_usd": 0.02331,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"counts 1,912 distinct `Accept` values in October\"; \"decodes neither WebP nor AVIF\" \u2014 all match the key, with no deferral or contradiction.",
+      "pass_": true
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"Next step. ... Petra then changes `cache_key` in `edge/cache.py`.\" The message answers all four questions, and the reader lists no follow-up questions.",
+      "pass_": true
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader fix: \"append the output of negotiate... avif, webp or orig... must not include the whole Accept header.\" Problem and breaks match the key. Cost is n/a.",
+      "pass_": true
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8932,
+    "stop_reason": "tool_use",
+    "session_id": "8dd86a19-25ad-4517-80be-dc27ee3c4aae",
+    "total_cost_usd": 0.02331,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4570,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 484,
+      "output_tokens_details": {
+        "thinking_tokens": 178
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4570,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 484,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4570,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4570
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 484,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4570,
+        "webSearchRequests": 0,
+        "costUSD": 0.02331,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 178,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4570,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"counts 1,912 distinct `Accept` values in October\\\"; \\\"decodes neither WebP nor AVIF\\\" \u2014 all match the key, with no deferral or contradiction.\",\"pass_\":true},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"Next step. ... Petra then changes `cache_key` in `edge/cache.py`.\\\" The message answers all four questions, and the reader lists no follow-up questions.\",\"pass_\":true},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader fix: \\\"append the output of negotiate... avif, webp or orig... must not include the whole Accept header.\\\" Problem and breaks match the key. Cost is n/a.\",\"pass_\":true}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"counts 1,912 distinct `Accept` values in October\"; \"decodes neither WebP nor AVIF\" \u2014 all match the key, with no deferral or contradiction.",
+          "pass_": true
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"Next step. ... Petra then changes `cache_key` in `edge/cache.py`.\" The message answers all four questions, and the reader lists no follow-up questions.",
+          "pass_": true
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader fix: \"append the output of negotiate... avif, webp or orig... must not include the whole Accept header.\" Problem and breaks match the key. Cost is n/a.",
+          "pass_": true
+        }
+      ]
+    },
+    "ttft_ms": 8906,
+    "type": "result",
+    "duration_ms": 9289,
+    "uuid": "8147096f-cd29-46ae-9d9b-389d300d0972",
+    "ttft_stream_ms": 6130,
+    "time_to_request_ms": 363,
+    "first_content_frame_ms": 6131,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

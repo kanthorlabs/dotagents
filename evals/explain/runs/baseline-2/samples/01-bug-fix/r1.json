@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 15362,
+  "stop_reason": "end_turn",
+  "session_id": "d442fd92-5e64-40bc-bd53-2f01ca43165f",
+  "total_cost_usd": 0.031180599999999996,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2240,
+    "cache_read_input_tokens": 23486,
+    "output_tokens": 1986,
+    "output_tokens_details": {
+      "thinking_tokens": 385
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2240,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1403,
+        "cache_read_input_tokens": 8276,
+        "cache_creation_input_tokens": 1232,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1232
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1986,
+      "cacheReadInputTokens": 23486,
+      "cacheCreationInputTokens": 2240,
+      "webSearchRequests": 0,
+      "costUSD": 0.031180599999999996,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 385,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2240,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 7,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`list_orders` sorts by `created_at` alone, and `import_tidewater_batch` gives every row in a batch the same `created_at`. Postgres may order those tied rows differently on each page query, so page boundaries drop some orders and repeat others. Aelita recommends adding `id DESC` as a tiebreaker in `ORDER BY`.\n\n**Existing behaviour**\n\n1. `import_tidewater_batch` reads the clock once into `batch_time`.\n2. It inserts all ~200 rows of the batch with that same `created_at`.\n3. `list_orders` runs `ORDER BY created_at DESC LIMIT 50 OFFSET (page-1)*50`.\n4. For rows with equal `created_at`, SQL does not define an order. Postgres can return them differently on each query.\n\n**Timeline without the fix**\n\n1. Brennan Hardware holds 1,214 orders. A Tidewater batch of 200 shares one `created_at`.\n2. The client requests page 3. The batch straddles the page 3 and page 4 boundary.\n3. Postgres returns the first 50 rows of the sort, with tied rows in order A.\n4. The client requests page 4. Postgres sorts the tied rows again, this time in order B.\n5. Some orders from the batch were on page 3 and appear again on page 4. Others were on neither page.\n6. The export holds 1,214 rows, but 9 ids appear twice and 9 are missing. Each duplicate takes the place of one missing order, so the row count still matches.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. Postgres sorts by `created_at DESC, id DESC`. Every row has one fixed position.\n4. Page 4 continues exactly where page 3 stopped.\n5. No order repeats and none is skipped.\n6. The export holds 1,214 distinct rows.\n\n**What changes**\n\n- `src/orders/list_orders.py` old behaviour: `ORDER BY created_at DESC`. New behaviour: `ORDER BY created_at DESC, id DESC`.\n\n**Recommendation.** Aelita recommends the tiebreaker, because it removes the cause: an ordering that is not total. `id` is the primary key, so it is unique and the order becomes fully determined. It costs one extra sort column. It breaks nothing for clients. An order created between two page requests can still shift the pages, but the ticket says none were created during this export.\n\n**Alternative: keyset pagination.** The client passes the last `(created_at, id)` it saw instead of a page number. It stays correct even when new orders arrive mid-export. It changes the API contract in `docs/api.md` and breaks `?page=N` clients. It becomes the primary when exports must stay correct during live writes.\n\n**Alternative: unique `created_at` in `bulk_import.py`.** It reads the clock per row. It does not repair existing batches and it leaves the query unordered for any future ties. It is not a standalone fix.\n\n**Question.** Does Aelita add the `id DESC` tiebreaker to `list_orders`, or do you want keyset pagination instead?",
+  "ttft_ms": 1848,
+  "type": "result",
+  "duration_ms": 15682,
+  "uuid": "a57fe822-a2a2-461e-9dc5-b862c2a3d6c6",
+  "ttft_stream_ms": 1095,
+  "time_to_request_ms": 292,
+  "first_content_frame_ms": 1096,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

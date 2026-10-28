@@ -1,0 +1,135 @@
+{
+  "key": "fa5004e92af41d8b1a275f36ecbfc35a0c68930c8009dbe7704cc6086d2572f6",
+  "cost_usd": 0.0222313,
+  "reader": {
+    "decision": "Approve the cap in `ranker`: bound in-flight requests at 64 + 512 and return 503 beyond that. Do it now. Treat `retries: 0` in `query-gw` as a fallback only if the `ranker` change can't ship soon.",
+    "decision_reason": "The message gives a coherent cause: an unbounded queue that outlives its clients keeps the overload going after the merge ended. The cap removes that cause whatever the clients do. `retries: 0` leaves the unbounded queue and `web`'s 3 attempts in place. The unexplained queue size doesn't change the cause, so it doesn't block the ruling.",
+    "reconstruction": {
+      "problem": "On 22 October a 4-minute `ranker` slowdown during an index merge turned into a 37-minute outage. `web` makes 3 attempts and `query-gw` makes up to 3 calls per attempt to `ranker`, so load grew to about 3,500/s against a capacity of about 1,200/s. `ranker` has a 64-thread pool with an unbounded queue and no cancellation of abandoned requests.",
+      "what_breaks": "After the merge ended the queue was already deep, so every request waited longer than the 600 ms `query-gw` timeout. Each timeout triggered another retry, and `ranker` still scored the abandoned requests. Useful output was zero and the error rate was 97% until Tomasz turned on the maintenance page at 14:39 and the queue drained by 14:41.",
+      "fix": "Cap `ranker` at 64 + 512 in-flight requests and return an immediate 503 beyond that, in `ranker/server.py`. Update `docs/capacity.md` to match. The message says search would then recover by about 14:07 without operator action. The alternative is `retries: 0` for `ranker` in `query-gw`'s `config.yaml`, which cuts the multiplier from 3 to 1 but leaves the queue unbounded.",
+      "cost": "A real spike now gets fast 503s instead of slow answers. `query-gw` retries on 5xx, so shed requests are retried, which is cheap but still adds load. The limit is a constant that needs tuning. The `retries: 0` alternative is a one-line change but only a partial fix."
+    },
+    "follow_up_questions": [
+      "Does `ranker` code have a release path soon enough to ship the cap, or is it blocked?",
+      "Is 512 queued requests the right size given 1,200/s capacity and the 600 ms timeout? The message says about 0.5 s wait, which is close to the timeout."
+    ],
+    "closing_answer": "Cap `ranker`'s queue at 64 + 512 in-flight requests and return 503 beyond that. Start with that, not `retries: 0`. Fall back to `retries: 0` only if the `ranker` change can't ship soon."
+  },
+  "raw": {
+    "duration_api_ms": 7325,
+    "stop_reason": "tool_use",
+    "session_id": "85c76c19-3851-4de3-b67e-8c7940f708bb",
+    "total_cost_usd": 0.0222313,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2930,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 1031,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2930,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1031,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2930,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2930
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1031,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2930,
+        "webSearchRequests": 0,
+        "costUSD": 0.0222313,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2930,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve the cap in `ranker`: bound in-flight requests at 64 + 512 and return 503 beyond that. Do it now. Treat `retries: 0` in `query-gw` as a fallback only if the `ranker` change can't ship soon.\",\"decision_reason\":\"The message gives a coherent cause: an unbounded queue that outlives its clients keeps the overload going after the merge ended. The cap removes that cause whatever the clients do. `retries: 0` leaves the unbounded queue and `web`'s 3 attempts in place. The unexplained queue size doesn't change the cause, so it doesn't block the ruling.\",\"reconstruction\":{\"problem\":\"On 22 October a 4-minute `ranker` slowdown during an index merge turned into a 37-minute outage. `web` makes 3 attempts and `query-gw` makes up to 3 calls per attempt to `ranker`, so load grew to about 3,500/s against a capacity of about 1,200/s. `ranker` has a 64-thread pool with an unbounded queue and no cancellation of abandoned requests.\",\"what_breaks\":\"After the merge ended the queue was already deep, so every request waited longer than the 600 ms `query-gw` timeout. Each timeout triggered another retry, and `ranker` still scored the abandoned requests. Useful output was zero and the error rate was 97% until Tomasz turned on the maintenance page at 14:39 and the queue drained by 14:41.\",\"fix\":\"Cap `ranker` at 64 + 512 in-flight requests and return an immediate 503 beyond that, in `ranker/server.py`. Update `docs/capacity.md` to match. The message says search would then recover by about 14:07 without operator action. The alternative is `retries: 0` for `ranker` in `query-gw`'s `config.yaml`, which cuts the multiplier from 3 to 1 but leaves the queue unbounded.\",\"cost\":\"A real spike now gets fast 503s instead of slow answers. `query-gw` retries on 5xx, so shed requests are retried, which is cheap but still adds load. The limit is a constant that needs tuning. The `retries: 0` alternative is a one-line change but only a partial fix.\"},\"follow_up_questions\":[\"Does `ranker` code have a release path soon enough to ship the cap, or is it blocked?\",\"Is 512 queued requests the right size given 1,200/s capacity and the 600 ms timeout? The message says about 0.5 s wait, which is close to the timeout.\"],\"closing_answer\":\"Cap `ranker`'s queue at 64 + 512 in-flight requests and return 503 beyond that. Start with that, not `retries: 0`. Fall back to `retries: 0` only if the `ranker` change can't ship soon.\"}",
+    "structured_output": {
+      "decision": "Approve the cap in `ranker`: bound in-flight requests at 64 + 512 and return 503 beyond that. Do it now. Treat `retries: 0` in `query-gw` as a fallback only if the `ranker` change can't ship soon.",
+      "decision_reason": "The message gives a coherent cause: an unbounded queue that outlives its clients keeps the overload going after the merge ended. The cap removes that cause whatever the clients do. `retries: 0` leaves the unbounded queue and `web`'s 3 attempts in place. The unexplained queue size doesn't change the cause, so it doesn't block the ruling.",
+      "reconstruction": {
+        "problem": "On 22 October a 4-minute `ranker` slowdown during an index merge turned into a 37-minute outage. `web` makes 3 attempts and `query-gw` makes up to 3 calls per attempt to `ranker`, so load grew to about 3,500/s against a capacity of about 1,200/s. `ranker` has a 64-thread pool with an unbounded queue and no cancellation of abandoned requests.",
+        "what_breaks": "After the merge ended the queue was already deep, so every request waited longer than the 600 ms `query-gw` timeout. Each timeout triggered another retry, and `ranker` still scored the abandoned requests. Useful output was zero and the error rate was 97% until Tomasz turned on the maintenance page at 14:39 and the queue drained by 14:41.",
+        "fix": "Cap `ranker` at 64 + 512 in-flight requests and return an immediate 503 beyond that, in `ranker/server.py`. Update `docs/capacity.md` to match. The message says search would then recover by about 14:07 without operator action. The alternative is `retries: 0` for `ranker` in `query-gw`'s `config.yaml`, which cuts the multiplier from 3 to 1 but leaves the queue unbounded.",
+        "cost": "A real spike now gets fast 503s instead of slow answers. `query-gw` retries on 5xx, so shed requests are retried, which is cheap but still adds load. The limit is a constant that needs tuning. The `retries: 0` alternative is a one-line change but only a partial fix."
+      },
+      "follow_up_questions": [
+        "Does `ranker` code have a release path soon enough to ship the cap, or is it blocked?",
+        "Is 512 queued requests the right size given 1,200/s capacity and the 600 ms timeout? The message says about 0.5 s wait, which is close to the timeout."
+      ],
+      "closing_answer": "Cap `ranker`'s queue at 64 + 512 in-flight requests and return 503 beyond that. Start with that, not `retries: 0`. Fall back to `retries: 0` only if the `ranker` change can't ship soon."
+    },
+    "ttft_ms": 7749,
+    "type": "result",
+    "duration_ms": 7767,
+    "uuid": "c0d8f892-5eff-4cf1-8cfd-716dfb51b9dd",
+    "ttft_stream_ms": 1330,
+    "time_to_request_ms": 443,
+    "first_content_frame_ms": 1330,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

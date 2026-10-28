@@ -1,0 +1,184 @@
+{
+  "key": "e4b80d53b44a7848df660f5605d7a5ce07d24ebd919d91c8db7fb232c6c8f1a9",
+  "cost_usd": 0.038508,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the split connections.\" Reads on replica, record_run on primary, temp table to subquery matches the correct recommendation.",
+      "pass_note": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"p99 lag is 2 seconds\"; \"CPU hit 88 %... p95 rose from 340 ms to 1,900 ms\"; temp table and record_run statements all match the key. Unknowns are not dependent facts.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message covers why (88 % CPU, 1,900 ms), current flow, failure of plain switch, lag no effect, and changes. Reader follow-ups on subquery equivalence and conflict settings go beyond the ruling.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Add REPLICA_DATABASE_URL... record_run uses a separate primary connection... CHURN_BY_PLAN a single statement with the 30-day filter as a subquery.\" Matches problem, breaks, fix, cost.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve the split: reads on pg-osprey-2, the report_runs insert on pg-osprey-1...\" Reader gave a real answer, \"Yes, I approve the split\".",
+      "pass_note": ""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: skip record_run.\" This is not in valid_alternatives. It drops the report_runs audit row, so it does not produce the correct result.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9561,
+    "stop_reason": "tool_use",
+    "session_id": "a71c3698-c3ae-4fcd-9160-ac6f052f6721",
+    "total_cost_usd": 0.038508,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6312,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1307,
+      "output_tokens_details": {
+        "thinking_tokens": 685
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6312,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1307,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6312,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6312
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1307,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6312,
+        "webSearchRequests": 0,
+        "costUSD": 0.038508,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 685,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6312,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the split connections.\\\" Reads on replica, record_run on primary, temp table to subquery matches the correct recommendation.\",\"pass_note\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"p99 lag is 2 seconds\\\"; \\\"CPU hit 88 %... p95 rose from 340 ms to 1,900 ms\\\"; temp table and record_run statements all match the key. Unknowns are not dependent facts.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message covers why (88 % CPU, 1,900 ms), current flow, failure of plain switch, lag no effect, and changes. Reader follow-ups on subquery equivalence and conflict settings go beyond the ruling.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Add REPLICA_DATABASE_URL... record_run uses a separate primary connection... CHURN_BY_PLAN a single statement with the 30-day filter as a subquery.\\\" Matches problem, breaks, fix, cost.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve the split: reads on pg-osprey-2, the report_runs insert on pg-osprey-1...\\\" Reader gave a real answer, \\\"Yes, I approve the split\\\".\",\"pass_note\":\"\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: skip record_run.\\\" This is not in valid_alternatives. It drops the report_runs audit row, so it does not produce the correct result.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the split connections.\" Reads on replica, record_run on primary, temp table to subquery matches the correct recommendation.",
+          "pass_note": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"p99 lag is 2 seconds\"; \"CPU hit 88 %... p95 rose from 340 ms to 1,900 ms\"; temp table and record_run statements all match the key. Unknowns are not dependent facts.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message covers why (88 % CPU, 1,900 ms), current flow, failure of plain switch, lag no effect, and changes. Reader follow-ups on subquery equivalence and conflict settings go beyond the ruling.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Add REPLICA_DATABASE_URL... record_run uses a separate primary connection... CHURN_BY_PLAN a single statement with the 30-day filter as a subquery.\" Matches problem, breaks, fix, cost.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve the split: reads on pg-osprey-2, the report_runs insert on pg-osprey-1...\" Reader gave a real answer, \"Yes, I approve the split\".",
+          "pass_note": ""
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: skip record_run.\" This is not in valid_alternatives. It drops the report_runs audit row, so it does not produce the correct result.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 7061,
+    "type": "result",
+    "duration_ms": 9913,
+    "uuid": "42512ad5-d826-40da-8f4b-eede877edbf8",
+    "ttft_stream_ms": 1669,
+    "time_to_request_ms": 353,
+    "first_content_frame_ms": 1669,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

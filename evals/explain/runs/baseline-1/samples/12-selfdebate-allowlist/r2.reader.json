@@ -1,0 +1,133 @@
+{
+  "key": "9bcd2bf88cd9805d0fe4d6d47272cd5e26b74a81413570abaeed35db93817e56",
+  "cost_usd": 0.039099499999999995,
+  "reader": {
+    "decision": "Approve the allowlist in plugin_env (PATH, HOME, LANG, HTTPS_PROXY, TINKERBOX_*), delete DENYLIST, and add the one-sentence line to docs/plugin-contract.md. Do not ship the denylist edit as the primary fix.",
+    "decision_reason": "The message shows the denylist is the root cause: any new secret in deploy/runner.env leaks until someone remembers to denylist it, and BILLING_WEBHOOK_SECRET already leaks today. Each allowlisted name has a checked in-repo consumer, and the only stated cost is that a future plugin needing another variable must be allowlisted or renamed to TINKERBOX_*.",
+    "reconstruction": {
+      "problem": "plugin_env in runner/spawn.py copies all of os.environ into each plugin and removes only the three names in DENYLIST. STRIPE_API_KEY was added to deploy/runner.env on 2 October without updating DENYLIST. feed-fetch/main.py:14 prints its whole environment to stderr under debug, and a customer pasted that into a public ticket. Selin Aydin reported it as INC-57 on 24 October and STRIPE_API_KEY was rotated.",
+      "what_breaks": "STRIPE_API_KEY, SENTRY_DSN and BILLING_WEBHOOK_SECRET reach plugins and leak through the debug dump. Any future secret added to runner.env leaks the same way. Adding only the two named keys to DENYLIST would leave BILLING_WEBHOOK_SECRET exposed.",
+      "fix": "Change plugin_env to copy only PATH, HOME, LANG, HTTPS_PROXY and names starting with TINKERBOX_, and delete DENYLIST. Add the sentence 'A plugin sees only PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_*.' to docs/plugin-contract.md. Removing the debug dump in feed-fetch is optional and comes later.",
+      "cost": "A future plugin that needs another variable breaks until that name is allowlisted or renamed to TINKERBOX_*. Plugins outside this repository were not checked and may need other variables. The alternative, the denylist edit plus BILLING_WEBHOOK_SECRET, is a three-line change with no breakage risk but leaves the root cause in place."
+    },
+    "follow_up_questions": [
+      "Do any plugins outside this repository run under this runner? If so, which variables do they need? This only matters if I must ship before checking them."
+    ],
+    "closing_answer": "I approve the allowlist in plugin_env, with DENYLIST deleted and the doc sentence added. I do not take the denylist edit with BILLING_WEBHOOK_SECRET."
+  },
+  "raw": {
+    "duration_api_ms": 13200,
+    "stop_reason": "tool_use",
+    "session_id": "7da9656e-ddc9-4f70-9f84-9bd118efc945",
+    "total_cost_usd": 0.039099499999999995,
+    "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 4347,
+      "cache_read_input_tokens": 6935,
+      "output_tokens": 2101,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4347,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1031,
+          "cache_read_input_tokens": 4962,
+          "cache_creation_input_tokens": 1358,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1358
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 4,
+        "outputTokens": 2101,
+        "cacheReadInputTokens": 6935,
+        "cacheCreationInputTokens": 4347,
+        "webSearchRequests": 0,
+        "costUSD": 0.039099499999999995,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4347,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 5,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve the allowlist in plugin_env (PATH, HOME, LANG, HTTPS_PROXY, TINKERBOX_*), delete DENYLIST, and add the one-sentence line to docs/plugin-contract.md. Do not ship the denylist edit as the primary fix.\",\"decision_reason\":\"The message shows the denylist is the root cause: any new secret in deploy/runner.env leaks until someone remembers to denylist it, and BILLING_WEBHOOK_SECRET already leaks today. Each allowlisted name has a checked in-repo consumer, and the only stated cost is that a future plugin needing another variable must be allowlisted or renamed to TINKERBOX_*.\",\"reconstruction\":{\"problem\":\"plugin_env in runner/spawn.py copies all of os.environ into each plugin and removes only the three names in DENYLIST. STRIPE_API_KEY was added to deploy/runner.env on 2 October without updating DENYLIST. feed-fetch/main.py:14 prints its whole environment to stderr under debug, and a customer pasted that into a public ticket. Selin Aydin reported it as INC-57 on 24 October and STRIPE_API_KEY was rotated.\",\"what_breaks\":\"STRIPE_API_KEY, SENTRY_DSN and BILLING_WEBHOOK_SECRET reach plugins and leak through the debug dump. Any future secret added to runner.env leaks the same way. Adding only the two named keys to DENYLIST would leave BILLING_WEBHOOK_SECRET exposed.\",\"fix\":\"Change plugin_env to copy only PATH, HOME, LANG, HTTPS_PROXY and names starting with TINKERBOX_, and delete DENYLIST. Add the sentence 'A plugin sees only PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_*.' to docs/plugin-contract.md. Removing the debug dump in feed-fetch is optional and comes later.\",\"cost\":\"A future plugin that needs another variable breaks until that name is allowlisted or renamed to TINKERBOX_*. Plugins outside this repository were not checked and may need other variables. The alternative, the denylist edit plus BILLING_WEBHOOK_SECRET, is a three-line change with no breakage risk but leaves the root cause in place.\"},\"follow_up_questions\":[\"Do any plugins outside this repository run under this runner? If so, which variables do they need? This only matters if I must ship before checking them.\"],\"closing_answer\":\"I approve the allowlist in plugin_env, with DENYLIST deleted and the doc sentence added. I do not take the denylist edit with BILLING_WEBHOOK_SECRET.\"}",
+    "structured_output": {
+      "decision": "Approve the allowlist in plugin_env (PATH, HOME, LANG, HTTPS_PROXY, TINKERBOX_*), delete DENYLIST, and add the one-sentence line to docs/plugin-contract.md. Do not ship the denylist edit as the primary fix.",
+      "decision_reason": "The message shows the denylist is the root cause: any new secret in deploy/runner.env leaks until someone remembers to denylist it, and BILLING_WEBHOOK_SECRET already leaks today. Each allowlisted name has a checked in-repo consumer, and the only stated cost is that a future plugin needing another variable must be allowlisted or renamed to TINKERBOX_*.",
+      "reconstruction": {
+        "problem": "plugin_env in runner/spawn.py copies all of os.environ into each plugin and removes only the three names in DENYLIST. STRIPE_API_KEY was added to deploy/runner.env on 2 October without updating DENYLIST. feed-fetch/main.py:14 prints its whole environment to stderr under debug, and a customer pasted that into a public ticket. Selin Aydin reported it as INC-57 on 24 October and STRIPE_API_KEY was rotated.",
+        "what_breaks": "STRIPE_API_KEY, SENTRY_DSN and BILLING_WEBHOOK_SECRET reach plugins and leak through the debug dump. Any future secret added to runner.env leaks the same way. Adding only the two named keys to DENYLIST would leave BILLING_WEBHOOK_SECRET exposed.",
+        "fix": "Change plugin_env to copy only PATH, HOME, LANG, HTTPS_PROXY and names starting with TINKERBOX_, and delete DENYLIST. Add the sentence 'A plugin sees only PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_*.' to docs/plugin-contract.md. Removing the debug dump in feed-fetch is optional and comes later.",
+        "cost": "A future plugin that needs another variable breaks until that name is allowlisted or renamed to TINKERBOX_*. Plugins outside this repository were not checked and may need other variables. The alternative, the denylist edit plus BILLING_WEBHOOK_SECRET, is a three-line change with no breakage risk but leaves the root cause in place."
+      },
+      "follow_up_questions": [
+        "Do any plugins outside this repository run under this runner? If so, which variables do they need? This only matters if I must ship before checking them."
+      ],
+      "closing_answer": "I approve the allowlist in plugin_env, with DENYLIST deleted and the doc sentence added. I do not take the denylist edit with BILLING_WEBHOOK_SECRET."
+    },
+    "ttft_ms": 6645,
+    "type": "result",
+    "duration_ms": 13571,
+    "uuid": "382e9787-1543-43e1-9811-8947a1a725e7",
+    "ttft_stream_ms": 1252,
+    "time_to_request_ms": 360,
+    "first_content_frame_ms": 1252,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

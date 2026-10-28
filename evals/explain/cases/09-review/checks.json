@@ -1,0 +1,41 @@
+{
+  "mode": "Review with blockers and suggestions in a fixed bullet format.",
+  "common": [],
+  "checks": [
+    {
+      "name": "format",
+      "kind": "mechanical",
+      "rule": "R43",
+      "fn": "review_format",
+      "args": {
+        "min_b": 1,
+        "min_s": 1
+      },
+      "criterion": "Every finding bullet matches the B/S status/action/name/description/fix/why format, with at least one B and one S."
+    },
+    {
+      "name": "status-open",
+      "kind": "mechanical",
+      "rule": "R43",
+      "fn": "regex_absent",
+      "args": {
+        "pattern": "status:\\s*FIXED"
+      },
+      "criterion": "No finding claims status FIXED, because the model applied no change."
+    },
+    {
+      "name": "no-em-dash",
+      "kind": "mechanical",
+      "rule": "R45",
+      "fn": "no_em_dash",
+      "criterion": "The message holds no em-dash outside code."
+    },
+    {
+      "name": "no-flattery",
+      "kind": "mechanical",
+      "rule": "R49",
+      "fn": "no_flattery",
+      "criterion": "The message holds no flattery or filler phrase from a fixed list."
+    }
+  ]
+}

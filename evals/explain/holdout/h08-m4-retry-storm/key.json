@@ -1,0 +1,95 @@
+{
+  "measures": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M7"
+  ],
+  "correct_recommendations": [
+    "Limit retries to one layer with a budget: remove the client retries in searchClient.ts or the query-gw retries, and cap the remaining retries, for example at 10 % of requests.",
+    "Make ranker shed load: bound its queue and reject or drop a request whose caller has already timed out, so that latency falls back under the timeouts after the trigger ends.",
+    "Do both: one retry layer with a budget, and a bounded ranker queue."
+  ],
+  "invalid_options": [
+    "Change nothing, because the merge was the cause.",
+    "Only add ranker instances.",
+    "Add more retries or longer client timeouts.",
+    "Schedule index merges at night as the only fix."
+  ],
+  "root_cause": "Each user search can cause up to 9 ranker requests: 3 client attempts times 3 query-gw attempts. When the merge pushed ranker latency above the 600 ms gateway timeout, the retries raised the load to about 3,500 requests per second, 3 times the capacity of 1,200. ranker kept scoring every queued request, including those whose caller had already timed out, so its queue and latency stayed above the timeouts after the merge ended. The overload sustained itself until the maintenance page cut the traffic.",
+  "dependent_facts": [
+    {
+      "fact": "Client retries",
+      "true_value": "searchClient.ts makes up to 3 attempts with a 2,000 ms timeout",
+      "source": "web/src/searchClient.ts",
+      "verifiable": true
+    },
+    {
+      "fact": "Gateway retries",
+      "true_value": "query-gw timeout 600 ms, 2 retries on timeout and 5xx, so 3 attempts",
+      "source": "query-gw/config.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Amplification",
+      "true_value": "up to 9 ranker requests per user search",
+      "source": "web/src/searchClient.ts and query-gw/config.yaml",
+      "verifiable": true
+    },
+    {
+      "fact": "Capacity and traffic",
+      "true_value": "ranker serves about 1,200 requests per second; normal peak about 400 searches per second",
+      "source": "docs/capacity.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Ranker queue",
+      "true_value": "unbounded executor queue; ranker scores every accepted request, also after the caller left",
+      "source": "ranker/server.py, ranker/model.py and docs/capacity.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Incident numbers",
+      "true_value": "merge 14:02 to 14:06; about 3,500 ranker requests per second until 14:39; queue about 180,000; recovery at 14:41 after the maintenance page; user traffic stayed at about 400 searches per second",
+      "source": "incidents/2026-10-22-search.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why did search not recover after the merge ended?",
+      "expected_answer": "Retries kept ranker at about 3,500 requests per second, 3 times its capacity, and ranker kept working through a queue of abandoned requests, so latency stayed above the timeouts."
+    },
+    {
+      "question": "Where does the extra load come from?",
+      "expected_answer": "3 client attempts times 3 gateway attempts, up to 9 ranker requests per search."
+    },
+    {
+      "question": "Why did the maintenance page fix it?",
+      "expected_answer": "It cut the incoming load to zero so the queue drained in about 2 minutes."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "One retry layer with a budget",
+      "trade_off": "Removes the 9x amplification at the source, but a slow ranker still builds a queue of abandoned work.",
+      "primary_when": "The team wants the smallest change at the source of the extra load.",
+      "must_list": false
+    },
+    {
+      "option": "Bounded ranker queue with load shedding or deadline checks",
+      "trade_off": "Lets ranker recover under any overload, but needs code in ranker and still receives 9x traffic during a slowdown.",
+      "primary_when": "Other callers can also overload ranker.",
+      "must_list": false
+    }
+  ],
+  "closing_decision": "One decision: approve the retry limit, the ranker load shedding, or both, or a single follow-up on the chosen fix such as the status code of a shed request.",
+  "understanding": {
+    "problem": "Retries in two layers multiply each search into up to 9 ranker requests, and ranker works through every queued request.",
+    "breaks": "A 4-minute slowdown turned into 37 minutes of outage, because the retry load and the queue of abandoned requests kept ranker above the timeouts after the merge ended.",
+    "fix": "Retry in one layer with a budget, and or bound the ranker queue and drop requests whose caller timed out.",
+    "cost": "Config and client changes for the retry limit; code in ranker for load shedding."
+  }
+}

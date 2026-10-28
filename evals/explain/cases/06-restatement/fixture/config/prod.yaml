@@ -1,0 +1,2 @@
+touch_on_request: false
+session_gc_schedule: "*/10 * * * *"

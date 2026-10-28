@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 22504,
+  "stop_reason": "end_turn",
+  "session_id": "b5bb6e02-5ef0-422c-9ec8-1317d5212eb7",
+  "total_cost_usd": 0.045750799999999994,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 3800,
+    "cache_read_input_tokens": 34348,
+    "output_tokens": 2710,
+    "output_tokens_details": {
+      "thinking_tokens": 540
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3800,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1177,
+        "cache_read_input_tokens": 10631,
+        "cache_creation_input_tokens": 774,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 774
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 2710,
+      "cacheReadInputTokens": 34348,
+      "cacheCreationInputTokens": 3800,
+      "webSearchRequests": 0,
+      "costUSD": 0.045750799999999994,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 540,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 3800,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 11,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Halvorsen Marine's uploads fail because two limits of 10 MB each reject any file over 10 MB. Aelita recommends raising both limits to 200 MB for `/api/files` only. That works without a frontend release.\n\n**Timeline without the fix**\n\n1. Eirik Dahl uploads a 94 MB drawing. The web client sends a plain form POST to `/api/files`.\n2. `nginx` reads the header and sees a body of 94371840 bytes. `client_max_body_size 10m` in `deploy/nginx/pinewood.conf:8` applies.\n3. `nginx` returns 413 and logs `client intended to send too large body`. The log shows this at 09:14:02 and again at 09:31:47 for 160 MB.\n4. The request never reaches `pinewood-app`.\n5. A second limit sits behind the first. `MAX_CONTENT_LENGTH = 10 * 1024 * 1024` in `app/settings.py:3` is loaded by `create_app`. Flask would also return 413.\n6. Fixing only `nginx` moves the 413 to Flask. Every drawing from 60 to 180 MB fails.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `nginx` accepts the body because `/api/files` allows 200m. It buffers the body to `/var/cache/nginx/client_temp`.\n3. The upload from the 20 Mbit/s uplink takes about 72 seconds for 180 MB. `nginx` absorbs this time. The gunicorn `timeout = 30` does not apply.\n4. `nginx` forwards the full body to `pinewood-app` at network speed. Flask accepts it under the new 200 MB cap.\n5. `storage.put` sends the file to `pinewood-files` at about 60 MB/s. A 180 MB file takes about 3 seconds, so the worker stays under 30 seconds.\n6. `upload_file` returns 201 with the key. The drawing is stored.\n\n**What changes**\n\n- `deploy/nginx/pinewood.conf`: add `location = /api/files` with `client_max_body_size 200m;` and the same `proxy_pass` and headers as `/api/`. Other `/api/` routes keep 10m.\n- `app/settings.py`: old `MAX_CONTENT_LENGTH` is 10 MiB. New value is 200 MiB.\n- `docs/ops.md`: add one line stating the 200 MB limit on `/api/files`.\n\n**Recommendation.** Aelita recommends the two limit changes. Load is small. 25 drawings per day at up to 180 MB is at most 4.5 GB per day through a 20 GB buffer volume. Each upload holds a sync worker for about 3 seconds, so 4 workers are enough. The cost is that Flask's cap is global. `nginx` still guards the other routes at 10m. Because the 200 MB cap covers every account, any customer can now send 200 MB files to `/api/files`. Nothing in the repo suggests that is a problem.\n\n**Alternative: direct upload with `presign_post`.** The browser uploads straight to `pinewood-files`. This removes the body from `nginx` and the workers. It needs a new endpoint and a web client change. The frontend team is away until 9 November, so it misses Friday 30 October. It becomes the primary if uploads grow to many users or files over 200 MB.\n\n**Question.** Does Aelita apply the 200 MB limits to `/api/files` in `pinewood.conf` and `settings.py`, or do you want a different cap?",
+  "ttft_ms": 1478,
+  "type": "result",
+  "duration_ms": 22921,
+  "uuid": "f643db4f-bda7-4030-9760-cdd8debd84f1",
+  "ttft_stream_ms": 1419,
+  "time_to_request_ms": 385,
+  "first_content_frame_ms": 1419,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

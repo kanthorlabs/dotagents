@@ -1,0 +1,1 @@
+Explain why `report-builder` produced an empty October report for tenant `northwind` on 26 October. The `ledgerly` repository and the job log are in the current directory. The flag service `flagd` is not reachable from here, and nobody has its audit log at hand.

@@ -1,0 +1,172 @@
+{
+  "key": "cdc125f36ed54e8a9d691aa7e1df3f4ce61f6c5eaa121cfef06b11fc780e96ba",
+  "cost_usd": 0.03637,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends passing `conn`. It removes the cause, which is the nested acquire.\" Matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`pg-copperline` shows 38 of 200 connections\"; \"10 `PoolTimeout` in `hold_seats` and 4 in `checkout`\"; \"`in_flight=3`\". All match the key and none is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The required question \"Why not a bigger pool?\" is never answered. The message never mentions raising max_size or says the deadlock returns at the new size."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"`checkout` holds one pool connection (`max_size=10`), then `hold_seats` calls `pool.connection()` for a second.\" Problem, breaks, fix and cost (signature change) all match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Should I change `hold_seats` to take the open `conn`... or add the semaphore instead?\" This is one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Add a semaphore of 5... needs no signature change. It keeps the nested pattern and the split commit. It becomes the primary if `hold_seats` must keep its own transaction.\""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8125,
+    "stop_reason": "tool_use",
+    "session_id": "3bbbbdcf-7882-41b3-b6de-c0887985e8e6",
+    "total_cost_usd": 0.03637,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6115,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1172,
+      "output_tokens_details": {
+        "thinking_tokens": 629
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6115,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1172,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6115,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6115
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1172,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6115,
+        "webSearchRequests": 0,
+        "costUSD": 0.03637,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 629,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6115,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends passing `conn`. It removes the cause, which is the nested acquire.\\\" Matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`pg-copperline` shows 38 of 200 connections\\\"; \\\"10 `PoolTimeout` in `hold_seats` and 4 in `checkout`\\\"; \\\"`in_flight=3`\\\". All match the key and none is deferred.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The required question \\\"Why not a bigger pool?\\\" is never answered. The message never mentions raising max_size or says the deadlock returns at the new size.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"`checkout` holds one pool connection (`max_size=10`), then `hold_seats` calls `pool.connection()` for a second.\\\" Problem, breaks, fix and cost (signature change) all match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Should I change `hold_seats` to take the open `conn`... or add the semaphore instead?\\\" This is one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Add a semaphore of 5... needs no signature change. It keeps the nested pattern and the split commit. It becomes the primary if `hold_seats` must keep its own transaction.\\\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends passing `conn`. It removes the cause, which is the nested acquire.\" Matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`pg-copperline` shows 38 of 200 connections\"; \"10 `PoolTimeout` in `hold_seats` and 4 in `checkout`\"; \"`in_flight=3`\". All match the key and none is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The required question \"Why not a bigger pool?\" is never answered. The message never mentions raising max_size or says the deadlock returns at the new size."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"`checkout` holds one pool connection (`max_size=10`), then `hold_seats` calls `pool.connection()` for a second.\" Problem, breaks, fix and cost (signature change) all match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Should I change `hold_seats` to take the open `conn`... or add the semaphore instead?\" This is one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Add a semaphore of 5... needs no signature change. It keeps the nested pattern and the split commit. It becomes the primary if `hold_seats` must keep its own transaction.\""
+        }
+      ]
+    },
+    "ttft_ms": 5818,
+    "type": "result",
+    "duration_ms": 8547,
+    "uuid": "49551d4e-0db7-45f3-8306-30ac18b8e1a5",
+    "ttft_stream_ms": 1573,
+    "time_to_request_ms": 420,
+    "first_content_frame_ms": 1573,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

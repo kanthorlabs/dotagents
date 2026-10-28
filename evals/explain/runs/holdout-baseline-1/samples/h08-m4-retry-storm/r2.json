@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 28908,
+  "stop_reason": "end_turn",
+  "session_id": "36e5d209-35b1-4df0-a448-161839898e41",
+  "total_cost_usd": 0.0481105,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2631,
+    "cache_read_input_tokens": 23745,
+    "output_tokens": 3520,
+    "output_tokens_details": {
+      "thinking_tokens": 1211
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2631,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2851,
+        "cache_read_input_tokens": 8131,
+        "cache_creation_input_tokens": 2128,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2128
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 3520,
+      "cacheReadInputTokens": 23745,
+      "cacheCreationInputTokens": 2631,
+      "webSearchRequests": 0,
+      "costUSD": 0.0481105,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1211,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2631,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Search stayed down because every user search turned into about 9 `ranker` requests, and `ranker` kept scoring requests whose clients had already given up. That load stayed above capacity after the merge ended. Aelita recommends a bounded queue with load shedding in `ranker/server.py`, plus fewer retry layers.\n\n**Existing behaviour**\n\n1. `web/src/searchClient.ts` makes up to 3 attempts per search, with a 2000 ms timeout each.\n2. `query-gw/config.yaml` gives `ranker` a 600 ms timeout and 2 retries on timeout or 5xx. That is 3 tries per attempt.\n3. `ranker/server.py` hands each request to a 64-thread `ThreadPoolExecutor`. Its queue has no limit, and nothing checks whether the client is still waiting.\n4. `docs/capacity.md` says 8 instances serve about 1,200 requests per second.\n\n**Timeline without the fix**\n\n1. 14:02: the merge starts and p99 rises from 400 ms to 900 ms. This is above the 600 ms `query-gw` timeout.\n2. 14:04: `query-gw` times out more than 50 % of requests and retries them. `ranker` receives about 3,500 requests per second from 400 searches per second.\n3. The multiplier is 3 `web` attempts \u00d7 3 `query-gw` tries = 9. That gives 400 \u00d7 9 = 3,600 per second, three times the 1,200 capacity.\n4. 14:06: the merge ends and `ranker` is fast again. The queue already holds a backlog, and the executor scores every entry in order.\n5. Each new request waits behind the backlog, far longer than 600 ms. Even 10,000 queued requests mean more than 8 seconds of wait. It times out, and `query-gw` and `web` retry it. The retries refill the queue, and `ranker` spends its capacity on abandoned requests.\n6. 14:06 to 14:39: the rate holds at 3,400 to 3,600 per second and the queue reaches 180,000. The error rate is 97 %.\n7. 14:39: the maintenance page stops user traffic, so no new retries arrive. The queue drains in about 2 minutes.\n8. 14:41: search works again. Nothing inside the system could have ended the overload without that manual step.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. 14:06: the merge ends. The `ranker` queue is capped, for example at about 700 entries, which is roughly 600 ms of work at 1,200 per second. Beyond the cap, `ranker` returns 429 immediately.\n5. The queue never holds more than about 600 ms of work. Requests that get in are served before their client times out.\n6. Excess requests get a fast 429. `query-gw` does not retry it, because `retry_on` lists only timeout and 5xx.\n7. Load falls back to 400 searches per second within seconds. Search recovers by itself at about 14:06.\n\n**What changes**\n\n- `ranker/server.py`: `rank` currently always awaits `run_in_executor`. It will count in-flight requests and return 429 when the count passes the cap. The cap is a constant, for example `MAX_QUEUED = 700`.\n- `web/src/searchClient.ts`: `MAX_ATTEMPTS` goes from 3 to 1, or the retry runs only on a fast 429 with backoff. I could not read `./http`, so I don't know which errors `fetchJson` raises.\n- `query-gw/config.yaml`: `retries` goes from 2 to 0 or 1. This cuts the multiplier from 9 to 1 or 2.\n\n**Recommendation.** Aelita recommends the bounded queue in `ranker` first. It removes the cause that made the overload permanent: unbounded dead work. It costs a few rejected searches during a real overload. The cap needs tuning, and a value too low sheds healthy traffic. The retry cuts are a second step. Without them, `web` still retries 429s at 3\u00d7.\n\n**Alternative: remove retries only.** Set `web` to 1 attempt and `query-gw` to 0 retries. This is a config edit with no new mechanism. It leaves the unbounded queue, so any burst above capacity still builds a backlog. It becomes the primary if `ranker` cannot be redeployed soon.\n\n**Alternative: drop expired requests.** The client sends a deadline and `ranker` skips entries past it. This is more precise than a fixed cap. It needs a new header and changes in all three layers.\n\n**Open item.** The numbers don't fully reconcile. At 3,500 per second in and 1,200 per second capacity, the queue would grow far beyond 180,000 over 33 minutes. The mechanism still holds, but the notes may not list all the load, so the cap should be tuned from real data.\n\n**Question.** Should I implement the bounded queue in `ranker/server.py` first and leave the retry settings for the next item?",
+  "ttft_ms": 1423,
+  "type": "result",
+  "duration_ms": 29215,
+  "uuid": "9e9d6ac2-62dc-43ae-8a57-62133f8afc8a",
+  "ttft_stream_ms": 1097,
+  "time_to_request_ms": 279,
+  "first_content_frame_ms": 1097,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

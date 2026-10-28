@@ -1,0 +1,172 @@
+{
+  "key": "43dbb6eabbf9c9dd905c4d61d8e963406f3094fb606eed589bb50a99df77d16c",
+  "cost_usd": 0.036222000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the longer TTL plus the removal of `none`... works without knowing which region\" \u2014 fixes both readings, matching the first correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`lock_backend: none`, autoscale up to 3 replicas\"; \"60-second TTL\"; \"about 4 minutes\"; \"works without knowing which region\" \u2014 all match the key, and the region is treated as unknown."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message answers the region (unknown, both covered), why each lock failed, and that the fix covers both. Reader's follow_up_questions is empty."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"eu-west... 60s TTL expired at 01:01... us-east `acquire` always returns True\" and the fix covers both regions; this agrees with the key's problem, breaks, fix and cost."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the 900-second TTL with `redis` in `us-east` and `none` removed, or do you want the idempotency key instead?\" One decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: idempotency key per purchase order... costs a change in `purchasing`... primary if lock outages must never cause double purchases.\" Valid alternative, with trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 7993,
+    "stop_reason": "tool_use",
+    "session_id": "f7d781ae-f5ad-4a70-9323-a6fa346bddbd",
+    "total_cost_usd": 0.036222000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6198,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1124,
+      "output_tokens_details": {
+        "thinking_tokens": 574
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6198,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1124,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6198,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6198
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1124,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6198,
+        "webSearchRequests": 0,
+        "costUSD": 0.036222000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 574,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6198,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the longer TTL plus the removal of `none`... works without knowing which region\\\" \u2014 fixes both readings, matching the first correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`lock_backend: none`, autoscale up to 3 replicas\\\"; \\\"60-second TTL\\\"; \\\"about 4 minutes\\\"; \\\"works without knowing which region\\\" \u2014 all match the key, and the region is treated as unknown.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message answers the region (unknown, both covered), why each lock failed, and that the fix covers both. Reader's follow_up_questions is empty.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"eu-west... 60s TTL expired at 01:01... us-east `acquire` always returns True\\\" and the fix covers both regions; this agrees with the key's problem, breaks, fix and cost.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the 900-second TTL with `redis` in `us-east` and `none` removed, or do you want the idempotency key instead?\\\" One decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: idempotency key per purchase order... costs a change in `purchasing`... primary if lock outages must never cause double purchases.\\\" Valid alternative, with trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the longer TTL plus the removal of `none`... works without knowing which region\" \u2014 fixes both readings, matching the first correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`lock_backend: none`, autoscale up to 3 replicas\"; \"60-second TTL\"; \"about 4 minutes\"; \"works without knowing which region\" \u2014 all match the key, and the region is treated as unknown."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message answers the region (unknown, both covered), why each lock failed, and that the fix covers both. Reader's follow_up_questions is empty."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"eu-west... 60s TTL expired at 01:01... us-east `acquire` always returns True\" and the fix covers both regions; this agrees with the key's problem, breaks, fix and cost."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the 900-second TTL with `redis` in `us-east` and `none` removed, or do you want the idempotency key instead?\" One decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: idempotency key per purchase order... costs a change in `purchasing`... primary if lock outages must never cause double purchases.\" Valid alternative, with trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 5534,
+    "type": "result",
+    "duration_ms": 8506,
+    "uuid": "b6140d06-6040-4ed1-b13d-dca3c8e450bf",
+    "ttft_stream_ms": 1400,
+    "time_to_request_ms": 516,
+    "first_content_frame_ms": 1400,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

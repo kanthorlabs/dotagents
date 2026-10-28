@@ -1,0 +1,172 @@
+{
+  "key": "9967132e3b4f1317f013c85a4b80475e23322e2ec3e27d9a4dfb2aa51025b17a",
+  "cost_usd": 0.031543999999999996,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends moving the sync to `POST /v2/contacts:batchUpsert` and keeping a small `Retry-After` retry as a safety net.\" Matches the key's batchUpsert recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"`docs/juniper-api.md` says the batch response lists a result per contact. It does not give the field names.\" Batch endpoint is a verifiable fact, but the message leaves the response schema unresolved."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"Backoff stops the wasted 429 calls, but throughput stays at 100 per minute... about 12,000 per night.\" All three required questions are answered; the reader's follow-ups are detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"one PUT per contact... 400 requests per minute against a limit of 100\"; fix is batch_upsert in batches of 100; cost is a rewrite of the call path and success handling. All match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the batch rewrite with a `Retry-After` retry, or do you want the plain backoff on `PUT`...?\" One question, one decision; reader answered: \"I approve the batch rewrite\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: enterprise tier... costs 1,450 USD per month. The lead time is 3 weeks, so it misses the Friday deadline.\" It is in invalid_options and was offered as an alternative."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 4345,
+    "stop_reason": "tool_use",
+    "session_id": "c9ae0590-a4d1-43e0-a91c-5623792dc0cf",
+    "total_cost_usd": 0.031543999999999996,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6336,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 601,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6336,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 601,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6336,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6336
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 601,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6336,
+        "webSearchRequests": 0,
+        "costUSD": 0.031543999999999996,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6336,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends moving the sync to `POST /v2/contacts:batchUpsert` and keeping a small `Retry-After` retry as a safety net.\\\" Matches the key's batchUpsert recommendation.\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"`docs/juniper-api.md` says the batch response lists a result per contact. It does not give the field names.\\\" Batch endpoint is a verifiable fact, but the message leaves the response schema unresolved.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"Backoff stops the wasted 429 calls, but throughput stays at 100 per minute... about 12,000 per night.\\\" All three required questions are answered; the reader's follow-ups are detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"one PUT per contact... 400 requests per minute against a limit of 100\\\"; fix is batch_upsert in batches of 100; cost is a rewrite of the call path and success handling. All match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the batch rewrite with a `Retry-After` retry, or do you want the plain backoff on `PUT`...?\\\" One question, one decision; reader answered: \\\"I approve the batch rewrite\\\".\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: enterprise tier... costs 1,450 USD per month. The lead time is 3 weeks, so it misses the Friday deadline.\\\" It is in invalid_options and was offered as an alternative.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends moving the sync to `POST /v2/contacts:batchUpsert` and keeping a small `Retry-After` retry as a safety net.\" Matches the key's batchUpsert recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"`docs/juniper-api.md` says the batch response lists a result per contact. It does not give the field names.\" Batch endpoint is a verifiable fact, but the message leaves the response schema unresolved."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"Backoff stops the wasted 429 calls, but throughput stays at 100 per minute... about 12,000 per night.\" All three required questions are answered; the reader's follow-ups are detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"one PUT per contact... 400 requests per minute against a limit of 100\"; fix is batch_upsert in batches of 100; cost is a rewrite of the call path and success handling. All match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the batch rewrite with a `Retry-After` retry, or do you want the plain backoff on `PUT`...?\" One question, one decision; reader answered: \"I approve the batch rewrite\"."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: enterprise tier... costs 1,450 USD per month. The lead time is 3 weeks, so it misses the Friday deadline.\" It is in invalid_options and was offered as an alternative."
+        }
+      ]
+    },
+    "ttft_ms": 4724,
+    "type": "result",
+    "duration_ms": 4756,
+    "uuid": "3b7cb11e-5b57-4d1f-ba14-358b437b29e1",
+    "ttft_stream_ms": 1407,
+    "time_to_request_ms": 411,
+    "first_content_frame_ms": 1407,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

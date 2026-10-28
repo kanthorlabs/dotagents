@@ -1,0 +1,135 @@
+{
+  "key": "a1634e85f35b04ffab3eaeb98f74d0efa6a2a68a2bbad176d55020e60ad62684",
+  "cost_usd": 0.0221533,
+  "reader": {
+    "decision": "Approve removing the `digest_builder` line from the crontab on `ops-box-2` (live host and repo copy), tick the checklist item, then add the unique index plus `ON CONFLICT DO NOTHING` as a second step after cleaning up duplicate rows.",
+    "decision_reason": "The message identifies the root cause as two schedulers running the same job, and removing the crontab line fixes it at the source for one edit, with the index as a data-layer guard afterward.",
+    "reconstruction": {
+      "problem": "Since late September, the Monday digest is sent twice to every subscriber because two schedulers both run `jobs.digest_builder`: the `digest-builder` Kubernetes CronJob (created 21 Sept) and the old crontab on `ops-box-2`, whose removal checklist item was never ticked. Each run inserts 18412 pending rows into `outbox`, and `db/schema.sql` has no unique constraint on `(subscriber_id, digest_date)`, so each subscriber gets two rows and two emails.",
+      "what_breaks": "Every subscriber receives the digest twice each Monday. Deduping in `digest-mailer` by email would also need a lookup of already-sent rows, because the second run can insert after the first rows are marked `sent`. The unique index cannot be created until existing duplicate rows (every Monday since late September) are deleted, and without `ON CONFLICT DO NOTHING` in `jobs/digest_builder.py:8` a second run would crash on the first conflict.",
+      "fix": "Delete line 3 (`jobs.digest_builder`) from the live crontab on `ops-box-2` and from `ops/hosts/ops-box-2/crontab`, tick the item in `docs/migrations/2026-09-k8s-cutover.md`. Then add `CREATE UNIQUE INDEX outbox_subscriber_digest_uq ON outbox (subscriber_id, digest_date)` to `db/schema.sql` and `ON CONFLICT (subscriber_id, digest_date) DO NOTHING` to the INSERT in `jobs/digest_builder.py:8`.",
+      "cost": "One edit on `ops-box-2` (the repo copy is only a record, so the real host must be edited) for the crontab fix. The index step requires deleting existing duplicate outbox rows first. If the index alone is used, two jobs keep running and one run is wasted each Monday."
+    },
+    "follow_up_questions": [
+      "Can someone reach ops-box-2 today to edit the live crontab?",
+      "Which duplicate outbox rows are safe to delete before creating the index, given rows may already be marked sent?"
+    ],
+    "closing_answer": "Yes, I approve removing the `digest_builder` line from the crontab on `ops-box-2`, with the unique index (and `ON CONFLICT DO NOTHING`) added as the second step after duplicate rows are cleaned up."
+  },
+  "raw": {
+    "duration_api_ms": 6962,
+    "stop_reason": "tool_use",
+    "session_id": "ee015035-7b74-411d-972b-effb5100b654",
+    "total_cost_usd": 0.0221533,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2833,
+      "cache_read_input_tokens": 1973,
+      "output_tokens": 1062,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2833,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1062,
+          "cache_read_input_tokens": 1973,
+          "cache_creation_input_tokens": 2833,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2833
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1062,
+        "cacheReadInputTokens": 1973,
+        "cacheCreationInputTokens": 2833,
+        "webSearchRequests": 0,
+        "costUSD": 0.0221533,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2833,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approve removing the `digest_builder` line from the crontab on `ops-box-2` (live host and repo copy), tick the checklist item, then add the unique index plus `ON CONFLICT DO NOTHING` as a second step after cleaning up duplicate rows.\",\"decision_reason\":\"The message identifies the root cause as two schedulers running the same job, and removing the crontab line fixes it at the source for one edit, with the index as a data-layer guard afterward.\",\"reconstruction\":{\"problem\":\"Since late September, the Monday digest is sent twice to every subscriber because two schedulers both run `jobs.digest_builder`: the `digest-builder` Kubernetes CronJob (created 21 Sept) and the old crontab on `ops-box-2`, whose removal checklist item was never ticked. Each run inserts 18412 pending rows into `outbox`, and `db/schema.sql` has no unique constraint on `(subscriber_id, digest_date)`, so each subscriber gets two rows and two emails.\",\"what_breaks\":\"Every subscriber receives the digest twice each Monday. Deduping in `digest-mailer` by email would also need a lookup of already-sent rows, because the second run can insert after the first rows are marked `sent`. The unique index cannot be created until existing duplicate rows (every Monday since late September) are deleted, and without `ON CONFLICT DO NOTHING` in `jobs/digest_builder.py:8` a second run would crash on the first conflict.\",\"fix\":\"Delete line 3 (`jobs.digest_builder`) from the live crontab on `ops-box-2` and from `ops/hosts/ops-box-2/crontab`, tick the item in `docs/migrations/2026-09-k8s-cutover.md`. Then add `CREATE UNIQUE INDEX outbox_subscriber_digest_uq ON outbox (subscriber_id, digest_date)` to `db/schema.sql` and `ON CONFLICT (subscriber_id, digest_date) DO NOTHING` to the INSERT in `jobs/digest_builder.py:8`.\",\"cost\":\"One edit on `ops-box-2` (the repo copy is only a record, so the real host must be edited) for the crontab fix. The index step requires deleting existing duplicate outbox rows first. If the index alone is used, two jobs keep running and one run is wasted each Monday.\"},\"follow_up_questions\":[\"Can someone reach ops-box-2 today to edit the live crontab?\",\"Which duplicate outbox rows are safe to delete before creating the index, given rows may already be marked sent?\"],\"closing_answer\":\"Yes, I approve removing the `digest_builder` line from the crontab on `ops-box-2`, with the unique index (and `ON CONFLICT DO NOTHING`) added as the second step after duplicate rows are cleaned up.\"}",
+    "structured_output": {
+      "decision": "Approve removing the `digest_builder` line from the crontab on `ops-box-2` (live host and repo copy), tick the checklist item, then add the unique index plus `ON CONFLICT DO NOTHING` as a second step after cleaning up duplicate rows.",
+      "decision_reason": "The message identifies the root cause as two schedulers running the same job, and removing the crontab line fixes it at the source for one edit, with the index as a data-layer guard afterward.",
+      "reconstruction": {
+        "problem": "Since late September, the Monday digest is sent twice to every subscriber because two schedulers both run `jobs.digest_builder`: the `digest-builder` Kubernetes CronJob (created 21 Sept) and the old crontab on `ops-box-2`, whose removal checklist item was never ticked. Each run inserts 18412 pending rows into `outbox`, and `db/schema.sql` has no unique constraint on `(subscriber_id, digest_date)`, so each subscriber gets two rows and two emails.",
+        "what_breaks": "Every subscriber receives the digest twice each Monday. Deduping in `digest-mailer` by email would also need a lookup of already-sent rows, because the second run can insert after the first rows are marked `sent`. The unique index cannot be created until existing duplicate rows (every Monday since late September) are deleted, and without `ON CONFLICT DO NOTHING` in `jobs/digest_builder.py:8` a second run would crash on the first conflict.",
+        "fix": "Delete line 3 (`jobs.digest_builder`) from the live crontab on `ops-box-2` and from `ops/hosts/ops-box-2/crontab`, tick the item in `docs/migrations/2026-09-k8s-cutover.md`. Then add `CREATE UNIQUE INDEX outbox_subscriber_digest_uq ON outbox (subscriber_id, digest_date)` to `db/schema.sql` and `ON CONFLICT (subscriber_id, digest_date) DO NOTHING` to the INSERT in `jobs/digest_builder.py:8`.",
+        "cost": "One edit on `ops-box-2` (the repo copy is only a record, so the real host must be edited) for the crontab fix. The index step requires deleting existing duplicate outbox rows first. If the index alone is used, two jobs keep running and one run is wasted each Monday."
+      },
+      "follow_up_questions": [
+        "Can someone reach ops-box-2 today to edit the live crontab?",
+        "Which duplicate outbox rows are safe to delete before creating the index, given rows may already be marked sent?"
+      ],
+      "closing_answer": "Yes, I approve removing the `digest_builder` line from the crontab on `ops-box-2`, with the unique index (and `ON CONFLICT DO NOTHING`) added as the second step after duplicate rows are cleaned up."
+    },
+    "ttft_ms": 7309,
+    "type": "result",
+    "duration_ms": 7324,
+    "uuid": "c242c95c-6100-45ac-840d-14c5ba6707b2",
+    "ttft_stream_ms": 1401,
+    "time_to_request_ms": 362,
+    "first_content_frame_ms": 1401,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

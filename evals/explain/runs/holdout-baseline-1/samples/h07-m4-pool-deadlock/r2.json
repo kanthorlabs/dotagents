@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 23718,
+  "stop_reason": "end_turn",
+  "session_id": "ff55f6b7-bac8-42fa-8261-40165f8695f9",
+  "total_cost_usd": 0.0437926,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2626,
+    "cache_read_input_tokens": 23766,
+    "output_tokens": 3090,
+    "output_tokens_details": {
+      "thinking_tokens": 1215
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2626,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2431,
+        "cache_read_input_tokens": 8134,
+        "cache_creation_input_tokens": 2129,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2129
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 3090,
+      "cacheReadInputTokens": 23766,
+      "cacheCreationInputTokens": 2626,
+      "webSearchRequests": 0,
+      "costUSD": 0.0437926,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1215,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2626,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`checkout` holds one pool connection and then `hold_seats` asks the same pool for a second one. Once 10 requests are in flight on a replica, all 10 connections are taken and each holder waits for a connection that only another waiting holder could free. Aelita recommends passing the open `conn` into `hold_seats`.\n\n**Timeline without the fix**\n\n1. Normal traffic gives `in_flight=3` on `checkout-api-2`. Three requests hold at most 6 of the 10 connections in `pool`, so the second borrow always succeeds.\n2. At 19:00:01 the Halden Arena on-sale puts 14 requests in flight. Ten of them take a connection at `app/checkout.py:6`, so `pool_in_use=10`.\n3. Each of those 10 calls `hold_seats` and asks for a second connection at `app/seats.py:5`. The pool is empty, so they wait. The other 4 requests wait at `app/checkout.py:6`, so `pool_waiting=14`.\n4. No holder can finish without its second connection, and none releases its first one. This is a deadlock inside one process. Postgres shows `active_connections=38` of 200 because the limit is `max_size=10` per replica, not the database.\n5. At 19:00:31 the `timeout=30` expires. The log shows 10 `PoolTimeout` errors in `hold_seats` and 4 in `checkout`. All 14 requests return 500 together.\n6. The 12 queued requests refill the pool and deadlock again. The same failure repeats at 19:01:02.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. Each of the 10 holders runs the seat `UPDATE` on the connection it already holds. It needs no second borrow.\n4. Each request commits and releases its connection within milliseconds. The 4 extra requests wait briefly at `app/checkout.py:6` and then proceed.\n5. No request waits 30 seconds, so no `PoolTimeout` occurs and no 500s are returned.\n\n**What changes**\n\n- `app/seats.py`: `hold_seats(event_id, seat_ids)` borrows its own connection with `pool.connection()`. The new `hold_seats(conn, event_id, seat_ids)` uses the caller's `conn`, and the `pool` import is deleted.\n- `app/checkout.py`: line 12 changes from `hold_seats(order.event_id, order.seat_ids)` to `hold_seats(conn, order.event_id, order.seat_ids)`.\n\n**Recommendation.** Aelita recommends passing `conn` because it removes the cause. Each request then needs exactly one connection, so no concurrency level can deadlock. `hold_seats` also joins the `conn.transaction()` block. Before, it committed on its own connection, so a failed order could leave seats held for 10 minutes. Now they roll back with the order. `app/api.py` is the only caller of `checkout`, and `checkout` is the only caller of `hold_seats`, so nothing else breaks. Throughput stays capped at 10 concurrent checkouts per replica, so extra requests queue. Seat `UPDATE` row locks are now held until commit, which is the correct behaviour.\n\n**Alternative: cap in-flight checkouts below the pool size.** A semaphore of 5 per replica in `app/api.py` would stop the deadlock without touching `hold_seats`. It beats the recommendation only if `hold_seats` must stay on a separate connection. It wastes half the pool and leaves the seat-hold leak in place.\n\n**Question.** Do you approve passing `conn` into `hold_seats`, with the seat hold moving inside the order transaction?",
+  "ttft_ms": 1281,
+  "type": "result",
+  "duration_ms": 24040,
+  "uuid": "4d276b88-124d-4631-bbc8-110cca50e0b6",
+  "ttft_stream_ms": 978,
+  "time_to_request_ms": 289,
+  "first_content_frame_ms": 978,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

@@ -1,0 +1,39 @@
+{
+  "measures": [
+    "M3",
+    "M5"
+  ],
+  "correct_recommendations": [],
+  "invalid_options": [],
+  "root_cause": "Not applicable.",
+  "dependent_facts": [
+    {
+      "fact": "Cutover date",
+      "true_value": "14 November, before smtp-old-1 goes offline on 30 November",
+      "source": "prompt and docs/mail-provider.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Was the ruling recorded?",
+      "expected_answer": "Yes: cutover to smtp-mx-2 on 14 November."
+    },
+    {
+      "question": "Is any item still open?",
+      "expected_answer": "No. All three items are settled."
+    },
+    {
+      "question": "What happens next?",
+      "expected_answer": "One next step, such as the change of SMTP_RELAY for 14 November."
+    }
+  ],
+  "valid_alternatives": [],
+  "closing_decision": "none",
+  "understanding": {
+    "problem": "n/a",
+    "breaks": "n/a",
+    "fix": "n/a",
+    "cost": "n/a"
+  }
+}

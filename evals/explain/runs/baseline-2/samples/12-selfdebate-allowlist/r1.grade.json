@@ -1,0 +1,172 @@
+{
+  "key": "4df6ce192e883b63a766970ba03feaac3bd67183658698fb5cabfb3922388b1f",
+  "cost_usd": 0.038132,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the allowlist, because it removes the root cause\" with PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_*. This matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"starts from `dict(os.environ)`\"; \"feed-fetch ... prints `dict(os.environ)`\"; \"BILLING_WEBHOOK_SECRET\" is undenied; the plugin needs match the key. No statement contradicts the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message covers the full-environment copy, the BILLING_WEBHOOK_SECRET gap, the variables to keep, and \"a future plugin needing another variable fails\". The reader lists no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Replace DENYLIST with ALLOWED... A future plugin that needs another variable fails until someone adds it\". This matches the key's problem, breaks, fix and cost."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the allowlist in `runner/spawn.py`, or do you want the pattern denylist?\" This is one question and one decision. The reader answered \"I approve the allowlist\"."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: pattern denylist. Block names ending in `_KEY`, `_SECRET`...\" A pattern-based denylist is listed in invalid_options."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9116,
+    "stop_reason": "tool_use",
+    "session_id": "5965f411-7173-47c5-8903-37b5da94f307",
+    "total_cost_usd": 0.038132,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6183,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1321,
+      "output_tokens_details": {
+        "thinking_tokens": 732
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6183,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1321,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6183,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6183
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1321,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6183,
+        "webSearchRequests": 0,
+        "costUSD": 0.038132,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 732,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6183,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the allowlist, because it removes the root cause\\\" with PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_*. This matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"starts from `dict(os.environ)`\\\"; \\\"feed-fetch ... prints `dict(os.environ)`\\\"; \\\"BILLING_WEBHOOK_SECRET\\\" is undenied; the plugin needs match the key. No statement contradicts the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message covers the full-environment copy, the BILLING_WEBHOOK_SECRET gap, the variables to keep, and \\\"a future plugin needing another variable fails\\\". The reader lists no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Replace DENYLIST with ALLOWED... A future plugin that needs another variable fails until someone adds it\\\". This matches the key's problem, breaks, fix and cost.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the allowlist in `runner/spawn.py`, or do you want the pattern denylist?\\\" This is one question and one decision. The reader answered \\\"I approve the allowlist\\\".\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: pattern denylist. Block names ending in `_KEY`, `_SECRET`...\\\" A pattern-based denylist is listed in invalid_options.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the allowlist, because it removes the root cause\" with PATH, HOME, LANG, HTTPS_PROXY and TINKERBOX_*. This matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"starts from `dict(os.environ)`\"; \"feed-fetch ... prints `dict(os.environ)`\"; \"BILLING_WEBHOOK_SECRET\" is undenied; the plugin needs match the key. No statement contradicts the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message covers the full-environment copy, the BILLING_WEBHOOK_SECRET gap, the variables to keep, and \"a future plugin needing another variable fails\". The reader lists no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Replace DENYLIST with ALLOWED... A future plugin that needs another variable fails until someone adds it\". This matches the key's problem, breaks, fix and cost."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the allowlist in `runner/spawn.py`, or do you want the pattern denylist?\" This is one question and one decision. The reader answered \"I approve the allowlist\"."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: pattern denylist. Block names ending in `_KEY`, `_SECRET`...\" A pattern-based denylist is listed in invalid_options."
+        }
+      ]
+    },
+    "ttft_ms": 6822,
+    "type": "result",
+    "duration_ms": 9473,
+    "uuid": "11ae73b3-5cb1-4a8d-8742-07e8229704a6",
+    "ttft_stream_ms": 1805,
+    "time_to_request_ms": 356,
+    "first_content_frame_ms": 1805,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

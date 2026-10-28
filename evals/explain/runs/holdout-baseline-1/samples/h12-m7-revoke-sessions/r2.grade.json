@@ -1,0 +1,172 @@
+{
+  "key": "2598ffcecb3ec2edf213d3be639906f5e4ad88794da32be20e1b89ec0405320b",
+  "cost_usd": 0.03287,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends that `change_password` deletes all refresh tokens of the user before it issues the new pair.\" This matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`ACCESS_TTL` of 15 minutes\", \"`REFRESH_TTL` of 30 days\", \"free of database and Redis reads at 2,500 requests per second\". All match the key, and none is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"The laptop holds the new pair and stays logged in\" and \"loses access at most 15 minutes after step 3\". The reader's follow-ups (SR-12 text, transaction support) are detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"leaves all of the user's refresh_tokens rows... stolen phone keeps renewing... One extra DELETE statement... Access stays valid up to 15 minutes\". This agrees with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the refresh-token purge in `change_password`, or do you want the `token_version` alternative?\" There is one question with one decision, and the reader answered it."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Revocation is instant, not 15 minutes. It adds a Redis read to every request... It becomes the primary if the requirement drops to seconds.\" This gives the trade-off and the condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 6840,
+    "stop_reason": "tool_use",
+    "session_id": "345b3041-322b-4b31-a833-160010b13402",
+    "total_cost_usd": 0.03287,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5785,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 954,
+      "output_tokens_details": {
+        "thinking_tokens": 389
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5785,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 954,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5785,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5785
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 954,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5785,
+        "webSearchRequests": 0,
+        "costUSD": 0.03287,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 389,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5785,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends that `change_password` deletes all refresh tokens of the user before it issues the new pair.\\\" This matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`ACCESS_TTL` of 15 minutes\\\", \\\"`REFRESH_TTL` of 30 days\\\", \\\"free of database and Redis reads at 2,500 requests per second\\\". All match the key, and none is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"The laptop holds the new pair and stays logged in\\\" and \\\"loses access at most 15 minutes after step 3\\\". The reader's follow-ups (SR-12 text, transaction support) are detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"leaves all of the user's refresh_tokens rows... stolen phone keeps renewing... One extra DELETE statement... Access stays valid up to 15 minutes\\\". This agrees with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the refresh-token purge in `change_password`, or do you want the `token_version` alternative?\\\" There is one question with one decision, and the reader answered it.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Revocation is instant, not 15 minutes. It adds a Redis read to every request... It becomes the primary if the requirement drops to seconds.\\\" This gives the trade-off and the condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends that `change_password` deletes all refresh tokens of the user before it issues the new pair.\" This matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`ACCESS_TTL` of 15 minutes\", \"`REFRESH_TTL` of 30 days\", \"free of database and Redis reads at 2,500 requests per second\". All match the key, and none is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The laptop holds the new pair and stays logged in\" and \"loses access at most 15 minutes after step 3\". The reader's follow-ups (SR-12 text, transaction support) are detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"leaves all of the user's refresh_tokens rows... stolen phone keeps renewing... One extra DELETE statement... Access stays valid up to 15 minutes\". This agrees with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the refresh-token purge in `change_password`, or do you want the `token_version` alternative?\" There is one question with one decision, and the reader answered it."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Revocation is instant, not 15 minutes. It adds a Redis read to every request... It becomes the primary if the requirement drops to seconds.\" This gives the trade-off and the condition."
+        }
+      ]
+    },
+    "ttft_ms": 4947,
+    "type": "result",
+    "duration_ms": 7269,
+    "uuid": "51af8ca9-364c-4353-abc0-8c5eafb1edc1",
+    "ttft_stream_ms": 1807,
+    "time_to_request_ms": 426,
+    "first_content_frame_ms": 1808,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 32584,
+  "stop_reason": "end_turn",
+  "session_id": "ffadda1a-02db-461b-9c18-33356594951e",
+  "total_cost_usd": 0.0681769,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 5169,
+    "cache_read_input_tokens": 34649,
+    "output_tokens": 4402,
+    "output_tokens_details": {
+      "thinking_tokens": 1969
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 5169,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2699,
+        "cache_read_input_tokens": 11275,
+        "cache_creation_input_tokens": 1162,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1162
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 4402,
+      "cacheReadInputTokens": 34649,
+      "cacheCreationInputTokens": 5169,
+      "webSearchRequests": 0,
+      "costUSD": 0.0681769,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1969,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 5169,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 12,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`lantern-worker` loses these uploads because `consume.py:22` sets `auto_ack=True`, so RabbitMQ deletes each job on delivery. Kubernetes then SIGKILLs the pod mid-render. Aelita recommends acknowledging each job only after it finishes.\n\n**Timeline without the fix**\n\n1. RabbitMQ delivers jobs to `lantern-worker-7f9c-2` and deletes each one on delivery. Nothing limits prefetch, so the pool queue fills.\n2. At 14:02:05 to 14:02:07, u-88217, u-88218 and u-88219 start as videos. With u-88213, all 4 threads are busy. A video takes 25 to 70 seconds.\n3. At 14:02:10, SIGTERM arrives. `stop_consuming` runs and `drain` sets a 60s deadline. `values-prod.yaml:4` gives the pod only 20s.\n4. At 14:02:21, u-88213 finishes. `pool.shutdown(wait=False)` keeps queued work, so u-88220 and u-88221 start after SIGTERM.\n5. At 14:02:30, kubelet sends SIGKILL. The drain deadline of 14:03:10 never arrives. u-88217, u-88218, u-88219 and u-88221 die mid-render, so no thread can log an error.\n6. RabbitMQ holds no copy of those 4 jobs. The upload page shows a placeholder and no error, as `docs/thumbnails.md:6` says.\n\n**Timeline with the fix**, diverges at step 1.\n\n1. RabbitMQ delivers at most `CONCURRENCY` unacked jobs. It keeps each job until the worker acks it.\n4. At 14:02:21, u-88213 finishes and is acked. The queued jobs are cancelled and never start. They stay unacked.\n5. At 14:02:30, kubelet sends SIGKILL. The connection drops.\n6. RabbitMQ requeues every unacked job. Another worker renders u-88217, u-88218, u-88219 and u-88221. All 4 get thumbnails.\n\n**What changes**\n\n- `worker/consume.py` old behaviour: `auto_ack=True` and no prefetch. New behaviour: `auto_ack=False` and `channel.basic_qos(prefetch_count=settings.CONCURRENCY)`. `on_message` passes `method.delivery_tag` to `handle`. After `handle` succeeds, the worker thread calls `connection.add_callback_threadsafe` to run `channel.basic_ack`, because pika is not thread-safe. On an exception, it nacks with `requeue=True`.\n- `worker/lifecycle.py` old behaviour: `pool.shutdown(wait=False)` keeps queued jobs. New behaviour: `pool.shutdown(wait=False, cancel_futures=True)`.\n- `deploy/helm/values-prod.yaml` add: `LANTERN_DRAIN_SECONDS: \"15\"`. The drain deadline must stay below the 20s grace period.\n\n**Recommendation.** Aelita recommends the manual ack. It removes the root cause, which is that the broker forgets a job before the work is done. It also covers OOM kills and node loss. The cost is that a pod killed between `record_usage` and the ack redelivers the job, and the thumbnail is billed twice. Whether `meter.internal` dedups on `ref` is unverified. Its code is outside this repository (`docs/billing.md:4`). The Billing team can settle it.\n\n**Alternative: raise the grace period.** Keep `auto_ack=True` and set `terminationGracePeriodSeconds: 90` with `LANTERN_DRAIN_SECONDS: \"80\"`. It is a config-only change with no double-billing risk. It still loses jobs on OOM or node loss, and it slows every deploy. It becomes the primary if the consumer code cannot change this week.\n\n**Question.** Do you approve the manual ack with prefetch and cancelled queue, or do you prefer the longer grace period?",
+  "ttft_ms": 1500,
+  "type": "result",
+  "duration_ms": 33107,
+  "uuid": "e9b3267d-2898-45c5-bd68-aada550f6d71",
+  "ttft_stream_ms": 1218,
+  "time_to_request_ms": 484,
+  "first_content_frame_ms": 1218,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

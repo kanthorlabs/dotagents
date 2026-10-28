@@ -1,0 +1,48 @@
+{
+  "mode": "Explanation with two readings of the scenario, each with a fix.",
+  "common": [
+    "style",
+    "explanation"
+  ],
+  "checks": [
+    {
+      "name": "two-failing-timelines",
+      "kind": "mechanical",
+      "rule": "R29",
+      "fn": "label_count_min",
+      "args": {
+        "pattern": "^timeline without",
+        "n": 2
+      },
+      "criterion": "At least two sections are labeled Timeline without the fix."
+    },
+    {
+      "name": "two-fixed-timelines",
+      "kind": "mechanical",
+      "rule": "R29",
+      "fn": "label_count_min",
+      "args": {
+        "pattern": "^timeline with (the )?fix",
+        "n": 2
+      },
+      "criterion": "At least two sections are labeled Timeline with the fix."
+    },
+    {
+      "name": "fixed-starts-at-divergence",
+      "kind": "mechanical",
+      "rule": "R25",
+      "fn": "fixed_starts_at_divergence",
+      "criterion": "Each fixed timeline states diverges at step N and its first step is step N."
+    },
+    {
+      "name": "names-self",
+      "kind": "mechanical",
+      "rule": "R22",
+      "fn": "regex_present",
+      "args": {
+        "pattern": "\\bAelita (recommends|proposes|prefers|suggests)"
+      },
+      "criterion": "The recommendation names Aelita as the recommender."
+    }
+  ]
+}

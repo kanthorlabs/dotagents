@@ -1,0 +1,172 @@
+{
+  "key": "0615f384d719cd9f2a9e0003c9509052c055ad0d508f812ffca20f4d137eff56",
+  "cost_usd": 0.034254,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends fixing the migration and restoring the data, because the bad migration is the root cause.\" Matches the restore-with-90-day-filter recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"For `northwind` the cached value is on\" and \"Only `northwind` had it on.\" The key says hide_archived for northwind is unknown, but the message states it as fact."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The message never says the northwind hide_archived value is unknown or what settles it. Its answer to \"What is unknown and what settles it?\" is missing; it says the flag value is known."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader: \"report-builder then used a 3-day-old cached hide_archived flag, which was on for northwind.\" The key says the value is unknown and the fix waits on it."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "\"Should I draft the corrected migration and the restore statement, or only the flag change for `northwind`?\" The closing_decision is to get the hide_archived evidence or decide on the restore; the flag change is not part of it."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: turn off `hide_archived` for `northwind`.\" This is not a valid_alternatives entry, and it masks the data problem instead of correcting the data."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 7294,
+    "stop_reason": "tool_use",
+    "session_id": "4e557ce8-e137-44c5-bc96-6853d2413ade",
+    "total_cost_usd": 0.034254,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5946,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1028,
+      "output_tokens_details": {
+        "thinking_tokens": 496
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5946,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1028,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5946,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5946
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1028,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5946,
+        "webSearchRequests": 0,
+        "costUSD": 0.034254,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 496,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5946,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends fixing the migration and restoring the data, because the bad migration is the root cause.\\\" Matches the restore-with-90-day-filter recommendation.\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"For `northwind` the cached value is on\\\" and \\\"Only `northwind` had it on.\\\" The key says hide_archived for northwind is unknown, but the message states it as fact.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The message never says the northwind hide_archived value is unknown or what settles it. Its answer to \\\"What is unknown and what settles it?\\\" is missing; it says the flag value is known.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader: \\\"report-builder then used a 3-day-old cached hide_archived flag, which was on for northwind.\\\" The key says the value is unknown and the fix waits on it.\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"\\\"Should I draft the corrected migration and the restore statement, or only the flag change for `northwind`?\\\" The closing_decision is to get the hide_archived evidence or decide on the restore; the flag change is not part of it.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: turn off `hide_archived` for `northwind`.\\\" This is not a valid_alternatives entry, and it masks the data problem instead of correcting the data.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends fixing the migration and restoring the data, because the bad migration is the root cause.\" Matches the restore-with-90-day-filter recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"For `northwind` the cached value is on\" and \"Only `northwind` had it on.\" The key says hide_archived for northwind is unknown, but the message states it as fact."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The message never says the northwind hide_archived value is unknown or what settles it. Its answer to \"What is unknown and what settles it?\" is missing; it says the flag value is known."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader: \"report-builder then used a 3-day-old cached hide_archived flag, which was on for northwind.\" The key says the value is unknown and the fix waits on it."
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "\"Should I draft the corrected migration and the restore statement, or only the flag change for `northwind`?\" The closing_decision is to get the hide_archived evidence or decide on the restore; the flag change is not part of it."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: turn off `hide_archived` for `northwind`.\" This is not a valid_alternatives entry, and it masks the data problem instead of correcting the data."
+        }
+      ]
+    },
+    "ttft_ms": 4878,
+    "type": "result",
+    "duration_ms": 7641,
+    "uuid": "88189054-54a9-458d-b66a-176d04aa529e",
+    "ttft_stream_ms": 1209,
+    "time_to_request_ms": 347,
+    "first_content_frame_ms": 1210,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

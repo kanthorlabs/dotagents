@@ -1,0 +1,172 @@
+{
+  "key": "13416689d889060161acb956e8a7cd0606c3bb0703119ec16f7c02af7f9ad0aa",
+  "cost_usd": 0.03508,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends streaming the CSV from a generator.\" Matches the key's stream-the-CSV recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"idle_timeout_seconds: 30\", \"89 to 90\", \"timeout = 120\", \"neither and each needs an owner and on-call\". All match the key; the message states each one."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The \"what can break\" answer covers the 120 s gunicorn limit but never says a stream error mid-file leaves a partial download."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"builds the whole CSV in an io.StringIO before sending any byte\"; fix is a generator Response; cost is a worker busy about 90 s. Matches the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve streaming the CSV from `export_contacts`, or do you prefer one of the alternatives?\" This is one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "Raising idle_timeout and a background job are both valid alternatives. Each has a trade-off and a condition for becoming primary: \"only if streaming is impossible\" and \"when exports exceed the 120-second gunicorn limit\"."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8361,
+    "stop_reason": "tool_use",
+    "session_id": "5a9bc7b1-4c99-43d2-a2bf-695b8b69e3fe",
+    "total_cost_usd": 0.03508,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5925,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1119,
+      "output_tokens_details": {
+        "thinking_tokens": 600
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5925,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1119,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5925,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5925
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1119,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5925,
+        "webSearchRequests": 0,
+        "costUSD": 0.03508,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 600,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5925,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends streaming the CSV from a generator.\\\" Matches the key's stream-the-CSV recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"idle_timeout_seconds: 30\\\", \\\"89 to 90\\\", \\\"timeout = 120\\\", \\\"neither and each needs an owner and on-call\\\". All match the key; the message states each one.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The \\\"what can break\\\" answer covers the 120 s gunicorn limit but never says a stream error mid-file leaves a partial download.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"builds the whole CSV in an io.StringIO before sending any byte\\\"; fix is a generator Response; cost is a worker busy about 90 s. Matches the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve streaming the CSV from `export_contacts`, or do you prefer one of the alternatives?\\\" This is one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"Raising idle_timeout and a background job are both valid alternatives. Each has a trade-off and a condition for becoming primary: \\\"only if streaming is impossible\\\" and \\\"when exports exceed the 120-second gunicorn limit\\\".\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends streaming the CSV from a generator.\" Matches the key's stream-the-CSV recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"idle_timeout_seconds: 30\", \"89 to 90\", \"timeout = 120\", \"neither and each needs an owner and on-call\". All match the key; the message states each one."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The \"what can break\" answer covers the 120 s gunicorn limit but never says a stream error mid-file leaves a partial download."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"builds the whole CSV in an io.StringIO before sending any byte\"; fix is a generator Response; cost is a worker busy about 90 s. Matches the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve streaming the CSV from `export_contacts`, or do you prefer one of the alternatives?\" This is one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "Raising idle_timeout and a background job are both valid alternatives. Each has a trade-off and a condition for becoming primary: \"only if streaming is impossible\" and \"when exports exceed the 120-second gunicorn limit\"."
+        }
+      ]
+    },
+    "ttft_ms": 6196,
+    "type": "result",
+    "duration_ms": 8834,
+    "uuid": "4bb4cbb4-adc9-4dfc-a4ec-635ba6b02447",
+    "ttft_stream_ms": 1278,
+    "time_to_request_ms": 471,
+    "first_content_frame_ms": 1279,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

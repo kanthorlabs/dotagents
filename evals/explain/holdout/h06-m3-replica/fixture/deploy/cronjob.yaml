@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: osprey-nightly-report
+spec:
+  schedule: "0 1 * * *"
+  timeZone: "UTC"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: report
+              image: registry.osprey.example/osprey-reports:2026.10.2
+              command: ["python", "-m", "jobs.nightly_report"]
+              env:
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: osprey-primary
+                      key: url

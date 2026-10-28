@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 30838,
+  "stop_reason": "end_turn",
+  "session_id": "90cfefe6-da2c-4c62-a7f9-7bfa34a57244",
+  "total_cost_usd": 0.0638611,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 4888,
+    "cache_read_input_tokens": 35031,
+    "output_tokens": 4079,
+    "output_tokens_details": {
+      "thinking_tokens": 1457
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4888,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2468,
+        "cache_read_input_tokens": 11289,
+        "cache_creation_input_tokens": 1199,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1199
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 4079,
+      "cacheReadInputTokens": 35031,
+      "cacheCreationInputTokens": 4888,
+      "webSearchRequests": 0,
+      "costUSD": 0.0638611,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1457,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4888,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 15,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`kestrel-billing` charged 212 subscribers twice because Europe/Berlin clocks fell back on 25 October, so 02:30 happened twice and `charge_renewals` fired at both. Aelita recommends moving the three schedules to UTC. It costs a one-hour shift in local fire time twice a year.\n\n**Timeline without the fix**\n\n1. `schedules/charge_renewals.yaml` sets cron `30 2 * * *` in `Europe/Berlin`. `scheduler/cron.py` `matches` compares the cron to local wall-clock time only.\n2. At 00:30 UTC (02:30+0200) `scheduler/loop.py` fires `charge_renewals`. `billing/renewals.py` charges 212 subscriptions with `renews_on <= today`.\n3. `send_dunning` fires at 00:45 UTC and sends 41 emails.\n4. At 01:00 UTC Berlin clocks fall back from 03:00 to 02:00.\n5. At 01:30 UTC (02:30+0100) `matches` is true again. `due_jobs` in `scheduler/clock.py` only checks a 60-second gap, and the last fire was 60 minutes earlier, so the job fires again.\n6. `charge_renewals` selects the same 212 subscriptions. `settle_renewals` has not run, so `renews_on` has not moved. `psp.charge` in `billing/psp.py` sends no idempotency key, so Payrail accepts every charge.\n7. `send_dunning` also fires a second time and sends the 41 emails again.\n8. `settle_renewals` runs at 04:00 UTC and settles 424 `renewal_charges` rows. 212 customers are charged twice, and several get two dunning emails.\n\n**What changes**\n\n- `schedules/charge_renewals.yaml`: `cron: \"30 2 * * *\"` becomes `\"30 0 * * *\"`, and `timezone: Europe/Berlin` becomes `UTC`.\n- `schedules/send_dunning.yaml`: `\"45 2 * * *\"` becomes `\"45 0 * * *\"`, and the timezone becomes `UTC`.\n- `schedules/settle_renewals.yaml`: `\"0 5 * * *\"` becomes `\"0 4 * * *\"`, and the timezone becomes `UTC`.\n- `docs/scheduler.md`: add the rule \"Every job uses `timezone: UTC`. Local timezones are forbidden.\"\n\n**Recommendation.** Aelita recommends UTC for all three schedules. UTC has no repeated or skipped hour, so no job can fire twice on a clock change. It also fixes the dunning duplicate, and the spring-forward day, when 02:30 does not exist and the job would be skipped. The cost is that jobs run at 02:30 Berlin in summer and 01:30 Berlin in winter. The run date passed to `charge_renewals` stays the Berlin date, because 00:30 UTC is always the same calendar day in Berlin. It does not stop a double fire from a scheduler restart inside the matching minute, because `last_fired` lives in memory.\n\n**Alternative: idempotency key in `psp.charge`.** Build the key from `sub.id` and `renews_on`, which stay stable until `settle_renewals` runs. It protects against any double fire, including a restart, and it costs a change to the `psp.charge` signature. It becomes the primary if the restart risk matters more than removing the DST cause. It does not stop the duplicate dunning emails.\n\n**Question.** Do you approve moving the three schedules to UTC? The next item is the refund list, since support kept no record of which of the 212 customers were refunded.",
+  "ttft_ms": 1601,
+  "type": "result",
+  "duration_ms": 31185,
+  "uuid": "e01e25fb-a75e-4fda-a725-cc1278a7ff6d",
+  "ttft_stream_ms": 1536,
+  "time_to_request_ms": 315,
+  "first_content_frame_ms": 1536,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

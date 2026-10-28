@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 37404,
+  "stop_reason": "end_turn",
+  "session_id": "76dc4f0f-9350-46f3-9d36-11d387407897",
+  "total_cost_usd": 0.0702315,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 4764,
+    "cache_read_input_tokens": 34995,
+    "output_tokens": 4766,
+    "output_tokens_details": {
+      "thinking_tokens": 2236
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4764,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3134,
+        "cache_read_input_tokens": 11284,
+        "cache_creation_input_tokens": 1083,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1083
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 4766,
+      "cacheReadInputTokens": 34995,
+      "cacheCreationInputTokens": 4764,
+      "webSearchRequests": 0,
+      "costUSD": 0.0702315,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2236,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4764,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 12,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`lantern-worker` loses jobs on every deploy because it acks each message on delivery, and kubelet kills the pod 40 seconds before the drain can finish. Aelita recommends acking only after the job finishes, and aligning the grace period with the drain time.\n\n**Timeline without the fix**\n\n1. At 14:02:05 to 14:02:07, `lantern-worker-7f9c-2` starts videos u-88217, u-88218 and u-88219. Each takes 25 to 70 seconds.\n2. At 14:02:10 the pod gets SIGTERM. `consume.py` stops consuming and `drain` waits up to 60s.\n3. At 14:02:21 u-88213 finishes. A thread then picks up u-88220 and u-88221, which `auto_ack=True` had already pulled into the pool queue. u-88221 starts at 14:02:23.\n4. At 14:02:30 kubelet sends SIGKILL, because `terminationGracePeriodSeconds` is 20 in `values-prod.yaml`. The 60s drain never gets to run.\n5. The threads for u-88217, u-88218, u-88219 and u-88221 die mid-render. No `job done` line exists for them. There may be more jobs that sat unstarted in the pool queue.\n6. RabbitMQ already acked all of them at delivery, so nothing is redelivered. The upload page shows its placeholder with no error, which matches `docs/thumbnails.md`.\n\n**Timeline with the fix**, diverges at step 3.\n\n3. `basic_qos(prefetch_count=4)` means the pool holds at most 4 unacked jobs. RabbitMQ keeps the rest in the queue.\n4. At 14:02:30 kubelet keeps waiting, because the grace period is now 90s. `drain` runs up to 75s and keeps processing ack callbacks.\n5. Finished jobs get acked. At 14:03:25 the drain deadline hits and the process exits. Any job still running stays unacked.\n6. RabbitMQ requeues the unacked jobs and another worker renders them. Every upload gets its thumbnail.\n\n**What changes**\n\n- `worker/consume.py`: `basic_consume` changes from `auto_ack=True` to `auto_ack=False`. Add `basic_qos(prefetch_count=settings.CONCURRENCY)`. `on_message` submits a wrapper that runs `handle`, then calls `connection.add_callback_threadsafe` to `basic_ack`. On an exception it logs the error and does a `basic_nack` with `requeue=False`. Today `pool.submit` swallows exceptions silently, which is a second way to lose a thumbnail with no error.\n- `worker/lifecycle.py`: `drain` takes the connection. The `time.sleep(0.5)` becomes `connection.process_data_events(time_limit=0.5)`. Without this, acks queued during the drain are never sent. Finished jobs would then be redelivered and rendered twice.\n- `deploy/helm/values-prod.yaml`: `terminationGracePeriodSeconds` changes from 20 to 90. Add `LANTERN_DRAIN_SECONDS: \"75\"`. The default of 60 is shorter than a 70s video.\n\n**Recommendation.** Aelita recommends manual ack with prefetch and a matching grace period. It removes the root cause, which is acking before the work is done. Any kill then costs a redelivery instead of a lost thumbnail. The cost is a possible duplicate render. If a kill lands between `put_thumbnail` and the ack, the job runs again. The S3 key is the same, so the overwrite is harmless. `record_usage` in `billing/client.py` sends no idempotency key, though. A redelivered job could bill twice unless `meter.internal` dedupes on `ref`. The Billing team owns that service, so no file here settles it.\n\n**Alternative: only raise the grace period and drain time.** This is a config change only, with no code change. It is enough when the deploy always lands inside the drain window. It still loses jobs on a crash, an OOM kill or a node loss. It becomes the primary only if you need a hotfix before the code change ships.\n\n**Question.** Do you approve the manual ack, prefetch, drain and grace changes? If so, should I also ask Billing whether `meter.internal` dedupes on `ref`?",
+  "ttft_ms": 2605,
+  "type": "result",
+  "duration_ms": 37980,
+  "uuid": "9b3f7566-85cc-4412-b027-41d69c82b107",
+  "ttft_stream_ms": 2187,
+  "time_to_request_ms": 539,
+  "first_content_frame_ms": 2187,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

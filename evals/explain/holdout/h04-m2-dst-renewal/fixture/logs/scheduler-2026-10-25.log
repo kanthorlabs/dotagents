@@ -1,0 +1,10 @@
+2026-10-25T00:30:04Z INFO fire charge_renewals local=02:30+0200
+2026-10-25T00:31:52Z INFO done charge_renewals charged=212
+2026-10-25T00:45:03Z INFO fire send_dunning local=02:45+0200
+2026-10-25T00:45:20Z INFO done send_dunning emails=41
+2026-10-25T01:30:02Z INFO fire charge_renewals local=02:30+0100
+2026-10-25T01:31:47Z INFO done charge_renewals charged=212
+2026-10-25T01:45:01Z INFO fire send_dunning local=02:45+0100
+2026-10-25T01:45:19Z INFO done send_dunning emails=41
+2026-10-25T04:00:03Z INFO fire settle_renewals local=05:00+0100
+2026-10-25T04:00:09Z INFO done settle_renewals settled=424

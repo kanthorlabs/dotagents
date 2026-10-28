@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 18789,
+  "stop_reason": "end_turn",
+  "session_id": "a0464fa5-1758-46e7-b0df-26fdb534f19f",
+  "total_cost_usd": 0.0371556,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2461,
+    "cache_read_input_tokens": 23796,
+    "output_tokens": 2492,
+    "output_tokens_details": {
+      "thinking_tokens": 424
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2461,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1738,
+        "cache_read_input_tokens": 8267,
+        "cache_creation_input_tokens": 1780,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1780
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2492,
+      "cacheReadInputTokens": 23796,
+      "cacheCreationInputTokens": 2461,
+      "webSearchRequests": 0,
+      "costUSD": 0.0371556,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 424,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2461,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 9,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`export_invoices` in `app/exports.py` builds the whole CSV in memory before it sends a byte, so `gw-billing` cuts the connection after 30 idle seconds. Aelita recommends moving the export to the `documents` queue of `taskq` and emailing a signed link, as `render_invoice_pdf` already does.\n\n**Timeline without the fix**\n\n1. An accountant at `northfield-accounting` calls `GET /exports/invoices.csv`. A `tallyhall-web` gunicorn worker takes the request.\n2. `db.query` loads all 1,840,211 rows in 18 seconds. The handler sends no byte.\n3. `csv.writer` fills a `StringIO` for 222 seconds. The response only starts after `buffer.getvalue()`.\n4. `gw-billing` sees 30 seconds with no byte, because `idle_timeout_seconds` is 30. It closes the connection and returns 504.\n5. The worker keeps building for the full 240 seconds. The log shows `total_seconds=240`, which is under the 300-second `request_timeout_seconds` and `timeout`. So the idle timeout is the cause, not the total timeout.\n6. About 900 exports run in two days at month end. The log shows `web_workers_busy=12/12` and `/invoices` p99 at 9.4 seconds, against 0.4 seconds on 2026-10-15.\n7. The accountant retries and starts another long build. Large tenants never get a file, and the other routes slow down.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `export_invoices` enqueues `render_invoice_csv` on queue `documents` and returns 202 in milliseconds. The worker is free.\n3. A `taskq` worker runs the query and writes rows to a CSV file. No gateway timer applies there.\n4. The task calls `storage.put` for `exports/<id>.csv`, then `storage.signed_url`.\n5. The task calls `mailer.send` with the link to the accountant.\n6. At month end, the 900 exports queue on `documents`. `tallyhall-web` workers stay free for `/invoices`.\n7. The accountant downloads the file from storage. Large tenants succeed.\n\n**What changes**\n\n- `app/exports.py`: `export_invoices` old behaviour builds and returns the CSV inline. New behaviour enqueues a task and returns 202.\n- `jobs/invoice_csv.py`: add `render_invoice_csv(tenant_id, recipient)`, modelled on `render_invoice_pdf`. It writes rows to a file instead of a `StringIO`, then calls `storage.put`, `storage.signed_url` and `mailer.send`.\n- `docs/exports.md`: add one line that exports are emailed, not returned inline.\n\n**Recommendation.** Aelita recommends the queued export. It removes the cause, which is a long synchronous request behind a gateway with a timer. It also frees the workers at month end. It costs a changed contract: callers get a 202 and an email, not a file. Two things can break it. Any client that parses the CSV from the response body will fail. `documents` also shares capacity with invoice PDFs during the month-end peak.\n\n**Alternative: stream the CSV from the handler.** `export_invoices` returns a generator that yields rows from a server-side cursor. The first byte arrives in seconds, so the idle timeout stops firing. The contract stays the same. It still holds a worker for minutes per export, so the 12/12 saturation stays. A tenant that needs more than 300 seconds still gets cut. It becomes the primary if clients must get the file in the response.\n\n**Unverified.** I did not find the `taskq` or `storage` source in this repository. I assume `storage.put` accepts a file or bytes and that `taskq` has no tight task time limit. The `storage` signature settles it.\n\n**Question.** Does `export_invoices` become a queued job with an emailed link, or does it stream the CSV from the handler?",
+  "ttft_ms": 1652,
+  "type": "result",
+  "duration_ms": 19179,
+  "uuid": "cecfe11c-0d92-415b-a99d-34877ca023b6",
+  "ttft_stream_ms": 1279,
+  "time_to_request_ms": 373,
+  "first_content_frame_ms": 1280,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

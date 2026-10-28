@@ -1,0 +1,20 @@
+{
+  "mode": "Explanation of a proposal that fixes no bug.",
+  "common": [
+    "style",
+    "explanation",
+    "fix"
+  ],
+  "checks": [
+    {
+      "name": "names-self",
+      "kind": "mechanical",
+      "rule": "R22",
+      "fn": "regex_present",
+      "args": {
+        "pattern": "\\bAelita (recommends|proposes|prefers|suggests)"
+      },
+      "criterion": "The recommendation names Aelita as the recommender."
+    }
+  ]
+}

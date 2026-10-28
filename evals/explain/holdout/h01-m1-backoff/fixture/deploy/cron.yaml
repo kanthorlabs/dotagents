@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: tidepool-sync
+spec:
+  schedule: "0 1 * * *"
+  timeZone: "UTC"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 7200
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: sync
+              image: registry.tidepool.example/tidepool-sync:2026.10.3
+              command: ["python", "-m", "sync.run_sync"]
+              envFrom:
+                - secretRef:
+                    name: juniper-api

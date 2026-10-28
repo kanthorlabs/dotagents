@@ -1,0 +1,172 @@
+{
+  "key": "32afdd28e6b0690225e8ee921b70c6e4f04bb61ac532becc4fae517cfab076e2",
+  "cost_usd": 0.040468000000000004,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends approving the proposal with one added change.\" The change is a read_at guard on the upsert, which matches the key."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"sleeps 2, 4, 8, 16 and 32 seconds... up to 62 s\"; \"max_ack_pending: 1 becomes 256. max_deliver: 1 becomes 6.\" These match the key, and none contradicts it."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message covers why (62 s stalls, 17 stalls), how it works now, what is removed, and what breaks. The reader's follow-ups, such as who sets read_at, go beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"a retried older reading (A) can overwrite a newer one (C) in latest_reading\" and \"add WHERE latest_reading.read_at < EXCLUDED.read_at\". This matches the key on problem, breaks, fix and cost."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the proposal with the `read_at` guard added to `UPSERT_LATEST`?\" This is one question with one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: keep `max_ack_pending: 1` and shorten the delays.\" This is not the valid per-device partition alternative, and it still blocks, so it does not produce the correct result."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10599,
+    "stop_reason": "tool_use",
+    "session_id": "4ae4508d-48bf-42b7-9039-7998cfb4cd05",
+    "total_cost_usd": 0.040468000000000004,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6497,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1429,
+      "output_tokens_details": {
+        "thinking_tokens": 856
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6497,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1429,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6497,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6497
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1429,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6497,
+        "webSearchRequests": 0,
+        "costUSD": 0.040468000000000004,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 856,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6497,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends approving the proposal with one added change.\\\" The change is a read_at guard on the upsert, which matches the key.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"sleeps 2, 4, 8, 16 and 32 seconds... up to 62 s\\\"; \\\"max_ack_pending: 1 becomes 256. max_deliver: 1 becomes 6.\\\" These match the key, and none contradicts it.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message covers why (62 s stalls, 17 stalls), how it works now, what is removed, and what breaks. The reader's follow-ups, such as who sets read_at, go beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"a retried older reading (A) can overwrite a newer one (C) in latest_reading\\\" and \\\"add WHERE latest_reading.read_at < EXCLUDED.read_at\\\". This matches the key on problem, breaks, fix and cost.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the proposal with the `read_at` guard added to `UPSERT_LATEST`?\\\" This is one question with one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: keep `max_ack_pending: 1` and shorten the delays.\\\" This is not the valid per-device partition alternative, and it still blocks, so it does not produce the correct result.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends approving the proposal with one added change.\" The change is a read_at guard on the upsert, which matches the key."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"sleeps 2, 4, 8, 16 and 32 seconds... up to 62 s\"; \"max_ack_pending: 1 becomes 256. max_deliver: 1 becomes 6.\" These match the key, and none contradicts it."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message covers why (62 s stalls, 17 stalls), how it works now, what is removed, and what breaks. The reader's follow-ups, such as who sets read_at, go beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"a retried older reading (A) can overwrite a newer one (C) in latest_reading\" and \"add WHERE latest_reading.read_at < EXCLUDED.read_at\". This matches the key on problem, breaks, fix and cost."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the proposal with the `read_at` guard added to `UPSERT_LATEST`?\" This is one question with one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: keep `max_ack_pending: 1` and shorten the delays.\" This is not the valid per-device partition alternative, and it still blocks, so it does not produce the correct result."
+        }
+      ]
+    },
+    "ttft_ms": 7965,
+    "type": "result",
+    "duration_ms": 10968,
+    "uuid": "ad6a36f8-1e1e-456f-b840-5630298c404b",
+    "ttft_stream_ms": 1184,
+    "time_to_request_ms": 369,
+    "first_content_frame_ms": 1184,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

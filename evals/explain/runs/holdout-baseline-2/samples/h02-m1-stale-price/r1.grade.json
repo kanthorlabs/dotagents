@@ -1,0 +1,172 @@
+{
+  "key": "30aaaa71ef1a3d3c9aa3b4f133a2ec06a28b42207dc061670044b6329999a526",
+  "cost_usd": 0.037916,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"Aelita recommends removing the per-pod cache.\" The key's recommendation is per-pod eviction via price.changed; removing the cache is only a listed alternative, not the primary."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`cdn/rules.yaml` sets `/api/*` to `cache: false`\"; 6 replicas, ttl=3600, local pop, 10:02/10:58 all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Required question \"What exactly changes?\" expects pods subscribing to price.changed and popping the SKU. The message instead says \"delete `price_cache`\"."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"Delete price_cache and the TTLCache import\". The key fix is eviction on every pod via price.changed, and the cost is a small subscriber."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should `get_price` read the database directly, or should each pod subscribe to `price.changed`?\" is a single question on one fix decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Set `ttl=60` on `price_cache`... primary only if a one-minute delay is acceptable\" matches the TTL alternative, with trade-off and condition. The subscribe alternative is the correct fix."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 16009,
+    "stop_reason": "tool_use",
+    "session_id": "b82fcc96-b978-41c5-8216-a2bf094cd5ea",
+    "total_cost_usd": 0.037916,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6484,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1179,
+      "output_tokens_details": {
+        "thinking_tokens": 643
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6484,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1179,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6484,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6484
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1179,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6484,
+        "webSearchRequests": 0,
+        "costUSD": 0.037916,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 643,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6484,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"Aelita recommends removing the per-pod cache.\\\" The key's recommendation is per-pod eviction via price.changed; removing the cache is only a listed alternative, not the primary.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`cdn/rules.yaml` sets `/api/*` to `cache: false`\\\"; 6 replicas, ttl=3600, local pop, 10:02/10:58 all match the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Required question \\\"What exactly changes?\\\" expects pods subscribing to price.changed and popping the SKU. The message instead says \\\"delete `price_cache`\\\".\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"Delete price_cache and the TTLCache import\\\". The key fix is eviction on every pod via price.changed, and the cost is a small subscriber.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should `get_price` read the database directly, or should each pod subscribe to `price.changed`?\\\" is a single question on one fix decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Set `ttl=60` on `price_cache`... primary only if a one-minute delay is acceptable\\\" matches the TTL alternative, with trade-off and condition. The subscribe alternative is the correct fix.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Aelita recommends removing the per-pod cache.\" The key's recommendation is per-pod eviction via price.changed; removing the cache is only a listed alternative, not the primary."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`cdn/rules.yaml` sets `/api/*` to `cache: false`\"; 6 replicas, ttl=3600, local pop, 10:02/10:58 all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Required question \"What exactly changes?\" expects pods subscribing to price.changed and popping the SKU. The message instead says \"delete `price_cache`\"."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"Delete price_cache and the TTLCache import\". The key fix is eviction on every pod via price.changed, and the cost is a small subscriber."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should `get_price` read the database directly, or should each pod subscribe to `price.changed`?\" is a single question on one fix decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Set `ttl=60` on `price_cache`... primary only if a one-minute delay is acceptable\" matches the TTL alternative, with trade-off and condition. The subscribe alternative is the correct fix."
+        }
+      ]
+    },
+    "ttft_ms": 13657,
+    "type": "result",
+    "duration_ms": 16577,
+    "uuid": "5c8b9543-13cb-4262-b3a0-03315c958e51",
+    "ttft_stream_ms": 8522,
+    "time_to_request_ms": 568,
+    "first_content_frame_ms": 8522,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

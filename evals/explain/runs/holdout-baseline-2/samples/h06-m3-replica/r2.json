@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 25773,
+  "stop_reason": "end_turn",
+  "session_id": "f768f5ec-edd9-43ab-a4b1-d79301f7a860",
+  "total_cost_usd": 0.053016200000000006,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 3628,
+    "cache_read_input_tokens": 24122,
+    "output_tokens": 3608,
+    "output_tokens_details": {
+      "thinking_tokens": 1102
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3628,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2573,
+        "cache_read_input_tokens": 8587,
+        "cache_creation_input_tokens": 2630,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2630
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 3608,
+      "cacheReadInputTokens": 24122,
+      "cacheCreationInputTokens": 3628,
+      "webSearchRequests": 0,
+      "costUSD": 0.053016200000000006,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1102,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 3628,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 11,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Pointing `osprey-reports` at `pg-osprey-2` by itself breaks the job, because the job writes. Aelita recommends reading from the replica and keeping the single write on the primary. That needs three small edits.\n\n**Existing behaviour**\n\n1. `jobs/nightly_report.py` opens one connection from `DATABASE_URL`, which `deploy/cronjob.yaml` fills from `osprey-primary`.\n2. `churn_by_plan` in `reports/queries.py` runs `CREATE TEMP TABLE churn_window`. That is a write.\n3. `record_run` in `reports/runs.py` runs `INSERT INTO report_runs`. That is also a write.\n4. `docs/database.md` says the hot standby rejects every write, including `CREATE TEMP TABLE` and `INSERT`.\n\n**Timeline without the fix**\n\n1. At 01:00 UTC the CronJob starts with `DATABASE_URL` taken from `osprey-replica`.\n2. `jobs/nightly_report.py` connects to `pg-osprey-2`.\n3. `revenue_by_region` is a plain `SELECT`. It succeeds.\n4. `churn_by_plan` runs `CREATE TEMP TABLE churn_window`. `pg-osprey-2` rejects it.\n5. The job exits with an error. `restartPolicy: Never` means no retry.\n6. No PDF exists and `report_runs` has no row for that day. The nightly report fails.\n\n**Timeline with the fix**, diverges at step 2.\n\n2. `jobs/nightly_report.py` opens a read connection to `pg-osprey-2` and a write connection to `pg-osprey-1`.\n3. `revenue_by_region` runs on the replica. It succeeds.\n4. `churn_by_plan` runs as one `SELECT` with no temp table. It succeeds on the replica.\n5. `write_pdf` writes `nightly-<day>.pdf`.\n6. `record_run` inserts one row into `report_runs` on the primary connection. The heavy reads no longer touch the primary.\n\n**What changes**\n\n- `jobs/nightly_report.py`: `main` opens `REPLICA_DATABASE_URL` for the two report queries. It keeps `DATABASE_URL` for `record_run`.\n- `reports/queries.py`: delete `CHURN_WINDOW`. `CHURN_BY_PLAN` selects directly from `subscriptions` with the same 30-day filter. `churn_by_plan` runs one statement.\n- `deploy/cronjob.yaml`: add env `REPLICA_DATABASE_URL` from secret `osprey-replica`, key `url`. `DATABASE_URL` stays on `osprey-primary`.\n- `reports/runs.py`: no change.\n\n**Recommendation.** Aelita recommends the split. The cause is that one connection mixes reads and writes. The split removes the temp table and sends only a single small `INSERT` to the primary.\n\n- **Why it is safe:** `logs/primary-load-2026-10-26.txt` shows the report takes the primary from 31 % to 88 % CPU for 22 minutes. It pushes checkout API p95 from 340 ms to 1,900 ms. All of that is read work, and it moves away.\n- **Lag:** p99 lag is 2 seconds. The job reports on yesterday and runs an hour after midnight UTC, so lag cannot hide any invoice.\n- **Cost:** the 22-minute read load moves to `pg-osprey-2`, which the dashboards service also uses. Dashboards may slow at 01:00.\n- **What can break:** a long query on a hot standby can be cancelled when replication replay conflicts with it. No file in the repo shows the standby's conflict settings. I could not check them, so a cancelled query would fail the job.\n\n**Alternative: keep the temp table and run everything on the primary.** Nothing changes, so it has no migration risk. It does not take any load off the primary. It becomes the primary option if the replica cannot hold the 22-minute queries.\n\n**Alternative: write `report_runs` from a separate step.** The job only reads, and a second job records the run. This gives one connection per process. It costs a new job and a handoff for one `INSERT`. It becomes the primary option if the job's database role must be read-only.\n\n**Question.** Do you approve the split, with reads on `pg-osprey-2` and the `report_runs` insert on `pg-osprey-1`?",
+  "ttft_ms": 1028,
+  "type": "result",
+  "duration_ms": 26122,
+  "uuid": "a05e556d-a177-4aca-8470-d1565c81df50",
+  "ttft_stream_ms": 955,
+  "time_to_request_ms": 316,
+  "first_content_frame_ms": 955,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

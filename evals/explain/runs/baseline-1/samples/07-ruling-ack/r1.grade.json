@@ -1,0 +1,172 @@
+{
+  "key": "c35741f254a5a0baa93ca0dee9ee062eac45b5da40cbc3909419666e8e87bfc7",
+  "cost_usd": 0.03585,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends 3 retries at 900 seconds.\" Four bounces per hour stays under the limit of 5, matching the key's cap of 5 or fewer per hour."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`BOUNCE_RETRY_LIMIT = 12` with a 60 second interval\"; \"blocks a sender for 24 hours when one recipient bounces more than 5 times in one hour.\" All match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Opens with \"Ruling recorded\". It explains the block and proposes 3 retries at 900 s. It names the cutover date as next. The reader listed no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader reconstruction: \"smtp-mx-2 blocks invoices@mail.larkspur.io for 24 hours\"; fix is a lower limit and a longer interval, with a cost of slower delivery. This agrees with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do we set the limit to 3 and the interval to 900 seconds, or build hard and soft bounce detection first?\" The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: tell hard bounces from soft bounces... costs new parsing code... It becomes the primary when hard bounces are common.\" This matches the valid alternative, with trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 7695,
+    "stop_reason": "tool_use",
+    "session_id": "310cb616-ba33-458c-923c-26a4e44532d2",
+    "total_cost_usd": 0.03585,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6260,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1062,
+      "output_tokens_details": {
+        "thinking_tokens": 489
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6260,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1062,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6260,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6260
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1062,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6260,
+        "webSearchRequests": 0,
+        "costUSD": 0.03585,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 489,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6260,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends 3 retries at 900 seconds.\\\" Four bounces per hour stays under the limit of 5, matching the key's cap of 5 or fewer per hour.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`BOUNCE_RETRY_LIMIT = 12` with a 60 second interval\\\"; \\\"blocks a sender for 24 hours when one recipient bounces more than 5 times in one hour.\\\" All match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Opens with \\\"Ruling recorded\\\". It explains the block and proposes 3 retries at 900 s. It names the cutover date as next. The reader listed no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader reconstruction: \\\"smtp-mx-2 blocks invoices@mail.larkspur.io for 24 hours\\\"; fix is a lower limit and a longer interval, with a cost of slower delivery. This agrees with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do we set the limit to 3 and the interval to 900 seconds, or build hard and soft bounce detection first?\\\" The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: tell hard bounces from soft bounces... costs new parsing code... It becomes the primary when hard bounces are common.\\\" This matches the valid alternative, with trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends 3 retries at 900 seconds.\" Four bounces per hour stays under the limit of 5, matching the key's cap of 5 or fewer per hour."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`BOUNCE_RETRY_LIMIT = 12` with a 60 second interval\"; \"blocks a sender for 24 hours when one recipient bounces more than 5 times in one hour.\" All match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Opens with \"Ruling recorded\". It explains the block and proposes 3 retries at 900 s. It names the cutover date as next. The reader listed no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader reconstruction: \"smtp-mx-2 blocks invoices@mail.larkspur.io for 24 hours\"; fix is a lower limit and a longer interval, with a cost of slower delivery. This agrees with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do we set the limit to 3 and the interval to 900 seconds, or build hard and soft bounce detection first?\" The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: tell hard bounces from soft bounces... costs new parsing code... It becomes the primary when hard bounces are common.\" This matches the valid alternative, with trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 4884,
+    "type": "result",
+    "duration_ms": 8046,
+    "uuid": "b326af13-d2ea-4e4b-a8ee-16a92a2dbc01",
+    "ttft_stream_ms": 1173,
+    "time_to_request_ms": 351,
+    "first_content_frame_ms": 1173,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

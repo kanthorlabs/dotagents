@@ -1,0 +1,33 @@
+{
+  "mode": "One-line factual question. The template must be skipped.",
+  "common": [],
+  "checks": [
+    {
+      "name": "short",
+      "kind": "mechanical",
+      "rule": "R02",
+      "fn": "word_max",
+      "args": {
+        "n": 80
+      },
+      "criterion": "The answer holds at most 80 words."
+    },
+    {
+      "name": "no-template",
+      "kind": "mechanical",
+      "rule": "R02",
+      "fn": "no_template",
+      "criterion": "The answer holds no section label, no numbered list and no Timeline."
+    },
+    {
+      "name": "correct",
+      "kind": "mechanical",
+      "rule": "R02",
+      "fn": "regex_present",
+      "args": {
+        "pattern": "8443"
+      },
+      "criterion": "The answer names port 8443."
+    }
+  ]
+}

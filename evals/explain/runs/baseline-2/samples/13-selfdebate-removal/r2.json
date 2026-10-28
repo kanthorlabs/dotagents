@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 24677,
+  "stop_reason": "end_turn",
+  "session_id": "42f51e3b-0e6f-46e4-ba8e-bffb5b93f499",
+  "total_cost_usd": 0.043744200000000004,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 2746,
+    "cache_read_input_tokens": 23782,
+    "output_tokens": 3037,
+    "output_tokens_details": {
+      "thinking_tokens": 1274
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2746,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2264,
+        "cache_read_input_tokens": 8566,
+        "cache_creation_input_tokens": 1448,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1448
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 3037,
+      "cacheReadInputTokens": 23782,
+      "cacheCreationInputTokens": 2746,
+      "webSearchRequests": 0,
+      "costUSD": 0.043744200000000004,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1274,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2746,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 8,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`legacy_sku` is not unused. `v_partner_feed` reads it, and the nightly `partner_feed_export` sends it to Oakline Supply. Aelita recommends keeping the column for now. Drop it only after Oakline Supply stops keying on Brightstock codes.\n\n**Why the `src/` grep missed it.** The readers sit outside `src/`: `db/views.sql:4`, `jobs/partner_feed_export.py:7` and `importers/brightstock_import.py:4`.\n\n**Timeline without the fix**\n\n1. A migration runs `ALTER TABLE products DROP COLUMN legacy_sku`.\n2. Postgres rejects it, because `v_partner_feed` depends on the column.\n3. A developer clears the error. They either use `CASCADE`, which drops the view, or they edit the view to `p.sku AS partner_ref`.\n4. The nightly `partner_feed_export` runs. With `CASCADE` it fails on the missing view. With the edited view it sends the new `sku` as `partner_ref`.\n5. Oakline Supply receives `/inbound/cartwheel.csv` with codes it does not know.\n6. Oakline Supply cannot match the 6,140 migrated products. The partner catalog breaks.\n\n**Timeline with the fix**, diverges at step 1.\n\n1. Oakline Supply confirms it keys on the new `sku` and loads the new codes.\n2. A developer edits `v_partner_feed` so that `partner_ref` is `p.sku`.\n3. `partner_feed_export` sends the new codes. Oakline Supply matches every product.\n4. The migration drops `legacy_sku`. Nothing depends on it, so it succeeds.\n\n**What changes**\n\n- `db/views.sql`: old `COALESCE(p.legacy_sku, p.sku) AS partner_ref`. New `p.sku AS partner_ref`. This lands before the drop.\n- `db/schema.sql`: delete the `legacy_sku text,` line, and add the `DROP COLUMN` migration after the view change.\n- `importers/brightstock_import.py`: the INSERT names `legacy_sku`, so it would fail after the drop. The doc says the import ran once on 12 March 2024. Delete the importer, or remove the column from its INSERT.\n- `docs/history/2024-brightstock-migration.md`: add a line saying the column was dropped and why.\n\n**Recommendation.** Aelita recommends keeping the column until Oakline Supply re-keys. The column costs one nullable text field. Dropping it early breaks the nightly feed, and the Brightstock codes cannot be rebuilt once the data is gone.\n\n**Alternative: drop now and send `sku` anyway.** This removes the column today. It beats the recommendation if Oakline Supply has already re-keyed. It costs a broken feed if that is false. It becomes the primary if you confirm the re-key.\n\n**Question.** Has Oakline Supply moved from Brightstock codes to the new `sku`? If not, do you approve keeping `legacy_sku` for now?",
+  "ttft_ms": 1653,
+  "type": "result",
+  "duration_ms": 24966,
+  "uuid": "919b5906-9221-4420-b872-6b9c931a2c00",
+  "ttft_stream_ms": 1365,
+  "time_to_request_ms": 268,
+  "first_content_frame_ms": 1365,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

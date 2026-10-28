@@ -1,0 +1,4 @@
+2026-10-26T06:00:02Z host=ops-box-2 jobs.digest_builder start
+2026-10-26T06:00:04Z pod=digest-builder-29353080-k7x2q jobs.digest_builder start
+2026-10-26T06:01:10Z host=ops-box-2 jobs.digest_builder enqueued=18412
+2026-10-26T06:01:13Z pod=digest-builder-29353080-k7x2q jobs.digest_builder enqueued=18412

@@ -1,0 +1,129 @@
+{
+  "key": "e5cca6b78f258b3118ea1ed346f35ae502aa88d1b3721131af343a9bcb0386e4",
+  "cost_usd": 0.044834399999999996,
+  "reader": {
+    "decision": "Approved: move the three schedules to UTC. Also open a ticket now for the idempotency key in `psp.charge`, and start the refund list next.",
+    "decision_reason": "The message traces the double charge to the repeated 02:30 on the fall-back day, and UTC removes that cause for all three jobs at a small cost. The message also says UTC does not cover a restart double fire, so the idempotency key is still needed for a job that moves money.",
+    "reconstruction": {
+      "problem": "`charge_renewals` is scheduled at 02:30 Europe/Berlin. On 25 October the clocks fell back, so 02:30 occurred twice, at 00:30 UTC and 01:30 UTC. `due_jobs` only checks a 60-second gap, and the last fire was 60 minutes earlier, so it fired again. `settle_renewals` had not yet moved `renews_on`, and `psp.charge` sends no idempotency key, so Payrail accepted the second charge for the same 212 subscriptions. `send_dunning` also fired twice and sent its 41 emails twice.",
+      "what_breaks": "212 subscribers were charged twice, and 424 `renewal_charges` rows were settled. Several customers got duplicate dunning emails. Support kept no record of who has been refunded. The same schedule would also skip the job on spring-forward day, when 02:30 does not exist.",
+      "fix": "Switch the three schedules to UTC: `charge_renewals` to `30 0 * * *`, `send_dunning` to `45 0 * * *` and `settle_renewals` to `0 4 * * *`. Add the rule that every job uses `timezone: UTC` to `docs/scheduler.md`. The alternative is an idempotency key built from `sub.id` and `renews_on` in `psp.charge`. That key covers restarts but does not stop the duplicate emails.",
+      "cost": "Jobs run at 02:30 Berlin in summer and 01:30 Berlin in winter, a one-hour shift in local fire time twice a year. UTC does not stop a double fire from a restart inside the matching minute, because `last_fired` is held in memory. The idempotency key costs a change to the `psp.charge` signature."
+    },
+    "follow_up_questions": [],
+    "closing_answer": "Yes, I approve moving the three schedules to UTC. I also want the idempotency key in `psp.charge` tracked as a follow-up, because UTC does not cover a restart double fire. Do the refund list next, since support kept no record of who was refunded."
+  },
+  "raw": {
+    "duration_api_ms": 17667,
+    "stop_reason": "tool_use",
+    "session_id": "b545a979-c70d-4942-910c-37171ff9b3ed",
+    "total_cost_usd": 0.044834399999999996,
+    "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 4533,
+      "cache_read_input_tokens": 6744,
+      "output_tokens": 2602,
+      "output_tokens_details": {
+        "thinking_tokens": 624
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4533,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 942,
+          "cache_read_input_tokens": 4771,
+          "cache_creation_input_tokens": 1735,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1735
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 4,
+        "outputTokens": 2602,
+        "cacheReadInputTokens": 6744,
+        "cacheCreationInputTokens": 4533,
+        "webSearchRequests": 0,
+        "costUSD": 0.044834399999999996,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 624,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4533,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 3,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Approved: move the three schedules to UTC. Also open a ticket now for the idempotency key in `psp.charge`, and start the refund list next.\",\"decision_reason\":\"The message traces the double charge to the repeated 02:30 on the fall-back day, and UTC removes that cause for all three jobs at a small cost. The message also says UTC does not cover a restart double fire, so the idempotency key is still needed for a job that moves money.\",\"reconstruction\":{\"problem\":\"`charge_renewals` is scheduled at 02:30 Europe/Berlin. On 25 October the clocks fell back, so 02:30 occurred twice, at 00:30 UTC and 01:30 UTC. `due_jobs` only checks a 60-second gap, and the last fire was 60 minutes earlier, so it fired again. `settle_renewals` had not yet moved `renews_on`, and `psp.charge` sends no idempotency key, so Payrail accepted the second charge for the same 212 subscriptions. `send_dunning` also fired twice and sent its 41 emails twice.\",\"what_breaks\":\"212 subscribers were charged twice, and 424 `renewal_charges` rows were settled. Several customers got duplicate dunning emails. Support kept no record of who has been refunded. The same schedule would also skip the job on spring-forward day, when 02:30 does not exist.\",\"fix\":\"Switch the three schedules to UTC: `charge_renewals` to `30 0 * * *`, `send_dunning` to `45 0 * * *` and `settle_renewals` to `0 4 * * *`. Add the rule that every job uses `timezone: UTC` to `docs/scheduler.md`. The alternative is an idempotency key built from `sub.id` and `renews_on` in `psp.charge`. That key covers restarts but does not stop the duplicate emails.\",\"cost\":\"Jobs run at 02:30 Berlin in summer and 01:30 Berlin in winter, a one-hour shift in local fire time twice a year. UTC does not stop a double fire from a restart inside the matching minute, because `last_fired` is held in memory. The idempotency key costs a change to the `psp.charge` signature.\"},\"follow_up_questions\":[],\"closing_answer\":\"Yes, I approve moving the three schedules to UTC. I also want the idempotency key in `psp.charge` tracked as a follow-up, because UTC does not cover a restart double fire. Do the refund list next, since support kept no record of who was refunded.\"}",
+    "structured_output": {
+      "decision": "Approved: move the three schedules to UTC. Also open a ticket now for the idempotency key in `psp.charge`, and start the refund list next.",
+      "decision_reason": "The message traces the double charge to the repeated 02:30 on the fall-back day, and UTC removes that cause for all three jobs at a small cost. The message also says UTC does not cover a restart double fire, so the idempotency key is still needed for a job that moves money.",
+      "reconstruction": {
+        "problem": "`charge_renewals` is scheduled at 02:30 Europe/Berlin. On 25 October the clocks fell back, so 02:30 occurred twice, at 00:30 UTC and 01:30 UTC. `due_jobs` only checks a 60-second gap, and the last fire was 60 minutes earlier, so it fired again. `settle_renewals` had not yet moved `renews_on`, and `psp.charge` sends no idempotency key, so Payrail accepted the second charge for the same 212 subscriptions. `send_dunning` also fired twice and sent its 41 emails twice.",
+        "what_breaks": "212 subscribers were charged twice, and 424 `renewal_charges` rows were settled. Several customers got duplicate dunning emails. Support kept no record of who has been refunded. The same schedule would also skip the job on spring-forward day, when 02:30 does not exist.",
+        "fix": "Switch the three schedules to UTC: `charge_renewals` to `30 0 * * *`, `send_dunning` to `45 0 * * *` and `settle_renewals` to `0 4 * * *`. Add the rule that every job uses `timezone: UTC` to `docs/scheduler.md`. The alternative is an idempotency key built from `sub.id` and `renews_on` in `psp.charge`. That key covers restarts but does not stop the duplicate emails.",
+        "cost": "Jobs run at 02:30 Berlin in summer and 01:30 Berlin in winter, a one-hour shift in local fire time twice a year. UTC does not stop a double fire from a restart inside the matching minute, because `last_fired` is held in memory. The idempotency key costs a change to the `psp.charge` signature."
+      },
+      "follow_up_questions": [],
+      "closing_answer": "Yes, I approve moving the three schedules to UTC. I also want the idempotency key in `psp.charge` tracked as a follow-up, because UTC does not cover a restart double fire. Do the refund list next, since support kept no record of who was refunded."
+    },
+    "ttft_ms": 6324,
+    "type": "result",
+    "duration_ms": 18347,
+    "uuid": "c6168e68-2c8f-45b0-a484-4c46a182d771",
+    "ttft_stream_ms": 1179,
+    "time_to_request_ms": 365,
+    "first_content_frame_ms": 1179,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

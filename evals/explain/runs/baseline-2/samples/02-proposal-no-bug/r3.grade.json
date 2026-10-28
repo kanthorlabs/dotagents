@@ -1,0 +1,172 @@
+{
+  "key": "b9f1aa136d64ba62d453cde2736c6546d605c71c0e104efb6e7b06fc2fde2c0b",
+  "cost_usd": 0.034788,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends `cache: pnpm` on `actions/setup-node@v4`\" matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"3 min 40 s to about 35 s... 412 runs... 0.008 USD per minute... 1.1 GB against a 10 GB repository limit\" all match the key. The restore-time caveat does not contradict any value."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message covers the gain (\"185 s saved... 21 hours... 10 USD\"), the cost (\"1.1 GB against a 10 GB\", cold run on lockfile change) and the change (\"add `cache: pnpm` under `with`\"). The reader's follow-ups are detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Each `ci` run does `pnpm install --frozen-lockfile` with an empty pnpm store... Nothing is broken\"; fix and cost also match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "The final question is \"Do you want to show the team `cache: pnpm`... or the explicit `actions/cache` version?\" It is one decision, the cache form. The reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "The explicit `actions/cache` alternative \"costs about 6 more lines\" and \"becomes the primary if lockfile changes are frequent\". It matches the valid alternative with trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8105,
+    "stop_reason": "tool_use",
+    "session_id": "28640e71-1daf-448a-9bf2-41e5526fc0de",
+    "total_cost_usd": 0.034788,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5907,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1097,
+      "output_tokens_details": {
+        "thinking_tokens": 512
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5907,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1097,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5907,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5907
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1097,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5907,
+        "webSearchRequests": 0,
+        "costUSD": 0.034788,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 512,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5907,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends `cache: pnpm` on `actions/setup-node@v4`\\\" matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"3 min 40 s to about 35 s... 412 runs... 0.008 USD per minute... 1.1 GB against a 10 GB repository limit\\\" all match the key. The restore-time caveat does not contradict any value.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message covers the gain (\\\"185 s saved... 21 hours... 10 USD\\\"), the cost (\\\"1.1 GB against a 10 GB\\\", cold run on lockfile change) and the change (\\\"add `cache: pnpm` under `with`\\\"). The reader's follow-ups are detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Each `ci` run does `pnpm install --frozen-lockfile` with an empty pnpm store... Nothing is broken\\\"; fix and cost also match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"The final question is \\\"Do you want to show the team `cache: pnpm`... or the explicit `actions/cache` version?\\\" It is one decision, the cache form. The reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"The explicit `actions/cache` alternative \\\"costs about 6 more lines\\\" and \\\"becomes the primary if lockfile changes are frequent\\\". It matches the valid alternative with trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends `cache: pnpm` on `actions/setup-node@v4`\" matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"3 min 40 s to about 35 s... 412 runs... 0.008 USD per minute... 1.1 GB against a 10 GB repository limit\" all match the key. The restore-time caveat does not contradict any value."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message covers the gain (\"185 s saved... 21 hours... 10 USD\"), the cost (\"1.1 GB against a 10 GB\", cold run on lockfile change) and the change (\"add `cache: pnpm` under `with`\"). The reader's follow-ups are detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Each `ci` run does `pnpm install --frozen-lockfile` with an empty pnpm store... Nothing is broken\"; fix and cost also match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "The final question is \"Do you want to show the team `cache: pnpm`... or the explicit `actions/cache` version?\" It is one decision, the cache form. The reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "The explicit `actions/cache` alternative \"costs about 6 more lines\" and \"becomes the primary if lockfile changes are frequent\". It matches the valid alternative with trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 5358,
+    "type": "result",
+    "duration_ms": 8598,
+    "uuid": "fbb4171a-16e6-4a78-b17a-17bc17ce3517",
+    "ttft_stream_ms": 1431,
+    "time_to_request_ms": 492,
+    "first_content_frame_ms": 1431,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "skill_path": "skills/explain/SKILL.md",
+  "skill_lines": 192,
+  "repeats": 3,
+  "model": "sonnet",
+  "effort": "medium"
+}

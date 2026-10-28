@@ -1,0 +1,172 @@
+{
+  "key": "194438bf581f0458798c2f5090ee0d75797cd5169ac573a616312097d4e39e29",
+  "cost_usd": 0.036006,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends keeping the column for now.\" This matches the key's first correct recommendation: do not drop legacy_sku while v_partner_feed and Oakline Supply depend on it."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`v_partner_feed` reads it, and the nightly `partner_feed_export` sends it to Oakline Supply.\" The writer, reader, consumer, 6,140 rows, drop behaviour and one-time 12 March 2024 import all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"Postgres rejects it, because `v_partner_feed` depends on the column... cannot match the 6,140 migrated products.\" All four required questions are answered, and the reader lists no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Keep the column until Oakline Supply re-keys to the new `sku`.\" The reader's problem, breaks, fix and cost all agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": false,
+      "evidence": "\"Has Oakline Supply moved from Brightstock codes to the new `sku`? If not, do you approve keeping `legacy_sku` for now?\" The message ends with two questions, which the rule fails."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: drop now and send `sku` anyway.\" This matches the invalid option of dropping the column and changing the view to p.sku without Oakline Supply."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8632,
+    "stop_reason": "tool_use",
+    "session_id": "dfb6a492-272b-4cb1-a521-adbfb51f3792",
+    "total_cost_usd": 0.036006,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5949,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1202,
+      "output_tokens_details": {
+        "thinking_tokens": 630
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5949,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1202,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5949,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5949
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1202,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5949,
+        "webSearchRequests": 0,
+        "costUSD": 0.036006,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 630,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5949,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends keeping the column for now.\\\" This matches the key's first correct recommendation: do not drop legacy_sku while v_partner_feed and Oakline Supply depend on it.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`v_partner_feed` reads it, and the nightly `partner_feed_export` sends it to Oakline Supply.\\\" The writer, reader, consumer, 6,140 rows, drop behaviour and one-time 12 March 2024 import all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"Postgres rejects it, because `v_partner_feed` depends on the column... cannot match the 6,140 migrated products.\\\" All four required questions are answered, and the reader lists no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Keep the column until Oakline Supply re-keys to the new `sku`.\\\" The reader's problem, breaks, fix and cost all agree with the key.\"},{\"id\":\"M5\",\"pass\":false,\"evidence\":\"\\\"Has Oakline Supply moved from Brightstock codes to the new `sku`? If not, do you approve keeping `legacy_sku` for now?\\\" The message ends with two questions, which the rule fails.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: drop now and send `sku` anyway.\\\" This matches the invalid option of dropping the column and changing the view to p.sku without Oakline Supply.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends keeping the column for now.\" This matches the key's first correct recommendation: do not drop legacy_sku while v_partner_feed and Oakline Supply depend on it."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`v_partner_feed` reads it, and the nightly `partner_feed_export` sends it to Oakline Supply.\" The writer, reader, consumer, 6,140 rows, drop behaviour and one-time 12 March 2024 import all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"Postgres rejects it, because `v_partner_feed` depends on the column... cannot match the 6,140 migrated products.\" All four required questions are answered, and the reader lists no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Keep the column until Oakline Supply re-keys to the new `sku`.\" The reader's problem, breaks, fix and cost all agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": false,
+          "evidence": "\"Has Oakline Supply moved from Brightstock codes to the new `sku`? If not, do you approve keeping `legacy_sku` for now?\" The message ends with two questions, which the rule fails."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: drop now and send `sku` anyway.\" This matches the invalid option of dropping the column and changing the view to p.sku without Oakline Supply."
+        }
+      ]
+    },
+    "ttft_ms": 6892,
+    "type": "result",
+    "duration_ms": 9097,
+    "uuid": "074f6e2b-2e27-45fc-baed-07b48c54087b",
+    "ttft_stream_ms": 1879,
+    "time_to_request_ms": 463,
+    "first_content_frame_ms": 1879,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

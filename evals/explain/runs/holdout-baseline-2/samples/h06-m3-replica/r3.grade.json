@@ -1,0 +1,172 @@
+{
+  "key": "38e06adeb73e530617d61574c01fcea85f47e564c7f748d53bf6c8c49a75d6c8",
+  "cost_usd": 0.030587999999999997,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the split.\" reads on replica, record_run on primary, temp table to subquery \u2014 matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"p99 lag is 2 seconds and the report covers yesterday\"; 31%\u219288% CPU, 340\u21921,900 ms, osprey-primary secret, temp table, INSERT all match key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message covers why (88% CPU, 1,900 ms), current flow, what breaks, lag negligible, and the changes. Reader lists no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Only changing the secret would break the job... split removes heavy reads... second connection and a query rewrite.\" Matches problem, breaks, fix, cost."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "Ends with one question: \"Do you approve the split: reads on pg-osprey-2, record_run on pg-osprey-1, and the temp table folded into a subquery?\" Reader answered yes."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "Offers \"keep the temp table and run churn_by_plan on the primary\" \u2014 not a valid_alternatives entry; it keeps part of the load on the primary."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3708,
+    "stop_reason": "tool_use",
+    "session_id": "d160e6f3-d1a7-4177-a8bd-3fd8046cd51f",
+    "total_cost_usd": 0.030587999999999997,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6317,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 513,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6317,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 513,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6317,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6317
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 513,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6317,
+        "webSearchRequests": 0,
+        "costUSD": 0.030587999999999997,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6317,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the split.\\\" reads on replica, record_run on primary, temp table to subquery \u2014 matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"p99 lag is 2 seconds and the report covers yesterday\\\"; 31%\u219288% CPU, 340\u21921,900 ms, osprey-primary secret, temp table, INSERT all match key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message covers why (88% CPU, 1,900 ms), current flow, what breaks, lag negligible, and the changes. Reader lists no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Only changing the secret would break the job... split removes heavy reads... second connection and a query rewrite.\\\" Matches problem, breaks, fix, cost.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"Ends with one question: \\\"Do you approve the split: reads on pg-osprey-2, record_run on pg-osprey-1, and the temp table folded into a subquery?\\\" Reader answered yes.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"Offers \\\"keep the temp table and run churn_by_plan on the primary\\\" \u2014 not a valid_alternatives entry; it keeps part of the load on the primary.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the split.\" reads on replica, record_run on primary, temp table to subquery \u2014 matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"p99 lag is 2 seconds and the report covers yesterday\"; 31%\u219288% CPU, 340\u21921,900 ms, osprey-primary secret, temp table, INSERT all match key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message covers why (88% CPU, 1,900 ms), current flow, what breaks, lag negligible, and the changes. Reader lists no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Only changing the secret would break the job... split removes heavy reads... second connection and a query rewrite.\" Matches problem, breaks, fix, cost."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "Ends with one question: \"Do you approve the split: reads on pg-osprey-2, record_run on pg-osprey-1, and the temp table folded into a subquery?\" Reader answered yes."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "Offers \"keep the temp table and run churn_by_plan on the primary\" \u2014 not a valid_alternatives entry; it keeps part of the load on the primary."
+        }
+      ]
+    },
+    "ttft_ms": 4053,
+    "type": "result",
+    "duration_ms": 4069,
+    "uuid": "fcec46ec-62e4-40b1-836a-1fa29a843ae9",
+    "ttft_stream_ms": 1213,
+    "time_to_request_ms": 360,
+    "first_content_frame_ms": 1213,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

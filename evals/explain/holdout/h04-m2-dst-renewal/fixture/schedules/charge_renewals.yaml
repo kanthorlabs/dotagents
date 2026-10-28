@@ -1,0 +1,4 @@
+name: charge_renewals
+job: billing.renewals.charge_renewals
+cron: "30 2 * * *"
+timezone: Europe/Berlin

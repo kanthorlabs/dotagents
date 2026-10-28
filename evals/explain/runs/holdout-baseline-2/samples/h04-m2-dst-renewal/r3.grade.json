@@ -1,0 +1,184 @@
+{
+  "key": "9bf7d0a3296a2c76a249bcdc2ce66e1b442c8b33d6eb584c7f08c0603cc070df",
+  "cost_usd": 0.047378,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the insert-first guard in `charge_renewals`.\" This matches the key's idempotent-per-subscription-and-period recommendation. The dunning trade-off is stated.",
+      "pass_note": "lenient"
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"Whether Payrail accepts an idempotency key on `POST /v1/charges` is unverified... The Payrail docs would settle it.\" The key says billing/psp.py settles that psp.charge sends none, and the message never states this.",
+      "pass_note": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The safe-refund question is unanswered. The message only says \"The unrecorded manual refunds from Monday 26 October are the next open item.\" It gives no way to find them or refund the rest.",
+      "pass_note": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "Reader fix: \"INSERT ... ON CONFLICT DO NOTHING into renewal_charges first\" with no duplicate refund. Reader cost: \"One migration\". The key fix and cost include a refund run that needs the manual-refund list.",
+      "pass_note": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should I implement the insert-first guard in `charge_renewals` with the unique index, or the scheduler-level dedupe?\" This is one decision and the reader answered it. A non-question sentence follows it.",
+      "pass_note": "lenient"
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"or the scheduler runs jobs in UTC. This also fixes the dunning emails and needs no migration.\" The UTC option is folded in without its trade-off, the local run time shifting by one hour twice a year.",
+      "pass_note": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 15662,
+    "stop_reason": "tool_use",
+    "session_id": "8ef85149-efd7-4073-add3-c82f0158db6e",
+    "total_cost_usd": 0.047378,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6487,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 2124,
+      "output_tokens_details": {
+        "thinking_tokens": 1473
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6487,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2124,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6487,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6487
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 2124,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6487,
+        "webSearchRequests": 0,
+        "costUSD": 0.047378,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1473,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6487,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the insert-first guard in `charge_renewals`.\\\" This matches the key's idempotent-per-subscription-and-period recommendation. The dunning trade-off is stated.\",\"pass_note\":\"lenient\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"Whether Payrail accepts an idempotency key on `POST /v1/charges` is unverified... The Payrail docs would settle it.\\\" The key says billing/psp.py settles that psp.charge sends none, and the message never states this.\",\"pass_note\":\"\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The safe-refund question is unanswered. The message only says \\\"The unrecorded manual refunds from Monday 26 October are the next open item.\\\" It gives no way to find them or refund the rest.\",\"pass_note\":\"\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"Reader fix: \\\"INSERT ... ON CONFLICT DO NOTHING into renewal_charges first\\\" with no duplicate refund. Reader cost: \\\"One migration\\\". The key fix and cost include a refund run that needs the manual-refund list.\",\"pass_note\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should I implement the insert-first guard in `charge_renewals` with the unique index, or the scheduler-level dedupe?\\\" This is one decision and the reader answered it. A non-question sentence follows it.\",\"pass_note\":\"lenient\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"or the scheduler runs jobs in UTC. This also fixes the dunning emails and needs no migration.\\\" The UTC option is folded in without its trade-off, the local run time shifting by one hour twice a year.\",\"pass_note\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the insert-first guard in `charge_renewals`.\" This matches the key's idempotent-per-subscription-and-period recommendation. The dunning trade-off is stated.",
+          "pass_note": "lenient"
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"Whether Payrail accepts an idempotency key on `POST /v1/charges` is unverified... The Payrail docs would settle it.\" The key says billing/psp.py settles that psp.charge sends none, and the message never states this.",
+          "pass_note": ""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The safe-refund question is unanswered. The message only says \"The unrecorded manual refunds from Monday 26 October are the next open item.\" It gives no way to find them or refund the rest.",
+          "pass_note": ""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Reader fix: \"INSERT ... ON CONFLICT DO NOTHING into renewal_charges first\" with no duplicate refund. Reader cost: \"One migration\". The key fix and cost include a refund run that needs the manual-refund list.",
+          "pass_note": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should I implement the insert-first guard in `charge_renewals` with the unique index, or the scheduler-level dedupe?\" This is one decision and the reader answered it. A non-question sentence follows it.",
+          "pass_note": "lenient"
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"or the scheduler runs jobs in UTC. This also fixes the dunning emails and needs no migration.\" The UTC option is folded in without its trade-off, the local run time shifting by one hour twice a year.",
+          "pass_note": ""
+        }
+      ]
+    },
+    "ttft_ms": 12355,
+    "type": "result",
+    "duration_ms": 16015,
+    "uuid": "2e3c0a73-ebec-4707-9802-a8ea66c51eb7",
+    "ttft_stream_ms": 1706,
+    "time_to_request_ms": 356,
+    "first_content_frame_ms": 1707,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

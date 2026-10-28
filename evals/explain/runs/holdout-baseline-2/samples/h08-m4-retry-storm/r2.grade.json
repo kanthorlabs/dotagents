@@ -1,0 +1,172 @@
+{
+  "key": "8cc0b9b9154c89213459f03c3f0a1b8eae71282b843b68c320f8c142136b37be",
+  "cost_usd": 0.041094000000000006,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the bounded queue with 429 in `ranker`.\" This matches the key's bounded ranker queue that rejects excess requests."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"each search can make up to 9 `ranker` requests\"; \"about 1,200 requests per second\"; \"180,000\"; \"empty at 14:41\". All match the key, and none is deferred."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message answers all three required questions: the retry-driven 3x overload plus the abandoned-work queue, the 3x3 attempts, and the maintenance page draining the queue in about 2 minutes. The reader's follow-ups ask for detail beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"multiplied each search into up to 9 `ranker` requests... `ranker` kept scoring abandoned requests\". The reader's problem, breaks, fix and cost agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should `ranker` reject excess requests with 429 at about 64 queued requests per instance, or should we cut the retries first?\" This is one question with one decision, and the reader answered it."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: cut retries... does not remove the backlog... becomes the primary if `ranker` cannot be changed soon.\" It is a valid retry-limit alternative, with a trade-off and a condition stated."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10570,
+    "stop_reason": "tool_use",
+    "session_id": "6e0072e9-f0c1-4091-8eca-1f5aecd49aef",
+    "total_cost_usd": 0.041094000000000006,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6596,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1452,
+      "output_tokens_details": {
+        "thinking_tokens": 874
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6596,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1452,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6596,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6596
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1452,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6596,
+        "webSearchRequests": 0,
+        "costUSD": 0.041094000000000006,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 874,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6596,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the bounded queue with 429 in `ranker`.\\\" This matches the key's bounded ranker queue that rejects excess requests.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"each search can make up to 9 `ranker` requests\\\"; \\\"about 1,200 requests per second\\\"; \\\"180,000\\\"; \\\"empty at 14:41\\\". All match the key, and none is deferred.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message answers all three required questions: the retry-driven 3x overload plus the abandoned-work queue, the 3x3 attempts, and the maintenance page draining the queue in about 2 minutes. The reader's follow-ups ask for detail beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"multiplied each search into up to 9 `ranker` requests... `ranker` kept scoring abandoned requests\\\". The reader's problem, breaks, fix and cost agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should `ranker` reject excess requests with 429 at about 64 queued requests per instance, or should we cut the retries first?\\\" This is one question with one decision, and the reader answered it.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: cut retries... does not remove the backlog... becomes the primary if `ranker` cannot be changed soon.\\\" It is a valid retry-limit alternative, with a trade-off and a condition stated.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the bounded queue with 429 in `ranker`.\" This matches the key's bounded ranker queue that rejects excess requests."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"each search can make up to 9 `ranker` requests\"; \"about 1,200 requests per second\"; \"180,000\"; \"empty at 14:41\". All match the key, and none is deferred."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message answers all three required questions: the retry-driven 3x overload plus the abandoned-work queue, the 3x3 attempts, and the maintenance page draining the queue in about 2 minutes. The reader's follow-ups ask for detail beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"multiplied each search into up to 9 `ranker` requests... `ranker` kept scoring abandoned requests\". The reader's problem, breaks, fix and cost agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should `ranker` reject excess requests with 429 at about 64 queued requests per instance, or should we cut the retries first?\" This is one question with one decision, and the reader answered it."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: cut retries... does not remove the backlog... becomes the primary if `ranker` cannot be changed soon.\" It is a valid retry-limit alternative, with a trade-off and a condition stated."
+        }
+      ]
+    },
+    "ttft_ms": 8273,
+    "type": "result",
+    "duration_ms": 10916,
+    "uuid": "95487f34-3ce4-4d39-bb57-ef9cb1e9dbe3",
+    "ttft_stream_ms": 1756,
+    "time_to_request_ms": 346,
+    "first_content_frame_ms": 1756,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "key": "ee20d115ae11b6b826b82fc03e03c621847385364e9ff6520c526fa44d34a3b7",
+  "cost_usd": 0.041764,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends approving Ulrich's proposal with the guard.\" Matches the correct recommendation: approve with a read_at guard on the upsert."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`max_ack_pending: 1` becomes `256`, and `max_deliver: 1` becomes `6`\"; 62 s, 17 stalls, 41,200 lag and the unguarded upsert all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "The message never says what stays: same delays, DLQ after the 6th delivery, explicit ack, and the history insert in one transaction with the upsert. It also omits that exhausted retries go to ingest.dlq and ack."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"The guard costs one WHERE clause.\" Problem, breaks and fix agree with the key; cost includes deleting retry.py and changing consumer.yaml."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Do you approve the proposal with the `read_at` guard on `UPSERT_LATEST`, or do you reject it?\" One decision, matching closing_decision; reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: keep `max_ack_pending: 1`.\" This is not the valid partitioned-consumer alternative, and the message admits it fails the stall goal, so it does not produce the correct result."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 9975,
+    "stop_reason": "tool_use",
+    "session_id": "2d54475e-dac8-4ace-96c4-9be6bc28fe54",
+    "total_cost_usd": 0.041764,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6806,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1435,
+      "output_tokens_details": {
+        "thinking_tokens": 871
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6806,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1435,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6806,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6806
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1435,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6806,
+        "webSearchRequests": 0,
+        "costUSD": 0.041764,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 871,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6806,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends approving Ulrich's proposal with the guard.\\\" Matches the correct recommendation: approve with a read_at guard on the upsert.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`max_ack_pending: 1` becomes `256`, and `max_deliver: 1` becomes `6`\\\"; 62 s, 17 stalls, 41,200 lag and the unguarded upsert all match the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"The message never says what stays: same delays, DLQ after the 6th delivery, explicit ack, and the history insert in one transaction with the upsert. It also omits that exhausted retries go to ingest.dlq and ack.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"The guard costs one WHERE clause.\\\" Problem, breaks and fix agree with the key; cost includes deleting retry.py and changing consumer.yaml.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Do you approve the proposal with the `read_at` guard on `UPSERT_LATEST`, or do you reject it?\\\" One decision, matching closing_decision; reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: keep `max_ack_pending: 1`.\\\" This is not the valid partitioned-consumer alternative, and the message admits it fails the stall goal, so it does not produce the correct result.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends approving Ulrich's proposal with the guard.\" Matches the correct recommendation: approve with a read_at guard on the upsert."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`max_ack_pending: 1` becomes `256`, and `max_deliver: 1` becomes `6`\"; 62 s, 17 stalls, 41,200 lag and the unguarded upsert all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "The message never says what stays: same delays, DLQ after the 6th delivery, explicit ack, and the history insert in one transaction with the upsert. It also omits that exhausted retries go to ingest.dlq and ack."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"The guard costs one WHERE clause.\" Problem, breaks and fix agree with the key; cost includes deleting retry.py and changing consumer.yaml."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Do you approve the proposal with the `read_at` guard on `UPSERT_LATEST`, or do you reject it?\" One decision, matching closing_decision; reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: keep `max_ack_pending: 1`.\" This is not the valid partitioned-consumer alternative, and the message admits it fails the stall goal, so it does not produce the correct result."
+        }
+      ]
+    },
+    "ttft_ms": 7338,
+    "type": "result",
+    "duration_ms": 10322,
+    "uuid": "59080643-d633-48f9-a1a2-02d9c04d6cac",
+    "ttft_stream_ms": 1194,
+    "time_to_request_ms": 364,
+    "first_content_frame_ms": 1194,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

@@ -1,0 +1,9 @@
+stream: READINGS
+subjects:
+  - "readings.>"
+consumer: ingest
+durable: true
+ack_policy: explicit
+ack_wait: 90s
+max_ack_pending: 1
+max_deliver: 1

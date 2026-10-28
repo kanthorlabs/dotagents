@@ -1,0 +1,172 @@
+{
+  "key": "bef823bbc9e48095ee9efe6954ac2580cdd8e88fb0497e1dc8314c5d9816b0ef",
+  "cost_usd": 0.035064,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends the `id DESC` tiebreaker.\" This matches the key's tie-breaker recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"about 200 rows\", \"9 ids twice and 9 ids missing\", \"`id` is the primary key, per `docs/api.md`\". All match the key. The unverified step is the mechanism, not a dependent fact."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "Reader follow-up: \"Must exports stay correct while orders are being created mid-export?\" The ticket says no orders were created, but the message never states it. Ulrich needs that to rule."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader reconstruction: ties on `created_at` in Tidewater batches, 9 duplicates and 9 missing, `id` tie-breaker, one sort column. This matches the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should I apply the `id DESC` tiebreaker in `list_orders`, or switch to keyset pagination?\" It is one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": false,
+      "evidence": "\"Alternative: unique timestamps in the import.\" This is in invalid_options (distinct created_at without a tie-breaker), so it is an invalid listed alternative."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8685,
+    "stop_reason": "tool_use",
+    "session_id": "bcc5101c-cc6f-43f3-8e7b-884c40cd413a",
+    "total_cost_usd": 0.035064,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5831,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1155,
+      "output_tokens_details": {
+        "thinking_tokens": 626
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5831,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1155,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 5831,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5831
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1155,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 5831,
+        "webSearchRequests": 0,
+        "costUSD": 0.035064,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 626,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5831,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends the `id DESC` tiebreaker.\\\" This matches the key's tie-breaker recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"about 200 rows\\\", \\\"9 ids twice and 9 ids missing\\\", \\\"`id` is the primary key, per `docs/api.md`\\\". All match the key. The unverified step is the mechanism, not a dependent fact.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"Reader follow-up: \\\"Must exports stay correct while orders are being created mid-export?\\\" The ticket says no orders were created, but the message never states it. Ulrich needs that to rule.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader reconstruction: ties on `created_at` in Tidewater batches, 9 duplicates and 9 missing, `id` tie-breaker, one sort column. This matches the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should I apply the `id DESC` tiebreaker in `list_orders`, or switch to keyset pagination?\\\" It is one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":false,\"evidence\":\"\\\"Alternative: unique timestamps in the import.\\\" This is in invalid_options (distinct created_at without a tie-breaker), so it is an invalid listed alternative.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends the `id DESC` tiebreaker.\" This matches the key's tie-breaker recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"about 200 rows\", \"9 ids twice and 9 ids missing\", \"`id` is the primary key, per `docs/api.md`\". All match the key. The unverified step is the mechanism, not a dependent fact."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "Reader follow-up: \"Must exports stay correct while orders are being created mid-export?\" The ticket says no orders were created, but the message never states it. Ulrich needs that to rule."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader reconstruction: ties on `created_at` in Tidewater batches, 9 duplicates and 9 missing, `id` tie-breaker, one sort column. This matches the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should I apply the `id DESC` tiebreaker in `list_orders`, or switch to keyset pagination?\" It is one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": false,
+          "evidence": "\"Alternative: unique timestamps in the import.\" This is in invalid_options (distinct created_at without a tie-breaker), so it is an invalid listed alternative."
+        }
+      ]
+    },
+    "ttft_ms": 6267,
+    "type": "result",
+    "duration_ms": 9143,
+    "uuid": "05994e32-8834-4c3b-a9dd-edcd699c34cf",
+    "ttft_stream_ms": 1336,
+    "time_to_request_ms": 461,
+    "first_content_frame_ms": 1336,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

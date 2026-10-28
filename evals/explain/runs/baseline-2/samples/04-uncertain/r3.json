@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 20399,
+  "stop_reason": "end_turn",
+  "session_id": "44dee232-462a-4e86-86d2-a7692ed2463f",
+  "total_cost_usd": 0.0349586,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1887,
+    "cache_read_input_tokens": 23686,
+    "output_tokens": 2503,
+    "output_tokens_details": {
+      "thinking_tokens": 977
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1887,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1908,
+        "cache_read_input_tokens": 8123,
+        "cache_creation_input_tokens": 1366,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1366
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 2503,
+      "cacheReadInputTokens": 23686,
+      "cacheCreationInputTokens": 1887,
+      "webSearchRequests": 0,
+      "costUSD": 0.0349586,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 977,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1887,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 7,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "The October report for `northwind` was empty because migration 0042 archived all 188 of its paid invoices, and `report-builder` hid them. The migration ignores its own 90-day rule. The one step I can't verify is that the cached `hide_archived` flag was on for `northwind`.\n\n**Existing behaviour**\n\n1. `migrations/README.md` says 0042 archives paid invoices older than 90 days.\n2. `migrations/0042_archive_paid_invoices.sql:2-4` runs `UPDATE invoices SET status = 'archived' WHERE status = 'paid'`. It has no age condition.\n3. `jobs/report_builder.py:5-11` reads `hide_archived` per tenant. When the flag is on, it adds `AND status <> 'archived'`.\n\n**Timeline without the fix**\n\n1. About 23 Oct, `report-builder` last had fresh flags. The log says the cache was 3 days old on 26 Oct. This date is inferred.\n2. On 25 Oct at 22:10 UTC, 0042 sets every `paid` invoice to `archived`. Priya Raman's counts show `northwind` with 188 issued in October, 0 paid and 188 archived.\n3. On 26 Oct at 02:00:01, `report-builder` starts. It logs `flagd unreachable, using cached flags`.\n4. **Unverified:** `flags.is_on(\"hide_archived\", tenant=\"northwind\")` returns true from the cache. Priya Raman's counts support this. `acme` shows 412 in the report against 301 archived, and `globex` shows 97 against 64 archived. So the flag was off for those two, and only `northwind` fits \"on\".\n5. The `northwind` query excludes all 188 archived rows. The log shows `invoices=0 report=ok`.\n6. The job reports success and `northwind` gets an empty October report.\n\nAn audit log from `flagd`, or the cached flag file, would settle step 4. I skip the fixed timeline until then.\n\n**Recommendation.** Aelita recommends fixing the data first, because the migration is the root cause. A corrective migration would restore to `paid` every invoice that 0042 archived and that was issued within 90 days of 25 Oct. That brings back the October rows. The cost is that I can't tell pre-existing `archived` rows from 0042's rows, so some could be restored wrongly. Checking `issued_at` and any audit column would narrow that.\n\n**Alternative: turn `hide_archived` off for `northwind`.** This needs no data change. It would also show old archived invoices, and it needs `flagd` access. It becomes the primary if the archived status turns out to be correct.\n\n**Question.** Should I draft a corrective migration `0043` that restores invoices issued within 90 days of 25 Oct to `paid`, or do you prefer the flag change?",
+  "ttft_ms": 1796,
+  "type": "result",
+  "duration_ms": 20912,
+  "uuid": "0d668f5b-1383-45e6-850e-598eb53dbb21",
+  "ttft_stream_ms": 1286,
+  "time_to_request_ms": 476,
+  "first_content_frame_ms": 1287,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

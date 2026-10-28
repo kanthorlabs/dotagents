@@ -1,0 +1,11 @@
+provider: fastedge
+host: shop.saltmarsh.example
+rules:
+  - match: "/static/*"
+    cache: true
+    ttl_seconds: 86400
+  - match: "/product/*"
+    cache: true
+    ttl_seconds: 3600
+  - match: "/api/*"
+    cache: false

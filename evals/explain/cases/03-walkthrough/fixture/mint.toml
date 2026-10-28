@@ -1,0 +1,9 @@
+[env.staging]
+cluster = "gke-mint-staging"
+namespace = "shop"
+slack_channel = "#deploys-staging"
+
+[env.production]
+cluster = "gke-mint-prod"
+namespace = "shop"
+slack_channel = "#deploys"

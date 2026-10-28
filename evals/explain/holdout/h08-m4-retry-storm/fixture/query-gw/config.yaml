@@ -1,0 +1,10 @@
+listen: ":8080"
+routes:
+  - path: /api/search
+    upstream: ranker
+upstreams:
+  ranker:
+    url: http://ranker.bramble.internal:8080/rank
+    timeout_ms: 600
+    retries: 2
+    retry_on: [timeout, 5xx]

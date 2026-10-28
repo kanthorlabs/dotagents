@@ -1,0 +1,28 @@
+{
+  "mode": "Ruling acknowledgement. One narrow open item remains after the ruling.",
+  "common": ["style"],
+  "checks": [
+    {
+      "name": "ruling-first",
+      "kind": "mechanical",
+      "rule": "R07",
+      "fn": "first_block_regex",
+      "args": {"pattern": "5\\.1"},
+      "criterion": "The first block of the message names pg_partman 5.1."
+    },
+    {
+      "name": "close-last",
+      "kind": "mechanical",
+      "rule": "R17",
+      "fn": "close_last",
+      "criterion": "The last block is a labeled close and nothing follows it."
+    },
+    {
+      "name": "close-one-question",
+      "kind": "mechanical",
+      "rule": "R40",
+      "fn": "close_single_question",
+      "criterion": "The close holds exactly one question mark."
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "measures": ["M1", "M2", "M3", "M4", "M5", "M7"],
+  "correct_recommendations": [
+    "Raise both limits to about 200 MB: client_max_body_size in pinewood.conf and MAX_CONTENT_LENGTH in app/settings.py, and keep nginx request buffering on, so that the slow upload lands on the nginx disk before a gunicorn worker sees it."
+  ],
+  "invalid_options": [
+    "Raise only client_max_body_size in nginx, because MAX_CONTENT_LENGTH still rejects bodies over 10 MB.",
+    "Raise only MAX_CONTENT_LENGTH, because nginx still answers 413.",
+    "Raise both limits and turn proxy_request_buffering off, because a 180 MB upload at 20 Mbit/s takes about 72 s and holds a sync worker past the 30 s gunicorn timeout.",
+    "Ship presigned direct uploads as the fix for this week, because the frontend team cannot release before 9 November.",
+    "Ask Halvorsen Marine to split or compress the drawings."
+  ],
+  "root_cause": "nginx rejects request bodies over 10 MB with 413 because client_max_body_size is 10m, and pinewood-app rejects bodies over 10 MB because MAX_CONTENT_LENGTH is 10 MB. The CAD drawings are 60 to 180 MB.",
+  "dependent_facts": [
+    {
+      "fact": "nginx limit",
+      "true_value": "client_max_body_size 10m; request buffering is not turned off",
+      "source": "deploy/nginx/pinewood.conf",
+      "verifiable": true
+    },
+    {
+      "fact": "App limit",
+      "true_value": "MAX_CONTENT_LENGTH 10 MB",
+      "source": "app/settings.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Buffering and disk",
+      "true_value": "nginx buffers each request body to a 20 GB volume before it passes the request on",
+      "source": "docs/ops.md",
+      "verifiable": true
+    },
+    {
+      "fact": "gunicorn",
+      "true_value": "4 sync workers, timeout 30 s",
+      "source": "deploy/gunicorn.conf.py",
+      "verifiable": true
+    },
+    {
+      "fact": "Upload profile",
+      "true_value": "files 60 to 180 MB, about 25 per day, office uplink 20 Mbit/s, needed by Friday 30 October",
+      "source": "tickets/PD-64.md",
+      "verifiable": true
+    },
+    {
+      "fact": "App to bucket speed",
+      "true_value": "about 60 MB per second, so a 180 MB file takes about 3 s inside the worker",
+      "source": "docs/ops.md",
+      "verifiable": true
+    },
+    {
+      "fact": "Frontend availability",
+      "true_value": "no frontend release before 9 November; presign_post exists but no code calls it",
+      "source": "tickets/PD-64.md and docs/ops.md",
+      "verifiable": true
+    }
+  ],
+  "required_questions": [
+    {
+      "question": "Why does every upload fail?",
+      "expected_answer": "nginx answers 413 above 10 MB, and the app also rejects bodies above 10 MB."
+    },
+    {
+      "question": "Does a 180 MB upload over 20 Mbit/s hit the 30 s gunicorn timeout?",
+      "expected_answer": "No, because nginx buffers the whole body first; the worker then needs about 3 s to copy 180 MB to the bucket."
+    },
+    {
+      "question": "Why not presigned uploads now?",
+      "expected_answer": "They need a frontend change, and the frontend team cannot release before 9 November."
+    }
+  ],
+  "valid_alternatives": [
+    {
+      "option": "Presigned direct uploads to pinewood-files with storage.presign_post",
+      "trade_off": "Upload bytes skip nginx and the app and the size limit can grow to gigabytes, but it needs a frontend change, bucket CORS and a completion call, and no frontend release is possible before 9 November.",
+      "primary_when": "After 9 November, or when upload volume or file size grows beyond what the nginx disk and the app should carry.",
+      "must_list": true
+    }
+  ],
+  "closing_decision": "One decision: approve raising both limits to about 200 MB, or a single follow-up such as scheduling the presigned uploads after 9 November.",
+  "understanding": {
+    "problem": "Both nginx and the app cap request bodies at 10 MB, and the CAD drawings are 60 to 180 MB.",
+    "breaks": "Every Halvorsen Marine upload fails with 413.",
+    "fix": "Raise both limits to about 200 MB and keep nginx request buffering.",
+    "cost": "Two config lines; nginx disk for buffered bodies and a few seconds of a worker per upload."
+  }
+}

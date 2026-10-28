@@ -1,0 +1,172 @@
+{
+  "key": "1034d7a3debf3140ace09edd4e17a7ed4b5e8e988cc746adf7d77974a71117a9",
+  "cost_usd": 0.038934,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends removing the `digest_builder` line from the `ops-box-2` crontab, which fixes the cause.\" Matches the correct recommendation."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`enqueued=18412` from both `host=ops-box-2` and `pod=digest-builder-29353080-k7x2q\"; schedule `0 6 * * 1`; checklist unchecked; no existing-row check; no unique constraint. All match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "All five questions are answered. On breakage, \"The risk is that the Kubernetes job is the only run left\" is compatible with the key. The reader listed no follow-up questions."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"Delete the digest_builder line (line 3) from the ops-box-2 crontab\"; the reader's problem, breaks and cost fields agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should I remove the `digest_builder` line from the crontab mirror and tick the cutover checkbox, with the unique index left for a later change?\" This is one decision, and the reader answered \"Yes.\""
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"It becomes the primary if another source of double runs appears, such as manual reruns.\" The message also states the index's trade-offs. Email dedupe is dropped and not offered as an option."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 10700,
+    "stop_reason": "tool_use",
+    "session_id": "7d300a88-3ac5-4c89-a1ed-4f07ab314144",
+    "total_cost_usd": 0.038934,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6071,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1446,
+      "output_tokens_details": {
+        "thinking_tokens": 886
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6071,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1446,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6071,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6071
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1446,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6071,
+        "webSearchRequests": 0,
+        "costUSD": 0.038934,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 886,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6071,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends removing the `digest_builder` line from the `ops-box-2` crontab, which fixes the cause.\\\" Matches the correct recommendation.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`enqueued=18412` from both `host=ops-box-2` and `pod=digest-builder-29353080-k7x2q\\\"; schedule `0 6 * * 1`; checklist unchecked; no existing-row check; no unique constraint. All match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"All five questions are answered. On breakage, \\\"The risk is that the Kubernetes job is the only run left\\\" is compatible with the key. The reader listed no follow-up questions.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"Delete the digest_builder line (line 3) from the ops-box-2 crontab\\\"; the reader's problem, breaks and cost fields agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should I remove the `digest_builder` line from the crontab mirror and tick the cutover checkbox, with the unique index left for a later change?\\\" This is one decision, and the reader answered \\\"Yes.\\\"\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"It becomes the primary if another source of double runs appears, such as manual reruns.\\\" The message also states the index's trade-offs. Email dedupe is dropped and not offered as an option.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends removing the `digest_builder` line from the `ops-box-2` crontab, which fixes the cause.\" Matches the correct recommendation."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`enqueued=18412` from both `host=ops-box-2` and `pod=digest-builder-29353080-k7x2q\"; schedule `0 6 * * 1`; checklist unchecked; no existing-row check; no unique constraint. All match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "All five questions are answered. On breakage, \"The risk is that the Kubernetes job is the only run left\" is compatible with the key. The reader listed no follow-up questions."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"Delete the digest_builder line (line 3) from the ops-box-2 crontab\"; the reader's problem, breaks and cost fields agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should I remove the `digest_builder` line from the crontab mirror and tick the cutover checkbox, with the unique index left for a later change?\" This is one decision, and the reader answered \"Yes.\""
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"It becomes the primary if another source of double runs appears, such as manual reruns.\" The message also states the index's trade-offs. Email dedupe is dropped and not offered as an option."
+        }
+      ]
+    },
+    "ttft_ms": 7931,
+    "type": "result",
+    "duration_ms": 11159,
+    "uuid": "0c187e3b-f43c-48bf-8b64-7fe6bb774492",
+    "ttft_stream_ms": 1293,
+    "time_to_request_ms": 459,
+    "first_content_frame_ms": 1293,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

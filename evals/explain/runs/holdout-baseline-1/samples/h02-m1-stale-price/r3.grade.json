@@ -1,0 +1,172 @@
+{
+  "key": "fd4e194c71f7b218ad89bf38db295df6dbc38caefe3e93e21d5bd63e4ee98303",
+  "cost_usd": 0.036456,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends event-driven eviction, because `price.changed` already exists\" matches evicting the SKU on every pod via price.changed."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`cdn/rules.yaml:10-11` already sets `cache: false` for `/api/*`\"; 6 pods, ttl=3600, local pop and the indexer subscription all match the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Message covers the CDN not caching /api/*, the pod A vs B\u2013F alternation, and the subscriber change. The reader's fan-out question goes beyond the ruling."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"the other 5 pods keep the old price for up to an hour. The CDN is not involved\"; fix and cost agree with the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Should the 6 `shop-api` pods evict `price_cache` on `price.changed`, or should I use the 60-second pod TTL instead?\" It is one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "Offers a 60s pod TTL and dropping price_cache. Both are valid alternatives, each with a trade-off and a \"becomes the primary if\" condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8228,
+    "stop_reason": "tool_use",
+    "session_id": "a98eb7f7-48ec-40f7-a4fd-76fe8318548c",
+    "total_cost_usd": 0.036456,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6369,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1079,
+      "output_tokens_details": {
+        "thinking_tokens": 564
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6369,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1079,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6369,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6369
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1079,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6369,
+        "webSearchRequests": 0,
+        "costUSD": 0.036456,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 564,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6369,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends event-driven eviction, because `price.changed` already exists\\\" matches evicting the SKU on every pod via price.changed.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`cdn/rules.yaml:10-11` already sets `cache: false` for `/api/*`\\\"; 6 pods, ttl=3600, local pop and the indexer subscription all match the key.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Message covers the CDN not caching /api/*, the pod A vs B\u2013F alternation, and the subscriber change. The reader's fan-out question goes beyond the ruling.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"the other 5 pods keep the old price for up to an hour. The CDN is not involved\\\"; fix and cost agree with the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Should the 6 `shop-api` pods evict `price_cache` on `price.changed`, or should I use the 60-second pod TTL instead?\\\" It is one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"Offers a 60s pod TTL and dropping price_cache. Both are valid alternatives, each with a trade-off and a \\\"becomes the primary if\\\" condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends event-driven eviction, because `price.changed` already exists\" matches evicting the SKU on every pod via price.changed."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`cdn/rules.yaml:10-11` already sets `cache: false` for `/api/*`\"; 6 pods, ttl=3600, local pop and the indexer subscription all match the key."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Message covers the CDN not caching /api/*, the pod A vs B\u2013F alternation, and the subscriber change. The reader's fan-out question goes beyond the ruling."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"the other 5 pods keep the old price for up to an hour. The CDN is not involved\"; fix and cost agree with the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Should the 6 `shop-api` pods evict `price_cache` on `price.changed`, or should I use the 60-second pod TTL instead?\" It is one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "Offers a 60s pod TTL and dropping price_cache. Both are valid alternatives, each with a trade-off and a \"becomes the primary if\" condition."
+        }
+      ]
+    },
+    "ttft_ms": 6477,
+    "type": "result",
+    "duration_ms": 8785,
+    "uuid": "08c7bbd0-646b-4df4-8dc8-9e1c92690336",
+    "ttft_stream_ms": 1951,
+    "time_to_request_ms": 557,
+    "first_content_frame_ms": 1951,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

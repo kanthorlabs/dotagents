@@ -1,0 +1,101 @@
+{
+  "duration_api_ms": 42783,
+  "stop_reason": "end_turn",
+  "session_id": "d753fb7e-e75e-4fda-98ee-fcc18c21b62f",
+  "total_cost_usd": 0.07962159999999999,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 4881,
+    "cache_read_input_tokens": 35016,
+    "output_tokens": 5658,
+    "output_tokens_details": {
+      "thinking_tokens": 2729
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4881,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 4048,
+        "cache_read_input_tokens": 11276,
+        "cache_creation_input_tokens": 1205,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1205
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 5658,
+      "cacheReadInputTokens": 35016,
+      "cacheCreationInputTokens": 4881,
+      "webSearchRequests": 0,
+      "costUSD": 0.07962159999999999,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 2729,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 4881,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 15,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`kestrel-scheduler` fired `charge_renewals` twice because Europe/Berlin repeated the wall-clock time 02:30 on 25 October, and the scheduler's 60-second guard compares UTC instants. Aelita recommends that the scheduler fire once per local wall-clock minute. This is a small change in `scheduler/clock.py` and `scheduler/loop.py`.\n\n**Timeline without the fix**\n\n1. `kestrel-scheduler` fires `charge_renewals` at 00:30:04Z, which is 02:30+0200 in Berlin. `charge_renewals` charges 212 subscriptions and inserts `renewal_charges` rows with `settled=false`. `renews_on` stays unchanged.\n2. `send_dunning` fires at 00:45:03Z and sends 41 emails.\n3. At 01:00Z Berlin clocks fall back from 03:00 to 02:00. Local time 02:00 to 02:59 happens again.\n4. At 01:30:02Z the local time is 02:30+0100, so `matches` accepts `30 2 * * *`. `due_jobs` sees the previous fire 3598 seconds ago. That is above `MIN_GAP_SECONDS`, so it fires the job again.\n5. `charge_renewals` selects `renews_on <= today`. Only `settle_renewals` advances `renews_on`, and it has not run, so the same 212 rows match. `psp.charge` sends no idempotency key, so Payrail charges every card again.\n6. `send_dunning` fires again at 01:45:01Z and sends the same 41 emails.\n7. `settle_renewals` fires at 04:00:03Z. It reports `settled=424` and advances `renews_on` once per subscription. Nothing flags the duplicates.\n8. 212 subscribers see two identical charges dated 25 October, as KB-519 reports.\n\n**Timeline with the fix**, diverges at step 4.\n\n4. At 01:30:02Z `due_jobs` computes the local wall-clock minute `2026-10-25 02:30`. It equals the stored key from step 1, so it skips `charge_renewals`.\n5. No second charge happens. The 212 subscriptions are charged once.\n6. `send_dunning` is skipped the same way at 01:45Z. The 41 emails go out once.\n7. `settle_renewals` fires at 04:00:03Z and reports `settled=212`.\n8. Each of the 212 subscribers pays once.\n\n**What changes**\n\n- `scheduler/loop.py`: old behaviour is `last_fired[job.name] = now_utc`. New behaviour stores the local wall-clock minute, `local.replace(second=0, microsecond=0, tzinfo=None)`.\n- `scheduler/clock.py`: delete `MIN_GAP_SECONDS` and the UTC gap check. Add a check that skips a job when its current local wall-clock minute is less than or equal to the stored one. This also keeps the 15-second tick from firing twice in one minute.\n\n**Recommendation.** Aelita recommends the wall-clock key, because it removes the cause of the repeat. The scheduler stays in one process and keeps its state in memory.\n- **Cost:** about five changed lines.\n- **What can break:** on spring-forward, 02:30 never exists, so `charge_renewals` skips that day. The next day's `renews_on <= today` query catches those subscriptions up.\n- **Restart gap:** a scheduler restart inside the repeated hour loses `last_fired`, so the guard does not cover that case.\n- **Minutely jobs:** a `* * * * *` job would pause for the repeated hour. No such schedule exists today.\n\n**Alternative: idempotency key in the charge path.** `billing/renewals.py` would pass a key such as `Renewal {sub.id} {today}` through `billing/psp.py`. It beats the recommendation because it also survives restarts and manual reruns. It costs a change to the money path, and I could not verify that Payrail honours an `Idempotency-Key` header, because no file here settles it. It becomes the primary if Payrail confirms support and reruns outside DST matter more.\n\n**Open follow-up.** Support refunded some of the 212 by hand on 26 October and kept no list. The `renewal_charges` rows for `charged_on = 2026-10-25` can show the duplicate pairs, to compare against Payrail refunds. That item follows after your ruling.\n\n**Question.** Do you approve the wall-clock-minute key in `scheduler/clock.py` and `scheduler/loop.py` as the fix, or do you want the idempotency key as the primary?",
+  "ttft_ms": 1417,
+  "type": "result",
+  "duration_ms": 43206,
+  "uuid": "bb2a02ba-d680-47dd-90c8-a3af66c0968f",
+  "ttft_stream_ms": 1070,
+  "time_to_request_ms": 382,
+  "first_content_frame_ms": 1070,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

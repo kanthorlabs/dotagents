@@ -1,0 +1,172 @@
+{
+  "key": "9b2253d6521c91da16786ef78f90e03c61ea5bd27beb105ab35f8b825c2a6cbc",
+  "cost_usd": 0.037087999999999996,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "\"Aelita recommends `BOUNCE_RETRY_LIMIT = 4`, so `invoice-mailer` never sends a sixth time.\" Lowering the limit to 5 or fewer matches the key."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"retries a bounced mail up to 12 times\", \"waits 60 seconds\", \"blocks the sender for 24 hours\", \"not more than 5\". All match the key, and the ruling and SPF are correct."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The message records the ruling, explains the 12-retry block, proposes a limit of 4 (5 or fewer), and names the cutover date as next. The reader's 5th-vs-6th doubt is answered by \"not more than 5\"."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader: \"handle_bounce retries up to 12 times. smtp-mx-2 blocks a sender after 5 bounces per recipient in one hour.\" Fix and cost (one-line edit, or classification code) match the key."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Does `invoice-mailer` set `BOUNCE_RETRY_LIMIT` to 4, or build hard and soft bounce classification?\" One question, one decision, and the reader gave a real answer."
+    },
+    "M7": {
+      "id": "M7",
+      "pass": true,
+      "evidence": "\"Alternative: tell hard bounces from soft bounces... costs new bounce-parsing code... becomes the primary when soft bounces need more than 4 retries.\" Valid alternative, with trade-off and condition."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8678,
+    "stop_reason": "tool_use",
+    "session_id": "b43c8906-f647-4709-a568-8da855036b84",
+    "total_cost_usd": 0.037087999999999996,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6212,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 1205,
+      "output_tokens_details": {
+        "thinking_tokens": 589
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6212,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1205,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 6212,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6212
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1205,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 6212,
+        "webSearchRequests": 0,
+        "costUSD": 0.037087999999999996,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 589,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 6212,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"\\\"Aelita recommends `BOUNCE_RETRY_LIMIT = 4`, so `invoice-mailer` never sends a sixth time.\\\" Lowering the limit to 5 or fewer matches the key.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"retries a bounced mail up to 12 times\\\", \\\"waits 60 seconds\\\", \\\"blocks the sender for 24 hours\\\", \\\"not more than 5\\\". All match the key, and the ruling and SPF are correct.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The message records the ruling, explains the 12-retry block, proposes a limit of 4 (5 or fewer), and names the cutover date as next. The reader's 5th-vs-6th doubt is answered by \\\"not more than 5\\\".\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader: \\\"handle_bounce retries up to 12 times. smtp-mx-2 blocks a sender after 5 bounces per recipient in one hour.\\\" Fix and cost (one-line edit, or classification code) match the key.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Does `invoice-mailer` set `BOUNCE_RETRY_LIMIT` to 4, or build hard and soft bounce classification?\\\" One question, one decision, and the reader gave a real answer.\"},{\"id\":\"M7\",\"pass\":true,\"evidence\":\"\\\"Alternative: tell hard bounces from soft bounces... costs new bounce-parsing code... becomes the primary when soft bounces need more than 4 retries.\\\" Valid alternative, with trade-off and condition.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Aelita recommends `BOUNCE_RETRY_LIMIT = 4`, so `invoice-mailer` never sends a sixth time.\" Lowering the limit to 5 or fewer matches the key."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"retries a bounced mail up to 12 times\", \"waits 60 seconds\", \"blocks the sender for 24 hours\", \"not more than 5\". All match the key, and the ruling and SPF are correct."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The message records the ruling, explains the 12-retry block, proposes a limit of 4 (5 or fewer), and names the cutover date as next. The reader's 5th-vs-6th doubt is answered by \"not more than 5\"."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader: \"handle_bounce retries up to 12 times. smtp-mx-2 blocks a sender after 5 bounces per recipient in one hour.\" Fix and cost (one-line edit, or classification code) match the key."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Does `invoice-mailer` set `BOUNCE_RETRY_LIMIT` to 4, or build hard and soft bounce classification?\" One question, one decision, and the reader gave a real answer."
+        },
+        {
+          "id": "M7",
+          "pass": true,
+          "evidence": "\"Alternative: tell hard bounces from soft bounces... costs new bounce-parsing code... becomes the primary when soft bounces need more than 4 retries.\" Valid alternative, with trade-off and condition."
+        }
+      ]
+    },
+    "ttft_ms": 5699,
+    "type": "result",
+    "duration_ms": 9182,
+    "uuid": "ecd89a63-ec70-41e0-b699-701a333fba06",
+    "ttft_stream_ms": 1345,
+    "time_to_request_ms": 509,
+    "first_content_frame_ms": 1345,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

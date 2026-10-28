@@ -1,0 +1,142 @@
+{
+  "key": "1189351bf8a2e6222d85d8ff98ae4641d2cd4ac58064e41ce451c3fa6f44c9dd",
+  "cost_usd": 0.022458000000000002,
+  "verdicts": {
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`\"; tag, set image on web, --timeout=300s, and Slack text all match the key. None is deferred or marked unverified."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Steps 1\u20138 give the sequence, \"`docker push` sends the image to `registry.mint.internal`\", and the rollout wait plus the Slack post. The reader's entry-point question goes beyond the walk-through."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "Reader problem: \"eight ordered steps: read `mint.toml`, get the short SHA, build the tag, docker build, docker push, kubectl set image, wait for rollout, post to Slack.\" It matches the key. The other fields are n/a."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 11206,
+    "stop_reason": "tool_use",
+    "session_id": "9602e952-c3e1-4f96-92ec-f572a60f76e4",
+    "total_cost_usd": 0.022458000000000002,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4257,
+      "cache_read_input_tokens": 1860,
+      "output_tokens": 524,
+      "output_tokens_details": {
+        "thinking_tokens": 177
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4257,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 524,
+          "cache_read_input_tokens": 1860,
+          "cache_creation_input_tokens": 4257,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4257
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 524,
+        "cacheReadInputTokens": 1860,
+        "cacheCreationInputTokens": 4257,
+        "webSearchRequests": 0,
+        "costUSD": 0.022458000000000002,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 177,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4257,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`\\\"; tag, set image on web, --timeout=300s, and Slack text all match the key. None is deferred or marked unverified.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Steps 1\u20138 give the sequence, \\\"`docker push` sends the image to `registry.mint.internal`\\\", and the rollout wait plus the Slack post. The reader's entry-point question goes beyond the walk-through.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"Reader problem: \\\"eight ordered steps: read `mint.toml`, get the short SHA, build the tag, docker build, docker push, kubectl set image, wait for rollout, post to Slack.\\\" It matches the key. The other fields are n/a.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"cluster `gke-mint-staging`, namespace `shop`, channel `#deploys-staging`\"; tag, set image on web, --timeout=300s, and Slack text all match the key. None is deferred or marked unverified."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Steps 1\u20138 give the sequence, \"`docker push` sends the image to `registry.mint.internal`\", and the rollout wait plus the Slack post. The reader's entry-point question goes beyond the walk-through."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "Reader problem: \"eight ordered steps: read `mint.toml`, get the short SHA, build the tag, docker build, docker push, kubectl set image, wait for rollout, post to Slack.\" It matches the key. The other fields are n/a."
+        }
+      ]
+    },
+    "ttft_ms": 9837,
+    "type": "result",
+    "duration_ms": 11805,
+    "uuid": "d506a0a8-a918-4d69-9060-bb9c1820e04d",
+    "ttft_stream_ms": 8589,
+    "time_to_request_ms": 599,
+    "first_content_frame_ms": 8590,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

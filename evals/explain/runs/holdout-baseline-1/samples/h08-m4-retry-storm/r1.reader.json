@@ -1,0 +1,135 @@
+{
+  "key": "19bb64398e1b10649424aa99521531467096fc5bd4fbb266a7a3693ab9c77e2b",
+  "cost_usd": 0.039026500000000006,
+  "reader": {
+    "decision": "Implement the bounded queue plus the 500 ms stale check in ranker/server.py, and update docs/capacity.md. Do not do the retry cut now; treat it as a separate follow-up.",
+    "decision_reason": "The message names the root cause as a standing queue of dead work that outlives the overload, and only a ranker-side bound removes it and protects ranker from any caller. The retry cut leaves the queue unbounded, and the message makes it primary only if ranker cannot be changed this quarter, which it does not say is the case.",
+    "reconstruction": {
+      "problem": "On 22 October a merge slowed ranker for 4 minutes, but search stayed down for 37. Retries from web (3 attempts) and query-gw (3 tries) turn one search into up to 9 ranker requests, about 3,500 per second against about 1,200 served. Ranker's queue is unbounded and it never checks whether the caller is still waiting. The queue reached about 180,000 requests, a wait of about 150 s against a 600 ms gateway timeout. Ranker kept scoring dead requests, each timeout caused another retry, and the overload sustained itself after the merge ended. It cleared only when the maintenance page stopped new searches at 14:39 and the queue drained by 14:41.",
+      "what_breaks": "Search stays down as long as a queue of stale work exists. Every answer arrives after the caller gave up, and retries refill the queue as fast as it drains. Ranker shows no error, and recovery needed a manual action.",
+      "fix": "In ranker/server.py, count waiting requests and return an immediate 503 above a cap of about 64 per instance (about 400 ms of work). Also drop any request that waited more than 500 ms before score starts. Update the 'The queue has no limit' line in docs/capacity.md with the 64 and 500 ms values. The alternative is retries: 0 in query-gw/config.yaml and a lower MAX_ATTEMPTS in web/src/searchClient.ts, which cuts load to about 400 per second but leaves the queue unbounded.",
+      "cost": "Some searches are rejected during a real overload, and a limit set too low would reject healthy traffic. The alternative costs protection: any other overload can fill the unbounded queue again."
+    },
+    "follow_up_questions": [
+      "Can ranker be changed this quarter? If not, the retry cut becomes the primary fix.",
+      "Is a cap of 64 per instance safe for healthy traffic? What are the normal peak queue depth and p99 at 400 searches per second?"
+    ],
+    "closing_answer": "Implement the bounded queue and the 500 ms stale check in ranker/server.py, with the docs/capacity.md update. Do the retry cut afterwards as a separate change, not instead of this one."
+  },
+  "raw": {
+    "duration_api_ms": 15738,
+    "stop_reason": "tool_use",
+    "session_id": "22a08924-3f6a-4ad1-a01c-81ff74e33118",
+    "total_cost_usd": 0.039026500000000006,
+    "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 3965,
+      "cache_read_input_tokens": 6885,
+      "output_tokens": 2247,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 3965,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1012,
+          "cache_read_input_tokens": 4912,
+          "cache_creation_input_tokens": 1026,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1026
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 4,
+        "outputTokens": 2247,
+        "cacheReadInputTokens": 6885,
+        "cacheCreationInputTokens": 3965,
+        "webSearchRequests": 0,
+        "costUSD": 0.039026500000000006,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 3965,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 3,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"decision\":\"Implement the bounded queue plus the 500 ms stale check in ranker/server.py, and update docs/capacity.md. Do not do the retry cut now; treat it as a separate follow-up.\",\"decision_reason\":\"The message names the root cause as a standing queue of dead work that outlives the overload, and only a ranker-side bound removes it and protects ranker from any caller. The retry cut leaves the queue unbounded, and the message makes it primary only if ranker cannot be changed this quarter, which it does not say is the case.\",\"reconstruction\":{\"problem\":\"On 22 October a merge slowed ranker for 4 minutes, but search stayed down for 37. Retries from web (3 attempts) and query-gw (3 tries) turn one search into up to 9 ranker requests, about 3,500 per second against about 1,200 served. Ranker's queue is unbounded and it never checks whether the caller is still waiting. The queue reached about 180,000 requests, a wait of about 150 s against a 600 ms gateway timeout. Ranker kept scoring dead requests, each timeout caused another retry, and the overload sustained itself after the merge ended. It cleared only when the maintenance page stopped new searches at 14:39 and the queue drained by 14:41.\",\"what_breaks\":\"Search stays down as long as a queue of stale work exists. Every answer arrives after the caller gave up, and retries refill the queue as fast as it drains. Ranker shows no error, and recovery needed a manual action.\",\"fix\":\"In ranker/server.py, count waiting requests and return an immediate 503 above a cap of about 64 per instance (about 400 ms of work). Also drop any request that waited more than 500 ms before score starts. Update the 'The queue has no limit' line in docs/capacity.md with the 64 and 500 ms values. The alternative is retries: 0 in query-gw/config.yaml and a lower MAX_ATTEMPTS in web/src/searchClient.ts, which cuts load to about 400 per second but leaves the queue unbounded.\",\"cost\":\"Some searches are rejected during a real overload, and a limit set too low would reject healthy traffic. The alternative costs protection: any other overload can fill the unbounded queue again.\"},\"follow_up_questions\":[\"Can ranker be changed this quarter? If not, the retry cut becomes the primary fix.\",\"Is a cap of 64 per instance safe for healthy traffic? What are the normal peak queue depth and p99 at 400 searches per second?\"],\"closing_answer\":\"Implement the bounded queue and the 500 ms stale check in ranker/server.py, with the docs/capacity.md update. Do the retry cut afterwards as a separate change, not instead of this one.\"}",
+    "structured_output": {
+      "decision": "Implement the bounded queue plus the 500 ms stale check in ranker/server.py, and update docs/capacity.md. Do not do the retry cut now; treat it as a separate follow-up.",
+      "decision_reason": "The message names the root cause as a standing queue of dead work that outlives the overload, and only a ranker-side bound removes it and protects ranker from any caller. The retry cut leaves the queue unbounded, and the message makes it primary only if ranker cannot be changed this quarter, which it does not say is the case.",
+      "reconstruction": {
+        "problem": "On 22 October a merge slowed ranker for 4 minutes, but search stayed down for 37. Retries from web (3 attempts) and query-gw (3 tries) turn one search into up to 9 ranker requests, about 3,500 per second against about 1,200 served. Ranker's queue is unbounded and it never checks whether the caller is still waiting. The queue reached about 180,000 requests, a wait of about 150 s against a 600 ms gateway timeout. Ranker kept scoring dead requests, each timeout caused another retry, and the overload sustained itself after the merge ended. It cleared only when the maintenance page stopped new searches at 14:39 and the queue drained by 14:41.",
+        "what_breaks": "Search stays down as long as a queue of stale work exists. Every answer arrives after the caller gave up, and retries refill the queue as fast as it drains. Ranker shows no error, and recovery needed a manual action.",
+        "fix": "In ranker/server.py, count waiting requests and return an immediate 503 above a cap of about 64 per instance (about 400 ms of work). Also drop any request that waited more than 500 ms before score starts. Update the 'The queue has no limit' line in docs/capacity.md with the 64 and 500 ms values. The alternative is retries: 0 in query-gw/config.yaml and a lower MAX_ATTEMPTS in web/src/searchClient.ts, which cuts load to about 400 per second but leaves the queue unbounded.",
+        "cost": "Some searches are rejected during a real overload, and a limit set too low would reject healthy traffic. The alternative costs protection: any other overload can fill the unbounded queue again."
+      },
+      "follow_up_questions": [
+        "Can ranker be changed this quarter? If not, the retry cut becomes the primary fix.",
+        "Is a cap of 64 per instance safe for healthy traffic? What are the normal peak queue depth and p99 at 400 searches per second?"
+      ],
+      "closing_answer": "Implement the bounded queue and the 500 ms stale check in ranker/server.py, with the docs/capacity.md update. Do the retry cut afterwards as a separate change, not instead of this one."
+    },
+    "ttft_ms": 9433,
+    "type": "result",
+    "duration_ms": 16252,
+    "uuid": "9dddaced-0b71-4065-b50d-0a4f510b1bb2",
+    "ttft_stream_ms": 1821,
+    "time_to_request_ms": 487,
+    "first_content_frame_ms": 1821,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}
