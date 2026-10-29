@@ -26,6 +26,15 @@ def command(skill_path, prompt):
     ]
 
 
+def write_fixture_files(spec_path, workspace):
+    if not spec_path.is_file():
+        return
+    for relative, content in json.loads(spec_path.read_text()).items():
+        path = workspace / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content)
+
+
 def generate(skill_path, case_dir, target):
     raw_path = target.with_suffix(".json")
     if target.exists() and raw_path.exists():
@@ -36,6 +45,7 @@ def generate(skill_path, case_dir, target):
         fixture = case_dir / "fixture"
         if fixture.is_dir():
             shutil.copytree(fixture, workspace, dirs_exist_ok=True)
+        write_fixture_files(case_dir / "fixture.json", workspace)
         completed = subprocess.run(
             command(skill_path, prompt), cwd=workspace, capture_output=True, text=True,
             timeout=TIMEOUT_SECONDS, stdin=subprocess.DEVNULL,

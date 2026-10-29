@@ -21,6 +21,7 @@ A suite directory holds:
   - `model`, `effort`, `tools`: the settings of the model under test.
   - `steps`: the suite scripts that run after generation, in order.
 - `cases/<id>/`: one directory per case, with `prompt.md` and an optional `fixture/`. Other files in the case directory belong to the suite steps.
+- `cases/<id>/fixture.json`: optional. It maps a workspace path to the file content. `generate.py` writes these files after it copies `fixture/`. Use it for a file that a gitignore rule excludes, for example `*.env`.
 - `measures.json`: the name of each measure.
 - `runs/`: the run output. Each run has `samples/<case>/r<n>.md`.
 

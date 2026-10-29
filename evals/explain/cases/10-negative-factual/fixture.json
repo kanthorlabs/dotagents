@@ -1,0 +1,4 @@
+{
+  "deploy/dev.env": "SERVICE_NAME=orders-api\nPORT=8080\nLOG_LEVEL=debug\n",
+  "deploy/prod.env": "SERVICE_NAME=orders-api\nPORT=8443\nLOG_LEVEL=info\n"
+}

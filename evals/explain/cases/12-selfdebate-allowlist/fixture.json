@@ -1,0 +1,3 @@
+{
+  "deploy/runner.env": "PATH=/usr/local/bin:/usr/bin:/bin\nHOME=/home/tinkerbox\nLANG=C.UTF-8\nHTTPS_PROXY=http://proxy.tinkerbox.internal:3128\nAWS_SECRET_ACCESS_KEY=redacted\nDATABASE_URL=redacted\nGITHUB_TOKEN=redacted\nSTRIPE_API_KEY=redacted\nSENTRY_DSN=redacted\nBILLING_WEBHOOK_SECRET=redacted\nTINKERBOX_CSV_DELIMITER=;\n"
+}

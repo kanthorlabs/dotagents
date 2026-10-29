@@ -32,6 +32,7 @@ The mechanical rule checks do not count toward the score. The report lists them 
 
 - `cases/<id>/prompt.md`: the prompt.
 - `cases/<id>/fixture/`: the files that the model can read.
+- `cases/<id>/fixture.json`: the fixture files that git ignores, as path and content. Cases `10-negative-factual` and `12-selfdebate-allowlist` use it for their `.env` files.
 - `cases/<id>/key.json`: the answer key. Only the grader sees it.
 - `cases/<id>/checks.json`: the mechanical rule checks for the diagnostic layer.
 - `common_checks.json`, `mechanical.py`, `rules.json`: the diagnostic layer.
