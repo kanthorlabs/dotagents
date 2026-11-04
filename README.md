@@ -38,6 +38,7 @@ dotagents/
 | Skill | Description |
 |-------|-------------|
 | `/explain` | Explain a problem, a bug, a design gap or a proposal with named actors, a numbered timeline and one question. No engine, no script: it shapes the message. |
+| `/evidence-first` | Collect the full context before any work, cite a source for every number and decision, and search the given Slack thread or ticket before asking or tagging a person. It loads by itself on a Slack link, a ticket, a draft, a status update or a date. |
 
 More skills coming.
 
