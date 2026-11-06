@@ -1,0 +1,778 @@
+{
+  "skill_path": "../../../../../private/tmp/claude-501/-Users-tuanatelsa-Projects-elsa-features-learning-loop/2a8f0b1a-03bd-4d26-ab25-65c82d820c0f/scratchpad/ef-head.md",
+  "skill_lines": 178,
+  "repeats": 5,
+  "model": "sonnet",
+  "effort": "medium",
+  "cost_usd": {
+    "generation": 0.4251,
+    "reader": 0.0,
+    "grading": 0.3552
+  },
+  "samples": [
+    {
+      "case": "01-smoke-check-review",
+      "sample": "r1",
+      "error": false,
+      "words": 343,
+      "grader_cost_usd": 0.0208991,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| 1a | Non-member gets 403 | **Not tested** | `results.md:6` |\" \u2014 table has condition/result/source but no explicit actor, path, target columns."
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"1b: ... It doesn't say whether that account is a member\" and \"isMinistryOrg is not in the files here, so I can't tell\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I haven't edited it.\" / \"nothing is recorded in SMOKE-001 yet\" \u2014 never states the file exists or that result cells are empty."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Still to do: 1. Run 1a with a non-member session... 3. ... I can record the check 3 PASS\" \u2014 a to-do list; does not consolidate needs with unblocks."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"The earlier session tested with an admin token for org-9876\" and \"The result covers org-9876, class 42\" \u2014 uses org-9876."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0219339
+    },
+    {
+      "case": "01-smoke-check-review",
+      "sample": "r2",
+      "error": false,
+      "words": 416,
+      "grader_cost_usd": 0.021385099999999997,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table has Check/Status/Evidence columns only; e.g. \"1a. Non-member gets 403 | Not tested\". No explicit actor/path/target columns; check 3 actor and path not stated."
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"`isMember` and `isSuperAdmin` aren't in the files I have, so I can't confirm that an admin counts as a member.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"`tickets/SMOKE-001.md` has empty result cells, so nothing is recorded there yet.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Asks appear in separate places: \"Next steps\" items 1-3 plus a separate \"I can record the partial results... if you want that.\" Unblocks not named per item."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"class 42 in org-9876 opened normally\" and the checks reference org-9876 as the test org."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0248792
+    },
+    {
+      "case": "01-smoke-check-review",
+      "sample": "r3",
+      "error": false,
+      "words": 384,
+      "grader_cost_usd": 0.0209731,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table lists checks with status/evidence but no explicit actor, path, target columns; \"Class /live page\" has no path or actor stated."
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"1b ... isMember isn't in this directory, so I can't tell whether an admin counts as a member.\" Gap 3 left unresolved; 1a/2 marked \"Not tested\"."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"`SMOKE-001` has no results recorded yet.\" and \"I did not write anything into `SMOKE-001.md`.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"To finish: 1. Run a GET as a user who is not in org-9876...\" plus a separate question about recording; no unblock named for each."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"class 42 in org-9876 opened normally\" and \"Confirm whether org-9876 is flagged as a ministry org\" \u2014 target is org-9876."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0254276
+    },
+    {
+      "case": "01-smoke-check-review",
+      "sample": "r4",
+      "error": false,
+      "words": 359,
+      "grader_cost_usd": 0.0213911,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table has Condition, Result, Source columns only; \"1a | Non-member GET add-ons \u2192 403 | Not tested\""
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"1b caveat: the test used an admin token... a member-role 200 is not confirmed.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"SMOKE-001 is still blank.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Next steps: 1. Run 1a with a non-member session... 2. ...find out whether org-9876 is a ministry org... 3. Fill in SMOKE-001\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"PASS (org-9876, class 42)\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0218164
+    },
+    {
+      "case": "01-smoke-check-review",
+      "sample": "r5",
+      "error": false,
+      "words": 379,
+      "grader_cost_usd": 0.0227091,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table lists conditions with status and evidence columns only, e.g. \"| 1a | Non-member GET add-ons \u2192 403 | **Not tested** |\""
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"I can't tell from these files whether org-9876 is a ministry org.\" and 1b: \"It may not be the same as a plain member.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"SMOKE-001 is still blank.\" and \"I haven't edited SMOKE-001.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Do you want me to record the partial results in SMOKE-001 as they stand...\" plus a separate list \"To finish the checks\" and \"is yours to authorize\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"class 42 in org-9876 opened normally\" and \"Run 2 through the UI as a super admin on org-9876.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.022228200000000004
+    },
+    {
+      "case": "02-release-check",
+      "sample": "r1",
+      "error": false,
+      "words": 278,
+      "grader_cost_usd": 0.016609099999999998,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| PR #42 merged to main | Yes. Commit a3f9c2d... |\" The table lists checks and results, but no explicit actor, path and target columns."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"PR #42 merged to main: yes. `git_log.txt:1-8` shows commit a3f9c2d... by CI Bot on Wed Nov 4 2026 at 18:42 UTC.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"Proposed table for `tickets/DEPLOY-42.md` lines 9-13\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"If you'd like me to write the table above into the ticket as it stands, I'll need file-edit access.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.019888199999999998
+    },
+    {
+      "case": "02-release-check",
+      "sample": "r2",
+      "error": false,
+      "words": 300,
+      "grader_cost_usd": 0.017143099999999998,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Suggested text for the ticket table | Check | Result |\" \u2014 columns are check and result only."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Merge commit `a3f9c2d` ... CI Bot, Wed Nov 4 2026 18:42:11 +0000) is in `git_log.txt`.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I'll write this into `tickets/DEPLOY-42.md` and update the other two rows.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you re-enable editing, or give me the deploy run or staging version, I'll write this\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0258899
+    },
+    {
+      "case": "02-release-check",
+      "sample": "r3",
+      "error": false,
+      "words": 242,
+      "grader_cost_usd": 0.0151731,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| Check | Result |\" table lists checks and results only"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Merge commit `a3f9c2d` landed on Wed 4 Nov 2026 at 18:42 UTC (`git_log.txt:1-8`)\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"If you re-enable editing, I'll write this into `tickets/DEPLOY-42.md`.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you re-enable editing... Or paste it in yourself. If you can point me to the deploy log\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0238166
+    },
+    {
+      "case": "02-release-check",
+      "sample": "r4",
+      "error": false,
+      "words": 228,
+      "grader_cost_usd": 0.0219081,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Text for the ticket's Checks table\" lists merged/staging/smoke rows with no explicit actor, path, target columns."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Merged to main: confirmed. Merge commit `a3f9c2d` ... dated 2026-11-04 18:42 UTC (`git_log.txt:1-8`)\" cites the source verdict."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"The ticket is unchanged.\" never states that the file exists with empty result cells."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"If you paste the deploy output, or re-enable editing, I'll fill in the remaining rows.\" One consolidated ask naming what it unblocks."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0244306
+    },
+    {
+      "case": "02-release-check",
+      "sample": "r5",
+      "error": false,
+      "words": 256,
+      "grader_cost_usd": 0.0161291,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| PR #42 merged to main | Yes. Merge commit `a3f9c2d`...\" The table has check/result/source columns, with no explicit actor or path for the condition."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Yes. Merge commit `a3f9c2d`, 4 Nov 2026 18:42 UTC, \"Merge pull request #42 into main\".\" cited to `git_log.txt:1-8`"
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't update DEPLOY-42... no way to edit files.\" The message never states the ticket file exists or that its result cells are empty."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"I need one of these: ... If you paste the deploy log or point me to it... If you'd rather I write the ticket, I can do that once I have an edit tool.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0168258
+    },
+    {
+      "case": "03-data-count",
+      "sample": "r1",
+      "error": false,
+      "words": 232,
+      "grader_cost_usd": 0.0156951,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"I counted rows in `completions.csv` where `org_id` is org-9876 and `completed_at` falls between...\" \u2014 prose only; no table/list mapping condition to actor, path, target."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The count is **7**... matching rows are lines 2\u20138, lesson-101 to lesson-107\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"set the table row in `tickets/COUNT-001.md` line 11 to `| Completions (org-9876, last 7 days) | 7 |`\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"You can also enable editing and I'll do it.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0214676
+    },
+    {
+      "case": "03-data-count",
+      "sample": "r2",
+      "error": false,
+      "words": 214,
+      "grader_cost_usd": 0.0171311,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"The 7 rows for org-9876 in that window are:\" followed by a Date/Lessons table"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"I counted 7 completions for org-9876\" from completions.csv, window 2026-10-30 to 2026-11-05, with out-of-window rows excluded"
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The row in `tickets/COUNT-001.md` (line 11) is still blank.\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"To fill it, change it to `| Completions (org-9876, last 7 days) | 7 |`, or enable editing and I'll do it.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0248728
+    },
+    {
+      "case": "03-data-count",
+      "sample": "r3",
+      "error": false,
+      "words": 216,
+      "grader_cost_usd": 0.0181191,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"I counted these rows in `completions.csv`... Two org-1111 rows belong to another org\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"**Count: 7** completions for org-9876 in the window 2026-10-30 to 2026-11-05, inclusive.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The ticket's result cell is still empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"change line 11 of the ticket to `| Completions (org-9876, last 7 days) | 7 |`. If you enable Edit, I'll make the change.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0230623
+    },
+    {
+      "case": "03-data-count",
+      "sample": "r4",
+      "error": false,
+      "words": 163,
+      "grader_cost_usd": 0.0161631,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"**Count:** org-9876 had 7 completions from 2026-10-30 to 2026-11-05... This comes from `completions.csv`\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"org-9876 had 7 completions from 2026-10-30 to 2026-11-05, inclusive... lines 2\u20138, which hold lesson-101 to lesson-107\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"put `7` in the Result table row on line 11 of `tickets/COUNT-001.md`\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"Or enable Edit and I'll do it, adding a source note under the table.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0226606
+    },
+    {
+      "case": "03-data-count",
+      "sample": "r5",
+      "error": false,
+      "words": 225,
+      "grader_cost_usd": 0.0157051,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"How I got 7\" bullets describe window and org filter, but no table/list mapping condition to explicit actor, path, target."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Seven are org-9876 rows inside the window, on lines 2\u20138\" and \"The count is **7**.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"change line 11 of `tickets/COUNT-001.md` to: `| Completions (org-9876, last 7 days) | 7 |`\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"To record it, change line 11 of `tickets/COUNT-001.md` to...\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0204343
+    },
+    {
+      "case": "04-nothing-closeable",
+      "sample": "r1",
+      "error": false,
+      "words": 199,
+      "grader_cost_usd": 0.0153391,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Sources I read: `backup_checklist.md` and `tickets/BACKUP-001.md`.\" No table or list mapping the condition to actor, path and target exists."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"no logs or status data are stored locally. So I have no evidence either way\" and \"I haven't marked it as passed.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"the ticket's Result row is still empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"someone with EU ops access needs to check the job status... Once you have the result, I can record it if editing is enabled.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0195018
+    },
+    {
+      "case": "04-nothing-closeable",
+      "sample": "r2",
+      "error": false,
+      "words": 222,
+      "grader_cost_usd": 0.0156491,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| Check | Result |\" table maps check to result only"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The only way to see the job status is the EU backup dashboard, which needs EU ops credentials I don't have.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't write to BACKUP-001 either.\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"If you give me the dashboard readings, or a way to read the dashboard or write to the ticket, I'll finish the record.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0160328
+    },
+    {
+      "case": "04-nothing-closeable",
+      "sample": "r3",
+      "error": false,
+      "words": 206,
+      "grader_cost_usd": 0.0152911,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"The checklist ... says to read the EU backup dashboard, which needs EU ops credentials.\" No table or list mapping condition to actor, path, target."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"no logs or backup status data are stored locally\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"the Result row is still empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"Someone with EU ops access, or Alex ... will have to look at the dashboard. If you give me the status, size and error flag...\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0201384
+    },
+    {
+      "case": "04-nothing-closeable",
+      "sample": "r4",
+      "error": false,
+      "words": 247,
+      "grader_cost_usd": 0.0161591,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"To finish the check, someone with EU ops access needs to open the dashboard and look at the 02:00\u201304:00 UTC window\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"If I filled in \"success\" or \"failed\" now, it would be a guess about a production backup.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"The only files in the directory are `backup_checklist.md` and `tickets/BACKUP-001.md`.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Do you know who has EU ops credentials?\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.014999499999999999
+    },
+    {
+      "case": "04-nothing-closeable",
+      "sample": "r5",
+      "error": false,
+      "words": 218,
+      "grader_cost_usd": 0.0155931,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Someone with EU ops access needs to open the dashboard. They should check the job status for 02:00\u201304:00 UTC\" \u2014 prose, no mapping of actor, path, target."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"no logs or backup status data are stored locally\" \u2014 no closeable gaps; no verdict fabricated, asks for access."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The 'Backup completed successfully' cell in BACKUP-001 is still empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"What's needed: Someone with EU ops access needs to open the dashboard... Alternative: If you can paste the dashboard output\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.014799699999999999
+    }
+  ],
+  "summary": {
+    "passed": 36,
+    "total": 85,
+    "score": 0.4235294117647059,
+    "per_measure": {
+      "M1": {
+        "passed": 0,
+        "n": 20,
+        "rate": 0.0
+      },
+      "M2": {
+        "passed": 15,
+        "n": 20,
+        "rate": 0.75
+      },
+      "M3": {
+        "passed": 7,
+        "n": 20,
+        "rate": 0.35
+      },
+      "M4": {
+        "passed": 9,
+        "n": 20,
+        "rate": 0.45
+      },
+      "M5": {
+        "passed": 5,
+        "n": 5,
+        "rate": 1.0
+      }
+    },
+    "per_case": {
+      "01-smoke-check-review": 0.28,
+      "02-release-check": 0.35,
+      "03-data-count": 0.55,
+      "04-nothing-closeable": 0.55
+    },
+    "per_cell": {
+      "01-smoke-check-review:M1": {
+        "passed": 0,
+        "n": 5
+      },
+      "01-smoke-check-review:M2": {
+        "passed": 0,
+        "n": 5
+      },
+      "01-smoke-check-review:M3": {
+        "passed": 2,
+        "n": 5
+      },
+      "01-smoke-check-review:M4": {
+        "passed": 0,
+        "n": 5
+      },
+      "01-smoke-check-review:M5": {
+        "passed": 5,
+        "n": 5
+      },
+      "02-release-check:M1": {
+        "passed": 0,
+        "n": 5
+      },
+      "02-release-check:M2": {
+        "passed": 5,
+        "n": 5
+      },
+      "02-release-check:M3": {
+        "passed": 0,
+        "n": 5
+      },
+      "02-release-check:M4": {
+        "passed": 2,
+        "n": 5
+      },
+      "03-data-count:M1": {
+        "passed": 0,
+        "n": 5
+      },
+      "03-data-count:M2": {
+        "passed": 5,
+        "n": 5
+      },
+      "03-data-count:M3": {
+        "passed": 2,
+        "n": 5
+      },
+      "03-data-count:M4": {
+        "passed": 4,
+        "n": 5
+      },
+      "04-nothing-closeable:M1": {
+        "passed": 0,
+        "n": 5
+      },
+      "04-nothing-closeable:M2": {
+        "passed": 5,
+        "n": 5
+      },
+      "04-nothing-closeable:M3": {
+        "passed": 3,
+        "n": 5
+      },
+      "04-nothing-closeable:M4": {
+        "passed": 3,
+        "n": 5
+      }
+    },
+    "per_repeat": {
+      "r1": 0.4117647058823529,
+      "r2": 0.47058823529411764,
+      "r3": 0.47058823529411764,
+      "r4": 0.4117647058823529,
+      "r5": 0.35294117647058826
+    },
+    "mean_words": 266.35,
+    "diagnostic_score": 0.0,
+    "diagnostics": {},
+    "errors": 0
+  }
+}

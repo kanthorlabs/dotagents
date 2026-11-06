@@ -1,0 +1,161 @@
+{
+  "key": "a7345f6304ea990da17d32fb7d404b089f1e2f6cc0e1a4ef85cae2018c92d913",
+  "cost_usd": 0.025727999999999997,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "Table lists '# | Path | Status' only; no explicit actor or target columns.",
+      "pass_reason": "x"
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` first and returns 401 if it errors.\"",
+      "pass_reason": "x"
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"I couldn't record the result in ACCESS-CHECK-001.\" It never says the file exists or that its cells are empty.",
+      "pass_reason": "x"
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"If you give me write access, I'll enter this in the ticket.\" Also suggests asking Mia and a staging test or looking at the auth package. The background job handler ask doesn't name what it unblocks.",
+      "pass_reason": "x"
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3586,
+    "stop_reason": "tool_use",
+    "session_id": "a4524845-cbab-40f7-8cee-62b9d5402104",
+    "total_cost_usd": 0.025727999999999997,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5546,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 354,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5546,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 354,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 5546,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5546
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 354,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 5546,
+        "webSearchRequests": 0,
+        "costUSD": 0.025727999999999997,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5546,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"Table lists '# | Path | Status' only; no explicit actor or target columns.\",\"pass_reason\":\"x\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` first and returns 401 if it errors.\\\"\",\"pass_reason\":\"x\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"I couldn't record the result in ACCESS-CHECK-001.\\\" It never says the file exists or that its cells are empty.\",\"pass_reason\":\"x\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"If you give me write access, I'll enter this in the ticket.\\\" Also suggests asking Mia and a staging test or looking at the auth package. The background job handler ask doesn't name what it unblocks.\",\"pass_reason\":\"x\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table lists '# | Path | Status' only; no explicit actor or target columns.",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` first and returns 401 if it errors.\"",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't record the result in ACCESS-CHECK-001.\" It never says the file exists or that its cells are empty.",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you give me write access, I'll enter this in the ticket.\" Also suggests asking Mia and a staging test or looking at the auth package. The background job handler ask doesn't name what it unblocks.",
+          "pass_reason": "x"
+        }
+      ]
+    },
+    "ttft_ms": 3781,
+    "type": "result",
+    "duration_ms": 3810,
+    "uuid": "07fe5cbd-75b0-4ce1-9bc6-d87b2c8bb340",
+    "ttft_stream_ms": 1620,
+    "time_to_request_ms": 221,
+    "first_content_frame_ms": 1620,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

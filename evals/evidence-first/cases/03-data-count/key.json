@@ -1,0 +1,30 @@
+{
+  "measures": ["M1", "M2", "M3", "M4"],
+  "required_conditions": [
+    {
+      "condition": "Count of org-9876 exercise completions in the 7 days up to 2026-11-05",
+      "actor": "data reader",
+      "path": "completions.csv filtered to org_id=org-9876 and completed_at between 2026-10-30 and 2026-11-05",
+      "target": "org-9876"
+    }
+  ],
+  "closeable_gaps": [
+    {
+      "gap": "Completion count for org-9876 unknown",
+      "source": "completions.csv",
+      "verdict": "7 completions for org-9876 with completed_at between 2026-10-30 and 2026-11-05 (lesson-101 through lesson-107). Rows for org-9876 on 2026-10-28 and 2026-10-27 fall outside the window and do not count."
+    }
+  ],
+  "required_record": "tickets/COUNT-001.md result column",
+  "record_exists": true,
+  "record_note": "The file tickets/COUNT-001.md exists. The result cell is empty.",
+  "valid_targets": ["org-9876"],
+  "invalid_targets_examples": ["org-1111", "all orgs"],
+  "user_needed_gaps": [
+    {
+      "gap": "COUNT-001 result update",
+      "needs": "write approval to record the count in the ticket",
+      "unblocks": "entering '7' in the COUNT-001 result row"
+    }
+  ]
+}

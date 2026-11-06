@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 7862,
+  "stop_reason": "end_turn",
+  "session_id": "7ae0ee3c-8f57-45d0-bd1f-7d2cc2fd9c30",
+  "total_cost_usd": 0.0160328,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1441,
+    "cache_read_input_tokens": 21768,
+    "output_tokens": 808,
+    "output_tokens_details": {
+      "thinking_tokens": 125
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1441,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 539,
+        "cache_read_input_tokens": 7573,
+        "cache_creation_input_tokens": 599,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 599
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 808,
+      "cacheReadInputTokens": 21768,
+      "cacheCreationInputTokens": 1441,
+      "webSearchRequests": 0,
+      "costUSD": 0.0160328,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 125,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1441,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 4,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't check last night's backup, and I couldn't write to BACKUP-001 either.\n\n- **No backup data:** The checklist says no logs or backup status data are stored locally. The only way to see the job status is the EU backup dashboard, which needs EU ops credentials I don't have. So I can't say whether the 02:00\u201304:00 UTC job on 2026-11-04 completed, or what size it was or whether it had an error flag.\n- **No write access:** The tools I have here can only read and search files, so I couldn't edit the ticket. I also didn't want to mark it as passed or failed without evidence.\n\nThis is what I'd put in the ticket's Result table, for you or someone with EU ops access:\n\n| Check | Result |\n|---|---|\n| Backup completed successfully | NOT VERIFIED. The dashboard hasn't been checked yet, so there is no status, size or error-flag reading for the 02:00\u201304:00 UTC window on 2026-11-04. |\n\nOnce someone with EU ops credentials has checked the dashboard, the result should record:\n- the job status\n- the backup size in GB\n- whether the error flag is set\n- the time of the reading\n\nIf you give me the dashboard readings, or a way to read the dashboard or write to the ticket, I'll finish the record.",
+  "ttft_ms": 1569,
+  "type": "result",
+  "duration_ms": 8199,
+  "uuid": "b4f013e8-0889-4f6e-8b4c-e20237f89de7",
+  "ttft_stream_ms": 1113,
+  "time_to_request_ms": 312,
+  "first_content_frame_ms": 1113,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

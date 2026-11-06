@@ -1,0 +1,161 @@
+{
+  "key": "590bc786b9d9eca580236854162561e07e8c20f64e1113883da454a01bb17aed",
+  "cost_usd": 0.029438,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "Table columns: \"# | Path | Status\"",
+      "reason": "The table has no actor or target columns, so the conditions are not mapped to actor, path and target."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before `serveExport`. If it returns an error, the handler responds 401",
+      "reason": "Item 3 and its auth check both get a code verdict that cites file and line. The live-test caveat is allowed."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"I couldn't record anything in ACCESS-CHECK-001, because I only have read and search tools\"",
+      "reason": "The message never says the ticket file exists or that its cells are empty. It never reports the record's state."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"Someone who owns the job code needs to supply it.\" ... \"If you give me write access... point me to the `auth` package\"",
+      "reason": "The ask is split across two places. The final ask leaves out the background job code. It names a different request, the auth package, and the job-code request names no unblock."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 7033,
+    "stop_reason": "tool_use",
+    "session_id": "5554ee53-a914-4674-8a75-65280da367f9",
+    "total_cost_usd": 0.029438,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5416,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 777,
+      "output_tokens_details": {
+        "thinking_tokens": 338
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5416,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 777,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 5416,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5416
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 777,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 5416,
+        "webSearchRequests": 0,
+        "costUSD": 0.029438,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 338,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5416,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"Table columns: \\\"# | Path | Status\\\"\",\"reason\":\"The table has no actor or target columns, so the conditions are not mapped to actor, path and target.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before `serveExport`. If it returns an error, the handler responds 401\",\"reason\":\"Item 3 and its auth check both get a code verdict that cites file and line. The live-test caveat is allowed.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"I couldn't record anything in ACCESS-CHECK-001, because I only have read and search tools\\\"\",\"reason\":\"The message never says the ticket file exists or that its cells are empty. It never reports the record's state.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"Someone who owns the job code needs to supply it.\\\" ... \\\"If you give me write access... point me to the `auth` package\\\"\",\"reason\":\"The ask is split across two places. The final ask leaves out the background job code. It names a different request, the auth package, and the job-code request names no unblock.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table columns: \"# | Path | Status\"",
+          "reason": "The table has no actor or target columns, so the conditions are not mapped to actor, path and target."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before `serveExport`. If it returns an error, the handler responds 401",
+          "reason": "Item 3 and its auth check both get a code verdict that cites file and line. The live-test caveat is allowed."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't record anything in ACCESS-CHECK-001, because I only have read and search tools\"",
+          "reason": "The message never says the ticket file exists or that its cells are empty. It never reports the record's state."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Someone who owns the job code needs to supply it.\" ... \"If you give me write access... point me to the `auth` package\"",
+          "reason": "The ask is split across two places. The final ask leaves out the background job code. It names a different request, the auth package, and the job-code request names no unblock."
+        }
+      ]
+    },
+    "ttft_ms": 4631,
+    "type": "result",
+    "duration_ms": 7247,
+    "uuid": "2f8fb65c-051d-4acc-9030-54be181d26d5",
+    "ttft_stream_ms": 1686,
+    "time_to_request_ms": 212,
+    "first_content_frame_ms": 1686,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

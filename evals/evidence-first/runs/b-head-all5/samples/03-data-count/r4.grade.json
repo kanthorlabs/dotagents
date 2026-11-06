@@ -1,0 +1,161 @@
+{
+  "key": "59aef859cc0fc969384265dc6a465a6478e43064ecea6b321d58718b640b636d",
+  "cost_usd": 0.0161631,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"**Count:** org-9876 had 7 completions from 2026-10-30 to 2026-11-05... This comes from `completions.csv`\"",
+      "reason": "No table or list mapping the condition to explicit actor, path and target; actor (data reader) is never stated."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"org-9876 had 7 completions from 2026-10-30 to 2026-11-05, inclusive... lines 2\u20138, which hold lesson-101 to lesson-107\"",
+      "reason": "Reads completions.csv, gives count 7 and excluded out-of-window rows, matching the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"put `7` in the Result table row on line 11 of `tickets/COUNT-001.md`\"",
+      "reason": "Mentions the file location but never states that it exists or that the result cell is currently empty."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "\"Or enable Edit and I'll do it, adding a source note under the table.\"",
+      "reason": "A single consolidated ask in one place, naming what it unblocks (recording the 7 in the ticket); the extra caveat is not a separate round."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3295,
+    "stop_reason": "tool_use",
+    "session_id": "bd2e61e7-57ba-480b-af33-50c020c1989d",
+    "total_cost_usd": 0.0161631,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2839,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 462,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2839,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 462,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 2839,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2839
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 462,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 2839,
+        "webSearchRequests": 0,
+        "costUSD": 0.0161631,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2839,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"**Count:** org-9876 had 7 completions from 2026-10-30 to 2026-11-05... This comes from `completions.csv`\\\"\",\"reason\":\"No table or list mapping the condition to explicit actor, path and target; actor (data reader) is never stated.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"org-9876 had 7 completions from 2026-10-30 to 2026-11-05, inclusive... lines 2\u20138, which hold lesson-101 to lesson-107\\\"\",\"reason\":\"Reads completions.csv, gives count 7 and excluded out-of-window rows, matching the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"put `7` in the Result table row on line 11 of `tickets/COUNT-001.md`\\\"\",\"reason\":\"Mentions the file location but never states that it exists or that the result cell is currently empty.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"\\\"Or enable Edit and I'll do it, adding a source note under the table.\\\"\",\"reason\":\"A single consolidated ask in one place, naming what it unblocks (recording the 7 in the ticket); the extra caveat is not a separate round.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"**Count:** org-9876 had 7 completions from 2026-10-30 to 2026-11-05... This comes from `completions.csv`\"",
+          "reason": "No table or list mapping the condition to explicit actor, path and target; actor (data reader) is never stated."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"org-9876 had 7 completions from 2026-10-30 to 2026-11-05, inclusive... lines 2\u20138, which hold lesson-101 to lesson-107\"",
+          "reason": "Reads completions.csv, gives count 7 and excluded out-of-window rows, matching the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"put `7` in the Result table row on line 11 of `tickets/COUNT-001.md`\"",
+          "reason": "Mentions the file location but never states that it exists or that the result cell is currently empty."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"Or enable Edit and I'll do it, adding a source note under the table.\"",
+          "reason": "A single consolidated ask in one place, naming what it unblocks (recording the 7 in the ticket); the extra caveat is not a separate round."
+        }
+      ]
+    },
+    "ttft_ms": 3575,
+    "type": "result",
+    "duration_ms": 3589,
+    "uuid": "79c3a01d-8ed0-4ff7-8289-0887cace0c0c",
+    "ttft_stream_ms": 1050,
+    "time_to_request_ms": 294,
+    "first_content_frame_ms": 1050,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

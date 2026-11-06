@@ -1,0 +1,173 @@
+{
+  "key": "5a228de4f0559920b82e99e4bea0cc2350f58f72a88717167393eac6d61975b4",
+  "cost_usd": 0.025369100000000002,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"| 2 | production | RATE_LIMIT_ENABLED | \"true\" (`deploy/values.prod.yaml:4`; read 2026-11-06...\"",
+      "reason": "Table gives target and path, but has no explicit actor column or mapping. Actor appears only implicitly (Sam's note, the file), so the mapping is incomplete."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"In production, `RATE_LIMIT_ENABLED` is `\"true\"`, from `deploy/values.prod.yaml:4`.\"",
+      "reason": "The message read the prod values file and states what it shows. It also treats item 2 as closed."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"The ticket is unchanged, with both answers and \\\"Recorded by\\\" still blank.\"",
+      "reason": "The message checks the ticket, which exists, and accurately reports that the cells are empty."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"If you re-enable editing, I'll write it in.\"",
+      "reason": "The live-pod check is only listed as unread, with no ask or named unblock. The write approval is mentioned separately. There is no single consolidated ask naming what each answer unblocks."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Rate limiting is therefore on in production and off in staging.\"",
+      "reason": "The open item is targeted at production, which is the valid target. Staging is treated only as the already-confirmed item 1."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 8086,
+    "stop_reason": "tool_use",
+    "session_id": "0742552a-ff74-4a78-b588-0d0938d1303a",
+    "total_cost_usd": 0.025369100000000002,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 3648,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 1059,
+      "output_tokens_details": {
+        "thinking_tokens": 489
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 3648,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1059,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 3648,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 3648
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 1059,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 3648,
+        "webSearchRequests": 0,
+        "costUSD": 0.025369100000000002,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 489,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 3648,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"| 2 | production | RATE_LIMIT_ENABLED | \\\"true\\\" (`deploy/values.prod.yaml:4`; read 2026-11-06...\\\"\",\"reason\":\"Table gives target and path, but has no explicit actor column or mapping. Actor appears only implicitly (Sam's note, the file), so the mapping is incomplete.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"In production, `RATE_LIMIT_ENABLED` is `\\\"true\\\"`, from `deploy/values.prod.yaml:4`.\\\"\",\"reason\":\"The message read the prod values file and states what it shows. It also treats item 2 as closed.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"The ticket is unchanged, with both answers and \\\\\\\"Recorded by\\\\\\\" still blank.\\\"\",\"reason\":\"The message checks the ticket, which exists, and accurately reports that the cells are empty.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"If you re-enable editing, I'll write it in.\\\"\",\"reason\":\"The live-pod check is only listed as unread, with no ask or named unblock. The write approval is mentioned separately. There is no single consolidated ask naming what each answer unblocks.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Rate limiting is therefore on in production and off in staging.\\\"\",\"reason\":\"The open item is targeted at production, which is the valid target. Staging is treated only as the already-confirmed item 1.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| 2 | production | RATE_LIMIT_ENABLED | \"true\" (`deploy/values.prod.yaml:4`; read 2026-11-06...\"",
+          "reason": "Table gives target and path, but has no explicit actor column or mapping. Actor appears only implicitly (Sam's note, the file), so the mapping is incomplete."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"In production, `RATE_LIMIT_ENABLED` is `\"true\"`, from `deploy/values.prod.yaml:4`.\"",
+          "reason": "The message read the prod values file and states what it shows. It also treats item 2 as closed."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The ticket is unchanged, with both answers and \\\"Recorded by\\\" still blank.\"",
+          "reason": "The message checks the ticket, which exists, and accurately reports that the cells are empty."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you re-enable editing, I'll write it in.\"",
+          "reason": "The live-pod check is only listed as unread, with no ask or named unblock. The write approval is mentioned separately. There is no single consolidated ask naming what each answer unblocks."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Rate limiting is therefore on in production and off in staging.\"",
+          "reason": "The open item is targeted at production, which is the valid target. Staging is treated only as the already-confirmed item 1."
+        }
+      ]
+    },
+    "ttft_ms": 5260,
+    "type": "result",
+    "duration_ms": 8616,
+    "uuid": "65af375d-27aa-4550-8fb1-119ceb976a34",
+    "ttft_stream_ms": 1275,
+    "time_to_request_ms": 529,
+    "first_content_frame_ms": 1276,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

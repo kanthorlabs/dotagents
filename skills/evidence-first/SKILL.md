@@ -65,6 +65,16 @@ claim VERIFIED or UNVERIFIED.
 
 ## 2. Evidence gate
 
+**Close every gap before you report.** For each gap, split the evidence
+into two parts. The first part is what the tools and sources at hand
+prove. The second part is what only a live action or a person can confirm.
+Tools and sources at hand include code, logs, tickets, data, and
+read-only calls. State the verdict for the first part even when the
+second is still open. An unknown sub-part does not block a verdict that
+the readable part proves. Mark a gap UNVERIFIED only when no tool or
+source at hand addresses it. Do not ask "should I check it?" for a gap
+the tools at hand can close.
+
 **Cite each claim.** A citation names a source at its exact point: a message
 with its author and date, a ticket, a document section, a `file:line`, a pull
 request, a query with its output, or a deployment value. A claim with no
@@ -122,6 +132,12 @@ Leave the date to the person.
 
 ## 3. Ask gate
 
+**Collect all user-needed gaps first.** Before you ask the user anything,
+list every gap that needs a credential, a permission, a write approval,
+or a decision. Write one ask section at the end of your response. Each
+item: "Need [X] to unblock [condition N]." Ask nowhere else in the
+response.
+
 **Search the sources first.** Before you ask or tag a person, search the whole
 thread, the linked tickets and the linked reports for the answer. Search by
 the topic words and by the name of the person.
@@ -176,3 +192,8 @@ Run this check before you send the result.
 11. The message fits the reader: the language, the length, the format and the
     tone, with nothing that the reader already knows. It holds no internal
     labels or source lists.
+12. No gap is marked UNVERIFIED or left as "should I check this?" when the
+    tools at hand can close it.
+13. Read the required record location. State whether it exists and what
+    its current state is (for example, that result cells are empty). When
+    it does not exist, name the step to create it.

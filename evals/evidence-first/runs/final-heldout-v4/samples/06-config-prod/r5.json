@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 12443,
+  "stop_reason": "end_turn",
+  "session_id": "0242c4c3-0ddc-454c-b955-abfb4884e691",
+  "total_cost_usd": 0.0229787,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1718,
+    "cache_read_input_tokens": 23347,
+    "output_tokens": 1376,
+    "output_tokens_details": {
+      "thinking_tokens": 160
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1718,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 881,
+        "cache_read_input_tokens": 7996,
+        "cache_creation_input_tokens": 1216,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1216
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1376,
+      "cacheReadInputTokens": 23347,
+      "cacheCreationInputTokens": 1718,
+      "webSearchRequests": 0,
+      "costUSD": 0.0229787,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 160,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1718,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't record the answer in CONFIG-REVIEW-001. I only have read and search tools in this session, with no edit or write tool, so the ticket is unchanged.\n\n**Current state of `tickets/CONFIG-REVIEW-001.md`:** the file exists, but the Answer cells for both items (lines 10\u201311) and the \"Recorded by\" line (line 13) are empty. The review notes say item 1 was confirmed, but that answer was never entered in the ticket.\n\n**Results, read from the deployment values today (2026-11-06):**\n\n| # | Environment | Variable | Answer | Source |\n|---|---|---|---|---|\n| 1 | staging | RATE_LIMIT_ENABLED | `\"false\"` (disabled) | `deploy/values.staging.yaml:4` |\n| 2 | production | RATE_LIMIT_ENABLED | `\"true\"` (enabled) | `deploy/values.prod.yaml:4` |\n\n- **Item 1:** I re-read the staging file myself. It matches Sam's note in `review_notes.md:9`.\n- **Item 2:** This was the open item. The prod values file is now available and sets the limit to enabled. `MAX_REQUESTS_PER_MIN` is `\"300\"` in prod and `\"60\"` in staging.\n- **Scope:** These are the values files in `deploy/`. I didn't check what is actually running in the clusters. Nothing here shows the deployed state, and I didn't look for a per-region override or any other place the value could be set.\n- **Not checked:** the repo has no application code or infrastructure code, so I didn't look at how the app reads the variable.\n\n**Proposed ticket text for lines 10, 11 and 13:**\n- Item 1 Answer: `false (disabled) \u2014 deploy/values.staging.yaml:4`\n- Item 2 Answer: `true (enabled) \u2014 deploy/values.prod.yaml:4`\n- Recorded by: `Aelita for Tuan Nguyen, 2026-11-06`\n\n**Ask**\n- Need write access to the ticket file, or your go-ahead to have the text above pasted in, to record the final answer in CONFIG-REVIEW-001.",
+  "ttft_ms": 1871,
+  "type": "result",
+  "duration_ms": 12813,
+  "uuid": "258b5915-ec4e-4d6a-a348-fbc949066227",
+  "ttft_stream_ms": 1206,
+  "time_to_request_ms": 338,
+  "first_content_frame_ms": 1206,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

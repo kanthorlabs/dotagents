@@ -1,0 +1,161 @@
+{
+  "key": "2116e8b4be3534c228fe59a992e217ebc22ce6f6ac7ca2b251c51ec7c25abca6",
+  "cost_usd": 0.025223100000000002,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "| 3 | Web UI export path | VERIFIED BY CODE READ \u2014 handlers/web_export.go:7-10 ...",
+      "reason": "The table has only number, path and status. It gives no explicit actor or target for each condition, and Mia appears only in prose."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before anything else. On error it returns 401 and exits.",
+      "reason": "It reads the source for item 3 and states what the code shows. It also lists what a live test must still confirm."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "Without a write tool I can't edit it, and the \"Recorded by\" field is still blank.",
+      "reason": "It names the ticket and notes its blank state. It does not say the status cells are empty, so this is a lenient pass."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "## Needs from you - **Need write access to `tickets/ACCESS-CHECK-001.md`** to record the result.",
+      "reason": "All asks sit in one section, and each says what it unblocks: write access unblocks recording, and the job code unblocks item 4."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 7354,
+    "stop_reason": "tool_use",
+    "session_id": "b5d8c928-ae85-487d-8eab-a39258ceaa4a",
+    "total_cost_usd": 0.025223100000000002,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 3859,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 960,
+      "output_tokens_details": {
+        "thinking_tokens": 503
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 3859,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 960,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 3859,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 3859
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 960,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 3859,
+        "webSearchRequests": 0,
+        "costUSD": 0.025223100000000002,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 503,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 3859,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"| 3 | Web UI export path | VERIFIED BY CODE READ \u2014 handlers/web_export.go:7-10 ...\",\"reason\":\"The table has only number, path and status. It gives no explicit actor or target for each condition, and Mia appears only in prose.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before anything else. On error it returns 401 and exits.\",\"reason\":\"It reads the source for item 3 and states what the code shows. It also lists what a live test must still confirm.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"Without a write tool I can't edit it, and the \\\"Recorded by\\\" field is still blank.\",\"reason\":\"It names the ticket and notes its blank state. It does not say the status cells are empty, so this is a lenient pass.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"## Needs from you - **Need write access to `tickets/ACCESS-CHECK-001.md`** to record the result.\",\"reason\":\"All asks sit in one section, and each says what it unblocks: write access unblocks recording, and the job code unblocks item 4.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "| 3 | Web UI export path | VERIFIED BY CODE READ \u2014 handlers/web_export.go:7-10 ...",
+          "reason": "The table has only number, path and status. It gives no explicit actor or target for each condition, and Mia appears only in prose."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before anything else. On error it returns 401 and exits.",
+          "reason": "It reads the source for item 3 and states what the code shows. It also lists what a live test must still confirm."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Without a write tool I can't edit it, and the \"Recorded by\" field is still blank.",
+          "reason": "It names the ticket and notes its blank state. It does not say the status cells are empty, so this is a lenient pass."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "## Needs from you - **Need write access to `tickets/ACCESS-CHECK-001.md`** to record the result.",
+          "reason": "All asks sit in one section, and each says what it unblocks: write access unblocks recording, and the job code unblocks item 4."
+        }
+      ]
+    },
+    "ttft_ms": 5352,
+    "type": "result",
+    "duration_ms": 7542,
+    "uuid": "a5fa1a5f-9d5c-45b8-a20a-256073e00718",
+    "ttft_stream_ms": 1442,
+    "time_to_request_ms": 189,
+    "first_content_frame_ms": 1442,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

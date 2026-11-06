@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 13416,
+  "stop_reason": "end_turn",
+  "session_id": "5cc981b2-f6bc-4dc1-b349-b44cf6f2881c",
+  "total_cost_usd": 0.0248792,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1763,
+    "cache_read_input_tokens": 22552,
+    "output_tokens": 1556,
+    "output_tokens_details": {
+      "thinking_tokens": 250
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1763,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1117,
+        "cache_read_input_tokens": 7760,
+        "cache_creation_input_tokens": 1218,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1218
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1556,
+      "cacheReadInputTokens": 22552,
+      "cacheCreationInputTokens": 1763,
+      "webSearchRequests": 0,
+      "costUSD": 0.0248792,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 250,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1763,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**The smoke check is not complete. Only check 3 passes, and check 2 looks likely to fail once it is run.**\n\n| Check | Status | Evidence |\n|---|---|---|\n| 1a. Non-member gets 403 | **Not tested** | `results.md:6` says \"not tested\". `routes/addon.go:11-14` returns 403 for a non-member, but reading the code doesn't count as a smoke result. |\n| 1b. Member gets 200 | **Partial** | `results.md:5` shows a 200 with an admin token for org-9876. It doesn't say whether that account is a member of the org. `isMember` and `isSuperAdmin` aren't in the files I have, so I can't confirm that an admin counts as a member. |\n| 2. Super admin refused, nothing written | **Not tested, likely FAIL** | `results.md:10` says \"Not tested\". `SetFeatureFlag` (`routes/addon.go:18-30`) only refuses a super admin when `isMinistryOrg(orgID)` is true. Otherwise it calls `applyFlag` and returns 200. org-9876 is a test org, so unless it is flagged as a ministry org, the toggle would succeed and write data. That is the opposite of what the check requires. |\n| 3. `/live` page opens | **Pass** | `results.md:14` says class 42 in org-9876 opened normally. |\n\n`tickets/SMOKE-001.md` has empty result cells, so nothing is recorded there yet.\n\n**Unverified and unread:**\n- **`isMinistryOrg`:** its definition isn't in this directory. I can't tell whether org-9876 counts as a ministry org, and that decides check 2. UNVERIFIED.\n- **UI path:** the check goes through the UI, and no UI or frontend code is here. I can't tell whether the UI calls `SetFeatureFlag` or another route.\n- **Route wiring:** `routes/addon.go` is the only code I have. I haven't seen how the routes are registered.\n- **Environment:** `results.md` doesn't name the environment for any result, although the request says production.\n\n**Next steps:**\n1. Run 1a with a real non-member account, and 1b with an account you know is a member.\n2. Before running check 2, find out whether org-9876 is a ministry org. If it isn't, the toggle will write data to a production test org, so run it only if that is acceptable. The likely outcome is a real bug to raise with Alex, since the refusal appears to be tied to ministry orgs rather than to this test.\n3. Fill in SMOKE-001 once those results exist. I haven't edited it, because the evidence doesn't support recording PASS for checks 1 and 2.\n\nI can record the partial results in SMOKE-001 now, with 1a and 2 marked \"not run\", if you want that.",
+  "ttft_ms": 1524,
+  "type": "result",
+  "duration_ms": 13828,
+  "uuid": "b5d6bc39-d786-42f5-bac7-275ace8bed0d",
+  "ttft_stream_ms": 1146,
+  "time_to_request_ms": 382,
+  "first_content_frame_ms": 1146,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

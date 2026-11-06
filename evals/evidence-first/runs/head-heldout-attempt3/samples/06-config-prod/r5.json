@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 13993,
+  "stop_reason": "end_turn",
+  "session_id": "a161717c-0747-480d-8313-6746e511c7b0",
+  "total_cost_usd": 0.029549600000000002,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 2358,
+    "cache_read_input_tokens": 31016,
+    "output_tokens": 1700,
+    "output_tokens_details": {
+      "thinking_tokens": 159
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2358,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 643,
+        "cache_read_input_tokens": 8822,
+        "cache_creation_input_tokens": 647,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 647
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 1700,
+      "cacheReadInputTokens": 31016,
+      "cacheCreationInputTokens": 2358,
+      "webSearchRequests": 0,
+      "costUSD": 0.029549600000000002,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 159,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2358,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 7,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't record the answer in `tickets/CONFIG-REVIEW-001.md`. The Edit tool is disabled in this session, and I have no other way to write files. The ticket is unchanged. Its Answer cells and \"Recorded by\" line are still empty.\n\n**The open item is closed.** Production has rate limiting enabled.\n\n| # | Environment | Variable | Answer | Source |\n|---|---|---|---|---|\n| 1 | staging | RATE_LIMIT_ENABLED | `\"false\"` | `deploy/values.staging.yaml:4`. This matches Sam's note in `review_notes.md` (2026-10-28), and I re-read the file today. |\n| 2 | production | RATE_LIMIT_ENABLED | `\"true\"` | `deploy/values.prod.yaml:4`, read 2026-11-06. This was the item left open because the deploy directory wasn't mounted. |\n\n**Scope:** these answers come only from the two values files. I didn't check application code defaults, other overrides, infrastructure code or the running deployments. The ticket should say that.\n\n**To record it:** you can paste the two answers into the ticket yourself. I can also do it if you enable a write tool.\n\nSuggested text for the ticket:\n- **Row 1:** `\"false\"` (`deploy/values.staging.yaml:4`; confirmed by Sam 2026-10-28, re-read 2026-11-06)\n- **Row 2:** `\"true\"` (`deploy/values.prod.yaml:4`; read 2026-11-06, closes the item left open on 2026-10-28)\n- **Scope line:** Answers come from the Helm values files only. Application code defaults, other overrides and running deployments were not checked.\n- **Recorded by:** Aelita, for user@example.com, 2026-11-06",
+  "ttft_ms": 1524,
+  "type": "result",
+  "duration_ms": 14361,
+  "uuid": "00075c43-0b07-42e4-8f23-7cb8080b43bf",
+  "ttft_stream_ms": 1093,
+  "time_to_request_ms": 330,
+  "first_content_frame_ms": 1093,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

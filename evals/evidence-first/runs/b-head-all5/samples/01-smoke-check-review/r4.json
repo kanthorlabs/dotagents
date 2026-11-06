@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 11826,
+  "stop_reason": "end_turn",
+  "session_id": "909697d3-0b16-4032-bb79-f00b1cfb43c2",
+  "total_cost_usd": 0.0218164,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1838,
+    "cache_read_input_tokens": 22624,
+    "output_tokens": 1219,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1838,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 802,
+        "cache_read_input_tokens": 7832,
+        "cache_creation_input_tokens": 1221,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1221
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1219,
+      "cacheReadInputTokens": 22624,
+      "cacheCreationInputTokens": 1838,
+      "webSearchRequests": 0,
+      "costUSD": 0.0218164,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 0,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1838,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**The smoke check isn't complete. Only 2 of the 4 conditions have a result, and SMOKE-001 is still blank.**\n\n| # | Condition | Result | Source |\n|---|---|---|---|\n| 1a | Non-member GET add-ons \u2192 403 | **Not tested** | `results.md:6` |\n| 1b | Member GET add-ons \u2192 200 | **PASS**, with a caveat below | `results.md:5` |\n| 2 | Super admin toggle refused, nothing written | **Not tested** | `results.md:10` |\n| 3 | Class /live page opens normally | **PASS** (org-9876, class 42) | `results.md:14` |\n\n- **1b caveat:** the test used an admin token for org-9876. That shows the request returns 200 for an org admin. The notes don't say the token belongs to a plain member, so a member-role 200 is not confirmed.\n- **Code reading is not a test:** `routes/addon.go:11-14` returns 403 for non-members, which suggests 1a would pass. It is only a reading of the code. The check is meant to run against production, so it doesn't count as a result.\n- **Check 2 may not match the code:**\n  - `SetFeatureFlag` (`routes/addon.go:18-30`) returns 403 for non-super-admins.\n  - It also returns 403 when `isMinistryOrg(orgID)` is true.\n  - For other orgs, a super admin gets 200 and `applyFlag` writes the flag.\n  - So \"a super admin is refused and nothing is written\" only holds if org-9876 counts as a ministry org. I couldn't verify that, because `isMinistryOrg` isn't in the files here.\n  - If org-9876 is not a ministry org, running check 2 would write a flag in production.\n- **Not available to me:** `isMinistryOrg`, `isMember` and `isSuperAdmin` are not in the directory. I also couldn't see production or the UI.\n\n**Next steps:**\n1. Run 1a with a non-member session, and re-run 1b with a plain member session.\n2. Before running check 2, find out whether org-9876 is a ministry org. Alex, who requested the checks, or whoever owns that function could tell you. If it isn't, the check's expected result needs to change before anyone runs it.\n3. Fill in SMOKE-001 once these are done. I haven't edited it, because it would only record 1b and 3, and 1b is uncertain.",
+  "ttft_ms": 2339,
+  "type": "result",
+  "duration_ms": 12487,
+  "uuid": "31c769c6-1abd-4fe1-910a-12d824296882",
+  "ttft_stream_ms": 1649,
+  "time_to_request_ms": 640,
+  "first_content_frame_ms": 1649,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

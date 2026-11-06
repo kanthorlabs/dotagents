@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 12353,
+  "stop_reason": "end_turn",
+  "session_id": "3096298b-4d97-401f-a48b-49403067c720",
+  "total_cost_usd": 0.022228200000000004,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1831,
+    "cache_read_input_tokens": 22622,
+    "output_tokens": 1263,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1831,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 849,
+        "cache_read_input_tokens": 7831,
+        "cache_creation_input_tokens": 1215,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1215
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1263,
+      "cacheReadInputTokens": 22622,
+      "cacheCreationInputTokens": 1831,
+      "webSearchRequests": 0,
+      "costUSD": 0.022228200000000004,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 0,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1831,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**Smoke check status for 2026-11-05: 1 of 4 conditions passed. The other three are not verified, and SMOKE-001 is still blank.**\n\n| # | Condition | Status | Evidence |\n|---|---|---|---|\n| 1a | Non-member GET add-ons \u2192 403 | **Not tested** | `results.md:6` says \"Non-member case: not tested.\" |\n| 1b | Member GET add-ons \u2192 200 | **Weak pass** | `results.md:5` shows 200, but the token was an admin token for org-9876. It may not be the same as a plain member. |\n| 2 | Super admin toggle refused, nothing written | **Not tested** | `results.md:10` |\n| 3 | Class /live opens normally | **Pass** | `results.md:14` says class 42 in org-9876 opened normally. |\n\n**Notes from the code (`routes/addon.go`):**\n- **Check 1a:** `GetOrgAddOns` returns 403 when `!isMember` (lines 11\u201314). This predicts a pass, but it is a reading of the code and not a test result.\n- **Check 2:** `SetFeatureFlag` returns 403 for ministry orgs before `applyFlag` runs (lines 24\u201327). So nothing would be written if org-9876 counts as a ministry org.\n- **Check 2, unchecked:** I can't tell from these files whether org-9876 is a ministry org. `isMinistryOrg` isn't in the directory. If it isn't one, a super admin's toggle would go through and write the flag. That would fail the check, and it would also change production data. The check should be run through the UI, and I'd confirm the org's status first.\n- **Check 2, route:** The route wiring and the UI aren't in these files either, so I can't confirm the UI calls this handler.\n\n**What I did not read:** `isMember`, `isSuperAdmin`, `isMinistryOrg`, `applyFlag`, the router, and any logs or screenshots from the earlier session. None of them are in the directory.\n\n**To finish the checks:**\n1. Run 1a with a non-member session. It should return 403.\n2. Re-run 1b with a plain member, not an admin.\n3. Run 2 through the UI as a super admin on org-9876. Then confirm the flag state is unchanged.\n4. Fill in SMOKE-001 only after those results exist.\n\nI haven't edited SMOKE-001. A production write test, check 2, is yours to authorize. Do you want me to record the partial results in SMOKE-001 as they stand, with 1a and 2 marked \"not tested\"?",
+  "ttft_ms": 1795,
+  "type": "result",
+  "duration_ms": 12762,
+  "uuid": "a13495cf-929d-4cb7-bfb9-116e57f26471",
+  "ttft_stream_ms": 1381,
+  "time_to_request_ms": 376,
+  "first_content_frame_ms": 1381,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

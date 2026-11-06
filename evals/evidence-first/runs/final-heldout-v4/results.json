@@ -1,0 +1,434 @@
+{
+  "skill_path": "skills/evidence-first/SKILL.md",
+  "skill_lines": 199,
+  "repeats": 5,
+  "model": "sonnet",
+  "effort": "medium",
+  "cost_usd": {
+    "generation": 0.3634,
+    "reader": 0.0,
+    "grading": 0.2281
+  },
+  "samples": [
+    {
+      "case": "05-incident-retry",
+      "sample": "r1",
+      "error": false,
+      "words": 451,
+      "grader_cost_usd": 0.0221431,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "| # | Path | Status | Evidence |"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` and returns 401 on error."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The ticket currently exists with every result cell empty and \"Recorded by\" blank."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "If Mia counted a third item, please tell me which."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.042773
+    },
+    {
+      "case": "05-incident-retry",
+      "sample": "r2",
+      "error": false,
+      "words": 512,
+      "grader_cost_usd": 0.0194671,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Proposed table has only # | Path | Status columns; no explicit actor or target columns."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` and returns 401 on any error.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"It exists, but all four result cells and \"Recorded by\" are still empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "Asks include auth package source, expired-token question, which are beyond the key's gaps; also item 3 turned into a user ask despite being closeable. Unblocks are partly named."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0449792
+    },
+    {
+      "case": "05-incident-retry",
+      "sample": "r3",
+      "error": false,
+      "words": 371,
+      "grader_cost_usd": 0.0230571,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table columns: \"# | Path | Result | Source\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The handler calls `auth.Require(ctx)` and returns 401 on any error, before `serveExport` runs.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"the ticket is unchanged.\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"**Need from you** - Need write access ... to unblock recording the results ... Need the `auth` package source or the job code ... to unblock closing item 3 fully and starting item 4.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0525807
+    },
+    {
+      "case": "05-incident-retry",
+      "sample": "r4",
+      "error": false,
+      "words": 381,
+      "grader_cost_usd": 0.019461100000000002,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "Table: \"| 3 | Web UI export | Code-verified, not tested | `handlers/web_export.go:7-11` |\"; rows 1-4 with path and evidence."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The handler calls `auth.Require(ctx)` at line 7. It returns 401 and exits at lines 8-9, before `serveExport` runs\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"the file still has empty result cells\""
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"**Need from you:** - Need Write access... to unblock recording the result... - Need the background job export code... to unblock item 4.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.036616300000000004
+    },
+    {
+      "case": "05-incident-retry",
+      "sample": "r5",
+      "error": false,
+      "words": 471,
+      "grader_cost_usd": 0.025223100000000002,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "| 3 | Web UI export path | VERIFIED BY CODE READ \u2014 handlers/web_export.go:7-10 ..."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before anything else. On error it returns 401 and exits."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "Without a write tool I can't edit it, and the \"Recorded by\" field is still blank."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "## Needs from you - **Need write access to `tickets/ACCESS-CHECK-001.md`** to record the result."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.04444920000000001
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r1",
+      "error": false,
+      "words": 199,
+      "grader_cost_usd": 0.0230031,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Source: `deploy/values.prod.yaml:4`\" ... \"Sam's 2026-10-28 finding\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"it is `\"true\"`. Source: `deploy/values.prod.yaml:4`, read 2026-11-06.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The ticket is unchanged: both answer cells and \"Recorded by\" are still empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"I need write access (Edit or Write enabled) to fill in the ticket.\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Result of the open item (#2, production RATE_LIMIT_ENABLED)\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0456845
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r2",
+      "error": false,
+      "words": 232,
+      "grader_cost_usd": 0.0216411,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"`deploy/values.staging.yaml:4` sets `RATE_LIMIT_ENABLED: \"false\"`\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`deploy/values.prod.yaml:4` sets `RATE_LIMIT_ENABLED: \"true\"`\" and review_notes.md:10 cited as the open item"
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"At the moment the Answer cells and \"Recorded by\" are empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Need write permission, or an edit tool, to unblock writing these rows\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Open item 2 (production `RATE_LIMIT_ENABLED`) is now closed.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0233887
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r3",
+      "error": false,
+      "words": 196,
+      "grader_cost_usd": 0.024221100000000002,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"`\"true\"`, from `deploy/values.prod.yaml:4`\" and \"matches Sam's note in `review_notes.md`\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"production `RATE_LIMIT_ENABLED`: `\"true\"`, from `deploy/values.prod.yaml:4`\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The result cells in `tickets/CONFIG-REVIEW-001.md` are still empty... and \"Recorded by\" is blank.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"I need write access (the Edit tool enabled), or your OK for you to paste the rows above yourself\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Item 2 (the open one), production `RATE_LIMIT_ENABLED`\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.027785699999999997
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r4",
+      "error": false,
+      "words": 227,
+      "grader_cost_usd": 0.0238551,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Item 2 (production...): \"true\", from `deploy/values.prod.yaml:4`\" and \"Item 1 (staging...) matches Sam's note in `review_notes.md:9`\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`\\\"true\\\"`, from `deploy/values.prod.yaml:4`. I read the file on 2026-11-06. This is the item that was left open.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"`tickets/CONFIG-REVIEW-001.md` exists, but both Answer cells (lines 10\u201311) are empty, and so is \"Recorded by\"\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Need write access, or your OK to use a file-editing tool, to unblock recording the answers\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"production has rate limiting enabled\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0221919
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r5",
+      "error": false,
+      "words": 283,
+      "grader_cost_usd": 0.025983100000000002,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"| 2 | production | RATE_LIMIT_ENABLED | `\"true\"` | `deploy/values.prod.yaml:4` |\" and \"matches Sam's note in `review_notes.md:9`\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"The prod values file is now available and sets the limit to enabled.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"the file exists, but the Answer cells for both items (lines 10\u201311) and the \"Recorded by\" line (line 13) are empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Need write access to the ticket file, or your go-ahead to have the text above pasted in\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"| 2 | production | RATE_LIMIT_ENABLED | `\"true\"` (enabled) |\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0229787
+    }
+  ],
+  "summary": {
+    "passed": 31,
+    "total": 45,
+    "score": 0.6888888888888889,
+    "per_measure": {
+      "M1": {
+        "passed": 4,
+        "n": 10,
+        "rate": 0.4
+      },
+      "M2": {
+        "passed": 10,
+        "n": 10,
+        "rate": 1.0
+      },
+      "M3": {
+        "passed": 9,
+        "n": 10,
+        "rate": 0.9
+      },
+      "M4": {
+        "passed": 3,
+        "n": 10,
+        "rate": 0.3
+      },
+      "M5": {
+        "passed": 5,
+        "n": 5,
+        "rate": 1.0
+      }
+    },
+    "per_case": {
+      "05-incident-retry": 0.65,
+      "06-config-prod": 0.72
+    },
+    "per_cell": {
+      "05-incident-retry:M1": {
+        "passed": 1,
+        "n": 5
+      },
+      "05-incident-retry:M2": {
+        "passed": 5,
+        "n": 5
+      },
+      "05-incident-retry:M3": {
+        "passed": 4,
+        "n": 5
+      },
+      "05-incident-retry:M4": {
+        "passed": 3,
+        "n": 5
+      },
+      "06-config-prod:M1": {
+        "passed": 3,
+        "n": 5
+      },
+      "06-config-prod:M2": {
+        "passed": 5,
+        "n": 5
+      },
+      "06-config-prod:M3": {
+        "passed": 5,
+        "n": 5
+      },
+      "06-config-prod:M4": {
+        "passed": 0,
+        "n": 5
+      },
+      "06-config-prod:M5": {
+        "passed": 5,
+        "n": 5
+      }
+    },
+    "per_repeat": {
+      "r1": 0.5555555555555556,
+      "r2": 0.5555555555555556,
+      "r3": 0.6666666666666666,
+      "r4": 0.8888888888888888,
+      "r5": 0.7777777777777778
+    },
+    "mean_words": 332.3,
+    "diagnostic_score": 0.0,
+    "diagnostics": {},
+    "errors": 0
+  }
+}

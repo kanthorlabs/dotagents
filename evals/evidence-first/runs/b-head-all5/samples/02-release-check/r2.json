@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 13242,
+  "stop_reason": "end_turn",
+  "session_id": "1d76c3f3-e531-4aef-b297-a7300a3eb40b",
+  "total_cost_usd": 0.0258899,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 1885,
+    "cache_read_input_tokens": 30439,
+    "output_tokens": 1529,
+    "output_tokens_details": {
+      "thinking_tokens": 127
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1885,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 682,
+        "cache_read_input_tokens": 8319,
+        "cache_creation_input_tokens": 664,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 664
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 1529,
+      "cacheReadInputTokens": 30439,
+      "cacheCreationInputTokens": 1885,
+      "webSearchRequests": 0,
+      "costUSD": 0.0258899,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 127,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1885,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't update DEPLOY-42. The Edit tool is disabled in this session, and I have no other way to write files. Here is the result so you can paste it in.\n\n**What I could confirm**\n- **PR #42 merged to main: PASS.** Merge commit `a3f9c2d` (\"Merge pull request #42 into main\", CI Bot, Wed Nov 4 2026 18:42:11 +0000) is in `git_log.txt`. It is HEAD of both `main` and `origin/main`. It contains `c4d5e6f` by Sam Lee, \"feat: add rate limiting to the add-ons route\".\n\n**What I could not confirm**\n- **Staging deploy triggered: not verified.** The file in the directory is a git log, not a deploy log. It has no pipeline run, deploy event or staging version.\n- **Smoke test passed: not verified.** There is no smoke test output anywhere in the directory.\n\nSo the answer to \"did it land on staging?\" is unknown from what I have. Only the merge is proven. To close the other two checks, I need the CI/CD run for the staging deploy, or the version or commit that staging reports now. If staging reports `a3f9c2d` or later, the deploy landed. I also need the smoke test output. I haven't looked at these because they aren't in this directory, and I don't know who owns the pipeline.\n\n**Suggested text for the ticket table**\n\n| Check | Result |\n|---|---|\n| PR #42 merged to main | PASS. Merge commit a3f9c2d, Nov 4 2026 18:42 UTC (git_log.txt) |\n| Staging deploy triggered | NOT VERIFIED. No deploy record available; needs the CI/CD run or the staging version |\n| Smoke test passed | NOT VERIFIED. No smoke test output available |\n\nIf you re-enable editing, or give me the deploy run or staging version, I'll write this into `tickets/DEPLOY-42.md` and update the other two rows.",
+  "ttft_ms": 1546,
+  "type": "result",
+  "duration_ms": 13609,
+  "uuid": "5af67844-3fca-410d-be77-d0a89c5efb21",
+  "ttft_stream_ms": 1070,
+  "time_to_request_ms": 333,
+  "first_content_frame_ms": 1070,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

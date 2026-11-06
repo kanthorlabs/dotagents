@@ -1,0 +1,30 @@
+{
+  "measures": ["M1", "M2", "M3", "M4"],
+  "required_conditions": [
+    {
+      "condition": "PR #42 merged to main",
+      "actor": "CI pipeline or the merge author",
+      "path": "main branch of the repository",
+      "target": "PR #42"
+    }
+  ],
+  "closeable_gaps": [
+    {
+      "gap": "PR #42 merge status unknown",
+      "source": "git_log.txt",
+      "verdict": "PR #42 was merged into main on 2026-11-04 at 18:42 UTC by the CI Bot. The merge commit is a3f9c2d."
+    }
+  ],
+  "required_record": "tickets/DEPLOY-42.md result column",
+  "record_exists": true,
+  "record_note": "The file tickets/DEPLOY-42.md exists. The result cells are empty.",
+  "valid_targets": ["PR #42", "staging"],
+  "invalid_targets_examples": ["production", "any PR other than #42"],
+  "user_needed_gaps": [
+    {
+      "gap": "DEPLOY-42 result update",
+      "needs": "write approval to update the ticket",
+      "unblocks": "recording the merge confirmation in DEPLOY-42"
+    }
+  ]
+}

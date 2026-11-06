@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 21061,
+  "stop_reason": "end_turn",
+  "session_id": "754608f6-0f02-428f-917a-cd4f16fd6655",
+  "total_cost_usd": 0.036616300000000004,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 2736,
+    "cache_read_input_tokens": 32363,
+    "output_tokens": 2242,
+    "output_tokens_details": {
+      "thinking_tokens": 395
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2736,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 778,
+        "cache_read_input_tokens": 9055,
+        "cache_creation_input_tokens": 1169,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1169
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 2242,
+      "cacheReadInputTokens": 32363,
+      "cacheCreationInputTokens": 2736,
+      "webSearchRequests": 0,
+      "costUSD": 0.036616300000000004,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 395,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2736,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't record anything in ACCESS-CHECK-001. The Write tool is disabled in this session, so the file still has empty result cells. I haven't tried another way to edit it. If you enable Write or tell me another route, I'll record the result below.\n\n**Result: one of the open items can be partly closed, and one can't.**\n\n| # | Path | Status | Evidence |\n|---|---|---|---|\n| 1 | CLI export | Confirmed | `session_notes.md:10`, tested on staging, got 401 |\n| 2 | Admin API export | Confirmed | `session_notes.md:11`, same test |\n| 3 | Web UI export | Code-verified, not tested | `handlers/web_export.go:7-11` |\n| 4 | Background job export | Still unverified | No code or test harness is available |\n\n- **Item 3:** The handler calls `auth.Require(ctx)` at line 7. It returns 401 and exits at lines 8-9, before `serveExport` runs at line 11. A failed auth check can't reach the export. Two things are still open:\n  - **`auth.Require`:** Its source isn't in this directory, so I can't tell what it does with a missing token. The file also has no import for `auth`.\n  - **Routing:** I couldn't see the router, so I can't confirm web export traffic reaches this handler.\n- **Item 4:** Nothing here addresses it. The notes say there is no test harness, and there is no background job code in the directory.\n\nTwo discrepancies in the notes:\n- **Open count:** The header says 3 items are open, but the table has 4 rows and only 2 are unverified. I couldn't tell which count is right.\n- **Test scope:** The check is \"fires on missing token\". Items 1 and 2 were tested with an expired token (`session_notes.md:17`). They are confirmed for an expired token, not for a missing one.\n\n**Need from you:**\n- Need Write access, or another way to edit the file, to unblock recording the result in `tickets/ACCESS-CHECK-001.md`.\n- Need the `auth` package source and the router, to unblock fully closing item 3. Mia owns that follow-up (`session_notes.md:19`).\n- Need the background job export code, or a name for its owner, to unblock item 4. The notes don't name an owner.\n\nI didn't read the `auth` package, the router or the background job code, because they aren't in this directory.",
+  "ttft_ms": 2496,
+  "type": "result",
+  "duration_ms": 22043,
+  "uuid": "110137eb-1d35-4c83-b60c-e55299a1681b",
+  "ttft_stream_ms": 1822,
+  "time_to_request_ms": 925,
+  "first_content_frame_ms": 1822,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

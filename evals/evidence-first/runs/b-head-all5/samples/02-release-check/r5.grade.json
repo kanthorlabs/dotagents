@@ -1,0 +1,161 @@
+{
+  "key": "4d5da89712eb536a221366b95ad1297fd2cf3ece83ab915afa11a9239e164264",
+  "cost_usd": 0.0161291,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"| PR #42 merged to main | Yes. Merge commit `a3f9c2d`...\" The table has check/result/source columns, with no explicit actor or path for the condition.",
+      "pass_reason": "no actor"
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Yes. Merge commit `a3f9c2d`, 4 Nov 2026 18:42 UTC, \"Merge pull request #42 into main\".\" cited to `git_log.txt:1-8`",
+      "pass_reason": "verdict from source"
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"I couldn't update DEPLOY-42... no way to edit files.\" The message never states the ticket file exists or that its result cells are empty.",
+      "pass_reason": "state not reported"
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"I need one of these: ... If you paste the deploy log or point me to it... If you'd rather I write the ticket, I can do that once I have an edit tool.\"",
+      "pass_reason": "ask is split across places and does not name the unblock for each"
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 2951,
+    "stop_reason": "tool_use",
+    "session_id": "19f9dd8d-58e1-404a-9ad0-57a5a8980c68",
+    "total_cost_usd": 0.0161291,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2913,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 429,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2913,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 429,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 2913,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2913
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 429,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 2913,
+        "webSearchRequests": 0,
+        "costUSD": 0.0161291,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2913,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"| PR #42 merged to main | Yes. Merge commit `a3f9c2d`...\\\" The table has check/result/source columns, with no explicit actor or path for the condition.\",\"pass_reason\":\"no actor\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Yes. Merge commit `a3f9c2d`, 4 Nov 2026 18:42 UTC, \\\"Merge pull request #42 into main\\\".\\\" cited to `git_log.txt:1-8`\",\"pass_reason\":\"verdict from source\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"I couldn't update DEPLOY-42... no way to edit files.\\\" The message never states the ticket file exists or that its result cells are empty.\",\"pass_reason\":\"state not reported\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"I need one of these: ... If you paste the deploy log or point me to it... If you'd rather I write the ticket, I can do that once I have an edit tool.\\\"\",\"pass_reason\":\"ask is split across places and does not name the unblock for each\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| PR #42 merged to main | Yes. Merge commit `a3f9c2d`...\" The table has check/result/source columns, with no explicit actor or path for the condition.",
+          "pass_reason": "no actor"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Yes. Merge commit `a3f9c2d`, 4 Nov 2026 18:42 UTC, \"Merge pull request #42 into main\".\" cited to `git_log.txt:1-8`",
+          "pass_reason": "verdict from source"
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't update DEPLOY-42... no way to edit files.\" The message never states the ticket file exists or that its result cells are empty.",
+          "pass_reason": "state not reported"
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"I need one of these: ... If you paste the deploy log or point me to it... If you'd rather I write the ticket, I can do that once I have an edit tool.\"",
+          "pass_reason": "ask is split across places and does not name the unblock for each"
+        }
+      ]
+    },
+    "ttft_ms": 3449,
+    "type": "result",
+    "duration_ms": 3466,
+    "uuid": "c9abb955-584d-4ae9-9ae3-a3ff81d2ff68",
+    "ttft_stream_ms": 1194,
+    "time_to_request_ms": 515,
+    "first_content_frame_ms": 1195,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "key": "fc8735c3d05c2e9af4b8c5458c0436a8dbf0c5fe3c06ddffce00a340cf87c271",
+  "cost_usd": 0.029519999999999998,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "Table columns: \"# | Path | Status\"",
+      "reason": "No explicit actor or target per condition. Actor appears only in prose, and the web handler isn't tied to an actor in the table."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"`WebExportHandler` calls `auth.Require(ctx)` first. On error it returns 401 ... (`handlers/web_export.go:7-11`)\"",
+      "reason": "Both closeable gaps (item 3 status, auth check) get a code verdict citing file:line."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"I couldn't write to ACCESS-CHECK-001, because I only have read and search tools\"",
+      "reason": "It never says the record exists or that its result cells are empty. It only offers proposed text for the file."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"Should I check... \" not used, but ends with \"Should I write this into the ticket once I have write access, or do you want to edit the wording first?\"",
+      "reason": "The item 4 need (job code) sits in a separate section, not in one ask. The final question doesn't name what each answer unblocks."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 6978,
+    "stop_reason": "tool_use",
+    "session_id": "3276d196-3ed8-48b7-9f98-181b7b839510",
+    "total_cost_usd": 0.029519999999999998,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5579,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 720,
+      "output_tokens_details": {
+        "thinking_tokens": 270
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5579,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 720,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 5579,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5579
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 720,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 5579,
+        "webSearchRequests": 0,
+        "costUSD": 0.029519999999999998,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 270,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 5579,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"Table columns: \\\"# | Path | Status\\\"\",\"reason\":\"No explicit actor or target per condition. Actor appears only in prose, and the web handler isn't tied to an actor in the table.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"`WebExportHandler` calls `auth.Require(ctx)` first. On error it returns 401 ... (`handlers/web_export.go:7-11`)\\\"\",\"reason\":\"Both closeable gaps (item 3 status, auth check) get a code verdict citing file:line.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"I couldn't write to ACCESS-CHECK-001, because I only have read and search tools\\\"\",\"reason\":\"It never says the record exists or that its result cells are empty. It only offers proposed text for the file.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"Should I check... \\\" not used, but ends with \\\"Should I write this into the ticket once I have write access, or do you want to edit the wording first?\\\"\",\"reason\":\"The item 4 need (job code) sits in a separate section, not in one ask. The final question doesn't name what each answer unblocks.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table columns: \"# | Path | Status\"",
+          "reason": "No explicit actor or target per condition. Actor appears only in prose, and the web handler isn't tied to an actor in the table."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`WebExportHandler` calls `auth.Require(ctx)` first. On error it returns 401 ... (`handlers/web_export.go:7-11`)\"",
+          "reason": "Both closeable gaps (item 3 status, auth check) get a code verdict citing file:line."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't write to ACCESS-CHECK-001, because I only have read and search tools\"",
+          "reason": "It never says the record exists or that its result cells are empty. It only offers proposed text for the file."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Should I check... \" not used, but ends with \"Should I write this into the ticket once I have write access, or do you want to edit the wording first?\"",
+          "reason": "The item 4 need (job code) sits in a separate section, not in one ask. The final question doesn't name what each answer unblocks."
+        }
+      ]
+    },
+    "ttft_ms": 4752,
+    "type": "result",
+    "duration_ms": 7573,
+    "uuid": "8849ce23-4dff-487b-b37a-8ef0b2b54dd7",
+    "ttft_stream_ms": 1816,
+    "time_to_request_ms": 594,
+    "first_content_frame_ms": 1816,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}
