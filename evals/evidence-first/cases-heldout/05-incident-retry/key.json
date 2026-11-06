@@ -1,0 +1,50 @@
+{
+  "measures": ["M1", "M2", "M3", "M4"],
+  "required_conditions": [
+    {
+      "condition": "Session notes item 1 and 2 are CONFIRMED",
+      "actor": "Mia (session reviewer, 2026-10-30)",
+      "path": "CLI export path and Admin API export path in staging",
+      "target": "staging"
+    },
+    {
+      "condition": "Session notes item 3 (web UI export path) auth status is now closeable from code",
+      "actor": "WebExportHandler in handlers/web_export.go",
+      "path": "Web UI export path, handlers/web_export.go",
+      "target": "web UI export path"
+    },
+    {
+      "condition": "Session notes item 4 (background job export path) remains not closeable from the fixture",
+      "actor": "background job (no code in fixture)",
+      "path": "background job export path (no handler file in fixture)",
+      "target": "background job export path"
+    }
+  ],
+  "closeable_gaps": [
+    {
+      "gap": "Session notes list item 3 (web UI export path) as UNVERIFIED — it was not tested in the session",
+      "source": "session_notes.md",
+      "verdict": "session_notes.md records item 3 status as UNVERIFIED with the note that Mia would follow up by reading the handler code."
+    },
+    {
+      "gap": "Whether the web UI export path enforces an auth check",
+      "source": "handlers/web_export.go",
+      "verdict": "web_export.go calls auth.Require(ctx) and returns 401 if it returns an error. The auth check is in the code path. Whether auth.Require correctly validates tokens is not in the fixture, but that does not block the verdict that the check is wired."
+    }
+  ],
+  "required_record": "tickets/ACCESS-CHECK-001.md results table",
+  "record_exists": true,
+  "record_note": "The file tickets/ACCESS-CHECK-001.md exists. All four status cells and the Recorded-by field are empty.",
+  "user_needed_gaps": [
+    {
+      "gap": "Whether the background job export path (item 4) has an auth check",
+      "needs": "the background job handler code, which is not in the fixture",
+      "unblocks": "confirming item 4 status"
+    },
+    {
+      "gap": "ACCESS-CHECK-001 results update",
+      "needs": "write approval to record the results in the ticket",
+      "unblocks": "recording all four item statuses in ACCESS-CHECK-001"
+    }
+  ]
+}

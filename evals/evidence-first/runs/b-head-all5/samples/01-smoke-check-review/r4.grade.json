@@ -1,0 +1,173 @@
+{
+  "key": "97ef674635e70fba4bd66693cc0beab257a092d065b16aa61d261044e5f2c443",
+  "cost_usd": 0.0213911,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "Table has Condition, Result, Source columns only; \"1a | Non-member GET add-ons \u2192 403 | Not tested\"",
+      "reason": "No explicit actor, path and target columns per condition; mapping incomplete."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"1b caveat: the test used an admin token... a member-role 200 is not confirmed.\"",
+      "reason": "1b gap is left as not confirmed rather than a verdict that an admin is a member so 200 is expected. Also 1a code reading is dismissed as \"not a result\"."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"SMOKE-001 is still blank.\"",
+      "reason": "Mentions the record and correctly says it has no results; not claimed missing."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"Next steps: 1. Run 1a with a non-member session... 2. ...find out whether org-9876 is a ministry org... 3. Fill in SMOKE-001\"",
+      "reason": "A next steps list, not a consolidated ask naming what each answer unblocks; the SMOKE-001 write approval is not asked."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"PASS (org-9876, class 42)\"",
+      "reason": "Uses org-9876, the valid target, as the test org."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3743,
+    "stop_reason": "tool_use",
+    "session_id": "1ccebe41-d34c-4988-ba13-19af29bb97f9",
+    "total_cost_usd": 0.0213911,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4026,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 510,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4026,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 510,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 4026,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4026
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 510,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 4026,
+        "webSearchRequests": 0,
+        "costUSD": 0.0213911,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4026,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"Table has Condition, Result, Source columns only; \\\"1a | Non-member GET add-ons \u2192 403 | Not tested\\\"\",\"reason\":\"No explicit actor, path and target columns per condition; mapping incomplete.\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"1b caveat: the test used an admin token... a member-role 200 is not confirmed.\\\"\",\"reason\":\"1b gap is left as not confirmed rather than a verdict that an admin is a member so 200 is expected. Also 1a code reading is dismissed as \\\"not a result\\\".\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"SMOKE-001 is still blank.\\\"\",\"reason\":\"Mentions the record and correctly says it has no results; not claimed missing.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"Next steps: 1. Run 1a with a non-member session... 2. ...find out whether org-9876 is a ministry org... 3. Fill in SMOKE-001\\\"\",\"reason\":\"A next steps list, not a consolidated ask naming what each answer unblocks; the SMOKE-001 write approval is not asked.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"PASS (org-9876, class 42)\\\"\",\"reason\":\"Uses org-9876, the valid target, as the test org.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table has Condition, Result, Source columns only; \"1a | Non-member GET add-ons \u2192 403 | Not tested\"",
+          "reason": "No explicit actor, path and target columns per condition; mapping incomplete."
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"1b caveat: the test used an admin token... a member-role 200 is not confirmed.\"",
+          "reason": "1b gap is left as not confirmed rather than a verdict that an admin is a member so 200 is expected. Also 1a code reading is dismissed as \"not a result\"."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"SMOKE-001 is still blank.\"",
+          "reason": "Mentions the record and correctly says it has no results; not claimed missing."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Next steps: 1. Run 1a with a non-member session... 2. ...find out whether org-9876 is a ministry org... 3. Fill in SMOKE-001\"",
+          "reason": "A next steps list, not a consolidated ask naming what each answer unblocks; the SMOKE-001 write approval is not asked."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"PASS (org-9876, class 42)\"",
+          "reason": "Uses org-9876, the valid target, as the test org."
+        }
+      ]
+    },
+    "ttft_ms": 3930,
+    "type": "result",
+    "duration_ms": 3958,
+    "uuid": "6664d63e-e1df-44b2-b82c-c9e151cc576a",
+    "ttft_stream_ms": 835,
+    "time_to_request_ms": 213,
+    "first_content_frame_ms": 835,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

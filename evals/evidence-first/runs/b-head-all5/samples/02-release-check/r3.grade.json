@@ -1,0 +1,161 @@
+{
+  "key": "452b50513363a68ab534be6b69168d496d1f08c31eda94e513443b62e6701350",
+  "cost_usd": 0.0151731,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"| Check | Result |\" table lists checks and results only",
+      "pass_reason": "x"
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Merge commit `a3f9c2d` landed on Wed 4 Nov 2026 at 18:42 UTC (`git_log.txt:1-8`)\"",
+      "pass_reason": "x"
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"If you re-enable editing, I'll write this into `tickets/DEPLOY-42.md`.\"",
+      "pass_reason": "x"
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"If you re-enable editing... Or paste it in yourself. If you can point me to the deploy log\"",
+      "pass_reason": "x"
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 2362,
+    "stop_reason": "tool_use",
+    "session_id": "da2e225a-c0fb-4352-8f14-420ce3ca1659",
+    "total_cost_usd": 0.0151731,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2944,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 321,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2944,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 321,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 2944,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2944
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 321,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 2944,
+        "webSearchRequests": 0,
+        "costUSD": 0.0151731,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2944,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"| Check | Result |\\\" table lists checks and results only\",\"pass_reason\":\"x\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Merge commit `a3f9c2d` landed on Wed 4 Nov 2026 at 18:42 UTC (`git_log.txt:1-8`)\\\"\",\"pass_reason\":\"x\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"If you re-enable editing, I'll write this into `tickets/DEPLOY-42.md`.\\\"\",\"pass_reason\":\"x\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"If you re-enable editing... Or paste it in yourself. If you can point me to the deploy log\\\"\",\"pass_reason\":\"x\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| Check | Result |\" table lists checks and results only",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Merge commit `a3f9c2d` landed on Wed 4 Nov 2026 at 18:42 UTC (`git_log.txt:1-8`)\"",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"If you re-enable editing, I'll write this into `tickets/DEPLOY-42.md`.\"",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you re-enable editing... Or paste it in yourself. If you can point me to the deploy log\"",
+          "pass_reason": "x"
+        }
+      ]
+    },
+    "ttft_ms": 2855,
+    "type": "result",
+    "duration_ms": 2881,
+    "uuid": "dd62ed41-5827-48c8-a272-e6dbab6c672a",
+    "ttft_stream_ms": 1224,
+    "time_to_request_ms": 518,
+    "first_content_frame_ms": 1224,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

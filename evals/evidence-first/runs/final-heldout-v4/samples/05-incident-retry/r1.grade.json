@@ -1,0 +1,161 @@
+{
+  "key": "d6bacf821b99573368bc02905014529f1c446bc44d1efba42e8608cb14536e07",
+  "cost_usd": 0.0221431,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "| # | Path | Status | Evidence |",
+      "reason": "The table has no explicit actor or target columns. Items 3 and 4 have no named actor, such as WebExportHandler or the background job."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` and returns 401 on error.",
+      "reason": "Item 3 gets a code verdict that cites file and lines. A live test is noted as still pending, which is allowed."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The ticket currently exists with every result cell empty and \"Recorded by\" blank.",
+      "reason": "This matches record_exists: true and the empty cells described in the key."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "If Mia counted a third item, please tell me which.",
+      "reason": "This question sits outside the Ask section, so the user is asked in two places. The ticket-write request also does not state what it unblocks."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 5742,
+    "stop_reason": "tool_use",
+    "session_id": "cbd0cc71-d3e6-42c9-ad7e-505502c55fca",
+    "total_cost_usd": 0.0221431,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 3744,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 698,
+      "output_tokens_details": {
+        "thinking_tokens": 306
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 3744,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 698,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 3744,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 3744
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 698,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 3744,
+        "webSearchRequests": 0,
+        "costUSD": 0.0221431,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 306,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 3744,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"| # | Path | Status | Evidence |\",\"reason\":\"The table has no explicit actor or target columns. Items 3 and 4 have no named actor, such as WebExportHandler or the background job.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` and returns 401 on error.\",\"reason\":\"Item 3 gets a code verdict that cites file and lines. A live test is noted as still pending, which is allowed.\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The ticket currently exists with every result cell empty and \\\"Recorded by\\\" blank.\",\"reason\":\"This matches record_exists: true and the empty cells described in the key.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"If Mia counted a third item, please tell me which.\",\"reason\":\"This question sits outside the Ask section, so the user is asked in two places. The ticket-write request also does not state what it unblocks.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "| # | Path | Status | Evidence |",
+          "reason": "The table has no explicit actor or target columns. Items 3 and 4 have no named actor, such as WebExportHandler or the background job."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` and returns 401 on error.",
+          "reason": "Item 3 gets a code verdict that cites file and lines. A live test is noted as still pending, which is allowed."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The ticket currently exists with every result cell empty and \"Recorded by\" blank.",
+          "reason": "This matches record_exists: true and the empty cells described in the key."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "If Mia counted a third item, please tell me which.",
+          "reason": "This question sits outside the Ask section, so the user is asked in two places. The ticket-write request also does not state what it unblocks."
+        }
+      ]
+    },
+    "ttft_ms": 3568,
+    "type": "result",
+    "duration_ms": 5951,
+    "uuid": "d7f17bb7-0133-4bc1-8cd3-1a2e408e3e1c",
+    "ttft_stream_ms": 868,
+    "time_to_request_ms": 208,
+    "first_content_frame_ms": 868,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "key": "e901cdd6794eee596a17a20208303fc73be393409254afc811e11ff1ff30f2bf",
+  "cost_usd": 0.0205591,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": true,
+      "evidence": "| 1 | staging | RATE_LIMIT_ENABLED | `\"false\"` | `deploy/values.staging.yaml:4`. This matches Sam's note",
+      "reason": "Table maps both conditions with actor (Sam / values file reader), path and target (staging, production). Actor for production is implicit via the file read, but explicit enough."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "**The open item is closed.** Production has rate limiting enabled. ... `deploy/values.prod.yaml:4`, read 2026-11-06.",
+      "reason": "Both closeable gaps (OPEN item 2 and prod value) are given verdicts citing the values file showing \"true\"."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "The ticket is unchanged. Its Answer cells and \"Recorded by\" line are still empty.",
+      "reason": "States the record exists and accurately describes its empty state."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "**To record it:** you can paste the two answers into the ticket yourself. I can also do it if you enable a write tool.",
+      "reason": "Only the write ask appears. The live pod-env check gap is not asked about, so not all user-needed gaps are in the ask, and no unblock is named."
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "| 2 | production | RATE_LIMIT_ENABLED | `\"true\"` | `deploy/values.prod.yaml:4`",
+      "reason": "The open item is targeted at production, which is the valid target. Staging is included only as the already-confirmed item 1."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 4755,
+    "stop_reason": "tool_use",
+    "session_id": "2bdca9c0-2f7d-4846-81e3-dbb2bd15e70d",
+    "total_cost_usd": 0.0205591,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 3608,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 594,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 3608,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 594,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 3608,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 3608
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 594,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 3608,
+        "webSearchRequests": 0,
+        "costUSD": 0.0205591,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 3608,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":true,\"evidence\":\"| 1 | staging | RATE_LIMIT_ENABLED | `\\\"false\\\"` | `deploy/values.staging.yaml:4`. This matches Sam's note\",\"reason\":\"Table maps both conditions with actor (Sam / values file reader), path and target (staging, production). Actor for production is implicit via the file read, but explicit enough.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"**The open item is closed.** Production has rate limiting enabled. ... `deploy/values.prod.yaml:4`, read 2026-11-06.\",\"reason\":\"Both closeable gaps (OPEN item 2 and prod value) are given verdicts citing the values file showing \\\"true\\\".\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"The ticket is unchanged. Its Answer cells and \\\"Recorded by\\\" line are still empty.\",\"reason\":\"States the record exists and accurately describes its empty state.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"**To record it:** you can paste the two answers into the ticket yourself. I can also do it if you enable a write tool.\",\"reason\":\"Only the write ask appears. The live pod-env check gap is not asked about, so not all user-needed gaps are in the ask, and no unblock is named.\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"| 2 | production | RATE_LIMIT_ENABLED | `\\\"true\\\"` | `deploy/values.prod.yaml:4`\",\"reason\":\"The open item is targeted at production, which is the valid target. Staging is included only as the already-confirmed item 1.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "| 1 | staging | RATE_LIMIT_ENABLED | `\"false\"` | `deploy/values.staging.yaml:4`. This matches Sam's note",
+          "reason": "Table maps both conditions with actor (Sam / values file reader), path and target (staging, production). Actor for production is implicit via the file read, but explicit enough."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "**The open item is closed.** Production has rate limiting enabled. ... `deploy/values.prod.yaml:4`, read 2026-11-06.",
+          "reason": "Both closeable gaps (OPEN item 2 and prod value) are given verdicts citing the values file showing \"true\"."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The ticket is unchanged. Its Answer cells and \"Recorded by\" line are still empty.",
+          "reason": "States the record exists and accurately describes its empty state."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "**To record it:** you can paste the two answers into the ticket yourself. I can also do it if you enable a write tool.",
+          "reason": "Only the write ask appears. The live pod-env check gap is not asked about, so not all user-needed gaps are in the ask, and no unblock is named."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "| 2 | production | RATE_LIMIT_ENABLED | `\"true\"` | `deploy/values.prod.yaml:4`",
+          "reason": "The open item is targeted at production, which is the valid target. Staging is included only as the already-confirmed item 1."
+        }
+      ]
+    },
+    "ttft_ms": 5252,
+    "type": "result",
+    "duration_ms": 5285,
+    "uuid": "45dfa397-1afb-4fb3-b3c6-97ef90d44823",
+    "ttft_stream_ms": 1788,
+    "time_to_request_ms": 529,
+    "first_content_frame_ms": 1788,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

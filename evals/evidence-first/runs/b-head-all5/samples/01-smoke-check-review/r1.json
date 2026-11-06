@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 10943,
+  "stop_reason": "end_turn",
+  "session_id": "a0560f2c-9112-4146-8af4-9b42a376ae5c",
+  "total_cost_usd": 0.0219339,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1696,
+    "cache_read_input_tokens": 22479,
+    "output_tokens": 1289,
+    "output_tokens_details": {
+      "thinking_tokens": 134
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1696,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 918,
+        "cache_read_input_tokens": 7686,
+        "cache_creation_input_tokens": 1225,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1225
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1289,
+      "cacheReadInputTokens": 22479,
+      "cacheCreationInputTokens": 1696,
+      "webSearchRequests": 0,
+      "costUSD": 0.0219339,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 134,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1696,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "**The smoke check is not complete. Only check 3 passed, and nothing is recorded in SMOKE-001 yet.**\n\n| # | Condition | Result | Source |\n|---|---|---|---|\n| 1a | Non-member gets 403 | **Not tested** | `results.md:6` |\n| 1b | Member gets 200 | **Not proven** | `results.md:5` |\n| 2 | Super admin refused, nothing written | **Not tested** | `results.md:10` |\n| 3 | Class /live page opens | **PASS** | `results.md:14` |\n\n- **1b:** The earlier session tested with an admin token for org-9876 and got 200. It doesn't say whether that account is a member of the org. An admin token may pass through a different path than a normal member.\n- **1a:** The code would return 403 for a non-member (`routes/addon.go:11-14`). That is only a reading of the code, not a production result.\n- **2:** The code refuses only when `isMinistryOrg(orgID)` is true (`routes/addon.go:24-27`). Otherwise a super admin passes and `applyFlag` writes (`routes/addon.go:28`).\n  - `isMinistryOrg` is not in the files here, so I can't tell whether org-9876 counts as a ministry org. If it doesn't, a super admin toggling the feature on it would be allowed and written, which fails the condition.\n  - The condition is also about the UI. `routes/addon.go` is only the API handler, and I haven't seen the UI path.\n- **3:** The result covers org-9876, class 42 (`results.md:14`). It doesn't say how the page was opened or when.\n\n**Unread sources:** the definitions of `isMinistryOrg`, `isSuperAdmin`, `isMember`, `applyFlag` and `sessionUser`, any UI code, and the production deployment values. They aren't in this directory.\n\n**Still to do:**\n1. Run 1a with a non-member session and 1b with a plain member session.\n2. Confirm whether org-9876 is a ministry org. Then run check 2 through the UI and check that nothing was written.\n3. Fill in the SMOKE-001 table. I haven't edited it. I can record the check 3 PASS and mark the other rows \"not tested\" if you want.\n\nI haven't tagged anyone. Alex requested the checks and the ticket is due today, 2026-11-05.",
+  "ttft_ms": 1551,
+  "type": "result",
+  "duration_ms": 11386,
+  "uuid": "50fa6cf4-cc9c-4ab2-b4b3-eb2902e4c866",
+  "ttft_stream_ms": 1104,
+  "time_to_request_ms": 407,
+  "first_content_frame_ms": 1105,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

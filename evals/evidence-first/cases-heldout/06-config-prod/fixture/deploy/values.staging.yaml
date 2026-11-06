@@ -1,0 +1,6 @@
+replicaCount: 1
+
+env:
+  RATE_LIMIT_ENABLED: "false"
+  MAX_REQUESTS_PER_MIN: "60"
+  LOG_LEVEL: "debug"

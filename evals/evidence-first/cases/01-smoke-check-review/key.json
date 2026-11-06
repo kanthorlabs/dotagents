@@ -1,0 +1,68 @@
+{
+  "measures": ["M1", "M2", "M3", "M4", "M5"],
+  "required_conditions": [
+    {
+      "condition": "Non-member GET /v1/orgs/{org}/add-ons → 403",
+      "actor": "a non-member account for org-9876",
+      "path": "GET /v1/orgs/org-9876/add-ons",
+      "target": "org-9876"
+    },
+    {
+      "condition": "Member GET /v1/orgs/{org}/add-ons → 200",
+      "actor": "a member account for org-9876 (not a super admin)",
+      "path": "GET /v1/orgs/org-9876/add-ons",
+      "target": "org-9876"
+    },
+    {
+      "condition": "Super admin feature toggle refused, nothing written",
+      "actor": "a super admin account",
+      "path": "the UI/API path for toggling a feature flag on org-9876",
+      "target": "org-9876"
+    },
+    {
+      "condition": "Class /live page opens normally",
+      "actor": "a member account",
+      "path": "the class /live page",
+      "target": "org-9876"
+    }
+  ],
+  "closeable_gaps": [
+    {
+      "gap": "Non-member 403 not tested",
+      "source": "routes/addon.go",
+      "verdict": "The route checks isMember and returns 403 when it is false. The code path exists. A live test with a non-member token is still needed to confirm it reaches production."
+    },
+    {
+      "gap": "Super admin feature toggle not tested",
+      "source": "routes/addon.go",
+      "verdict": "SetFeatureFlag checks isMinistryOrg and returns 403 without calling applyFlag when it is true. The refusal path exists in code. A live test is still needed."
+    },
+    {
+      "gap": "Member test used an admin token, not a plain-member token",
+      "source": "results.md",
+      "verdict": "The earlier test used an admin token for check 1b. An admin is a member, so 200 is expected, but the test does not prove a plain-member receives 200 independently of admin rights."
+    }
+  ],
+  "required_record": "tickets/SMOKE-001.md result column",
+  "record_exists": true,
+  "record_note": "The file tickets/SMOKE-001.md exists with all four result cells empty. The record exists; no results have been entered.",
+  "valid_targets": ["org-9876"],
+  "invalid_targets_examples": ["any org not named org-9876"],
+  "user_needed_gaps": [
+    {
+      "gap": "Live non-member 403 test",
+      "needs": "a non-member token for org-9876",
+      "unblocks": "confirming check 1a in production"
+    },
+    {
+      "gap": "Live super admin feature toggle test",
+      "needs": "a super admin session and org-9876 classified as a ministry org in production",
+      "unblocks": "confirming check 2 in production"
+    },
+    {
+      "gap": "SMOKE-001 ticket update",
+      "needs": "write access or approval to update the ticket",
+      "unblocks": "recording all results in SMOKE-001"
+    }
+  ]
+}

@@ -1,0 +1,434 @@
+{
+  "skill_path": "../../../../../private/tmp/claude-501/-Users-tuanatelsa-Projects-elsa-features-learning-loop/2a8f0b1a-03bd-4d26-ab25-65c82d820c0f/scratchpad/head-skill.md",
+  "skill_lines": 178,
+  "repeats": 5,
+  "model": "sonnet",
+  "effort": "medium",
+  "cost_usd": {
+    "generation": 0.3629,
+    "reader": 0.0,
+    "grading": 0.255
+  },
+  "samples": [
+    {
+      "case": "05-incident-retry",
+      "sample": "r1",
+      "error": false,
+      "words": 396,
+      "grader_cost_usd": 0.02754,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "Table: \"| 3 | Web UI export path | ... `WebExportHandler` calls `auth.Require`\" ; \"| 4 | Background job export path | Unverified...\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` and returns 401 on any error before `serveExport` runs."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't record anything in ACCESS-CHECK-001 because I only have read-only tools\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Do you want me to write this into the ticket once I have write access, or will you paste it?\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.040076400000000005
+    },
+    {
+      "case": "05-incident-retry",
+      "sample": "r2",
+      "error": false,
+      "words": 436,
+      "grader_cost_usd": 0.029519999999999998,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table columns: \"# | Path | Status\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`WebExportHandler` calls `auth.Require(ctx)` first. On error it returns 401 ... (`handlers/web_export.go:7-11`)\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't write to ACCESS-CHECK-001, because I only have read and search tools\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Should I check... \" not used, but ends with \"Should I write this into the ticket once I have write access, or do you want to edit the wording first?\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.040408200000000005
+    },
+    {
+      "case": "05-incident-retry",
+      "sample": "r3",
+      "error": false,
+      "words": 431,
+      "grader_cost_usd": 0.0229011,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table columns are \"# | Path | Status\"; no explicit actor or target column. Item 3's actor (WebExportHandler) and item 4's actor are not named."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before `serveExport`, and it returns 401 on error.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't record anything in ACCESS-CHECK-001.\" It never says the ticket exists or that its status cells are empty."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Questions for Mia\" lists three questions, then \"Want me to write this into the ticket once I have a tool...\" is a separate ask. Unblocks are not named."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.041622599999999996
+    },
+    {
+      "case": "05-incident-retry",
+      "sample": "r4",
+      "error": false,
+      "words": 429,
+      "grader_cost_usd": 0.025727999999999997,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table lists '# | Path | Status' only; no explicit actor or target columns."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`handlers/web_export.go:7-10` calls `auth.Require(ctx)` first and returns 401 if it errors.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't record the result in ACCESS-CHECK-001.\" It never says the file exists or that its cells are empty."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you give me write access, I'll enter this in the ticket.\" Also suggests asking Mia and a staging test or looking at the auth package. The background job handler ask doesn't name what it unblocks."
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0406182
+    },
+    {
+      "case": "05-incident-retry",
+      "sample": "r5",
+      "error": false,
+      "words": 368,
+      "grader_cost_usd": 0.029438,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "Table columns: \"# | Path | Status\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "`handlers/web_export.go:7-10` calls `auth.Require(ctx)` before `serveExport`. If it returns an error, the handler responds 401"
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I couldn't record anything in ACCESS-CHECK-001, because I only have read and search tools\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Someone who owns the job code needs to supply it.\" ... \"If you give me write access... point me to the `auth` package\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0393782
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r1",
+      "error": false,
+      "words": 181,
+      "grader_cost_usd": 0.026636,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Item 1 (staging): it is \\\"false\\\", at deploy/values.staging.yaml:4. This matches Sam's finding\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"it is \\\"true\\\". That is at deploy/values.prod.yaml:4, which I read today\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The ticket is unchanged, and both answer cells are still empty.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"You can paste it in, or re-enable editing and I'll write it\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"The open item (production `RATE_LIMIT_ENABLED`): it is `\\\"true\\\"`.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.04293570000000001
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r2",
+      "error": false,
+      "words": 229,
+      "grader_cost_usd": 0.025369100000000002,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| 2 | production | RATE_LIMIT_ENABLED | \"true\" (`deploy/values.prod.yaml:4`; read 2026-11-06...\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"In production, `RATE_LIMIT_ENABLED` is `\"true\"`, from `deploy/values.prod.yaml:4`.\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The ticket is unchanged, with both answers and \\\"Recorded by\\\" still blank.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you re-enable editing, I'll write it in.\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Rate limiting is therefore on in production and off in staging.\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0285597
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r3",
+      "error": false,
+      "words": 222,
+      "grader_cost_usd": 0.026737100000000003,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "\"Item 2 (production, `RATE_LIMIT_ENABLED`) ... Source: `deploy/values.prod.yaml:4`\" and \"Matches Sam's 2026-10-28 finding\""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"`\\\"true\\\"`, so rate limiting is on in production. Source: `deploy/values.prod.yaml:4`. This closes the open item.\""
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"paste into `tickets/CONFIG-REVIEW-001.md`\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"confirm the live config if ... has to hold at runtime.\" and \"If you enable file writes, I'll make the edit myself.\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Item 2 (production, `RATE_LIMIT_ENABLED`)\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.030131599999999998
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r4",
+      "error": false,
+      "words": 237,
+      "grader_cost_usd": 0.0205931,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "Table: \"| 1 | staging | `RATE_LIMIT_ENABLED` | `\"false\"` | `deploy/values.staging.yaml:4`... Sam's note\" and production row with prod.yaml:4."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"production | `RATE_LIMIT_ENABLED` | `\"true\"` | `deploy/values.prod.yaml:4`, read today\""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The ticket is unchanged, with both answer cells still blank.\""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you enable Edit or tell me to use another route, I'll write it in myself.\""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"production | `RATE_LIMIT_ENABLED` | `\"true\"` | `deploy/values.prod.yaml:4`\""
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.0295956
+    },
+    {
+      "case": "06-config-prod",
+      "sample": "r5",
+      "error": false,
+      "words": 221,
+      "grader_cost_usd": 0.0205591,
+      "measures": [
+        {
+          "id": "M1",
+          "pass": true,
+          "evidence": "| 1 | staging | RATE_LIMIT_ENABLED | `\"false\"` | `deploy/values.staging.yaml:4`. This matches Sam's note"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "**The open item is closed.** Production has rate limiting enabled. ... `deploy/values.prod.yaml:4`, read 2026-11-06."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "The ticket is unchanged. Its Answer cells and \"Recorded by\" line are still empty."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "**To record it:** you can paste the two answers into the ticket yourself. I can also do it if you enable a write tool."
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "| 2 | production | RATE_LIMIT_ENABLED | `\"true\"` | `deploy/values.prod.yaml:4`"
+        }
+      ],
+      "diagnostics": [],
+      "generation_cost_usd": 0.029549600000000002
+    }
+  ],
+  "summary": {
+    "passed": 23,
+    "total": 45,
+    "score": 0.5111111111111111,
+    "per_measure": {
+      "M1": {
+        "passed": 4,
+        "n": 10,
+        "rate": 0.4
+      },
+      "M2": {
+        "passed": 10,
+        "n": 10,
+        "rate": 1.0
+      },
+      "M3": {
+        "passed": 4,
+        "n": 10,
+        "rate": 0.4
+      },
+      "M4": {
+        "passed": 0,
+        "n": 10,
+        "rate": 0.0
+      },
+      "M5": {
+        "passed": 5,
+        "n": 5,
+        "rate": 1.0
+      }
+    },
+    "per_case": {
+      "05-incident-retry": 0.3,
+      "06-config-prod": 0.68
+    },
+    "per_cell": {
+      "05-incident-retry:M1": {
+        "passed": 1,
+        "n": 5
+      },
+      "05-incident-retry:M2": {
+        "passed": 5,
+        "n": 5
+      },
+      "05-incident-retry:M3": {
+        "passed": 0,
+        "n": 5
+      },
+      "05-incident-retry:M4": {
+        "passed": 0,
+        "n": 5
+      },
+      "06-config-prod:M1": {
+        "passed": 3,
+        "n": 5
+      },
+      "06-config-prod:M2": {
+        "passed": 5,
+        "n": 5
+      },
+      "06-config-prod:M3": {
+        "passed": 4,
+        "n": 5
+      },
+      "06-config-prod:M4": {
+        "passed": 0,
+        "n": 5
+      },
+      "06-config-prod:M5": {
+        "passed": 5,
+        "n": 5
+      }
+    },
+    "per_repeat": {
+      "r1": 0.5555555555555556,
+      "r2": 0.4444444444444444,
+      "r3": 0.4444444444444444,
+      "r4": 0.5555555555555556,
+      "r5": 0.5555555555555556
+    },
+    "mean_words": 315.0,
+    "diagnostic_score": 0.0,
+    "diagnostics": {},
+    "errors": 0
+  }
+}

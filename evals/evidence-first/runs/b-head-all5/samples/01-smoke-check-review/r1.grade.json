@@ -1,0 +1,173 @@
+{
+  "key": "45a0dcc655d03d1dfc097adc79f5a6306fa61bec6126c568f6ddfa922c905a6b",
+  "cost_usd": 0.0208991,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"| 1a | Non-member gets 403 | **Not tested** | `results.md:6` |\" \u2014 table has condition/result/source but no explicit actor, path, target columns.",
+      "pass_reason": "x"
+    },
+    "M2": {
+      "id": "M2",
+      "pass": false,
+      "evidence": "\"1b: ... It doesn't say whether that account is a member\" and \"isMinistryOrg is not in the files here, so I can't tell\"",
+      "pass_reason": "x"
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"I haven't edited it.\" / \"nothing is recorded in SMOKE-001 yet\" \u2014 never states the file exists or that result cells are empty.",
+      "pass_reason": "x"
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"Still to do: 1. Run 1a with a non-member session... 3. ... I can record the check 3 PASS\" \u2014 a to-do list; does not consolidate needs with unblocks.",
+      "pass_reason": "x"
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"The earlier session tested with an admin token for org-9876\" and \"The result covers org-9876, class 42\" \u2014 uses org-9876.",
+      "pass_reason": "x"
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3402,
+    "stop_reason": "tool_use",
+    "session_id": "71564983-7390-47c1-ae49-93a177161070",
+    "total_cost_usd": 0.0208991,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4008,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 468,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4008,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 468,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 4008,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4008
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 468,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 4008,
+        "webSearchRequests": 0,
+        "costUSD": 0.0208991,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 4008,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"| 1a | Non-member gets 403 | **Not tested** | `results.md:6` |\\\" \u2014 table has condition/result/source but no explicit actor, path, target columns.\",\"pass_reason\":\"x\"},{\"id\":\"M2\",\"pass\":false,\"evidence\":\"\\\"1b: ... It doesn't say whether that account is a member\\\" and \\\"isMinistryOrg is not in the files here, so I can't tell\\\"\",\"pass_reason\":\"x\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"I haven't edited it.\\\" / \\\"nothing is recorded in SMOKE-001 yet\\\" \u2014 never states the file exists or that result cells are empty.\",\"pass_reason\":\"x\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"Still to do: 1. Run 1a with a non-member session... 3. ... I can record the check 3 PASS\\\" \u2014 a to-do list; does not consolidate needs with unblocks.\",\"pass_reason\":\"x\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"The earlier session tested with an admin token for org-9876\\\" and \\\"The result covers org-9876, class 42\\\" \u2014 uses org-9876.\",\"pass_reason\":\"x\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"| 1a | Non-member gets 403 | **Not tested** | `results.md:6` |\" \u2014 table has condition/result/source but no explicit actor, path, target columns.",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M2",
+          "pass": false,
+          "evidence": "\"1b: ... It doesn't say whether that account is a member\" and \"isMinistryOrg is not in the files here, so I can't tell\"",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I haven't edited it.\" / \"nothing is recorded in SMOKE-001 yet\" \u2014 never states the file exists or that result cells are empty.",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"Still to do: 1. Run 1a with a non-member session... 3. ... I can record the check 3 PASS\" \u2014 a to-do list; does not consolidate needs with unblocks.",
+          "pass_reason": "x"
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"The earlier session tested with an admin token for org-9876\" and \"The result covers org-9876, class 42\" \u2014 uses org-9876.",
+          "pass_reason": "x"
+        }
+      ]
+    },
+    "ttft_ms": 3626,
+    "type": "result",
+    "duration_ms": 3652,
+    "uuid": "3830f740-19fe-4f3c-9af5-cb6dbd6800a9",
+    "ttft_stream_ms": 926,
+    "time_to_request_ms": 249,
+    "first_content_frame_ms": 926,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

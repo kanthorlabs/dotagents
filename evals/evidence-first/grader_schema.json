@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "verdicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "pass": {"type": "boolean"},
+          "evidence": {"type": "string"}
+        },
+        "required": ["id", "pass", "evidence"]
+      }
+    }
+  },
+  "required": ["verdicts"]
+}

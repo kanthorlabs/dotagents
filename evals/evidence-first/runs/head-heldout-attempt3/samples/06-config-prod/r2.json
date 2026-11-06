@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 15215,
+  "stop_reason": "end_turn",
+  "session_id": "32a9fa7a-60c4-4014-a2ef-63b8b04b0121",
+  "total_cost_usd": 0.0285597,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 2263,
+    "cache_read_input_tokens": 31017,
+    "output_tokens": 1639,
+    "output_tokens_details": {
+      "thinking_tokens": 119
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2263,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 680,
+        "cache_read_input_tokens": 8821,
+        "cache_creation_input_tokens": 553,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 553
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 1639,
+      "cacheReadInputTokens": 31017,
+      "cacheCreationInputTokens": 2263,
+      "webSearchRequests": 0,
+      "costUSD": 0.0285597,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 119,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 2263,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 7,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't record the answer in `tickets/CONFIG-REVIEW-001.md`. The Edit tool is disabled in this session, and I have no other way to write files here. The ticket is unchanged, with both answers and \"Recorded by\" still blank.\n\n**The open item is closed.** In production, `RATE_LIMIT_ENABLED` is `\"true\"`, from `deploy/values.prod.yaml:4`. I read that file today (2026-11-06). The other prod values are `replicaCount: 4` and `MAX_REQUESTS_PER_MIN: \"300\"`.\n\n**Item 1 (staging) is confirmed.** `RATE_LIMIT_ENABLED` is `\"false\"`, from `deploy/values.staging.yaml:4`. That matches Sam's note from 2026-10-28.\n\nRate limiting is therefore on in production and off in staging. Staging also has a limit of 60 requests per minute configured, but it isn't enforced while the flag is off.\n\n**Unread sources:** I only read the two values files, `review_notes.md` and the ticket. I didn't check whether the deployed cluster matches these files, or look at any code or infrastructure repos. The answer is what the values files say, not what is running.\n\n**Text to paste into the ticket**, if you want to enter it yourself or re-enable editing:\n\n| # | Environment | Variable | Answer |\n|---|---|---|---|\n| 1 | staging | RATE_LIMIT_ENABLED | \"false\" (`deploy/values.staging.yaml:4`; matches Sam's 2026-10-28 note) |\n| 2 | production | RATE_LIMIT_ENABLED | \"true\" (`deploy/values.prod.yaml:4`; read 2026-11-06, closes the item left open on 2026-10-28) |\n\n**Recorded by:** Aelita, for Tuan Nguyen, 2026-11-06\n\nIf you re-enable editing, I'll write it in.",
+  "ttft_ms": 2351,
+  "type": "result",
+  "duration_ms": 15793,
+  "uuid": "05f25a03-7a80-4611-8f63-412d3b67f8c1",
+  "ttft_stream_ms": 1642,
+  "time_to_request_ms": 543,
+  "first_content_frame_ms": 1642,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

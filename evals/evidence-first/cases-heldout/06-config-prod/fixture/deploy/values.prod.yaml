@@ -1,0 +1,6 @@
+replicaCount: 4
+
+env:
+  RATE_LIMIT_ENABLED: "true"
+  MAX_REQUESTS_PER_MIN: "300"
+  LOG_LEVEL: "warn"

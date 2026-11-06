@@ -1,0 +1,161 @@
+{
+  "key": "4ba4574d30949f536885002c451b2c043e53fbe2a9e67a125f3d25a31698ab7f",
+  "cost_usd": 0.0157051,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"How I got 7\" bullets describe window and org filter, but no table/list mapping condition to explicit actor, path, target.",
+      "pass_reason": "no actor"
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Seven are org-9876 rows inside the window, on lines 2\u20138\" and \"The count is **7**.\"",
+      "pass_reason": "verdict from source"
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"change line 11 of `tickets/COUNT-001.md` to: `| Completions (org-9876, last 7 days) | 7 |`\"",
+      "pass_reason": "never states the record exists or that result cell is empty"
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"To record it, change line 11 of `tickets/COUNT-001.md` to...\"",
+      "pass_reason": "no ask for write approval and no unblock named"
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3495,
+    "stop_reason": "tool_use",
+    "session_id": "76ea432a-8ea4-4d27-ade9-8252da1009cd",
+    "total_cost_usd": 0.0157051,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2967,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 365,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2967,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 365,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 2967,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2967
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 365,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 2967,
+        "webSearchRequests": 0,
+        "costUSD": 0.0157051,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2967,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"How I got 7\\\" bullets describe window and org filter, but no table/list mapping condition to explicit actor, path, target.\",\"pass_reason\":\"no actor\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Seven are org-9876 rows inside the window, on lines 2\u20138\\\" and \\\"The count is **7**.\\\"\",\"pass_reason\":\"verdict from source\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"change line 11 of `tickets/COUNT-001.md` to: `| Completions (org-9876, last 7 days) | 7 |`\\\"\",\"pass_reason\":\"never states the record exists or that result cell is empty\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"To record it, change line 11 of `tickets/COUNT-001.md` to...\\\"\",\"pass_reason\":\"no ask for write approval and no unblock named\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"How I got 7\" bullets describe window and org filter, but no table/list mapping condition to explicit actor, path, target.",
+          "pass_reason": "no actor"
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Seven are org-9876 rows inside the window, on lines 2\u20138\" and \"The count is **7**.\"",
+          "pass_reason": "verdict from source"
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"change line 11 of `tickets/COUNT-001.md` to: `| Completions (org-9876, last 7 days) | 7 |`\"",
+          "pass_reason": "never states the record exists or that result cell is empty"
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"To record it, change line 11 of `tickets/COUNT-001.md` to...\"",
+          "pass_reason": "no ask for write approval and no unblock named"
+        }
+      ]
+    },
+    "ttft_ms": 3769,
+    "type": "result",
+    "duration_ms": 3797,
+    "uuid": "88f280c3-f147-4666-8c63-5d50fddb2319",
+    "ttft_stream_ms": 1678,
+    "time_to_request_ms": 300,
+    "first_content_frame_ms": 1678,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

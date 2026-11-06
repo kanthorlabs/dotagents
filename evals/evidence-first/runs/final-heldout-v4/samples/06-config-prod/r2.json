@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 11349,
+  "stop_reason": "end_turn",
+  "session_id": "6fd5940a-4840-4657-be9f-47f73035ef3b",
+  "total_cost_usd": 0.0233887,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1718,
+    "cache_read_input_tokens": 23347,
+    "output_tokens": 1417,
+    "output_tokens_details": {
+      "thinking_tokens": 244
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1718,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 922,
+        "cache_read_input_tokens": 7996,
+        "cache_creation_input_tokens": 1216,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1216
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1417,
+      "cacheReadInputTokens": 23347,
+      "cacheCreationInputTokens": 1718,
+      "webSearchRequests": 0,
+      "costUSD": 0.0233887,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 244,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1718,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I can't record the answer in CONFIG-REVIEW-001 yet, because this session has no tool that edits files. I only have search and read tools. Here is the result, ready to paste.\n\n**Open item 2 (production `RATE_LIMIT_ENABLED`) is now closed.**\n- `deploy/values.prod.yaml:4` sets `RATE_LIMIT_ENABLED: \"true\"`. The same file sets `MAX_REQUESTS_PER_MIN: \"300\"` and `replicaCount: 4`.\n- Sam's notes (`review_notes.md:10`) left this open because the prod values weren't mounted. They are available now.\n\n**Item 1 (staging) still holds.** `deploy/values.staging.yaml:4` sets `RATE_LIMIT_ENABLED: \"false\"`, which matches `review_notes.md:9`. I re-read the file myself.\n\n**Scope of the check:**\n- The answers come only from the Helm values files. I did not check whether anything overrides them at deploy time, such as `--set` flags or a CI pipeline. I also did not check what the live cluster is running.\n- Staging has rate limiting off, while production has it on at 300 requests per minute against staging's 60. The values files show no reason for that difference, and this review doesn't cover it.\n\n**Text for `tickets/CONFIG-REVIEW-001.md`:**\n\n```\n| 1 | staging    | RATE_LIMIT_ENABLED | false (deploy/values.staging.yaml:4, re-verified 2026-11-06) |\n| 2 | production | RATE_LIMIT_ENABLED | true (deploy/values.prod.yaml:4, read 2026-11-06) |\n\n**Recorded by:** Aelita, 2026-11-06\n```\n\n**Ask:**\n- Need write permission, or an edit tool, to unblock writing these rows into `tickets/CONFIG-REVIEW-001.md`. At the moment the Answer cells and \"Recorded by\" are empty. Alternatively, paste the block above in yourself.",
+  "ttft_ms": 1397,
+  "type": "result",
+  "duration_ms": 11690,
+  "uuid": "cc131e67-d34a-46d5-9dd1-57eb4b068bf3",
+  "ttft_stream_ms": 1011,
+  "time_to_request_ms": 323,
+  "first_content_frame_ms": 1011,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

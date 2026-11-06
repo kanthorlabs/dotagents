@@ -1,0 +1,183 @@
+{
+  "key": "08a81e9a5fc39ce37748c57f2f8ae66e8e2213e0d02928fc3e1cf1c80d5480eb",
+  "cost_usd": 0.0230031,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"Source: `deploy/values.prod.yaml:4`\" ... \"Sam's 2026-10-28 finding\"",
+      "description": "",
+      "pass_reason": ""
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"it is `\"true\"`. Source: `deploy/values.prod.yaml:4`, read 2026-11-06.\"",
+      "description": "",
+      "pass_reason": ""
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"The ticket is unchanged: both answer cells and \"Recorded by\" are still empty.\"",
+      "description": "",
+      "pass_reason": ""
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"I need write access (Edit or Write enabled) to fill in the ticket.\"",
+      "description": "",
+      "pass_reason": ""
+    },
+    "M5": {
+      "id": "M5",
+      "pass": true,
+      "evidence": "\"Result of the open item (#2, production RATE_LIMIT_ENABLED)\"",
+      "description": "",
+      "pass_reason": ""
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 6153,
+    "stop_reason": "tool_use",
+    "session_id": "f58ccbee-6a60-4df7-b3b1-ffcc8fb9b789",
+    "total_cost_usd": 0.0230031,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 3574,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 852,
+      "output_tokens_details": {
+        "thinking_tokens": 457
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 3574,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 852,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 3574,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 3574
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 852,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 3574,
+        "webSearchRequests": 0,
+        "costUSD": 0.0230031,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 457,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 3574,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"Source: `deploy/values.prod.yaml:4`\\\" ... \\\"Sam's 2026-10-28 finding\\\"\",\"description\":\"\",\"pass_reason\":\"\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"it is `\\\"true\\\"`. Source: `deploy/values.prod.yaml:4`, read 2026-11-06.\\\"\",\"description\":\"\",\"pass_reason\":\"\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"The ticket is unchanged: both answer cells and \\\"Recorded by\\\" are still empty.\\\"\",\"description\":\"\",\"pass_reason\":\"\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"I need write access (Edit or Write enabled) to fill in the ticket.\\\"\",\"description\":\"\",\"pass_reason\":\"\"},{\"id\":\"M5\",\"pass\":true,\"evidence\":\"\\\"Result of the open item (#2, production RATE_LIMIT_ENABLED)\\\"\",\"description\":\"\",\"pass_reason\":\"\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Source: `deploy/values.prod.yaml:4`\" ... \"Sam's 2026-10-28 finding\"",
+          "description": "",
+          "pass_reason": ""
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"it is `\"true\"`. Source: `deploy/values.prod.yaml:4`, read 2026-11-06.\"",
+          "description": "",
+          "pass_reason": ""
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The ticket is unchanged: both answer cells and \"Recorded by\" are still empty.\"",
+          "description": "",
+          "pass_reason": ""
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"I need write access (Edit or Write enabled) to fill in the ticket.\"",
+          "description": "",
+          "pass_reason": ""
+        },
+        {
+          "id": "M5",
+          "pass": true,
+          "evidence": "\"Result of the open item (#2, production RATE_LIMIT_ENABLED)\"",
+          "description": "",
+          "pass_reason": ""
+        }
+      ]
+    },
+    "ttft_ms": 4486,
+    "type": "result",
+    "duration_ms": 6306,
+    "uuid": "e32dd5bc-211b-4919-ab76-85857621ffe1",
+    "ttft_stream_ms": 855,
+    "time_to_request_ms": 151,
+    "first_content_frame_ms": 855,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

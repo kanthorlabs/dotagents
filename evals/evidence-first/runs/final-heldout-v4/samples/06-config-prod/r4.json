@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 12638,
+  "stop_reason": "end_turn",
+  "session_id": "2a27c5a7-b161-4e66-9865-ce8550e675ba",
+  "total_cost_usd": 0.0221919,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1704,
+    "cache_read_input_tokens": 23339,
+    "output_tokens": 1303,
+    "output_tokens_details": {
+      "thinking_tokens": 207
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1704,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 816,
+        "cache_read_input_tokens": 7990,
+        "cache_creation_input_tokens": 1208,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1208
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1303,
+      "cacheReadInputTokens": 23339,
+      "cacheCreationInputTokens": 1704,
+      "webSearchRequests": 0,
+      "costUSD": 0.0221919,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 207,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1704,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't record the answer in CONFIG-REVIEW-001, because I have no tool here that can edit files. The open item is resolved: production has rate limiting enabled.\n\n**Findings**\n- **Item 2 (production, `RATE_LIMIT_ENABLED`):** `\"true\"`, from `deploy/values.prod.yaml:4`. I read the file on 2026-11-06. This is the item that was left open.\n- **Item 1 (staging, `RATE_LIMIT_ENABLED`):** `\"false\"`, from `deploy/values.staging.yaml:4`. I re-read it, and it matches Sam's note in `review_notes.md:9`.\n- The two environments differ on purpose or by accident. I can't tell which from these files. Staging is off, and production is on with `MAX_REQUESTS_PER_MIN: \"300\"`.\n- These are the values in the deploy files. I haven't checked what is actually running in the cluster.\n\n**State of the ticket**\n`tickets/CONFIG-REVIEW-001.md` exists, but both Answer cells (lines 10\u201311) are empty, and so is \"Recorded by\" (line 13). Nothing has been recorded yet.\n\n**Sources not read**\nThere are no other sources in the directory. I didn't read any live cluster state or any code that consumes the variable.\n\n**Ask**\n- Need write access, or your OK to use a file-editing tool, to unblock recording the answers in `tickets/CONFIG-REVIEW-001.md`. Until then, you can paste these in:\n  - Row 1: `false` (staging, `deploy/values.staging.yaml:4`)\n  - Row 2: `true` (production, `deploy/values.prod.yaml:4`)\n- Need you to say what to put in \"Recorded by\". Sam was the reviewer, so I haven't filled it in for you.",
+  "ttft_ms": 1807,
+  "type": "result",
+  "duration_ms": 12984,
+  "uuid": "72cf1808-f784-47f0-af7e-715979995eec",
+  "ttft_stream_ms": 1132,
+  "time_to_request_ms": 314,
+  "first_content_frame_ms": 1132,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

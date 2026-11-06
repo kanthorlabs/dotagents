@@ -1,0 +1,161 @@
+{
+  "key": "2a8a973e11c4d31a321faa647a88c1657d1be19da4c0c2af855af5f8fcd810ac",
+  "cost_usd": 0.017143099999999998,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"Suggested text for the ticket table | Check | Result |\" \u2014 columns are check and result only.",
+      "reason": "No mapping of the condition to an explicit actor, path and target. The merge row names the CI Bot only inside the evidence text. Path and target are not given as fields."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"Merge commit `a3f9c2d` ... CI Bot, Wed Nov 4 2026 18:42:11 +0000) is in `git_log.txt`.\"",
+      "reason": "The closeable gap (PR #42 merge status) is closed from git_log.txt with the commit, time and author matching the key."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": false,
+      "evidence": "\"I'll write this into `tickets/DEPLOY-42.md` and update the other two rows.\"",
+      "reason": "The message names the record path but never says whether it exists or that its result cells are empty. It only says editing failed."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": false,
+      "evidence": "\"If you re-enable editing, or give me the deploy run or staging version, I'll write this\"",
+      "reason": "The ask is spread across paragraphs and mixes in other needs. It does not cleanly pair the write approval with what it unblocks as one consolidated ask."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 4250,
+    "stop_reason": "tool_use",
+    "session_id": "8eba0fab-2e0d-4f73-9be6-b30e8628f8f5",
+    "total_cost_usd": 0.017143099999999998,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 3034,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 482,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 3034,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 482,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 3034,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 3034
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 482,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 3034,
+        "webSearchRequests": 0,
+        "costUSD": 0.017143099999999998,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 3034,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"Suggested text for the ticket table | Check | Result |\\\" \u2014 columns are check and result only.\",\"reason\":\"No mapping of the condition to an explicit actor, path and target. The merge row names the CI Bot only inside the evidence text. Path and target are not given as fields.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"Merge commit `a3f9c2d` ... CI Bot, Wed Nov 4 2026 18:42:11 +0000) is in `git_log.txt`.\\\"\",\"reason\":\"The closeable gap (PR #42 merge status) is closed from git_log.txt with the commit, time and author matching the key.\"},{\"id\":\"M3\",\"pass\":false,\"evidence\":\"\\\"I'll write this into `tickets/DEPLOY-42.md` and update the other two rows.\\\"\",\"reason\":\"The message names the record path but never says whether it exists or that its result cells are empty. It only says editing failed.\"},{\"id\":\"M4\",\"pass\":false,\"evidence\":\"\\\"If you re-enable editing, or give me the deploy run or staging version, I'll write this\\\"\",\"reason\":\"The ask is spread across paragraphs and mixes in other needs. It does not cleanly pair the write approval with what it unblocks as one consolidated ask.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"Suggested text for the ticket table | Check | Result |\" \u2014 columns are check and result only.",
+          "reason": "No mapping of the condition to an explicit actor, path and target. The merge row names the CI Bot only inside the evidence text. Path and target are not given as fields."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"Merge commit `a3f9c2d` ... CI Bot, Wed Nov 4 2026 18:42:11 +0000) is in `git_log.txt`.\"",
+          "reason": "The closeable gap (PR #42 merge status) is closed from git_log.txt with the commit, time and author matching the key."
+        },
+        {
+          "id": "M3",
+          "pass": false,
+          "evidence": "\"I'll write this into `tickets/DEPLOY-42.md` and update the other two rows.\"",
+          "reason": "The message names the record path but never says whether it exists or that its result cells are empty. It only says editing failed."
+        },
+        {
+          "id": "M4",
+          "pass": false,
+          "evidence": "\"If you re-enable editing, or give me the deploy run or staging version, I'll write this\"",
+          "reason": "The ask is spread across paragraphs and mixes in other needs. It does not cleanly pair the write approval with what it unblocks as one consolidated ask."
+        }
+      ]
+    },
+    "ttft_ms": 4545,
+    "type": "result",
+    "duration_ms": 4564,
+    "uuid": "322129c3-fc2f-4cf7-9ec6-2a082f8eb619",
+    "ttft_stream_ms": 1598,
+    "time_to_request_ms": 314,
+    "first_content_frame_ms": 1598,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 12667,
+  "stop_reason": "end_turn",
+  "session_id": "ee045ac3-7237-4551-b0f9-6f0be4998580",
+  "total_cost_usd": 0.0214676,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 1985,
+    "cache_read_input_tokens": 30116,
+    "output_tokens": 1050,
+    "output_tokens_details": {
+      "thinking_tokens": 81
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1985,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 487,
+        "cache_read_input_tokens": 8350,
+        "cache_creation_input_tokens": 366,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 366
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 1050,
+      "cacheReadInputTokens": 30116,
+      "cacheCreationInputTokens": 1985,
+      "webSearchRequests": 0,
+      "costUSD": 0.0214676,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 81,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1985,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't record the count in COUNT-001. The Edit tool is disabled in this session, and I have no other way to write to the file. The count is **7**. To record it, set the table row in `tickets/COUNT-001.md` line 11 to `| Completions (org-9876, last 7 days) | 7 |`. You can also enable editing and I'll do it.\n\n**How I got 7:** I counted rows in `completions.csv` where `org_id` is org-9876 and `completed_at` falls between 2026-10-30 and 2026-11-05 inclusive. That is the 7-day window in the ticket. The matching rows are lines 2\u20138, lesson-101 to lesson-107, one per day from 10-30 to 11-05.\n\n**Rows left out:**\n- Two org-9876 rows are before the window: lesson-108 on 2026-10-28 (line 11) and lesson-109 on 2026-10-27 (line 12).\n- Two org-1111 rows belong to a different org (lines 9\u201310).\n- I found no duplicate rows.\n\n**Things to check:**\n- The export has `lesson_id` columns, not exercises. I counted each row as one completion. If \"exercise completions\" is a different thing from lesson completions, this export may not answer your question.\n- I treated the timestamps as UTC, as they are in the file, and the window as whole UTC days. No row is close enough to a boundary for that to change the count.\n- I only had this one CSV. I can't tell whether it is a complete export for the org.",
+  "ttft_ms": 1827,
+  "type": "result",
+  "duration_ms": 13071,
+  "uuid": "5cce03b1-2ab8-48e1-825c-f41fbfe3bdd5",
+  "ttft_stream_ms": 1202,
+  "time_to_request_ms": 360,
+  "first_content_frame_ms": 1202,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

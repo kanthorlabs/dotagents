@@ -1,0 +1,163 @@
+{
+  "key": "557354427a81502743d59b9a063630ee57cfc718304e511f184aa7b97ad206b9",
+  "cost_usd": 0.0171311,
+  "verdicts": {
+    "M1": {
+      "id": "M1",
+      "pass": false,
+      "evidence": "\"The 7 rows for org-9876 in that window are:\" followed by a Date/Lessons table",
+      "evidence_note": "no actor mapping",
+      "reason": "The message has no table or list mapping the condition to an explicit actor (data reader), path, and target. It lists rows, not a condition-actor-path-target mapping."
+    },
+    "M2": {
+      "id": "M2",
+      "pass": true,
+      "evidence": "\"I counted 7 completions for org-9876\" from completions.csv, window 2026-10-30 to 2026-11-05, with out-of-window rows excluded",
+      "reason": "Reads the source and states the verdict, matching the key (7, lesson-101 to 107, 108 and 109 excluded)."
+    },
+    "M3": {
+      "id": "M3",
+      "pass": true,
+      "evidence": "\"The row in `tickets/COUNT-001.md` (line 11) is still blank.\"",
+      "reason": "Mentions the record location and accurately reports that the result cell is empty."
+    },
+    "M4": {
+      "id": "M4",
+      "pass": true,
+      "evidence": "\"To fill it, change it to `| Completions (org-9876, last 7 days) | 7 |`, or enable editing and I'll do it.\"",
+      "reason": "A single ask in one place, naming what it unblocks (recording 7 in the COUNT-001 result row). The only user-needed gap is the write approval."
+    }
+  },
+  "missing": [],
+  "raw": {
+    "duration_api_ms": 3920,
+    "stop_reason": "tool_use",
+    "session_id": "73573df2-1bcf-422a-beb3-ac3328da210d",
+    "total_cost_usd": 0.0171311,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2996,
+      "cache_read_input_tokens": 1831,
+      "output_tokens": 496,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2996,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 496,
+          "cache_read_input_tokens": 1831,
+          "cache_creation_input_tokens": 2996,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2996
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 496,
+        "cacheReadInputTokens": 1831,
+        "cacheCreationInputTokens": 2996,
+        "webSearchRequests": 0,
+        "costUSD": 0.0171311,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
+        "cacheCreationEphemeral1hInputTokens": 2996,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"verdicts\":[{\"id\":\"M1\",\"pass\":false,\"evidence\":\"\\\"The 7 rows for org-9876 in that window are:\\\" followed by a Date/Lessons table\",\"evidence_note\":\"no actor mapping\",\"reason\":\"The message has no table or list mapping the condition to an explicit actor (data reader), path, and target. It lists rows, not a condition-actor-path-target mapping.\"},{\"id\":\"M2\",\"pass\":true,\"evidence\":\"\\\"I counted 7 completions for org-9876\\\" from completions.csv, window 2026-10-30 to 2026-11-05, with out-of-window rows excluded\",\"reason\":\"Reads the source and states the verdict, matching the key (7, lesson-101 to 107, 108 and 109 excluded).\"},{\"id\":\"M3\",\"pass\":true,\"evidence\":\"\\\"The row in `tickets/COUNT-001.md` (line 11) is still blank.\\\"\",\"reason\":\"Mentions the record location and accurately reports that the result cell is empty.\"},{\"id\":\"M4\",\"pass\":true,\"evidence\":\"\\\"To fill it, change it to `| Completions (org-9876, last 7 days) | 7 |`, or enable editing and I'll do it.\\\"\",\"reason\":\"A single ask in one place, naming what it unblocks (recording 7 in the COUNT-001 result row). The only user-needed gap is the write approval.\"}]}",
+    "structured_output": {
+      "verdicts": [
+        {
+          "id": "M1",
+          "pass": false,
+          "evidence": "\"The 7 rows for org-9876 in that window are:\" followed by a Date/Lessons table",
+          "evidence_note": "no actor mapping",
+          "reason": "The message has no table or list mapping the condition to an explicit actor (data reader), path, and target. It lists rows, not a condition-actor-path-target mapping."
+        },
+        {
+          "id": "M2",
+          "pass": true,
+          "evidence": "\"I counted 7 completions for org-9876\" from completions.csv, window 2026-10-30 to 2026-11-05, with out-of-window rows excluded",
+          "reason": "Reads the source and states the verdict, matching the key (7, lesson-101 to 107, 108 and 109 excluded)."
+        },
+        {
+          "id": "M3",
+          "pass": true,
+          "evidence": "\"The row in `tickets/COUNT-001.md` (line 11) is still blank.\"",
+          "reason": "Mentions the record location and accurately reports that the result cell is empty."
+        },
+        {
+          "id": "M4",
+          "pass": true,
+          "evidence": "\"To fill it, change it to `| Completions (org-9876, last 7 days) | 7 |`, or enable editing and I'll do it.\"",
+          "reason": "A single ask in one place, naming what it unblocks (recording 7 in the COUNT-001 result row). The only user-needed gap is the write approval."
+        }
+      ]
+    },
+    "ttft_ms": 4182,
+    "type": "result",
+    "duration_ms": 4210,
+    "uuid": "ae6b9219-0a01-44b9-8429-f1af8d0ae832",
+    "ttft_stream_ms": 993,
+    "time_to_request_ms": 288,
+    "first_content_frame_ms": 993,
+    "queued_turn_count": 0,
+    "result_index": 0,
+    "credential_expires_at": "2026-11-17T17:03:15.244Z"
+  }
+}

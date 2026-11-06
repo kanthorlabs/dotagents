@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 10013,
+  "stop_reason": "end_turn",
+  "session_id": "6d1a880a-4f17-4144-8534-a37e5da3ee02",
+  "total_cost_usd": 0.019888199999999998,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 1678,
+    "cache_read_input_tokens": 21842,
+    "output_tokens": 1098,
+    "output_tokens_details": {
+      "thinking_tokens": 217
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1678,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 743,
+        "cache_read_input_tokens": 7650,
+        "cache_creation_input_tokens": 759,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 759
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1098,
+      "cacheReadInputTokens": 21842,
+      "cacheCreationInputTokens": 1678,
+      "webSearchRequests": 0,
+      "costUSD": 0.019888199999999998,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 217,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1678,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 4,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't record anything in DEPLOY-42. I only have read and search tools here, with no way to edit files. Below is what I found and the text to paste in.\n\n**What I found**\n- **PR #42 merged to main: yes.** `git_log.txt:1-8` shows commit a3f9c2d, \"Merge pull request #42 into main\", by CI Bot on Wed Nov 4 2026 at 18:42 UTC. The PR commit c4d5e6f is by Sam Lee (`git_log.txt:10-14`).\n- **Staging deploy triggered: not verified.** The directory holds only the git log and the ticket. Neither has deploy output, a pipeline run or a staging version. A merge doesn't show that a deploy ran.\n- **Smoke test passed: not verified.** There is no smoke test output in either file.\n\nSo I can't tell you whether it landed on staging. The merge is the only part I could confirm.\n\n**Proposed table for `tickets/DEPLOY-42.md` lines 9-13**\n\n| Check | Result |\n|---|---|\n| PR #42 merged to main | Yes. Commit a3f9c2d, 2026-11-04 18:42 UTC (`git_log.txt`) |\n| Staging deploy triggered | Not verified. No deploy log or pipeline run available |\n| Smoke test passed | Not verified. No smoke test output available |\n\n**Sources I couldn't read**\n- The CI/CD pipeline run for a3f9c2d.\n- The staging environment's running version. It would need to show a3f9c2d or a later commit.\n- The smoke test output.\n\nSam, as the requester, or whoever runs the pipeline could supply these. If you give me the deploy log or the staging version output, I can fill in the other two rows. If you'd like me to write the table above into the ticket as it stands, I'll need file-edit access.",
+  "ttft_ms": 2176,
+  "type": "result",
+  "duration_ms": 10449,
+  "uuid": "69534f82-4df6-4dcd-b469-60dda6d670a4",
+  "ttft_stream_ms": 1145,
+  "time_to_request_ms": 409,
+  "first_content_frame_ms": 1145,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

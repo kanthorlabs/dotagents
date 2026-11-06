@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 13767,
+  "stop_reason": "end_turn",
+  "session_id": "2c472180-b27f-406d-8999-00b7701355cd",
+  "total_cost_usd": 0.0244306,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 1850,
+    "cache_read_input_tokens": 30446,
+    "output_tokens": 1397,
+    "output_tokens_details": {
+      "thinking_tokens": 165
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1850,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 590,
+        "cache_read_input_tokens": 8324,
+        "cache_creation_input_tokens": 624,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 624
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 8,
+      "outputTokens": 1397,
+      "cacheReadInputTokens": 30446,
+      "cacheCreationInputTokens": 1850,
+      "webSearchRequests": 0,
+      "costUSD": 0.0244306,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 165,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 1850,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I couldn't record anything in DEPLOY-42, because the Edit tool is disabled in this session and I have no other way to write files. The ticket is unchanged.\n\n**What I found**\n- **Merged to main: confirmed.** Merge commit `a3f9c2d` (\"Merge pull request #42 into main\") is dated 2026-11-04 18:42 UTC (`git_log.txt:1-8`). It includes Sam Lee's commit `c4d5e6f`, \"feat: add rate limiting to the add-ons route\".\n- **Staging deploy triggered: not verified.** `git_log.txt` is a git history, not a deploy log. It has no deploy, pipeline or environment entries.\n- **Smoke test passed: not verified.** No smoke test output exists in the directory.\n\nSo I can't say whether PR #42 landed on staging. The merge only shows the code reached `main`.\n\n**Text for the ticket's Checks table**\n```\n| PR #42 merged to main | Yes. Merge commit a3f9c2d on main, 2026-11-04 18:42 UTC (git_log.txt:1-8). |\n| Staging deploy triggered | Not verified. git_log.txt has no deploy record. Needs CI/CD or staging deploy history. |\n| Smoke test passed | Not verified. No smoke test output available. |\n```\n\n**Sources I haven't read**\n- The CI/CD or staging deploy history.\n- Any staging build or version endpoint.\n- Smoke test results.\n\nSam, who requested the deploy, or whoever runs the pipeline can supply these. If you paste the deploy output, or re-enable editing, I'll fill in the remaining rows.",
+  "ttft_ms": 1831,
+  "type": "result",
+  "duration_ms": 14138,
+  "uuid": "a5083c80-8aea-43c9-b079-12fc7a1d1f7b",
+  "ttft_stream_ms": 1162,
+  "time_to_request_ms": 331,
+  "first_content_frame_ms": 1162,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "credential_expires_at": "2026-11-17T17:03:15.244Z"
+}

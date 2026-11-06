@@ -1,0 +1,27 @@
+{
+  "M1": {
+    "name": "Conditions mapped",
+    "kind": "judged",
+    "definition": "The message contains a table or list that maps each condition from required_conditions to its actor, path and target. Pass when every required_condition appears in that table or list with an explicit actor, an explicit path and an explicit target. Fail when any required condition is missing, or when no such mapping exists in the message at all."
+  },
+  "M2": {
+    "name": "Gaps closed",
+    "kind": "judged",
+    "definition": "For each gap in closeable_gaps, the message reads the given source and states what the source proves (for example, 'the code path exists at file:line', or 'the count is 7'). The message may also state what a live test must still confirm; that is allowed. Pass when every closeable gap has a verdict that cites what the source shows. Fail when any closeable gap has no code/data verdict at all and is marked only as UNVERIFIED, OPEN or 'not checked', or is turned into a user question before the source is read."
+  },
+  "M3": {
+    "name": "Record checked",
+    "kind": "judged",
+    "definition": "The message checks the required_record location and reports its state accurately. When record_exists is true, pass when the message states the record exists and correctly notes its current state (for example, that result cells are empty). Fail when the message says the record does not exist (contradicting record_exists: true), or when the message never mentions the record location."
+  },
+  "M4": {
+    "name": "One consolidated ask",
+    "kind": "judged",
+    "definition": "When the message needs the user, it asks once, in one place, and names what each answer unblocks. Pass when all user-needed gaps appear in one ask and each names its unblock. Fail when the message asks the user in separate rounds, asks one gap at a time, or uses 'should I check X?' for a gap the tools can close."
+  },
+  "M5": {
+    "name": "Correct target",
+    "kind": "judged",
+    "definition": "The message selects a test target that satisfies the stated constraints. When the target is ambiguous, the message names which target it uses and why. Pass when the target matches a valid_targets entry. Fail when the target violates a stated constraint (such as 'test org only') without naming a corrective ask."
+  }
+}
