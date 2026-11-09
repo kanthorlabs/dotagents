@@ -3,6 +3,7 @@ OPENCODE_DIR ?= $(HOME)/.config/opencode
 AGENTS_DIR   ?= $(HOME)/.agents
 PI_DIR       ?= $(if $(PI_CODING_AGENT_DIR),$(PI_CODING_AGENT_DIR),$(HOME)/.pi/agent)
 ROOT         := $(CURDIR)
+CLAUDE_ENV   := $(if $(filter-out $(HOME)/.claude,$(CLAUDE_DIR)),CLAUDE_CONFIG_DIR="$(CLAUDE_DIR)",env -u CLAUDE_CONFIG_DIR)
 
 .PHONY: test
 test: test-pi-extensions test-pi-orchestrator test-opencode2-wrapper test-secret-guard test-install-profile
@@ -13,7 +14,8 @@ test-install-profile:
 		trap 'rm -rf "$$tmp"' EXIT; \
 		$(MAKE) --no-print-directory CLAUDE_DIR="$$tmp" install-statusline install-settings install-claude-json >/dev/null; \
 		test "$$(jq -r '.statusLine.command' "$$tmp/settings.json")" = "bash $$tmp/statusline-command.sh"; \
-		test -f "$$tmp/.claude.json"
+		test -f "$$tmp/.claude.json"; \
+		! $(MAKE) --no-print-directory CLAUDE_DIR="$$tmp" check-claude-profile >/dev/null 2>&1
 
 .PHONY: test-pi-extensions
 test-pi-extensions:
@@ -37,8 +39,13 @@ test-pi-orchestrator:
 		$(MAKE) --no-print-directory CLAUDE_DIR="$$tmp" install-commands >/dev/null; \
 		test "$$(readlink "$$tmp/commands/pi.md")" = "$(ROOT)/.claude/plugins/pi-orchestrator/commands/pi.md"
 
+
+.PHONY: check-claude-profile
+check-claude-profile:
+	@CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/check-claude-profile.sh"
+
 .PHONY: install
-install: install-skills install-commands install-statusline install-settings install-claude-json install-opencode-json install-plugins install-pi-extensions
+install: check-claude-profile install-skills install-commands install-statusline install-settings install-claude-json install-opencode-json install-plugins install-pi-extensions
 	@echo "done — restart Claude Code and run /reload in pi"
 
 .PHONY: install-pi-extensions
@@ -96,21 +103,21 @@ install-opencode-json:
 # See scripts/install-plugins.sh.
 .PHONY: install-plugins
 install-plugins:
-	@ROOT="$(ROOT)" $(if $(filter-out $(HOME)/.claude,$(CLAUDE_DIR)),CLAUDE_CONFIG_DIR="$(CLAUDE_DIR)") "$(ROOT)/scripts/install-plugins.sh"
+	@ROOT="$(ROOT)" $(CLAUDE_ENV) "$(ROOT)/scripts/install-plugins.sh"
 
 # Injects AGENTS.md at the top of $CLAUDE_DIR/CLAUDE.md, wrapped in managed markers,
 # and configures a global git ignore file (both idempotent). Deliberately excluded
 # from `install` — run it explicitly.
 # See scripts/install-persona.sh and scripts/setup-gitignore-global.sh.
 .PHONY: install-persona
-install-persona:
+install-persona: check-claude-profile
 	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-persona.sh"
 	@ROOT="$(ROOT)" "$(ROOT)/scripts/setup-gitignore-global.sh"
 
 .PHONY: install-remote-control
-install-remote-control:
-	@"$(ROOT)/scripts/setup-remote-control.sh" install
+install-remote-control: check-claude-profile
+	@CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/setup-remote-control.sh" install
 
 .PHONY: uninstall-remote-control
 uninstall-remote-control:
-	@"$(ROOT)/scripts/setup-remote-control.sh" uninstall
+	@CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/setup-remote-control.sh" uninstall
