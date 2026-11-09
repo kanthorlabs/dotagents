@@ -1,11 +1,19 @@
-CLAUDE_DIR   ?= $(HOME)/.claude
+CLAUDE_DIR   ?= $(if $(CLAUDE_CONFIG_DIR),$(CLAUDE_CONFIG_DIR),$(HOME)/.claude)
 OPENCODE_DIR ?= $(HOME)/.config/opencode
 AGENTS_DIR   ?= $(HOME)/.agents
 PI_DIR       ?= $(if $(PI_CODING_AGENT_DIR),$(PI_CODING_AGENT_DIR),$(HOME)/.pi/agent)
 ROOT         := $(CURDIR)
 
 .PHONY: test
-test: test-pi-extensions test-pi-orchestrator test-opencode2-wrapper test-secret-guard
+test: test-pi-extensions test-pi-orchestrator test-opencode2-wrapper test-secret-guard test-install-profile
+
+.PHONY: test-install-profile
+test-install-profile:
+	@tmp=$$(mktemp -d); \
+		trap 'rm -rf "$$tmp"' EXIT; \
+		$(MAKE) --no-print-directory CLAUDE_DIR="$$tmp" install-statusline install-settings install-claude-json >/dev/null; \
+		test "$$(jq -r '.statusLine.command' "$$tmp/settings.json")" = "bash $$tmp/statusline-command.sh"; \
+		test -f "$$tmp/.claude.json"
 
 .PHONY: test-pi-extensions
 test-pi-extensions:
@@ -71,10 +79,11 @@ install-settings:
 	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-settings.sh"
 
 # Renders .claude/config/claude.json (placeholders -> absolute paths), then deep-merges
-# it into ~/.claude.json (Claude Code's global config). See scripts/install-claude-json.sh.
+# it into Claude Code's global config (~/.claude.json, or $CLAUDE_DIR/.claude.json for a custom profile).
+# See scripts/install-claude-json.sh.
 .PHONY: install-claude-json
 install-claude-json:
-	@ROOT="$(ROOT)" "$(ROOT)/scripts/install-claude-json.sh"
+	@ROOT="$(ROOT)" CLAUDE_DIR="$(CLAUDE_DIR)" "$(ROOT)/scripts/install-claude-json.sh"
 
 # Renders .opencode/config/opencode.jsonc (placeholders -> absolute paths), then
 # deep-merges it into ~/.config/opencode/opencode.jsonc (OpenCode's global config).
@@ -87,9 +96,9 @@ install-opencode-json:
 # See scripts/install-plugins.sh.
 .PHONY: install-plugins
 install-plugins:
-	@ROOT="$(ROOT)" "$(ROOT)/scripts/install-plugins.sh"
+	@ROOT="$(ROOT)" $(if $(filter-out $(HOME)/.claude,$(CLAUDE_DIR)),CLAUDE_CONFIG_DIR="$(CLAUDE_DIR)") "$(ROOT)/scripts/install-plugins.sh"
 
-# Injects AGENTS.md at the top of ~/.claude/CLAUDE.md, wrapped in managed markers,
+# Injects AGENTS.md at the top of $CLAUDE_DIR/CLAUDE.md, wrapped in managed markers,
 # and configures a global git ignore file (both idempotent). Deliberately excluded
 # from `install` — run it explicitly.
 # See scripts/install-persona.sh and scripts/setup-gitignore-global.sh.

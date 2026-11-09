@@ -145,6 +145,17 @@ Idempotent — safe to run repeatedly. It:
 
 Each step is also available standalone: `make install-skills`, `install-commands`, `install-statusline`, `install-settings`, `install-claude-json`, `install-opencode-json`, `install-plugins`, `install-pi-extensions`.
 
+### Multiple Claude Code profiles
+
+To install into a profile that uses `CLAUDE_CONFIG_DIR`, run the install once for each profile:
+
+```bash
+make install                                      # ~/.claude
+make install CLAUDE_CONFIG_DIR="$HOME/.claude-work" # custom profile
+```
+
+For a custom profile, the install writes all Claude Code files into that directory, including `.claude.json`. The `claude plugin` commands also run against that profile. `make install-persona` accepts the same variable, so the persona goes into that profile's `CLAUDE.md`. The global git ignore stays shared by all profiles. Use `$HOME`, not `~`: Zsh does not expand `~` after `=` in a command argument.
+
 ## OpenCode 2 Server Setup
 
 On macOS, run setup:
